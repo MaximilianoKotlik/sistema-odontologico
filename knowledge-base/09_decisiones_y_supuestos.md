@@ -136,6 +136,13 @@
 **Contexto**: [DD-07](#dd-07--sin-integraciones-externas-en-v1-confirmada) excluye Mercado Pago de la v1.
 **Trade-offs aceptados**: trabajo manual del equipo por cada alta paga; aceptable para el volumen del piloto.
 
+### DD-22 — Plan único por consultorio a ARS 14.900/mes con IVA incluido (resuelve PA-03) (confirmada por el usuario, 2026-11-20)
+**Estado**: **Confirmada por el usuario (2026-11-20)**; cierra [PA-03](10_preguntas_abiertas.md#preguntas-abiertas-priorizadas).
+**Decisión**: la v1 tiene **un solo plan por consultorio** ("Plan consultorio") a **ARS 14.900 por mes, IVA incluido**. Hay una **prueba gratuita de 30 días sin tarjeta ni medio de pago** ([RN-PL-02](05_reglas_de_negocio.md)) y **no hay plan gratuito permanente**: vencida la prueba sin activación, el consultorio pasa a `VENCIDO` ([RN-PL-03](05_reglas_de_negocio.md)). La activación es manual ([DD-21](#dd-21--activación-manual-del-plan-durante-el-piloto-resuelve-in-03-confirmada-por-el-usuario-2026-11-20)).
+**Contexto**: referencias del Discovery (2026-11-16): AgendaPro desde ARS 13.900/mes, MedicAI ARS 25.900 + IVA por profesional, DentalSoft Gestión ARS 30.000 por profesional, Turnito desde ARS 9.900 sin IVA ([NE-10](10_preguntas_abiertas.md)). La v1 trae solo agenda (sin WhatsApp ni historia clínica), así que se posiciona en la franja de entrada.
+**Alternativas consideradas**: dos planes (no hay funciones de v1 que los diferencien); ARS 19.900 o 24.900 (difíciles de justificar sin WhatsApp); plan gratuito limitado (agrega reglas y complica C-20).
+**Trade-offs aceptados**: margen bajo durante el piloto; el precio se revisa con la métrica de conversión de prueba ([01](01_vision_y_objetivos.md)) y cada cambio actualiza la fuente versionada de C-21 y su fecha visible ([RN-PL-01](05_reglas_de_negocio.md)).
+
 ## Supuestos inferidos
 
 ### SU-01 — El paciente argentino acepta reservar por link

@@ -85,7 +85,7 @@ Valores por defecto configurables por consultorio se indican como `(config, defa
 
 ## Dominio: Plan y precios (RN-PL)
 
-- **RN-PL-01**: Los planes y precios se publican en ARS en `/precios`, accesibles sin registrarse, con impuestos incluidos y la fecha de última actualización visible.
+- **RN-PL-01**: Los planes y precios se publican en ARS en `/precios`, accesibles sin registrarse, con impuestos incluidos y la fecha de última actualización visible. Precio vigente de la v1: plan único por consultorio a ARS 14.900/mes con IVA incluido, sin plan gratuito permanente ([DD-22](09_decisiones_y_supuestos.md)).
 - **RN-PL-02**: Todo consultorio nuevo arranca en plan `PRUEBA` por 30 días **sin pedir tarjeta ni ningún medio de pago** ("prueba sin tarjeta", D.3; coherente con la ausencia de cobro integrado, RN-PL-04). **Decisión de diseño** sobre la duración (respaldada en [`discovery.md` §7](../docs/discovery/discovery.md); el Discovery §5 pide prueba gratuita sin fijar plazo; modelo de precios en [PA-03](10_preguntas_abiertas.md)).
 - **RN-PL-03**: Vencida la prueba sin plan activo, el consultorio pasa a `VENCIDO`: agenda en solo lectura, reserva pública desactivada (RN-RP-11), exportación habilitada (RN-EX-03). Ningún dato se borra.
 - **RN-PL-04**: En v1 no hay cobro integrado; el pase a `ACTIVO` se hace manualmente por el equipo (operación interna auditada con `actor_tipo = SISTEMA`).
