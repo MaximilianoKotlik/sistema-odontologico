@@ -18,11 +18,11 @@
 ## 2. Persistencia desde el puerto de C-02
 
 - [x] 2.1 Test unitario del mapeo de `EventoDeAuditoria` al registro (`id` desde un `GeneradorDeIds` de prueba, instante del evento, actor y valores) y de la IP inválida que queda en `null` sin resolver DNS; implementarlo en `auditoria.domain`; verificar en verde
-- [ ] 2.2 Implementar `RepositorioDeAuditoriaJdbc` con `JdbcClient` en `auditoria.infrastructure` (JSONB e INET con `CAST`); verificar con tests de integración que persisten un evento con valores anidados y otro de `SISTEMA` sin actor, sin valor anterior y sin IP
-- [ ] 2.3 Test de integración: el caso de uso publica el evento y confirma → el evento queda; publica y después se revierte → no queda. Implementar `RegistradorDeAuditoria` con `@TransactionalEventListener(BEFORE_COMMIT)`; verificar en verde
-- [ ] 2.4 Test de integración: el caso de uso inserta un consultorio y publica un evento de otro consultorio inexistente → la persistencia del evento falla y el consultorio tampoco queda; verificar en verde
-- [ ] 2.5 Test de integración: un caso de uso crea un consultorio **con JPA** (entidad mínima de prueba en `pruebas.auditoria`, registrada con `@EntityScan` solo en ese test) y publica un evento de ese consultorio en la misma transacción → se persisten los dos. Verificar que falla en rojo sin el flush; agregar `EntityManager.flush()` al adaptador; verificar en verde
-- [ ] 2.6 Test de integración: eventos de los consultorios A y B quedan cada uno solo bajo su `consultorio_id`, y una IP inválida se guarda vacía sin revertir el cambio; verificar en verde
+- [x] 2.2 Implementar `RepositorioDeAuditoriaJdbc` con `JdbcClient` en `auditoria.infrastructure` (JSONB e INET con `CAST`); verificar con tests de integración que persisten un evento con valores anidados y otro de `SISTEMA` sin actor, sin valor anterior y sin IP
+- [x] 2.3 Test de integración: el caso de uso publica el evento y confirma → el evento queda; publica y después se revierte → no queda. Implementar `RegistradorDeAuditoria` con `@TransactionalEventListener(BEFORE_COMMIT)`; verificar en verde
+- [x] 2.4 Test de integración: el caso de uso inserta un consultorio y publica un evento de otro consultorio inexistente → la persistencia del evento falla y el consultorio tampoco queda; verificar en verde
+- [x] 2.5 Test de integración: un caso de uso crea un consultorio **con JPA** (entidad mínima de prueba en `pruebas.auditoria`, registrada con `@EntityScan` solo en ese test) y publica un evento de ese consultorio en la misma transacción → se persisten los dos. Verificar que falla en rojo sin el flush; agregar `EntityManager.flush()` al adaptador; verificar en verde
+- [x] 2.6 Test de integración: eventos de los consultorios A y B quedan cada uno solo bajo su `consultorio_id`, y una IP inválida se guarda vacía sin revertir el cambio; verificar en verde
 
 ## 3. Logs sin PII
 
