@@ -127,6 +127,51 @@ describe('montarAplicacion', () => {
     expect(location.pathname).toBe('/login');
   });
 
+  it('si la sesión vence, también borra la caché de la agenda', async () => {
+    const borrar = vi.fn<(nombre: string) => Promise<boolean>>().mockResolvedValue(true);
+    vi.stubGlobal('caches', { delete: borrar });
+    const fetchFalso = vi.fn(async (entrada: RequestInfo | URL) =>
+      String(entrada).endsWith('/auth/refresh') ? problema(401, 'REFRESH_INVALIDO') : problema(401, 'NO_AUTENTICADO'),
+    );
+    app = montarAplicacion(document, { fetch: fetchFalso });
+    await app.listo;
+    app.http.establecerToken('token-viejo');
+
+    await app.http.get('/api/v1/agenda').catch(() => undefined);
+
+    await vi.waitFor(() => expect(borrar).toHaveBeenCalledWith('agenda-v1'));
+  });
+
+  it('iniciar una sesión nueva borra la caché de la sesión anterior antes de guardar el token', async () => {
+    const orden: string[] = [];
+    const borrar = vi.fn(async (nombre: string) => {
+      orden.push(`borrar:${nombre}`);
+      return true;
+    });
+    vi.stubGlobal('caches', { delete: borrar });
+    app = montarAplicacion(document);
+    await app.listo;
+    const http = app.http;
+    const establecer = vi.spyOn(http, 'establecerToken').mockImplementation(() => {
+      orden.push('token');
+    });
+
+    await app.iniciarSesion('token-nuevo');
+
+    expect(orden).toEqual(['borrar:agenda-v1', 'token']);
+    expect(establecer).toHaveBeenCalledWith('token-nuevo');
+  });
+
+  it('si no se puede borrar la caché, iniciar sesión igual guarda el token', async () => {
+    vi.stubGlobal('caches', { delete: vi.fn().mockRejectedValue(new Error('SecurityError')) });
+    app = montarAplicacion(document);
+    await app.listo;
+
+    await app.iniciarSesion('token-nuevo');
+
+    expect(app.http.tieneToken()).toBe(true);
+  });
+
   it('cerrar sesión sin conexión igual borra la caché local', async () => {
     const borrar = vi.fn<(nombre: string) => Promise<boolean>>().mockResolvedValue(true);
     vi.stubGlobal('caches', { delete: borrar });

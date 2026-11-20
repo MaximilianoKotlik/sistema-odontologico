@@ -47,6 +47,27 @@ describe('cliente HTTP: errores Problem Details', () => {
     await expect(http.get('/api/v1/agenda')).rejects.toMatchObject({ status: 500, codigo: 'ERROR_INESPERADO' });
   });
 
+  it('una respuesta exitosa con JSON inválido se convierte en ApiError ERROR_INESPERADO', async () => {
+    const roto = () => new Response('{"turnos": [', { status: 200, headers: { 'Content-Type': 'application/json' } });
+    const { falso } = crearFetchFalso({ '/api/v1/agenda': [roto()] });
+    const http = crearClienteHttp({ fetch: falso });
+
+    const error = await http.get('/api/v1/agenda').catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ status: 200, codigo: 'ERROR_INESPERADO' });
+  });
+
+  it('un refresh con JSON inválido cuenta como sesión no renovable', async () => {
+    const roto = new Response('no-es-json', { status: 200, headers: { 'Content-Type': 'application/json' } });
+    const { falso } = crearFetchFalso({ '/api/v1/auth/refresh': [roto] });
+    const alVencerSesion = vi.fn();
+    const http = crearClienteHttp({ fetch: falso, alVencerSesion });
+
+    await expect(http.renovarSesion()).resolves.toBe(false);
+    expect(alVencerSesion).toHaveBeenCalledTimes(1);
+  });
+
   it('si fetch falla por falta de red, el error tiene codigo SIN_CONEXION', async () => {
     const { falso } = crearFetchFalso({ '/api/v1/agenda': [new TypeError('Failed to fetch')] });
     const http = crearClienteHttp({ fetch: falso });

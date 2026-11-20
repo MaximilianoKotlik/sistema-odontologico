@@ -48,6 +48,7 @@
 - [x] 8.1 Crear `manifest.webmanifest` e íconos 192/512 (provisorios rotulados TBD); verificar en DevTools > Application que el manifiesto es válido y `start_url` es `/app/agenda`
 - [x] 8.2 Configurar Workbox (`generateSW`): precache del shell, `NetworkFirst` solo para `GET /api/v1/agenda`, denylist de `/api/`, `/c/`, `/t/`; verificar con test sobre la config generada que no hay reglas para `/auth/**` ni `/public/**`
 - [x] 8.3 Borrar la caché `agenda-v1` al cerrar sesión; verificar con test sobre `caches.delete`
+- [x] 8.4 Borrar la caché `agenda-v1` también al vencer la sesión y en `iniciarSesion` antes de guardar el token; un JSON inválido sale como `ApiError('ERROR_INESPERADO')` (revisión de #17)
 
 ## 9. Verificación integral
 

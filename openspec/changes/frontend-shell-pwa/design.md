@@ -37,7 +37,7 @@ Tabla `{ patron, cargar }` con parámetros (`/app/turnos/:id`), interceptación 
 `tailwind.config.ts` define `colors`, `spacing`, `borderRadius`, `boxShadow`, `fontFamily` como `var(--…)`; `tokens.css` se importa desde `design-system/` en el CSS global (sin copiarlo) para que un cambio de revisión impacte en un solo lugar. Se desactiva la paleta por defecto de Tailwind para que un color suelto falle en revisión. Como `frontend/` importa `../design-system/`, la imagen Docker del frontend se construye con contexto en la raíz del repo (`docker-compose.yml`: `context: .`, `dockerfile: frontend/Dockerfile`) y `frontend/Dockerfile.dockerignore` deja entrar solo `frontend/` y `design-system/` (revisión de Maxi en el PR #3).
 
 ### D6 — Workbox vía `vite-plugin-pwa` en modo `generateSW`
-`globPatterns` del shell; `runtimeCaching` con `NetworkFirst` solo para `GET` a `/api/v1/agenda` (caché `agenda-v1`, `networkTimeoutSeconds: 4`, máx. 30 entradas, 7 días); `navigateFallback: /index.html` con `navigateFallbackDenylist` para `/api/`, `/c/`, `/t/`. Nada más se cachea en runtime. Al cerrar sesión se ejecuta `caches.delete('agenda-v1')`. La hora de "última sincronización" se toma del encabezado `Date` de la respuesta cacheada.
+`globPatterns` del shell; `runtimeCaching` con `NetworkFirst` solo para `GET` a `/api/v1/agenda` (caché `agenda-v1`, `networkTimeoutSeconds: 4`, máx. 30 entradas, 7 días); `navigateFallback: /index.html` con `navigateFallbackDenylist` para `/api/`, `/c/`, `/t/`. Nada más se cachea en runtime. Se ejecuta `caches.delete('agenda-v1')` al cerrar sesión, al vencer la sesión (`alVencerSesion`) y en `iniciarSesion(token)` antes de guardar el token (revisión de Maxi en #17: la clave de caché es solo la URL, así que sin esto otro consultorio en el mismo navegador podría ver la agenda anterior sin conexión). C-07 llama a `iniciarSesion` después del login. Un fallo al borrar no frena el flujo de sesión. La hora de "última sincronización" se toma del encabezado `Date` de la respuesta cacheada.
 *Alternativas*: `injectManifest` con SW propio (más control, más código para mantener); `StaleWhileRevalidate` (mostraría datos viejos con conexión).
 
 ### D7 — Fechas con `Intl` y zona explícita
@@ -60,6 +60,6 @@ Destinos principales (Agenda, Bloqueos, Configuración) + "Más" en mobile; en d
 
 - [El contrato de `/auth/refresh` y `/agenda` puede cambiar en C-04/C-12] → el cliente depende solo de `api-types.ts` generado; los tests usan dobles de `fetch` basados en la KB y se ajustan al regenerar tipos.
 - [El SW sirve una agenda vieja y el odontólogo cree que está al día] → aviso persistente con la hora de guardado y acciones de escritura deshabilitadas.
-- [Datos de pacientes en caché en un equipo compartido] → solo se cachea la agenda privada, se borra al cerrar sesión, y nunca la API pública.
+- [Datos de pacientes en caché en un equipo compartido] → solo se cachea la agenda privada, se borra al cerrar, vencer o iniciar una sesión, y nunca la API pública.
 - [Infraestructura propia (router/store) crece desordenada] → APIs mínimas cubiertas por tests; feature folders.
 - [C-01 no está mergeado] → la implementación espera a C-01 `[x]`; mientras tanto solo se preparan mockups y tests.

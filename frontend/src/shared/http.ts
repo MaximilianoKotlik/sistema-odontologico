@@ -69,7 +69,12 @@ async function leerCuerpo(respuesta: Response): Promise<unknown> {
   const texto = await respuesta.text();
   if (texto === '') return undefined;
   const tipo = respuesta.headers.get('Content-Type') ?? '';
-  return tipo.includes('json') ? JSON.parse(texto) : texto;
+  if (!tipo.includes('json')) return texto;
+  try {
+    return JSON.parse(texto) as unknown;
+  } catch {
+    throw new ApiError(respuesta.status, 'ERROR_INESPERADO', 'La respuesta del servidor no es válida.');
+  }
 }
 
 async function aApiError(respuesta: Response): Promise<ApiError> {
@@ -112,7 +117,8 @@ export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
   async function pedirRefresh(): Promise<boolean> {
     const respuesta = await enviar('POST', RUTA_REFRESH, undefined);
     if (!respuesta.ok) return false;
-    const cuerpo = await leerCuerpo(respuesta);
+    // Un cuerpo ilegible cuenta como sesión no renovable, igual que un cuerpo sin token.
+    const cuerpo = await leerCuerpo(respuesta).catch(() => undefined);
     if (!tieneAccessToken(cuerpo)) return false;
     tokenEnMemoria = cuerpo.accessToken;
     return true;

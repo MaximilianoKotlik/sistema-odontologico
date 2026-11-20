@@ -23,6 +23,8 @@ export interface Aplicacion {
   readonly sesion: Store<EstadoSesion>;
   /** Se resuelve cuando la primera ruta terminó de mostrarse. */
   readonly listo: Promise<void>;
+  /** Guarda el access token de una sesión recién iniciada (login de C-07), sin datos de una sesión anterior. */
+  iniciarSesion(accessToken: string): Promise<void>;
   cerrarSesion(): Promise<void>;
   detener(): void;
 }
@@ -49,16 +51,34 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
   // Las closures que usan `routerCreado` solo corren después de crearlo (al vencer la sesión o al cerrarla).
   const http = crearClienteHttp({
     ...(dependencias.fetch === undefined ? {} : { fetch: dependencias.fetch }),
-    alVencerSesion: () => void routerCreado.navegar(rutaDeLogin(routerCreado.rutaActual())),
+    alVencerSesion: () => {
+      void olvidarAgendaGuardada();
+      void routerCreado.navegar(rutaDeLogin(routerCreado.rutaActual()));
+    },
     alResponder: (ruta, respuesta) => registrarSincronizacion(conectividad, ruta, respuesta),
     alFallarRed: () => conectividad.set({ online: false }),
   });
+
+  /**
+   * La agenda en caché tiene datos de pacientes (Ley 25.326): no sobrevive a la sesión que la vio.
+   * Se borra al cerrar sesión, al vencer y al iniciar otra (la clave de caché es solo la URL, así que
+   * sin esto otro consultorio en el mismo navegador podría ver la agenda anterior sin conexión).
+   * Un fallo al borrar no frena el flujo de sesión.
+   */
+  async function olvidarAgendaGuardada(): Promise<void> {
+    await borrarCacheAgenda().catch(() => undefined);
+  }
+
+  async function iniciarSesion(accessToken: string): Promise<void> {
+    await olvidarAgendaGuardada();
+    http.establecerToken(accessToken);
+  }
 
   async function cerrarSesion(): Promise<void> {
     // Sin conexión no se puede revocar el refresh, pero lo local se borra igual.
     await http.post('/api/v1/auth/logout').catch(() => undefined);
     http.borrarToken();
-    await borrarCacheAgenda();
+    await olvidarAgendaGuardada();
     await routerCreado.navegar('/login');
   }
 
@@ -94,6 +114,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
     conectividad,
     sesion,
     listo: routerCreado.iniciar(),
+    iniciarSesion,
     cerrarSesion,
     detener() {
       routerCreado.detener();
