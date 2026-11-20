@@ -161,7 +161,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/02_descripcion_general.md`
 
 ### [C-02] `core-compartido-tenant`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #12, 2026-11-20)
 - **Scope**:
   - Migración V1: tabla `consultorio` (slug, zona horaria, anticipaciones, plan/`prueba_hasta`, `reserva_publica_activa`) con constraints; extensiones `btree_gist`, `citext`; generador UUIDv7.
   - Paquete `compartido`: `TenantContext` explícito, `Clock` inyectado, Problem Details RFC 7807 con `codigo` estable (`@RestControllerAdvice`), normalizador de teléfono E.164 (`libphonenumber`), validador de slug y palabras reservadas.

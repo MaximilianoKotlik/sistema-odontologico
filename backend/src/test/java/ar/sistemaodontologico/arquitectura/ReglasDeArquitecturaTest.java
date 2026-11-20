@@ -25,6 +25,52 @@ class ReglasDeArquitecturaTest {
                 .noneMatch(detalle -> detalle.contains("TurnoPuro"));
     }
 
+    private final JavaClasses fixturesDeRepositorios =
+            new ClassFileImporter().importPackages("pruebas.arquitectura.repositorios");
+
+    @Test
+    void unRepositorioQueConsultaSinConsultorioViolaLaRegla() {
+        EvaluationResult resultado = ReglasDeArquitectura.repositoriosSiempreConTenant(java.util.Set.of("ConsultorioRepositorio"))
+                .evaluate(fixturesDeRepositorios);
+
+        assertThat(resultado.hasViolation()).isTrue();
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("TurnoSinTenantRepositorio.buscarPorId"))
+                .anyMatch(detalle -> detalle.contains("TurnoSinTenantRepositorio.listarTodos"))
+                .noneMatch(detalle -> detalle.contains("PacienteRepositorio"))
+                .noneMatch(detalle -> detalle.contains("ConsultorioRepositorio"));
+    }
+
+    @Test
+    void sinLaExcepcionElRepositorioDeConsultorioTambienViolaLaRegla() {
+        EvaluationResult resultado = ReglasDeArquitectura.repositoriosSiempreConTenant(java.util.Set.of())
+                .evaluate(fixturesDeRepositorios);
+
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("ConsultorioRepositorio.buscarPorSlug"));
+    }
+
+    @Test
+    void usarSpringDataFueraDeLaInfraestructuraViolaLaRegla() {
+        EvaluationResult resultado = ReglasDeArquitectura.springDataSoloEnInfraestructura().evaluate(fixturesDeRepositorios);
+
+        assertThat(resultado.hasViolation()).isTrue();
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("ServicioQueUsaSpringData"))
+                .noneMatch(detalle -> detalle.contains("TurnoRepositorioAdaptador"));
+    }
+
+    @Test
+    void tomarLaHoraSinElClockInyectadoViolaLaRegla() {
+        EvaluationResult resultado = ReglasDeArquitectura.horaSoloDesdeElClock().evaluate(fixtures);
+
+        assertThat(resultado.hasViolation()).isTrue();
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("CalculoConNowDirecto") && detalle.contains("Instant.now()"))
+                .anyMatch(detalle -> detalle.contains("CalculoConNowDirecto") && detalle.contains("LocalDate.now()"))
+                .noneMatch(detalle -> detalle.contains("CalculoConClock"));
+    }
+
     @Test
     void usarLaInfraestructuraDeOtroModuloViolaLaRegla() {
         EvaluationResult resultado =

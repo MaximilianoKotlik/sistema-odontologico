@@ -1,10 +1,9 @@
-# Spec Delta
+# auditoria Specification
 
 ## Purpose
-
 Define cómo los módulos de negocio publican eventos de auditoría (quién, qué entidad, qué acción, valor anterior y nuevo) dentro de la misma transacción del cambio, para que el registro append-only pueda persistirlos sin acoplarse a cada módulo (RN-AD-01, RN-AD-03, RN-AD-05).
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Contenido de un evento de auditoría
 Todo evento publicado MUST incluir consultorio, instante (del reloj del sistema, en UTC), tipo de actor (`ODONTOLOGO`, `PACIENTE`, `SISTEMA`), id de actor opcional, entidad, id de entidad, acción, valor anterior y valor nuevo opcionales, e IP opcional.
@@ -18,10 +17,14 @@ Todo evento publicado MUST incluir consultorio, instante (del reloj del sistema,
 - **THEN** la publicación falla antes de llegar a los suscriptores
 
 ### Requirement: Los eventos nunca contienen secretos
-Un evento MUST NOT contener contraseñas, hashes ni tokens en sus valores anterior o nuevo; la publicación MUST fallar si alguna clave de esos valores es `password`, `password_hash`, `token` o termina en `_token` o `_hash`.
+Un evento MUST NOT contener contraseñas, hashes, tokens ni secretos en sus valores anterior o nuevo, incluidos los mapas anidados. La publicación MUST fallar si alguna clave, sin distinguir mayúsculas, es `password`, `contrasena`, `contraseña`, `token` o `secret`, o termina en `_token`, `_hash` o `_secret`.
 
 #### Scenario: Valor con contraseña
 - **WHEN** se publica un evento cuyo valor nuevo contiene la clave `password`
+- **THEN** la publicación falla y no llega a los suscriptores
+
+#### Scenario: Contraseña en español y secretos
+- **WHEN** se publica un evento con alguna de las claves `contrasena`, `Contraseña`, `secret` o `jwt_secret`
 - **THEN** la publicación falla y no llega a los suscriptores
 
 ### Requirement: Publicación dentro de la transacción del cambio
