@@ -13,8 +13,8 @@
 | **Sistema** (actor técnico) | Procesos internos: expiración de tokens, marcado de prueba vencida | Tareas programadas (`@Scheduled`) dentro del backend | Registrado en auditoría como `actor_tipo = SISTEMA` |
 
 > El paciente **no** es un usuario del sistema: no se loguea, no tiene sesión y no ve nada fuera de su
-> propio turno. Ver la decisión de identidad en [DD-09](09_decisiones_y_supuestos.md) y la pregunta
-> abierta [PA-01](10_preguntas_abiertas.md).
+> propio turno. Se identifica por DNI ([DD-24](09_decisiones_y_supuestos.md), que resuelve
+> [PA-01](10_preguntas_abiertas.md)).
 
 ## RBAC — Matriz de permisos
 

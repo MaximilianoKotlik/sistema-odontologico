@@ -71,6 +71,7 @@ erDiagram
     PACIENTE {
         uuid id PK
         uuid consultorio_id FK
+        varchar dni
         varchar telefono_e164
         varchar nombre
         varchar apellido
@@ -120,9 +121,9 @@ erDiagram
 - Índice GiST: `(consultorio_id, tstzrange(inicio, fin))`.
 
 ### Paciente (datos mínimos)
-- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(10) NULL`, `created_at`, `updated_at`.
-- Unique: `(consultorio_id, telefono_e164)` — clave de deduplicación por defecto ([DD-09](09_decisiones_y_supuestos.md), a confirmar en [PA-01](10_preguntas_abiertas.md)).
-- Sin DNI, sin datos clínicos en v1 (minimización, [11](11_marco_legal_argentino.md)).
+- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(10) NULL`, `created_at`, `updated_at`.
+- Unique: `(consultorio_id, dni)` — clave de deduplicación ([DD-24](09_decisiones_y_supuestos.md)). El teléfono es contacto obligatorio, no único.
+- Sin datos clínicos en v1 (minimización, [11](11_marco_legal_argentino.md)).
 
 ### Turno
 - `id`, `consultorio_id`, `paciente_id`, `tipo_prestacion_id`, `inicio TIMESTAMPTZ`, `fin TIMESTAMPTZ`, `duracion_min INT` (copia de la prestación al crear; editable por el odontólogo).
