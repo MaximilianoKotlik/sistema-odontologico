@@ -60,7 +60,9 @@
 **Justificación**: refleja el usuario objetivo (independiente) y simplifica la autorización.
 **Trade-offs aceptados**: multi-profesional requerirá la migración descrita en [03](03_actores_y_roles.md#cómo-se-agregaría-rbac-post-v1).
 
-### DD-09 — Identidad del paciente: teléfono E.164 como clave de deduplicación (por defecto, a confirmar)
+### DD-09 — Identidad del paciente: teléfono E.164 como clave de deduplicación (**reemplazada por [DD-24](#dd-24--identidad-del-paciente-por-dni-resuelve-pa-01-confirmada-por-el-usuario-2026-11-20)**)
+> Se conserva como historia: el usuario eligió el DNI el 2026-11-20.
+
 **Decisión**: el paciente se identifica por teléfono celular normalizado a E.164, único por consultorio, más nombre y apellido. Si el teléfono existe con otro nombre, se reutiliza y se marca para revisión. Verificación por código (SMS/WhatsApp/email) queda como opción futura.
 **Contexto**: pregunta abierta clave del Discovery ([PA-01](10_preguntas_abiertas.md)).
 **Alternativas consideradas**: DNI (dato más sensible, fricción, no evita errores de tipeo); nombre + teléfono como clave compuesta (genera duplicados por variantes de nombre); código de verificación (requiere integración de mensajería, contradice DD-07).
@@ -143,6 +145,14 @@
 **Alternativas consideradas**: dos planes (no hay funciones de v1 que los diferencien); ARS 19.900 o 24.900 (difíciles de justificar sin WhatsApp); plan gratuito limitado (agrega reglas y complica C-20).
 **Trade-offs aceptados**: margen bajo durante el piloto; el precio se revisa con la métrica de conversión de prueba ([01](01_vision_y_objetivos.md)) y cada cambio actualiza la fuente versionada de C-21 y su fecha visible ([RN-PL-01](05_reglas_de_negocio.md)).
 
+### DD-24 — Identidad del paciente por DNI (resuelve PA-01) (confirmada por el usuario, 2026-11-20)
+**Estado**: **Confirmada por el usuario (2026-11-20)**; cierra [PA-01](10_preguntas_abiertas.md#preguntas-abiertas-priorizadas) y reemplaza a DD-09.
+**Decisión**: el paciente se identifica por su **DNI**, único por consultorio. Se guarda solo con dígitos (7 u 8, sin puntos). Es obligatorio en la reserva pública y en la carga manual. El teléfono celular sigue siendo obligatorio como dato de contacto (normalizado a E.164), pero ya no es clave ni es único. Si el DNI ya existe, se reutiliza el paciente sin sobrescribir sus datos; si nombre o apellido difieren, se marca `requiere_revision` (igual que antes con el teléfono). El límite de turnos futuros se cuenta por paciente, o sea por DNI.
+**Contexto**: pregunta abierta clave del Discovery ([PA-01](10_preguntas_abiertas.md)). El teléfono como clave asociaba al mismo paciente a familiares que comparten el número.
+**Alternativas consideradas**: teléfono E.164 (DD-09, descartada por los familiares que comparten teléfono); nombre + teléfono (duplicados por variantes del nombre); código de verificación (requiere mensajería, DD-07).
+**Justificación**: el DNI identifica a la persona y no se comparte entre familiares; los consultorios ya lo usan en su ficha.
+**Trade-offs aceptados**: se junta un dato personal más, lo que se aparta de la minimización de [11](11_marco_legal_argentino.md) y hay que declararlo en la política de privacidad (PA-06). Suma un campo al formulario público. No evita errores de tipeo ni que alguien reserve con un DNI ajeno (no hay verificación). Los pacientes sin DNI argentino quedan en [PA-15](10_preguntas_abiertas.md).
+
 ## Supuestos inferidos
 
 ### SU-01 — El paciente argentino acepta reservar por link
@@ -163,8 +173,8 @@
 **Riesgo si es falso**: el diferenciador no convierte.
 **Cómo validar**: preguntar en onboarding por qué eligió el sistema; demos de los 5 competidores priorizados (DentalSoft, AgendaPro AR, ClinIA, Bilog, Dentalink; [10 §NE](10_preguntas_abiertas.md)).
 
-### SU-04 — El teléfono basta como identidad del paciente
-**Supuesto**: duplicados y suplantaciones serán raros en consultorios chicos. **Suposición:** a confirmar en [PA-01](10_preguntas_abiertas.md).
+### SU-04 — El DNI basta como identidad del paciente
+**Supuesto**: duplicados y suplantaciones serán raros en consultorios chicos. La identidad por DNI quedó decidida en [DD-24](#dd-24--identidad-del-paciente-por-dni-resuelve-pa-01-confirmada-por-el-usuario-2026-11-20).
 **Riesgo si es falso**: pacientes fusionados o duplicados; reservas falsas.
 **Cómo validar**: medir `requiere_revision` y cancelaciones por "no fui yo" en el piloto.
 

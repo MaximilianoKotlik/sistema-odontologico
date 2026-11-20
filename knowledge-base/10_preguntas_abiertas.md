@@ -33,7 +33,7 @@
 
 | ID | Prioridad | Pregunta | Propuesta por defecto | Bloquea | Decisor |
 |----|-----------|----------|-----------------------|---------|---------|
-| PA-01 | **Alta** | ¿Cómo se identifica al paciente sin cuenta para evitar duplicados: nombre + teléfono, DNI o código de verificación? | Teléfono E.164 como clave + nombre; verificación por código como opción futura ([DD-09](09_decisiones_y_supuestos.md), **Suposición:** a confirmar) | Modelo de `paciente` y change de reserva pública | Product Owner |
+| PA-01 | ~~Alta~~ **Resuelta** | ~~¿Cómo se identifica al paciente sin cuenta para evitar duplicados: nombre + teléfono, DNI o código de verificación?~~ | Resuelta el 2026-11-20 → [DD-24](09_decisiones_y_supuestos.md): DNI único por consultorio; el teléfono queda como contacto obligatorio | Modelo de `paciente` (C-10) y reserva pública (C-15, C-16) | Product Owner |
 | PA-02 | **Alta** | ¿Dónde se aloja en producción y en qué país residen los datos? ¿Proveedor con región en Argentina o transferencia internacional con garantías? | Seguir local-first hasta tener asesoría legal; elegir proveedor con Postgres gestionado, backups cifrados y región compatible con la Ley 25.326 ([11](11_marco_legal_argentino.md)) | Piloto con pacientes reales y lanzamiento | Product Owner + asesor legal |
 | PA-03 | ~~Alta~~ **Resuelta** | ~~Modelo de precios: ¿plan fijo, por profesional o por sillón? ¿Hay plan gratuito? ¿Cuánto dura la prueba?~~ | Resuelta el 2026-11-20 → [DD-22](09_decisiones_y_supuestos.md): plan único por consultorio, ARS 14.900/mes con IVA, prueba de 30 días sin tarjeta, sin plan gratuito | Página `/precios` (C-21) y RN-PL | Product Owner |
 | PA-04 | **Alta** | Sin WhatsApp, ¿cómo se notifica al paciente (confirmación, cambios hechos por el odontólogo)? ¿Email transaccional opcional? | v1: link en pantalla + `.ics`; email opcional si el paciente lo deja y hay SMTP (P1) | Alcance de la reserva pública; IN-01 resuelta (DD-19) | Product Owner |
@@ -47,6 +47,7 @@
 | PA-12 | Baja | ¿Nombre comercial y dominio del producto? | — | Landing y emails | Product Owner |
 | PA-13 | Baja | ¿2FA para el odontólogo antes de que entre la historia clínica? | Sí, como requisito de v2 (datos de salud más sensibles) | v2 | Tech Lead |
 | PA-14 | Media | ¿Un único sillón/box implícito alcanza para el odontólogo independiente objetivo, o hay consultorios con 2 sillones y un solo profesional que necesiten agenda por sillón desde el inicio? (el Discovery lista múltiples sillones como opcional; AgendaPro lo documenta y tab32/ClinIA lo declaran) | v1 con un sillón implícito ([RN-AG-13](05_reglas_de_negocio.md)); multi-sillón post-v1 | Cuándo adelantar el change de multi-sillón; modelo de `turno` | Product Owner |
+| PA-15 | Media | ¿Cómo se registra a un paciente sin DNI argentino (extranjero con pasaporte, menor sin DNI a mano)? | v1: DNI obligatorio; quien no lo tenga reserva llamando al consultorio. Evaluar tipo + número de documento | Modelo de `paciente`, reserva pública | Product Owner |
 
 ## Puntos "No evidenciado" (NE) del Discovery que importan para decidir
 

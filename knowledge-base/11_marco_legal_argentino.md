@@ -38,8 +38,8 @@ Respecto de los datos de cuenta del odontólogo, el proveedor es **responsable**
   datos de pacientes como sensibles desde v1.
 - Nadie puede ser obligado a proporcionar datos sensibles. Los profesionales de la salud pueden
   tratar datos de salud de sus pacientes respetando el secreto profesional.
-- Consecuencia de diseño: **minimización** — en v1 solo nombre, apellido, teléfono y email opcional;
-  sin DNI, sin motivo de consulta libre del paciente, sin datos clínicos.
+- Consecuencia de diseño: **minimización** — en v1 solo nombre, apellido, DNI ([DD-24](09_decisiones_y_supuestos.md)), teléfono y email opcional;
+  sin motivo de consulta libre del paciente, sin datos clínicos.
 
 ### Consentimiento e información al titular
 
@@ -53,7 +53,7 @@ Respecto de los datos de cuenta del odontólogo, el proveedor es **responsable**
 
 | Derecho | Plazo legal de respuesta | Cómo se atiende en v1 |
 |---------|--------------------------|-----------------------|
-| Acceso | 10 días corridos desde la intimación | El paciente lo pide al consultorio; el odontólogo ve y exporta sus datos (búsqueda por teléfono + exportación) |
+| Acceso | 10 días corridos desde la intimación | El paciente lo pide al consultorio; el odontólogo ve y exporta sus datos (búsqueda por DNI o teléfono + exportación) |
 | Rectificación / actualización | 5 días hábiles | El odontólogo edita el paciente (`PUT /pacientes/{id}`), auditado |
 | Supresión | 5 días hábiles | **Pendiente de diseño**: anonimización del paciente conservando turnos y auditoría con datos seudonimizados. Backlog P1; en v1 se resuelve por soporte ([PA-07](10_preguntas_abiertas.md)) |
 

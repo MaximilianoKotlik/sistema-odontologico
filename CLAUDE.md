@@ -52,7 +52,7 @@ La fuente de verdad del dominio vive en `knowledge-base/` ([README](knowledge-ba
 
 **Sistema de diseño**: [design-system/README.md](design-system/README.md) (modo `system-and-mockups`, rev. 1 aprobada). Todo change con pantallas necesita un mockup revisado y aprobado antes de implementar; el sistema de diseño aprobado es la base visual.
 
-> Antes de arrancar los changes afectados, resolver las preguntas **Alta** PA-01..PA-06 (PA-03 ya está resuelta → DD-22) de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
+> Antes de arrancar los changes afectados, resolver las preguntas **Alta** PA-01..PA-06 (PA-01 resuelta → DD-24; PA-03 resuelta → DD-22) de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
 
 **Discovery**: [docs/discovery/](docs/discovery/) (`discovery.md` e `informe-discovery.md`).
 
@@ -109,7 +109,8 @@ Qué responde el agente al identificar a alguien:
 3. Recordarle el ciclo del PR:
    - Rama `feat/C-NN-nombre` creada desde `main` actualizado.
    - Si el change es CRITICO/ALTO o tiene pantallas: primero propuesta y/o mockup en un **PR en borrador**; no se escribe código de producción hasta que Maxi lo apruebe.
-   - Implementar con Strict TDD, marcar el PR como listo y pedir la revisión a Maxi. No marcar el `[x]` en CHANGES.md: lo hace Maxi al mergear.
+   - Implementar con Strict TDD, marcar el PR como listo y pedir la revisión a Maxi.
+   - Cuando Maxi aprueba el PR (o confirma que no quedan cambios pedidos), el autor suma el commit de cierre en el mismo PR: marca `[x]` completado (PR #N, fecha) en CHANGES.md y archiva el change (`openspec archive <change>`), p. ej. `docs: cierre de C-NN (C-NN)`. Nunca antes de la aprobación ni en un PR aparte, y nunca en PRs de solo propuesta o mockup. Como `main` descarta las aprobaciones viejas al recibir commits nuevos, Maxi vuelve a aprobar ese último commit y mergea.
 4. Si la persona pide un change que no es suyo, avisarle a quién está asignado y no empezarlo sin el OK de Maxi.
 
 ---
