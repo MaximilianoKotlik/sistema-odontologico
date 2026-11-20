@@ -2,7 +2,7 @@
 
 > Change **C-05** de [CHANGES.md](../../../CHANGES.md) · Governance **CRITICO** (dominio `auth`, RN-AU-06) · Depende de `C-03` (`auditoria-base`) y `C-04` (`auth-sesion-tokens`) · Responsable: Mati · Aprobación: Maxi.
 >
-> **Se apoya en propuestas, no en código.** De C-04 usa su propuesta mergeada (PR #8): tablas `usuario` (`intentos_fallidos`, `bloqueado_hasta`, `password_cambiado_at`, `credenciales_version`) y `refresh_token`, los casos de uso `RegistrarOdontologo` e `IniciarSesion`, los puertos `HasheadorDeContrasena` y `GeneradorDeSecretos`, y `PoliticaDeContrasena`. De C-03 usa su propuesta (PR #10, en revisión): la persistencia de eventos en la misma transacción. De C-02 usa el puerto `PublicadorDeAuditoria`. Si alguna de esas piezas cambia al implementarse, esta propuesta se ajusta (tarea 0.1).
+> **Se apoya en propuestas, no en código.** De C-04 usa su propuesta mergeada (PR #8): tablas `usuario` (`intentos_fallidos`, `bloqueado_hasta`, `password_cambiado_at`, `credenciales_version`) y `refresh_token`, los casos de uso `RegistrarOdontologo` e `IniciarSesion`, los puertos `HasheadorDeContrasena` y `GeneradorDeSecretos`, y `PoliticaDeContrasena`. De C-03 usa su propuesta (PR #10, aprobada): la persistencia de eventos en la misma transacción. De C-02 usa el puerto `PublicadorDeAuditoria`. Si alguna de esas piezas cambia al implementarse, esta propuesta se ajusta (tarea 0.1).
 
 ## Why
 

@@ -3,7 +3,7 @@
 ## Context
 
 - Ver `proposal.md` §Why. Dominio `auth`: governance **CRITICO** (RN-AU-06). No se escribe código de producción antes de que Maxi apruebe esta propuesta y de que C-03 y C-04 estén en `[x]`.
-- Estado al escribir esto (2026-11-20): en `main` está mergeado C-01 y están las **propuestas** de C-02 (PR #4) y C-04 (PR #8). La propuesta de C-03 está en revisión (PR #10). No hay código de C-02, C-03 ni C-04.
+- Estado al escribir esto (2026-11-20): en `main` está mergeado C-01 y están las **propuestas** de C-02 (PR #4) y C-04 (PR #8). La propuesta de C-03 está aprobada (PR #10). No hay código de C-02, C-03 ni C-04.
 - Piezas que se consumen:
 
   | Pieza | De | Uso en C-05 |
@@ -14,7 +14,8 @@
   | `HasheadorDeContrasena`, `GeneradorDeSecretos`, `PoliticaDeContrasena` | C-04 D13 | Contraseña nueva y token de recuperación |
   | Filtro JWT, `TenantContext`, Problem Details, `ErrorDeNegocio` | C-02 / C-04 | Cambio de contraseña autenticado; códigos de error nuevos |
   | `PublicadorDeAuditoria`, `EventoDeAuditoria` | C-02 D10 | Eventos de auth (D9) |
-  | Persistencia en la misma transacción y conversor de PII en logs | C-03 D-3/D-6 | Atomicidad de los eventos; logs sin email ni token |
+  | Persistencia en la misma transacción (con flush previo) y conversores de PII en mensaje y stack trace | C-03 D-3/D-6 | Atomicidad de los eventos (incluido `CUENTA_CREADA`, que referencia el consultorio recién creado con JPA); logs sin email ni token |
+  | Placeholder de Flyway `${app-user}` | C-03 D-1 | Permisos de `token_recuperacion` (D3) |
   | `GeneradorDeIds`, `Clock` | C-02 | Ids y vencimientos |
 
   La tarea 0.1 contrasta esta tabla con el código mergeado.
@@ -53,7 +54,7 @@
 - Tabla `token_recuperacion`:
   - `id`, `consultorio_id`, `usuario_id`, `token_hash CHAR(64) UNIQUE`, `expira_at`, `usado_at NULL`, `revocado_at NULL`, `created_at`.
   - FK compuesta `(consultorio_id, usuario_id) → usuario (consultorio_id, id)` e índice parcial `(usuario_id) WHERE usado_at IS NULL AND revocado_at IS NULL`.
-  - `GRANT SELECT, INSERT, UPDATE` a `app_rw` y `REVOKE DELETE`, por los privilegios por defecto de C-01.
+  - `GRANT SELECT, INSERT, UPDATE` y `REVOKE DELETE, TRUNCATE` al rol de la aplicación, por los privilegios por defecto de C-01. El rol se nombra con el placeholder de Flyway `"${app-user}"` (`DB_APP_USER`), la convención que fijó C-03 (D-1), y no con `app_rw` fijo.
 - **Emisión**: 32 bytes de `GeneradorDeSecretos` en base64url. Se guarda el SHA-256 hex. En la misma transacción se marcan `revocado_at` los tokens anteriores no usados del usuario, así hay como máximo un token vigente por cuenta.
 - **Confirmación**:
   1. `SELECT … FOR UPDATE` por hash.
