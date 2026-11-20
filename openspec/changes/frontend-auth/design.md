@@ -1,0 +1,32 @@
+# Design
+
+> **Borrador parcial.** Por ahora este documento solo registra el gate de mockups de C-07, que Octi prepara como trabajo anticipado. `proposal.md`, `specs/` y `tasks.md`, más el resto de este diseño (guardas de ruta, cliente de auth, refresh en memoria, tests), los completa Nacho cuando C-05 y C-06 estén `[x]`. El dominio `auth` es **CRITICO** (RN-AU-06): no se escribe código de producción sin aprobación explícita de Maxi.
+
+## Context
+
+- C-07 es el frontend de autenticación: registro con aceptación de términos, login, recuperación y confirmación, cambio de contraseña con sesión iniciada (US-005), cierre de sesión, guardas de ruta y restauración de sesión vía `POST /auth/refresh` (ver `CHANGES.md` §C-07).
+- Contratos que consume:
+  - C-04 (`auth-sesion-tokens`): `CREDENCIALES_INVALIDAS`, `EMAIL_EN_USO`, `PASSWORD_DEBIL`, `TERMINOS_NO_ACEPTADOS`, `SESION_EXPIRADA`, el logout con 204 y el registro sin tokens.
+  - C-05 (`auth-recuperacion-hardening`, PR en borrador): 423 con `minutosRestantes`, token de recuperación en el fragmento `/recuperar#token=…`, `TOKEN_INVALIDO`, `PASSWORD_ACTUAL_INVALIDA` y 429 con `Retry-After`.
+- Base visual: sistema de diseño rev. 1 y app-shell aprobado en C-06.
+
+## Decisions
+
+Las decisiones de UI que salen de los mockups están en `mockups/README.md` §Decisiones para revisar. Dos de ellas afectan a otros changes y necesitan el OK de Maxi:
+
+- **Navegación**: se agrega "Cambiar contraseña" al bloque de cuenta del app-shell de C-06, en la barra lateral y en la hoja "Más".
+- **Después del registro**: se lleva al login con el email cargado. La alternativa es el login automático, que FL-01 deja abierto.
+
+## Open Questions
+
+- Textos y versión de términos y condiciones y política de privacidad (PA-06): el registro no puede publicarse sin ellos.
+- ¿Login automático después del registro? Hoy C-04 no devuelve tokens en `POST /auth/registro`.
+
+## UI Mockups
+
+- Design system revision: 1
+- Decision: yes (2026-11-20)
+- Mockups: openspec/changes/frontend-auth/mockups/ (`ingresar.html`, `registro.html`, `recuperar.html`, `recuperar-confirmar.html`, `cambiar-contrasena.html`, más `auth.css` y `mockup.js`)
+- Approval: pending
+- Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
+- Visual verify: pending

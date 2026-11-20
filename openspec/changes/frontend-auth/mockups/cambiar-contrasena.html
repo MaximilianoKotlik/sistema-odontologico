@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cambiar contraseña · {brand} (mockup C-07)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="auth.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+<style>
+/* Shell reducido, copiado del mockup aprobado de C-06 (frontend-shell-pwa/mockups/app-shell.html). */
+.shell{min-height:100vh;display:flex;flex-direction:column}
+.main-col{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:var(--space-2);min-height:56px;padding:var(--space-2) var(--space-2);background:var(--color-surface);border-bottom:1px solid var(--color-border)}
+.topbar .page-title{font-size:var(--text-lg);line-height:var(--lh-lg);margin:0;font-weight:var(--weight-bold)}
+.btn-icon{width:var(--touch-min);padding:0}
+.content{flex:1;padding:var(--space-4) var(--space-4) calc(72px + var(--space-5));width:100%;max-width:1040px;margin:0 auto}
+.content:focus{outline:none}
+.panel{max-width:480px}
+.panel .lede{margin-bottom:var(--space-4)}
+.actions-row{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:var(--space-2)}
+.actions-row .btn{flex:1 1 180px}
+
+.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--color-surface);border-top:1px solid var(--color-border);padding-bottom:env(safe-area-inset-bottom)}
+.bottomnav ul{list-style:none;margin:0;padding:0 var(--space-1);display:grid;grid-template-columns:repeat(4,1fr)}
+.navlink{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:64px;padding:var(--space-1) 0;color:var(--color-text-muted);text-decoration:none;font:var(--weight-medium) var(--text-xs)/1.2 var(--font-sans);background:none;border:0;width:100%;cursor:pointer}
+.navlink .ico{display:grid;place-items:center;width:56px;height:30px;border-radius:var(--radius-full)}
+.navlink svg{width:22px;height:22px}
+.navlink[aria-expanded=true]{color:var(--color-primary)}
+.navlink[aria-expanded=true] .ico{background:var(--color-primary-tint)}
+
+.scrim{position:fixed;inset:0;z-index:5;background:color-mix(in srgb,var(--color-text) 45%,transparent)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--color-surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:var(--shadow-lg);padding:var(--space-2) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom))}
+.grab{width:40px;height:4px;border-radius:var(--radius-full);background:var(--color-border-strong);margin:var(--space-1) auto var(--space-3)}
+.sheet h2{font-size:var(--text-base);margin:0 0 var(--space-2);color:var(--color-text-muted);font-weight:var(--weight-semibold)}
+.sheet ul{list-style:none;margin:0;padding:0}
+.sheet a,.sheet button.item{display:flex;align-items:center;gap:var(--space-3);min-height:52px;width:100%;padding:0 var(--space-2);border:0;background:none;border-radius:var(--radius-md);color:var(--color-text);text-decoration:none;font:var(--weight-medium) var(--text-base) var(--font-sans);cursor:pointer;text-align:left}
+.sheet svg{width:22px;height:22px;color:var(--color-text-muted);flex:none}
+.sheet hr{border:0;border-top:1px solid var(--color-border);margin:var(--space-2) 0}
+.sheet .account{font-size:var(--text-sm);color:var(--color-text-muted);padding:var(--space-1) var(--space-2) var(--space-2);margin:0}
+.sheet .nuevo{font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--state-sobreturno-fg);background:var(--state-sobreturno-bg);border:1px solid var(--state-sobreturno-bd);border-radius:var(--radius-full);padding:0 var(--space-2);margin-left:auto}
+
+.sidebar{display:none}
+@media (min-width:768px){
+  .shell{flex-direction:row}
+  .bottomnav,.sheet,.scrim,.topbar .back{display:none}
+  .sidebar{display:flex;flex-direction:column;position:sticky;top:0;height:100vh;width:248px;flex:none;background:var(--color-surface);border-right:1px solid var(--color-border);padding:var(--space-4) var(--space-3)}
+  .sidebar .brand{padding:0 var(--space-2) var(--space-2)}
+  .sidebar .prov{margin:0 var(--space-2) var(--space-5);align-self:flex-start}
+  .sidebar ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-1)}
+  .sidelink{position:relative;display:flex;align-items:center;gap:var(--space-3);min-height:var(--touch-min);padding:0 var(--space-3);border-radius:var(--radius-md);color:var(--color-text-muted);text-decoration:none;font:var(--weight-medium) var(--text-base) var(--font-sans);border:0;background:none;width:100%;cursor:pointer;text-align:left}
+  .sidelink:hover{background:var(--color-surface-muted);color:var(--color-text)}
+  .sidelink svg{width:20px;height:20px;flex:none}
+  .sidelink[aria-current=page]{background:var(--color-primary-tint);color:var(--color-primary);font-weight:var(--weight-bold)}
+  .sidelink[aria-current=page]::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:var(--radius-full);background:var(--color-primary)}
+  .sidebar .grow{flex:1}
+  .sidebar .account{border-top:1px solid var(--color-border);padding-top:var(--space-3);margin-top:var(--space-3);display:grid;gap:var(--space-1)}
+  .sidebar .account p{margin:0 var(--space-3) var(--space-1);font-size:var(--text-sm);color:var(--color-text-muted)}
+  .topbar{padding:var(--space-3) var(--space-6)}
+  .topbar .page-title{font-size:var(--text-xl);line-height:var(--lh-xl)}
+  .content{padding:var(--space-5) var(--space-6) var(--space-6)}
+}
+</style>
+</head>
+<body data-estados="normal:Formulario|actual-invalida:Contraseña actual incorrecta (400)|password-debil:Contraseña nueva débil (400)|enviando:Cambiando|limite:Demasiados intentos (429)|mas:Menú Más (mobile)">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 12l8-8M16 7l2.5 2.5M14 9l2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-07</span>
+    <ul>
+      <li><a class="sidelink" href="#"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <!-- Nuevo en C-07: "Cambiar contraseña" en el bloque de cuenta, arriba de "Cerrar sesión" -->
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo</p>
+      <a class="sidelink" href="#" aria-current="page"><svg><use href="#i-key"/></svg>Cambiar contraseña</a>
+      <a class="sidelink" href="ingresar.html?estado=sesion-cerrada"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <a class="btn btn-ghost btn-icon back" href="#" aria-label="Volver"><svg aria-hidden="true"><use href="#i-left"/></svg></a>
+      <h1 class="page-title">Cambiar contraseña</h1>
+    </header>
+
+    <main class="content" id="contenido" tabindex="-1">
+      <div class="panel">
+        <p class="lede">Usá una contraseña que no uses en otros sitios.</p>
+
+        <div class="notice info">
+          <svg aria-hidden="true"><use href="#i-info"/></svg>
+          <p>Al cambiarla, cerramos la sesión en <b>todos tus dispositivos, también en este</b>, y vas a ingresar de nuevo con la contraseña nueva.</p>
+        </div>
+        <div class="notice warn" role="alert" data-solo="limite">
+          <svg aria-hidden="true"><use href="#i-clock"/></svg>
+          <div><strong>Hiciste varios intentos seguidos.</strong><p>Esperá <b>15 minutos</b> y volvé a intentar.</p></div>
+        </div>
+
+        <form novalidate>
+          <div class="field">
+            <label for="actual">Contraseña actual</label>
+            <div class="pw">
+              <input class="input" id="actual" type="password" autocomplete="current-password" aria-describedby="actual-err" data-invalido="actual-invalida"
+                data-valor="*=|password-debil=contraseña-actual-ficticia|enviando=contraseña-actual-ficticia|limite=contraseña-actual-ficticia">
+              <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña actual"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
+            </div>
+            <p class="error-msg" id="actual-err" data-solo="actual-invalida"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>La contraseña actual no es correcta.</span></p>
+          </div>
+          <div class="field">
+            <label for="nueva">Contraseña nueva</label>
+            <div class="pw">
+              <input class="input" id="nueva" type="password" autocomplete="new-password" aria-describedby="pw-reqs" data-invalido="password-debil"
+                data-valor="*=|actual-invalida=ficticia-segura-03|password-debil=odontologa@example.com|enviando=ficticia-segura-03|limite=ficticia-segura-03">
+              <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña nueva"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
+            </div>
+            <ul class="reqs" id="pw-reqs" aria-label="Requisitos de la contraseña">
+              <li data-solo="normal mas"><svg aria-hidden="true"><use href="#i-dot"/></svg>Al menos 10 caracteres</li>
+              <li data-solo="normal mas"><svg aria-hidden="true"><use href="#i-dot"/></svg>Distinta de tu email</li>
+              <li class="ok" data-solo="actual-invalida password-debil enviando limite"><svg aria-hidden="true"><use href="#i-check"/></svg>Al menos 10 caracteres <span class="sr">(cumplido)</span></li>
+              <li class="ok" data-solo="actual-invalida enviando limite"><svg aria-hidden="true"><use href="#i-check"/></svg>Distinta de tu email <span class="sr">(cumplido)</span></li>
+              <li class="no" data-solo="password-debil"><svg aria-hidden="true"><use href="#i-x"/></svg>Distinta de tu email <span class="sr">(falta)</span></li>
+            </ul>
+          </div>
+          <div class="field">
+            <label for="nueva2">Repetí la contraseña nueva</label>
+            <div class="pw">
+              <input class="input" id="nueva2" type="password" autocomplete="new-password"
+                data-valor="*=|actual-invalida=ficticia-segura-03|password-debil=odontologa@example.com|enviando=ficticia-segura-03|limite=ficticia-segura-03">
+              <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña repetida"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
+            </div>
+          </div>
+          <div class="actions-row">
+            <button class="btn btn-primary" type="submit" data-no="enviando" data-desactivar="limite">Cambiar contraseña</button>
+            <button class="btn btn-primary" type="button" disabled data-solo="enviando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Cambiando…</button>
+            <a class="btn btn-ghost" href="#">Cancelar</a>
+          </div>
+        </form>
+
+        <section class="review" aria-labelledby="rev-t" style="max-width:none">
+          <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+          <ul id="estados"></ul>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="hoja-mas" id="mas"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+
+<div class="scrim" data-solo="mas"></div>
+<div class="sheet" id="hoja-mas" role="dialog" aria-modal="true" aria-labelledby="mas-t" data-solo="mas">
+  <div class="grab" aria-hidden="true"></div>
+  <h2 id="mas-t">Más opciones</h2>
+  <ul>
+    <li><a href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+    <li><a href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+  </ul>
+  <hr>
+  <p class="account">Dra. Ejemplo · Consultorio Demo</p>
+  <a href="#"><svg><use href="#i-key"/></svg>Cambiar contraseña<span class="nuevo">Nuevo en C-07</span></a>
+  <a href="ingresar.html?estado=sesion-cerrada"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (document.body.getAttribute("data-estado") === "mas") document.getElementById("mas").setAttribute("aria-expanded", "true");
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contraseña nueva · {brand} (mockup C-07)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="auth.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<!-- Se llega desde el email: /recuperar#token=… (el token va en el fragmento, C-05 D5) -->
+<body data-estados="normal:Contraseña nueva|no-coinciden:No coinciden|password-debil:Contraseña débil (400)|enviando:Guardando|token-invalido:Link vencido o usado (400)">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-link-off" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1M4 4l16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al formulario</a>
+<div class="auth">
+  <main class="auth-main" id="contenido" tabindex="-1" style="justify-content:flex-start">
+    <div class="auth-top">
+      <a class="brand" href="#" style="visibility:visible"><span class="brand-mark" aria-hidden="true"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></a>
+      <span class="prov">Borrador C-07 · pendiente de aprobación</span>
+    </div>
+
+    <div class="auth-card" data-no="token-invalido">
+      <h1>Creá tu contraseña nueva</h1>
+      <p class="lede">Elegí una que no uses en otros sitios.</p>
+
+      <div class="notice info">
+        <svg aria-hidden="true"><use href="#i-info"/></svg>
+        <p>Al guardarla, cerramos la sesión en todos tus dispositivos y vas a ingresar con la contraseña nueva.</p>
+      </div>
+      <div class="notice danger" role="alert" data-solo="password-debil">
+        <svg aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>Esa contraseña no se puede usar.</strong><p>Tiene que tener al menos 10 caracteres y no puede ser igual a tu email.</p></div>
+      </div>
+
+      <form novalidate>
+        <div class="field">
+          <label for="password">Contraseña nueva</label>
+          <div class="pw">
+            <input class="input" id="password" type="password" autocomplete="new-password" aria-describedby="pw-reqs" data-invalido="password-debil"
+              data-valor="*=|no-coinciden=ficticia-segura-02|password-debil=ficticia-segura-02|enviando=ficticia-segura-02">
+            <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
+          </div>
+          <!-- Acá no se conoce el email: "distinta de tu email" lo valida el backend (PASSWORD_DEBIL) -->
+          <ul class="reqs" id="pw-reqs" aria-label="Requisitos de la contraseña">
+            <li data-solo="normal"><svg aria-hidden="true"><use href="#i-dot"/></svg>Al menos 10 caracteres</li>
+            <li class="ok" data-solo="no-coinciden password-debil enviando"><svg aria-hidden="true"><use href="#i-check"/></svg>Al menos 10 caracteres <span class="sr">(cumplido)</span></li>
+            <li><svg aria-hidden="true"><use href="#i-dot"/></svg>Distinta del email de tu cuenta</li>
+          </ul>
+        </div>
+        <div class="field">
+          <label for="password2">Repetí la contraseña nueva</label>
+          <div class="pw">
+            <input class="input" id="password2" type="password" autocomplete="new-password" aria-describedby="pw2-err" data-invalido="no-coinciden"
+              data-valor="*=|no-coinciden=ficticia-segura-20|password-debil=ficticia-segura-02|enviando=ficticia-segura-02">
+            <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña repetida"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
+          </div>
+          <p class="error-msg" id="pw2-err" data-solo="no-coinciden"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Las dos contraseñas no coinciden.</span></p>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" data-no="enviando">Guardar contraseña nueva</button>
+        <button class="btn btn-primary btn-block" type="button" disabled data-solo="enviando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Guardando…</button>
+      </form>
+    </div>
+
+    <!-- TOKEN_INVALIDO: mismo mensaje para vencido, usado, revocado o inexistente (C-05 D3) -->
+    <div class="auth-card result" data-solo="token-invalido" role="alert">
+      <div class="ico danger" aria-hidden="true"><svg><use href="#i-link-off"/></svg></div>
+      <h1>Este link ya no sirve</h1>
+      <p>Puede que haya vencido (dura 30 minutos) o que ya lo hayas usado. Pedí uno nuevo y abrilo apenas te llegue.</p>
+      <div class="actions">
+        <a class="btn btn-primary btn-block" href="recuperar.html">Pedir un link nuevo</a>
+        <a class="btn btn-ghost btn-block" href="ingresar.html">Volver a ingresar</a>
+      </div>
+    </div>
+
+    <section class="review" aria-labelledby="rev-t">
+      <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+      <ul id="estados"></ul>
+    </section>
+  </main>
+</div>
+</body>
+</html>
