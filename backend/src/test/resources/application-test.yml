@@ -1,0 +1,4 @@
+# Perfil de tests: la base la provee Testcontainers (IntegracionPostgresTest).
+logging:
+  level:
+    org.testcontainers: WARN

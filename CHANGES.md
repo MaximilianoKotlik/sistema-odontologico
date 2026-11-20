@@ -146,7 +146,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 1 — Fundación, núcleo y autenticación
 
 ### [C-01] `foundation-setup`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #6, 2026-11-20)
 - **Scope**:
   - Estructura `backend/` (Gradle Kotlin DSL, Java 21, Spring Boot, springdoc, Flyway, Testcontainers, ArchUnit, JUnit 5/AssertJ/Mockito) y `frontend/` (Vite + TypeScript + Tailwind + Vitest); Dockerfiles multi-stage.
   - `docker-compose.yml` con `postgres:16-alpine` (init crea roles `app_owner` y `app_rw`), `backend`, `frontend`, `mailpit`; `.env.example` con las variables de 08 §Variables de entorno; `docker compose up --build` levanta todo.
