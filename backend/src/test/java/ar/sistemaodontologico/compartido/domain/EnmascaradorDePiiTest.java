@@ -67,6 +67,28 @@ class EnmascaradorDePiiTest {
     }
 
     @Test
+    void enmascaraDniEscritoConPuntos() {
+        // DD-24: el DNI es dato del paciente. Con puntos no lo cubre el patrón de teléfono.
+        assertThat(EnmascaradorDePii.enmascarar("paciente con DNI 30.000.001 ya existe"))
+                .isEqualTo("paciente con DNI *** ya existe");
+        assertThat(EnmascaradorDePii.enmascarar("dni=9.000.002,"))
+                .isEqualTo("dni=***,");
+    }
+
+    @Test
+    void enmascaraDniSinPuntos() {
+        assertThat(EnmascaradorDePii.enmascarar("Key (dni)=(30000001) already exists"))
+                .doesNotContain("30000001");
+    }
+
+    @Test
+    void conservaNumerosConPuntosQueNoTienenFormaDeDni() {
+        String texto = "versión 3.5.16, IP 203.0.113.7, monto 12.500 y 4.30.000.001.5";
+
+        assertThat(EnmascaradorDePii.enmascarar(texto)).isEqualTo(texto);
+    }
+
+    @Test
     void toleraNulo() {
         assertThat(EnmascaradorDePii.enmascarar(null)).isNull();
     }
