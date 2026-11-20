@@ -61,7 +61,7 @@ Valores por defecto configurables por consultorio se indican como `(config, defa
 - **RN-RP-05**: Reprogramar por link mueve el mismo turno a un nuevo hueco ofrecible (RN-RP-01) en una única transacción; si el nuevo hueco ya no está libre, el turno conserva su horario original.
 - **RN-RP-06**: Al reservar se emite un token de gestión de 256 bits (base64url) que se muestra **una sola vez** junto con el link `/t/{token}`, para que el paciente lo guarde. Se persiste solo su hash SHA-256. Vence al terminar el turno y se revoca al cancelarlo.
 - **RN-RP-07**: Si dos pacientes intentan el mismo hueco a la vez, solo una reserva prospera; la otra recibe 409 `HUECO_NO_DISPONIBLE` con los huecos actualizados.
-- **RN-RP-08**: Un mismo teléfono puede tener como máximo 2 turnos futuros activos por consultorio vía link. — Anti-abuso. **Decisión de diseño** (valor por defecto respaldado en [`discovery.md` §7](../docs/discovery/discovery.md)).
+- **RN-RP-08**: Un mismo paciente (identificado por DNI, [DD-24](09_decisiones_y_supuestos.md)) puede tener como máximo 2 turnos futuros activos por consultorio vía link. — Anti-abuso. **Decisión de diseño** (valor por defecto respaldado en [`discovery.md` §7](../docs/discovery/discovery.md)).
 - **RN-RP-09**: Endpoints públicos con rate limit por IP (default: 10 reservas/hora, 60 consultas de huecos/minuto) y por token (10 operaciones/hora).
 - **RN-RP-10**: Un turno reservado por link nace en estado `RESERVADO` con `origen = LINK`; el odontólogo lo confirma desde la agenda.
 - **RN-RP-11**: Si el consultorio desactiva la reserva pública o su plan está `VENCIDO`, la página pública informa que no toma turnos online y muestra el teléfono de contacto. Los links de gestión de turnos existentes siguen permitiendo cancelar.
