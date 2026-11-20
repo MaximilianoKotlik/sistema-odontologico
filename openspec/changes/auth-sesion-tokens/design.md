@@ -99,7 +99,10 @@
   - `FOREIGN KEY (consultorio_id, usuario_id) REFERENCES usuario (consultorio_id, id)`.
   - `token_hash CHAR(64) UNIQUE`, `expira_at`, `revocado_at`, `created_at`.
   - Índice parcial `(usuario_id) WHERE revocado_at IS NULL`.
-- **Permisos**: `GRANT SELECT, INSERT, UPDATE` a `app_rw` sobre ambas tablas, sin `DELETE`.
+- **Permisos**: `REVOKE DELETE ON usuario, refresh_token FROM "${app-user}"`.
+  - Hace falta un `REVOKE` explícito: los privilegios por defecto de C-01 ya le dan `SELECT, INSERT, UPDATE, DELETE` a `app_rw` sobre toda tabla nueva, y un `GRANT` acotado no quitaría el `DELETE`.
+  - `${app-user}` es el placeholder de Flyway (`spring.flyway.placeholders.app-user: ${DB_APP_USER}`) que ya define C-02 (#12) y usa C-03 (#10). El rol nunca va fijo en el SQL.
+  - Un test de integración conectado como `app_rw` verifica que no puede borrar (tarea 2.1).
 
 ### D13 — Estructura del módulo
 - `auth.domain`: `Usuario`, `PoliticaDeContrasena`, `RefreshToken` (reglas puras: vigente, revocado, vencido).
