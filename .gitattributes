@@ -1,0 +1,12 @@
+# Normalización de finales de línea (D10): los scripts corren en contenedores Linux
+* text=auto
+*.sh text eol=lf
+gradlew text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.jar binary
+*.png binary
+*.ico binary

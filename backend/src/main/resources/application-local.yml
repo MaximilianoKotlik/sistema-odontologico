@@ -1,0 +1,9 @@
+# Perfil de desarrollo local (docker compose).
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+logging:
+  level:
+    ar.sistemaodontologico: DEBUG
