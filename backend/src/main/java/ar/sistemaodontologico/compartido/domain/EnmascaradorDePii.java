@@ -15,7 +15,9 @@ public final class EnmascaradorDePii {
 
     private static final Pattern EMAIL = Pattern.compile("[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+");
     // Secuencia de dígitos con separadores típicos de teléfono, aislada (no parte de un UUID ni de una palabra).
-    private static final Pattern TELEFONO = Pattern.compile("(?<![\\w-])\\+?\\d[\\d\\s()\\-]{5,}\\d(?![\\w-])");
+    // Una fecha ISO (2026-11-20) tiene 8 dígitos con guiones, igual que un teléfono: se deja legible en el log.
+    private static final Pattern FECHA_ISO = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+    private static final Pattern TELEFONO =Pattern.compile("(?<![\\w-])\\+?\\d[\\d\\s()\\-]{5,}\\d(?![\\w-])");
 
     private EnmascaradorDePii() {
     }
@@ -28,8 +30,10 @@ public final class EnmascaradorDePii {
         Matcher telefonos = TELEFONO.matcher(sinEmails);
         StringBuilder resultado = new StringBuilder();
         while (telefonos.find()) {
-            long digitos = telefonos.group().chars().filter(Character::isDigit).count();
-            String reemplazo = digitos >= DIGITOS_MINIMOS_TELEFONO ? MASCARA_TELEFONO : telefonos.group();
+            String candidato = telefonos.group();
+            long digitos = candidato.chars().filter(Character::isDigit).count();
+            boolean esTelefono = digitos >= DIGITOS_MINIMOS_TELEFONO && !FECHA_ISO.matcher(candidato).matches();
+            String reemplazo = esTelefono ? MASCARA_TELEFONO : candidato;
             telefonos.appendReplacement(resultado, Matcher.quoteReplacement(reemplazo));
         }
         telefonos.appendTail(resultado);

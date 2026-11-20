@@ -61,12 +61,22 @@ class CambioAuditadoTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"password", "password_hash", "token", "refresh_token", "token_hash", "PASSWORD"})
+    @ValueSource(strings = {"password", "password_hash", "token", "refresh_token", "token_hash", "PASSWORD",
+        "contrasena", "contraseña", "Contraseña", "CONTRASEÑA", "secret", "jwt_secret", "SECRET"})
     void rechazaClavesConSecretos(String clave) {
         assertThatThrownBy(() -> new CambioAuditado(CONSULTORIO, ODONTOLOGO, "usuario", UUID.randomUUID(),
                 "PASSWORD_CAMBIADA", null, Map.of(clave, "x"), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageNotContaining("x\"");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"nombre", "telefono", "secretaria", "token_count", "hash_previo", "password_cambiado_at"})
+    void aceptaClavesQueSoloSeParecenASecretos(String clave) {
+        CambioAuditado cambio = new CambioAuditado(CONSULTORIO, ODONTOLOGO, "usuario", UUID.randomUUID(),
+                "USUARIO_CAMBIADO", null, Map.of(clave, "x"), null);
+
+        assertThat(cambio.valorNuevo()).containsKey(clave);
     }
 
     @Test

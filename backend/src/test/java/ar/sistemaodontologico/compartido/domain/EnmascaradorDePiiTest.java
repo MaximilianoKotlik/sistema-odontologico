@@ -29,6 +29,14 @@ class EnmascaradorDePiiTest {
     }
 
     @Test
+    void conservaFechasIso() {
+        assertThat(EnmascaradorDePii.enmascarar("turno del 2026-11-20 y prueba hasta 2026-12-20, tel 011 0000-0001"))
+                .contains("2026-11-20")
+                .contains("2026-12-20")
+                .doesNotContain("0000-0001");
+    }
+
+    @Test
     void conservaIdentificadoresUuid() {
         String texto = "consultorio 01936b2e-7c4f-7d4a-9e1b-3f6a2c1d0e9f";
 

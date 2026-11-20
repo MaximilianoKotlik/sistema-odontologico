@@ -5,7 +5,11 @@ import java.util.regex.Pattern;
 
 /**
  * Error esperado de una regla de negocio, con un {@code codigo} estable que el frontend traduce
- * (spec errores-api, RN-GL-03). El mensaje es para el log: nunca incluye datos personales.
+ * (spec errores-api, RN-GL-03).
+ *
+ * <p><strong>El mensaje se le muestra al cliente</strong>: {@code ManejadorGlobalDeErrores} lo devuelve como
+ * {@code detail} del Problem Details. Por eso tiene que ser un texto fijo y genérico ("No se encontró turno"),
+ * <strong>nunca con datos personales</strong> ni valores ingresados por el usuario (RN-GL-01, Ley 25.326).
  */
 public abstract class ErrorDeNegocio extends RuntimeException {
 

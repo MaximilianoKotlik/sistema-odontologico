@@ -9,6 +9,10 @@ import ar.sistemaodontologico.compartido.domain.ConsultorioId;
  * nunca desde el body ni la query. Los casos de uso lo leen una vez con {@link #actual()} y pasan el
  * {@link ConsultorioId} explícito a cada repositorio. Las tareas programadas, que no tienen petición,
  * reciben el consultorio como parámetro en cada iteración.
+ *
+ * <p>La implementación tiene alcance de petición: usarla desde un hilo {@code @Async} o una tarea programada
+ * lanza {@code ScopeNotActiveException} de Spring, no {@link TenantNoResueltoException}. En esos casos el
+ * consultorio se pasa por parámetro y nunca se lee de acá.
  */
 public interface TenantContext {
 

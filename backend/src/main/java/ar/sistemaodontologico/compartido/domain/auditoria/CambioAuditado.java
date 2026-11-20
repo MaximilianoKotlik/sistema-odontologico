@@ -63,8 +63,12 @@ public record CambioAuditado(
         }
     }
 
+    // Claves exactas y sufijos que identifican un secreto (spec auditoria). La comparación es en minúsculas.
+    private static final java.util.Set<String> CLAVES_SECRETAS =
+            java.util.Set.of("password", "contrasena", "contraseña", "token", "secret");
+    private static final java.util.List<String> SUFIJOS_SECRETOS = java.util.List.of("_token", "_hash", "_secret");
+
     private static boolean esSecreto(String clave) {
-        return clave.equals("password") || clave.equals("token")
-                || clave.endsWith("_token") || clave.endsWith("_hash");
+        return CLAVES_SECRETAS.contains(clave) || SUFIJOS_SECRETOS.stream().anyMatch(clave::endsWith);
     }
 }
