@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Configuración · Consultorio · {brand} (mockup C-09)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="config.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="normal:Datos guardados|cargando:Cargando|slug-editando:Slug editado sin guardar|slug-en-uso:Slug en uso con sugerencias (409)|slug-reservado:Slug reservado (400)|validacion:Errores antes de enviar|telefono-invalido:Teléfono inválido (400)|guardando:Guardando|guardado:Guardado|pausada:Reserva pública pausada|conflicto:Cambió en otro dispositivo (409)|salir:Salir con cambios sin guardar">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9.5L5.5 4.5h13L20 9.5M4 9.5h16M4 9.5a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0M5.5 11.5v8h13v-8M10 19.5v-4.5h4v4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="5" cy="6.5" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="17.5" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 8.5V6.5a2 2 0 00-2-2h-7a2 2 0 00-2 2v7a2 2 0 002 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5l1-4L15.8 5.2a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8.5 18.5l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 11-2.2-5.3L19.5 9M19.5 4.5V9H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-09</span>
+    <ul>
+      <li><a class="sidelink" href="#"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="consultorio.html" aria-current="page"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo Sur</p>
+      <a class="sidelink" href="#"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar"><h1 class="page-title">Configuración</h1></header>
+
+    <main class="content" id="contenido" tabindex="-1">
+      <nav class="tabs" aria-label="Secciones de configuración">
+        <a href="consultorio.html" aria-current="page"><svg aria-hidden="true"><use href="#i-store"/></svg>Consultorio</a>
+        <a href="prestaciones.html"><svg aria-hidden="true"><use href="#i-list"/></svg>Prestaciones</a>
+        <a href="horarios.html"><svg aria-hidden="true"><use href="#i-clock"/></svg>Horarios</a>
+      </nav>
+
+      <!-- Cargando -->
+      <div class="cols" data-solo="cargando" aria-busy="true" aria-label="Cargando la configuración">
+        <div class="card"><span class="skel w40"></span><span class="skel lg"></span><span class="skel w60"></span><span class="skel lg"></span><span class="skel lg"></span></div>
+        <div class="card"><span class="skel w40"></span><span class="skel lg"></span><span class="skel lg"></span><span class="skel lg"></span></div>
+      </div>
+
+      <div data-no="cargando">
+        <!-- Avisos de nivel página -->
+        <div class="notice danger" role="alert" tabindex="-1" data-solo="validacion">
+          <svg aria-hidden="true"><use href="#i-alert"/></svg>
+          <div><strong>Revisá 2 datos antes de guardar</strong>
+            <ul><li><a href="#nombre">Poné el nombre del consultorio</a></li><li><a href="#horizonte">El horizonte va de 1 a 365 días</a></li></ul>
+          </div>
+        </div>
+        <div class="notice warn" role="alert" data-solo="conflicto">
+          <svg aria-hidden="true"><use href="#i-refresh"/></svg>
+          <div><strong>La configuración cambió en otra pestaña o dispositivo</strong>
+            <p>Para no pisar esos cambios, no guardamos los tuyos. Mirá los valores actuales y volvé a hacer tu cambio.</p>
+            <div class="actions"><button class="btn btn-secondary" type="button">Ver los valores actuales</button></div>
+          </div>
+        </div>
+
+        <form class="cols" novalidate>
+          <div class="stack">
+            <section class="card" aria-labelledby="t-link">
+              <div class="card-head"><div><h2 id="t-link">Tu link para pacientes</h2><p class="sub">Compartilo para que te reserven turnos sin crear una cuenta.</p></div></div>
+              <div class="linkbox">
+                <p class="url" style="margin:0"><small>Link público</small><span data-texto="*=turnos.example.com/c/consultorio-demo-sur|slug-editando slug-en-uso slug-reservado=turnos.example.com/c/consultorio-demo-sur">turnos.example.com/c/consultorio-demo-sur</span></p>
+                <button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar link</button>
+              </div>
+              <div class="notice warn inline" data-solo="pausada" style="margin-top:var(--space-3)">
+                <svg aria-hidden="true"><use href="#i-info"/></svg>
+                <p><b>La reserva pública está pausada.</b> El link muestra tu teléfono, pero no permite reservar.</p>
+              </div>
+            </section>
+
+            <section class="card" aria-labelledby="t-datos">
+              <div class="card-head"><div><h2 id="t-datos">Datos del consultorio</h2><p class="sub">Así te ven tus pacientes en tu página.</p></div></div>
+              <div class="field">
+                <label for="nombre">Nombre del consultorio</label>
+                <input class="input" id="nombre" autocomplete="organization" maxlength="120" aria-describedby="nombre-err" data-invalido="validacion" data-valor="*=Consultorio Demo Sur|validacion=">
+                <p class="error-msg" id="nombre-err" data-solo="validacion"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Poné el nombre del consultorio.</span></p>
+              </div>
+              <div class="field">
+                <label for="slug">Dirección de tu link</label>
+                <div class="affix" data-error-en="slug-en-uso slug-reservado">
+                  <span class="pre" aria-hidden="true">…/c/</span>
+                  <input class="input" id="slug" autocapitalize="none" autocomplete="off" spellcheck="false" maxlength="40" aria-describedby="slug-hint slug-err slug-warn" data-invalido="slug-en-uso slug-reservado"
+                    data-valor="*=consultorio-demo-sur|slug-editando slug-en-uso=dra-ejemplo|slug-reservado=admin">
+                </div>
+                <p class="hint" id="slug-hint" data-no="slug-en-uso slug-reservado">De 3 a 40 letras minúsculas, números o guiones.</p>
+                <p class="error-msg" id="slug-err" data-solo="slug-en-uso"><svg aria-hidden="true"><use href="#i-alert"/></svg><span><b>dra-ejemplo</b> ya lo usa otro consultorio. Elegí una de estas o escribí otra:</span></p>
+                <ul class="chips" data-solo="slug-en-uso" aria-label="Direcciones libres sugeridas">
+                  <li><button class="chip" type="button">dra-ejemplo-2</button></li>
+                  <li><button class="chip" type="button">dra-ejemplo-3</button></li>
+                  <li><button class="chip" type="button">dra-ejemplo-4</button></li>
+                </ul>
+                <p class="error-msg" data-solo="slug-reservado"><svg aria-hidden="true"><use href="#i-alert"/></svg><span><b>admin</b> es una dirección reservada del sistema. Elegí otra.</span></p>
+                <div class="notice warn inline" id="slug-warn" data-solo="slug-editando">
+                  <svg aria-hidden="true"><use href="#i-info"/></svg>
+                  <p>Tu link va a pasar a ser <b>turnos.example.com/c/dra-ejemplo</b>. Al guardar, <b>el link anterior deja de funcionar</b>: si ya lo compartiste, avisales a tus pacientes.</p>
+                </div>
+              </div>
+              <div class="field">
+                <label for="direccion">Dirección <span class="opt">(opcional)</span></label>
+                <input class="input" id="direccion" autocomplete="street-address" data-valor="*=Calle Falsa 123, CABA">
+              </div>
+              <div class="field">
+                <label for="tel">Teléfono de contacto <span class="opt">(opcional)</span></label>
+                <input class="input" id="tel" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="tel-hint tel-err" data-invalido="telefono-invalido" data-valor="*=+54 9 11 0000-0001|telefono-invalido=123">
+                <p class="hint" id="tel-hint" data-no="telefono-invalido">Se muestra a los pacientes cuando ya no pueden cancelar por el link.</p>
+                <p class="error-msg" id="tel-err" data-solo="telefono-invalido"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Este teléfono no es válido. Probá con el código de área, por ejemplo 11 0000-0001.</span></p>
+              </div>
+            </section>
+          </div>
+
+          <section class="card" aria-labelledby="t-reglas">
+            <div class="card-head"><div><h2 id="t-reglas">Reservas de pacientes</h2><p class="sub">Reglas que se aplican en tu link público.</p></div></div>
+
+            <div class="switch-row field">
+              <div class="txt"><strong id="rp-l">Reserva pública</strong><p class="hint" id="rp-h" data-no="pausada">Los pacientes pueden reservar, reprogramar y cancelar desde tu link.</p><p class="hint" data-solo="pausada">Pausada: los pacientes no pueden reservar desde el link hasta que la actives. Tus turnos no cambian.</p></div>
+              <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="rp-l" aria-describedby="rp-h" data-solo="normal cargando slug-editando slug-en-uso slug-reservado validacion telefono-invalido guardando guardado conflicto salir"><span class="track" aria-hidden="true"></span><span class="state">Activa</span></button>
+              <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="rp-l" data-solo="pausada"><span class="track" aria-hidden="true"></span><span class="state">Pausada</span></button>
+            </div>
+
+            <div class="field">
+              <label for="cancel">Hasta cuándo pueden cancelar o reprogramar</label>
+              <div class="affix short"><input class="input" id="cancel" type="number" inputmode="numeric" min="0" max="168" step="1" aria-describedby="cancel-h" data-valor="*=24"><span class="suf">horas antes</span></div>
+              <p class="hint" id="cancel-h">Pasado ese plazo, el link les muestra tu teléfono. De 0 a 168 horas (7 días).</p>
+            </div>
+            <div class="field">
+              <label for="reserva">Con cuánta anticipación pueden reservar</label>
+              <div class="affix short"><input class="input" id="reserva" type="number" inputmode="numeric" min="0" step="1" aria-describedby="reserva-h" data-valor="*=2"><span class="suf">horas antes</span></div>
+              <p class="hint" id="reserva-h">Evita que te reserven un turno para dentro de 10 minutos.</p>
+            </div>
+            <div class="field">
+              <label for="horizonte">Hasta cuántos días adelante</label>
+              <div class="affix short" data-error-en="validacion"><input class="input" id="horizonte" type="number" inputmode="numeric" min="1" max="365" step="1" aria-describedby="horizonte-h horizonte-err" data-invalido="validacion" data-valor="*=60|validacion=400"><span class="suf">días</span></div>
+              <p class="hint" id="horizonte-h" data-no="validacion">De 1 a 365 días.</p>
+              <p class="error-msg" id="horizonte-err" data-solo="validacion"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>El horizonte va de 1 a 365 días.</span></p>
+            </div>
+            <div class="field">
+              <label for="paso">Cada cuánto empiezan los turnos</label>
+              <select class="input" id="paso" aria-describedby="paso-h" style="max-width:220px">
+                <option>Cada 5 minutos</option><option>Cada 10 minutos</option><option selected>Cada 15 minutos</option><option>Cada 20 minutos</option><option>Cada 30 minutos</option>
+              </select>
+              <p class="hint" id="paso-h">Con 15 minutos, tu página ofrece 9:00, 9:15, 9:30…</p>
+            </div>
+            <div class="field">
+              <label for="tz">Zona horaria</label>
+              <select class="input" id="tz" aria-describedby="tz-h">
+                <option selected>Buenos Aires, CABA y la mayoría de las provincias</option>
+                <option>Córdoba</option><option>Mendoza</option><option>San Luis</option><option>Salta</option><option>Ushuaia</option>
+              </select>
+              <p class="hint" id="tz-h">Tus horarios y turnos se muestran en esta zona.</p>
+            </div>
+          </section>
+        </form>
+
+        <!-- Barra de guardado: solo con cambios -->
+        <div class="savebar" data-solo="slug-editando slug-en-uso slug-reservado validacion telefono-invalido guardando conflicto pausada salir">
+          <p class="msg" style="margin:0"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Tenés cambios sin guardar</p>
+          <div class="btns">
+            <button class="btn btn-ghost" type="button" data-no="guardando">Descartar</button>
+            <button class="btn btn-primary" type="submit" data-no="guardando">Guardar cambios</button>
+            <button class="btn btn-primary" type="button" disabled data-solo="guardando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Guardando…</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="review" aria-labelledby="rev-t">
+        <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+        <ul id="estados"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="consultorio.html" aria-current="page"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+
+<div class="toast" role="status" data-solo="guardado"><svg aria-hidden="true"><use href="#i-check"/></svg>Guardamos los cambios</div>
+
+<div class="scrim" data-solo="salir"></div>
+<div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="d-salir-t" aria-describedby="d-salir-p" data-solo="salir">
+  <div class="d-head"><h2 id="d-salir-t">¿Descartar los cambios?</h2></div>
+  <p id="d-salir-p">Cambiaste la dirección de tu link y no la guardaste. Si salís ahora, se pierde ese cambio.</p>
+  <div class="d-actions">
+    <button class="btn btn-danger" type="button">Descartar y salir</button>
+    <button class="btn btn-primary" type="button" autofocus>Seguir editando</button>
+  </div>
+</div>
+</body>
+</html>

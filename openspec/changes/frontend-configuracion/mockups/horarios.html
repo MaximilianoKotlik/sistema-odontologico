@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Configuración · Horarios · {brand} (mockup C-09)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="config.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="normal:Grilla guardada|vacia:Sin horarios|editando:Cambios sin guardar|solapadas:Franjas superpuestas (antes de enviar)|invalida:Fin antes del inicio|api-solapadas:Superpuestas según el servidor (400)|copiar:Copiar a otros días|guardando:Guardando|guardado:Guardado|vaciar:Confirmar semana sin horarios|zona:Zona horaria distinta">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9.5L5.5 4.5h13L20 9.5M4 9.5h16M4 9.5a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0M5.5 11.5v8h13v-8M10 19.5v-4.5h4v4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="5" cy="6.5" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="17.5" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5l1-4L15.8 5.2a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8.5 18.5l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M6.5 14.5L12 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6.5 9.5L12 15l5.5-5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M4 4l16 16M10 6a9.6 9.6 0 012-.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-2.7 3.4M6.6 7.6C4 9.3 2.5 12 2.5 12S6 18.5 12 18.5a9 9 0 004-.9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 9v6M14 9v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 8.5V6.5a2 2 0 00-2-2h-7a2 2 0 00-2 2v7a2 2 0 002 2h2" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12.5h8L17 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-09</span>
+    <ul>
+      <li><a class="sidelink" href="#"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="consultorio.html" aria-current="page"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo Sur</p>
+      <a class="sidelink" href="#"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar"><h1 class="page-title">Configuración</h1></header>
+
+    <main class="content" id="contenido" tabindex="-1">
+      <nav class="tabs" aria-label="Secciones de configuración">
+        <a href="consultorio.html"><svg aria-hidden="true"><use href="#i-store"/></svg>Consultorio</a>
+        <a href="prestaciones.html"><svg aria-hidden="true"><use href="#i-list"/></svg>Prestaciones</a>
+        <a href="horarios.html" aria-current="page"><svg aria-hidden="true"><use href="#i-clock"/></svg>Horarios</a>
+      </nav>
+
+      <p class="zone" data-no="zona">Los pacientes solo pueden reservar dentro de estas franjas.</p>
+      <div class="notice info" data-solo="zona"><svg aria-hidden="true"><use href="#i-info"/></svg><p>Los pacientes solo pueden reservar dentro de estas franjas. Horarios en la zona de <b>Córdoba</b>, la que elegiste en Consultorio.</p></div>
+      <div class="notice danger" role="alert" tabindex="-1" data-solo="solapadas">
+        <svg aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>No guardamos: hay franjas superpuestas</strong><ul><li><a href="#d1">Lunes</a></li></ul></div>
+      </div>
+      <div class="notice danger" role="alert" tabindex="-1" data-solo="invalida">
+        <svg aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>No guardamos: una franja termina antes de empezar</strong><ul><li><a href="#d2">Martes</a></li></ul></div>
+      </div>
+      <div class="notice danger" role="alert" tabindex="-1" data-solo="api-solapadas">
+        <svg aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>No guardamos: hay franjas superpuestas</strong><ul><li><a href="#d3">Miércoles</a></li></ul></div>
+      </div>
+      <div class="notice warn" data-solo="vacia">
+        <svg aria-hidden="true"><use href="#i-info"/></svg>
+        <div><strong>Todavía no cargaste horarios</strong><p>Sin horarios, tus pacientes no pueden reservar desde tu link.</p>
+          <div class="actions"><button class="btn btn-secondary" type="button">Cargar lunes a viernes, 9 a 13 y 15 a 19</button></div></div>
+      </div>
+
+      <div class="days">
+      <section class="day" aria-labelledby="d1" data-error-en="solapadas">
+        <div class="day-head"><h3 id="d1">Lunes<span class="state" data-texto="*=2 franjas|vacia vaciar=No atendés">2 franjas</span></h3><div class="acts" data-no="vacia vaciar"><button class="btn btn-ghost btn-sm-text" type="button" aria-label="Copiar los horarios del lunes a otros días"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar a…</button></div></div>
+        <ul class="franjas" aria-label="Franjas del lunes" data-no="vacia vaciar">
+          <li class="franja">
+            <input class="input" type="time" step="300" value="09:00" aria-label="Lunes, franja 1: desde" data-invalido="solapadas">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="13:00" aria-label="Lunes, franja 1: hasta" data-invalido="solapadas">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 1 del lunes"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+          <li class="franja" data-no="solapadas">
+            <input class="input" type="time" step="300" value="15:00" aria-label="Lunes, franja 2: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="19:00" aria-label="Lunes, franja 2: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 2 del lunes"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+          <li class="franja" data-solo="solapadas">
+            <input class="input" type="time" step="300" value="12:00" aria-label="Lunes, franja 2: desde" data-invalido="solapadas">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="15:00" aria-label="Lunes, franja 2: hasta" data-invalido="solapadas">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 2 del lunes"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+        </ul>
+        <p class="error-msg" data-solo="solapadas"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Las franjas 09:00–13:00 y 12:00–15:00 se superponen. Cambiá una de las dos.</span></p>
+        <button class="btn btn-ghost btn-sm-text add" type="button" aria-label="Agregar una franja al lunes"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar franja</button>
+      </section>
+
+      <section class="day" aria-labelledby="d2" data-error-en="invalida">
+        <div class="day-head"><h3 id="d2">Martes<span class="state" data-texto="*=2 franjas|vacia vaciar=No atendés">2 franjas</span></h3><div class="acts" data-no="vacia vaciar"><button class="btn btn-ghost btn-sm-text" type="button" aria-label="Copiar los horarios del martes a otros días"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar a…</button></div></div>
+        <ul class="franjas" aria-label="Franjas del martes" data-no="vacia vaciar">
+          <li class="franja">
+            <input class="input" type="time" step="300" value="09:00" aria-label="Martes, franja 1: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="13:00" aria-label="Martes, franja 1: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 1 del martes"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+          <li class="franja" data-no="invalida">
+            <input class="input" type="time" step="300" value="15:00" aria-label="Martes, franja 2: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="19:00" aria-label="Martes, franja 2: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 2 del martes"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+          <li class="franja" data-solo="invalida">
+            <input class="input" type="time" step="300" value="19:00" aria-label="Martes, franja 2: desde" data-invalido="invalida">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="15:00" aria-label="Martes, franja 2: hasta" data-invalido="invalida">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 2 del martes"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+        </ul>
+        <p class="error-msg" data-solo="invalida"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>La franja 2 termina antes de empezar. Poné una hora de fin posterior al inicio.</span></p>
+        <button class="btn btn-ghost btn-sm-text add" type="button" aria-label="Agregar una franja al martes"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar franja</button>
+      </section>
+
+      <section class="day" aria-labelledby="d3" data-error-en="api-solapadas">
+        <div class="day-head"><h3 id="d3">Miércoles<span class="state" data-texto="*=2 franjas|vacia vaciar=No atendés">2 franjas</span></h3><div class="acts" data-no="vacia vaciar"><button class="btn btn-ghost btn-sm-text" type="button" aria-label="Copiar los horarios del miércoles a otros días"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar a…</button></div></div>
+        <ul class="franjas" aria-label="Franjas del miércoles" data-no="vacia vaciar">
+          <li class="franja">
+            <input class="input" type="time" step="300" value="09:00" aria-label="Miércoles, franja 1: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="13:00" aria-label="Miércoles, franja 1: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 1 del miércoles"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+          <li class="franja">
+            <input class="input" type="time" step="300" value="15:00" aria-label="Miércoles, franja 2: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="19:00" aria-label="Miércoles, franja 2: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 2 del miércoles"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+        </ul>
+        <p class="error-msg" data-solo="api-solapadas"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Encontramos franjas superpuestas en este día. Revisalas y volvé a guardar.</span></p>
+        <button class="btn btn-ghost btn-sm-text add" type="button" aria-label="Agregar una franja al miércoles"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar franja</button>
+      </section>
+
+      <section class="day" aria-labelledby="d4">
+        <div class="day-head"><h3 id="d4">Jueves<span class="state" data-texto="*=2 franjas|vacia vaciar=No atendés">2 franjas</span></h3><div class="acts" data-no="vacia vaciar"><button class="btn btn-ghost btn-sm-text" type="button" aria-label="Copiar los horarios del jueves a otros días"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar a…</button></div></div>
+        <ul class="franjas" aria-label="Franjas del jueves" data-no="vacia vaciar">
+          <li class="franja">
+            <input class="input" type="time" step="300" value="09:00" aria-label="Jueves, franja 1: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="13:00" aria-label="Jueves, franja 1: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 1 del jueves"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+          <li class="franja">
+            <input class="input" type="time" step="300" value="15:00" aria-label="Jueves, franja 2: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="19:00" aria-label="Jueves, franja 2: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 2 del jueves"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+        </ul>
+        <button class="btn btn-ghost btn-sm-text add" type="button" aria-label="Agregar una franja al jueves"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar franja</button>
+      </section>
+
+      <section class="day" aria-labelledby="d5">
+        <div class="day-head"><h3 id="d5">Viernes<span class="state" data-texto="*=2 franjas|editando=1 franja|vacia vaciar=No atendés">2 franjas</span></h3><div class="acts" data-no="vacia vaciar"><button class="btn btn-ghost btn-sm-text" type="button" aria-label="Copiar los horarios del viernes a otros días"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar a…</button></div></div>
+        <ul class="franjas" aria-label="Franjas del viernes" data-no="vacia vaciar">
+          <li class="franja">
+            <input class="input" type="time" step="300" value="09:00" aria-label="Viernes, franja 1: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="13:00" aria-label="Viernes, franja 1: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 1 del viernes"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+          <li class="franja" data-no="editando">
+            <input class="input" type="time" step="300" value="15:00" aria-label="Viernes, franja 2: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="19:00" aria-label="Viernes, franja 2: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 2 del viernes"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+        </ul>
+        <button class="btn btn-ghost btn-sm-text add" type="button" aria-label="Agregar una franja al viernes"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar franja</button>
+      </section>
+
+      <section class="day" aria-labelledby="d6">
+        <div class="day-head"><h3 id="d6">Sábado<span class="state" data-texto="*=1 franja|vacia vaciar=No atendés">1 franja</span></h3><div class="acts" data-no="vacia vaciar"><button class="btn btn-ghost btn-sm-text" type="button" aria-label="Copiar los horarios del sábado a otros días"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar a…</button></div></div>
+        <ul class="franjas" aria-label="Franjas del sábado" data-no="vacia vaciar">
+          <li class="franja">
+            <input class="input" type="time" step="300" value="09:00" aria-label="Sábado, franja 1: desde">
+            <span class="a" aria-hidden="true">a</span>
+            <input class="input" type="time" step="300" value="13:00" aria-label="Sábado, franja 1: hasta">
+            <button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar la franja 1 del sábado"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+          </li>
+        </ul>
+        <button class="btn btn-ghost btn-sm-text add" type="button" aria-label="Agregar una franja al sábado"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar franja</button>
+      </section>
+
+      <section class="day" aria-labelledby="d7">
+        <div class="day-head"><h3 id="d7">Domingo<span class="state" data-texto="*=No atendés|vacia vaciar=No atendés">No atendés</span></h3></div>
+        <button class="btn btn-ghost btn-sm-text add" type="button" aria-label="Agregar una franja al domingo"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar franja</button>
+      </section>
+      </div>
+
+      <div class="savebar" data-solo="editando solapadas invalida api-solapadas guardando vaciar">
+        <p class="msg" style="margin:0"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Tenés cambios sin guardar</p>
+        <div class="btns">
+          <button class="btn btn-ghost" type="button" data-no="guardando">Descartar</button>
+          <button class="btn btn-primary" type="submit" data-no="guardando">Guardar horarios</button>
+          <button class="btn btn-primary" type="button" disabled data-solo="guardando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Guardando…</button>
+        </div>
+      </div>
+
+      <section class="review" aria-labelledby="rev-t">
+        <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+        <ul id="estados"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="consultorio.html" aria-current="page"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+
+<div class="toast" role="status" data-solo="guardado"><svg aria-hidden="true"><use href="#i-check"/></svg>Guardamos tus horarios</div>
+
+<div class="scrim" data-solo="copiar vaciar"></div>
+<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="d-cp-t" data-solo="copiar">
+  <div class="d-head"><h2 id="d-cp-t">Copiar los horarios del lunes</h2><button class="btn btn-ghost btn-icon" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>
+  <p>09:00–13:00 y 15:00–19:00. Reemplaza los horarios de los días que elijas.</p>
+  <fieldset style="border:0;margin:0;padding:0">
+    <legend class="sr">Días a los que copiar</legend>
+    <div class="check"><input type="checkbox" id="c2" checked><label for="c2"><strong>Martes</strong></label></div>
+    <div class="check"><input type="checkbox" id="c3" checked><label for="c3"><strong>Miércoles</strong></label></div>
+    <div class="check"><input type="checkbox" id="c4" checked><label for="c4"><strong>Jueves</strong></label></div>
+    <div class="check"><input type="checkbox" id="c5" checked><label for="c5"><strong>Viernes</strong></label></div>
+    <div class="check"><input type="checkbox" id="c6"><label for="c6"><strong>Sábado</strong></label></div>
+    <div class="check"><input type="checkbox" id="c7"><label for="c7"><strong>Domingo</strong></label></div>
+  </fieldset>
+  <div class="d-actions">
+    <button class="btn btn-ghost" type="button">Cancelar</button>
+    <button class="btn btn-primary" type="button">Copiar a 4 días</button>
+  </div>
+</div>
+<div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="d-v-t" aria-describedby="d-v-p" data-solo="vaciar">
+  <div class="d-head"><h2 id="d-v-t">¿Guardar la semana sin horarios?</h2></div>
+  <p id="d-v-p">Tus pacientes no van a poder reservar desde tu link hasta que cargues horarios. Los turnos que ya tenés no cambian.</p>
+  <div class="d-actions">
+    <button class="btn btn-danger" type="button">Guardar sin horarios</button>
+    <button class="btn btn-primary" type="button" autofocus>Seguir editando</button>
+  </div>
+</div>
+</body>
+</html>

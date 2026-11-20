@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Configuración · Prestaciones · {brand} (mockup C-09)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="config.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="normal:Listado|vacio:Sin prestaciones|alta:Agregar (diálogo)|duracion-invalida:Duración no múltiplo de 5|duplicada:Nombre repetido (409)|editar:Editar duración|agregada:Agregada|inactivas:Inactivas desplegadas|desactivar:Confirmar desactivar|desactivar-ultima:Desactivar la última activa">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9.5L5.5 4.5h13L20 9.5M4 9.5h16M4 9.5a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0M5.5 11.5v8h13v-8M10 19.5v-4.5h4v4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="5" cy="6.5" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="17.5" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5l1-4L15.8 5.2a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8.5 18.5l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M6.5 14.5L12 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6.5 9.5L12 15l5.5-5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M4 4l16 16M10 6a9.6 9.6 0 012-.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-2.7 3.4M6.6 7.6C4 9.3 2.5 12 2.5 12S6 18.5 12 18.5a9 9 0 004-.9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 9v6M14 9v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-09</span>
+    <ul>
+      <li><a class="sidelink" href="#"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="consultorio.html" aria-current="page"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo Sur</p>
+      <a class="sidelink" href="#"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar"><h1 class="page-title">Configuración</h1></header>
+
+    <main class="content" id="contenido" tabindex="-1">
+      <nav class="tabs" aria-label="Secciones de configuración">
+        <a href="consultorio.html"><svg aria-hidden="true"><use href="#i-store"/></svg>Consultorio</a>
+        <a href="prestaciones.html" aria-current="page"><svg aria-hidden="true"><use href="#i-list"/></svg>Prestaciones</a>
+        <a href="horarios.html"><svg aria-hidden="true"><use href="#i-clock"/></svg>Horarios</a>
+      </nav>
+
+      <section class="card" aria-labelledby="t-prest" style="max-width:760px">
+        <div class="card-head">
+          <div><h2 id="t-prest">Tus prestaciones</h2><p class="sub">La duración define cuánto ocupa cada turno en tu agenda.</p></div>
+          <button class="btn btn-primary" type="button" data-no="vacio"><svg aria-hidden="true"><use href="#i-plus"/></svg><span>Agregar</span></button>
+        </div>
+
+        <!-- Vacío -->
+        <div class="empty" data-solo="vacio">
+          <div class="ico" aria-hidden="true"><svg><use href="#i-list"/></svg></div>
+          <h2>Todavía no cargaste prestaciones</h2>
+          <p>Sin prestaciones no se pueden dar turnos, ni desde tu agenda ni desde tu link.</p>
+          <button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar prestación</button>
+        </div>
+
+        <ul class="plist" aria-label="Prestaciones activas, en el orden en que se ofrecen" data-no="vacio desactivar-ultima">
+          <li>
+            <div class="order">
+              <button class="btn btn-ghost btn-icon" type="button" disabled aria-label="Subir Consulta"><svg aria-hidden="true"><use href="#i-up"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Bajar Consulta"><svg aria-hidden="true"><use href="#i-down"/></svg></button>
+            </div>
+            <div class="info"><span class="name">Consulta</span>
+              <span class="meta"><span class="badge dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>30 min</span><span class="badge pub"><svg aria-hidden="true"><use href="#i-eye"/></svg>En tu página</span></span></div>
+            <div class="acts">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Editar Consulta"><svg aria-hidden="true"><use href="#i-pencil"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Desactivar Consulta"><svg aria-hidden="true"><use href="#i-pause"/></svg></button>
+            </div>
+          </li>
+          <li data-no="desactivar-ultima">
+            <div class="order">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Subir Limpieza"><svg aria-hidden="true"><use href="#i-up"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Bajar Limpieza"><svg aria-hidden="true"><use href="#i-down"/></svg></button>
+            </div>
+            <div class="info"><span class="name">Limpieza</span>
+              <span class="meta"><span class="badge dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>45 min</span><span class="badge pub"><svg aria-hidden="true"><use href="#i-eye"/></svg>En tu página</span></span></div>
+            <div class="acts">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Editar Limpieza"><svg aria-hidden="true"><use href="#i-pencil"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Desactivar Limpieza"><svg aria-hidden="true"><use href="#i-pause"/></svg></button>
+            </div>
+          </li>
+          <li data-no="desactivar-ultima">
+            <div class="order">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Subir Extracción"><svg aria-hidden="true"><use href="#i-up"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Bajar Extracción"><svg aria-hidden="true"><use href="#i-down"/></svg></button>
+            </div>
+            <div class="info"><span class="name">Extracción</span>
+              <span class="meta"><span class="badge dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>60 min</span><span class="badge pub"><svg aria-hidden="true"><use href="#i-eye"/></svg>En tu página</span></span></div>
+            <div class="acts">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Editar Extracción"><svg aria-hidden="true"><use href="#i-pencil"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Desactivar Extracción"><svg aria-hidden="true"><use href="#i-pause"/></svg></button>
+            </div>
+          </li>
+          <li data-no="desactivar-ultima">
+            <div class="order">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Subir Control"><svg aria-hidden="true"><use href="#i-up"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" disabled aria-label="Bajar Control"><svg aria-hidden="true"><use href="#i-down"/></svg></button>
+            </div>
+            <div class="info"><span class="name">Control</span>
+              <span class="meta"><span class="badge dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>20 min</span><span class="badge int"><svg aria-hidden="true"><use href="#i-eye-off"/></svg>Solo para vos</span></span></div>
+            <div class="acts">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Editar Control"><svg aria-hidden="true"><use href="#i-pencil"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Desactivar Control"><svg aria-hidden="true"><use href="#i-pause"/></svg></button>
+            </div>
+          </li>
+          <li data-solo="agregada">
+            <div class="order">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Subir Ortodoncia (control)"><svg aria-hidden="true"><use href="#i-up"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" disabled aria-label="Bajar Ortodoncia (control)"><svg aria-hidden="true"><use href="#i-down"/></svg></button>
+            </div>
+            <div class="info"><span class="name">Ortodoncia (control)</span>
+              <span class="meta"><span class="badge dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>15 min</span><span class="badge pub"><svg aria-hidden="true"><use href="#i-eye"/></svg>En tu página</span></span></div>
+            <div class="acts">
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Editar Ortodoncia (control)"><svg aria-hidden="true"><use href="#i-pencil"/></svg></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Desactivar Ortodoncia (control)"><svg aria-hidden="true"><use href="#i-pause"/></svg></button>
+            </div>
+          </li>
+        </ul>
+
+        <details class="group" data-no="vacio">
+          <summary><svg aria-hidden="true"><use href="#i-right"/></svg>Inactivas (1)</summary>
+          <p class="hint" style="margin-bottom:var(--space-2)">No se ofrecen para turnos nuevos. Los turnos que ya tenían siguen igual.</p>
+          <ul class="plist inactive" aria-label="Prestaciones inactivas">
+            <li>
+              <div class="info"><span class="name">Blanqueamiento</span>
+                <span class="meta"><span class="badge dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>60 min</span><span class="badge off"><svg aria-hidden="true"><use href="#i-pause"/></svg>Inactiva</span></span></div>
+              <div class="acts"><button class="btn btn-secondary" type="button" aria-label="Activar Blanqueamiento">Activar</button></div>
+            </li>
+          </ul>
+        </details>
+      </section>
+
+      <section class="review" aria-labelledby="rev-t">
+        <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+        <ul id="estados"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="consultorio.html" aria-current="page"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+
+<div class="toast" role="status" data-solo="agregada"><svg aria-hidden="true"><use href="#i-check"/></svg>Agregamos Ortodoncia (control)</div>
+
+<!-- Diálogo de alta / edición -->
+<div class="scrim" data-solo="alta duracion-invalida duplicada editar desactivar desactivar-ultima"></div>
+<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="d-p-t" data-solo="alta duracion-invalida duplicada editar">
+  <div class="d-head">
+    <h2 id="d-p-t" data-texto="*=Agregar prestación|editar=Editar prestación">Agregar prestación</h2>
+    <button class="btn btn-ghost btn-icon" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <form novalidate>
+    <div class="field">
+      <label for="p-nombre">Nombre</label>
+      <input class="input" id="p-nombre" maxlength="80" aria-describedby="p-nombre-err" data-invalido="duplicada" data-valor="*=|duracion-invalida=Implante (consulta)|duplicada=LIMPIEZA|editar=Limpieza">
+      <p class="error-msg" id="p-nombre-err" data-solo="duplicada"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Ya tenés una prestación con ese nombre.</span></p>
+    </div>
+    <div class="field">
+      <label for="p-dur">Duración</label>
+      <div class="affix short" data-error-en="duracion-invalida"><input class="input" id="p-dur" type="number" inputmode="numeric" min="5" max="480" step="5" aria-describedby="p-dur-h p-dur-err" data-invalido="duracion-invalida" data-valor="*=30|duracion-invalida=47|duplicada=45|editar=60"><span class="suf">minutos</span></div>
+      <ul class="chips" aria-label="Duraciones frecuentes">
+        <li><button class="chip" type="button" aria-pressed="false">15</button></li>
+        <li><button class="chip" type="button" aria-pressed="false">20</button></li>
+        <li><button class="chip" type="button" aria-pressed="false" data-texto="*=30">30</button></li>
+        <li><button class="chip" type="button" aria-pressed="false">45</button></li>
+        <li><button class="chip" type="button" aria-pressed="false">60</button></li>
+      </ul>
+      <p class="hint" id="p-dur-h" data-no="duracion-invalida">Entre 5 y 480 minutos, en múltiplos de 5.</p>
+      <p class="error-msg" id="p-dur-err" data-solo="duracion-invalida"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Usá múltiplos de 5 minutos (por ejemplo 45 o 50).</span></p>
+      <div class="notice info inline" data-solo="editar">
+        <svg aria-hidden="true"><use href="#i-info"/></svg>
+        <p>Pasa de 45 a 60 minutos <b>para los turnos nuevos</b>. Los turnos que ya diste conservan su duración.</p>
+      </div>
+    </div>
+    <div class="check">
+      <input type="checkbox" id="p-pub" checked>
+      <label for="p-pub"><strong>Mostrar en mi página pública</strong>Si la desmarcás, solo vos podés darla desde tu agenda (por ejemplo, controles post-tratamiento).</label>
+    </div>
+    <div class="d-actions">
+      <button class="btn btn-ghost" type="button">Cancelar</button>
+      <button class="btn btn-primary" type="submit" data-texto="*=Agregar|editar=Guardar cambios">Agregar</button>
+    </div>
+  </form>
+</div>
+
+<!-- Confirmar desactivar -->
+<div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="d-off-t" aria-describedby="d-off-p" data-solo="desactivar desactivar-ultima">
+  <div class="d-head"><h2 id="d-off-t" data-texto="*=¿Desactivar Extracción?|desactivar-ultima=¿Desactivar Consulta?">¿Desactivar Extracción?</h2></div>
+  <p id="d-off-p">Deja de ofrecerse para turnos nuevos, en tu agenda y en tu link. <b>Los turnos que ya tiene siguen vigentes.</b> La podés volver a activar cuando quieras.</p>
+  <div class="notice warn" data-solo="desactivar-ultima" style="margin-bottom:0">
+    <svg aria-hidden="true"><use href="#i-alert"/></svg>
+    <p><b>Es tu única prestación activa.</b> Sin prestaciones activas no vas a poder dar turnos nuevos.</p>
+  </div>
+  <div class="d-actions">
+    <button class="btn btn-ghost" type="button" autofocus>Cancelar</button>
+    <button class="btn btn-danger" type="button">Desactivar</button>
+  </div>
+</div>
+
+<script>
+  /* Solo mockup: abre el grupo de inactivas en el estado "inactivas". */
+  document.addEventListener("DOMContentLoaded", function () {
+    if (document.body.getAttribute("data-estado") === "inactivas") document.querySelector("details.group").open = true;
+  });
+</script>
+</body>
+</html>
