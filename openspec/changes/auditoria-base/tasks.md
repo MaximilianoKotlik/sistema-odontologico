@@ -28,16 +28,16 @@
 
 - [x] 3.1 Tests unitarios del caso nuevo de `EnmascaradorDePii`: token base64url de 43 caracteres y hash SHA-256 hex → `***`, UUID legible. Implementarlo; verificar en verde junto con los tests existentes de C-02
 - [x] 3.2 Tests unitarios de `MensajeSinPii` y `ExcepcionSinPii` (email, teléfono `+54 9 11 0000-0001`, token y texto sin PII intacto, en el mensaje y en el stack trace); implementarlos en `compartido.infrastructure.logging`; verificar en verde
-- [ ] 3.3 Test con `OutputCaptureExtension` que loguea una `DataIntegrityViolationException` cuya causa contiene `Key (email)=(odontologa@example.com) already exists` y comprueba que ni el mensaje ni el stack trace muestran el email en claro; crear `logback-spring.xml` con las conversiones redefinidas; verificar en verde
-- [ ] 3.4 Test que captura el log del listener ante un fallo y comprueba que contiene `accion`/`entidad` pero no los valores; verificar en verde
+- [x] 3.3 Test con `OutputCaptureExtension` que loguea una `DataIntegrityViolationException` cuya causa contiene `Key (email)=(odontologa@example.com) already exists` y comprueba que ni el mensaje ni el stack trace muestran el email en claro; crear `logback-spring.xml` con las conversiones redefinidas; verificar en verde
+- [x] 3.4 Test que captura el log del listener ante un fallo y comprueba que contiene `accion`/`entidad` pero no los valores; verificar en verde
 
 ## 4. Integración y cierre
 
-- [ ] 4.1 Agregar la regla ArchUnit "ningún módulo fuera de `auditoria` depende de `auditoria..`" y verificar `./gradlew test` completo en verde
-- [ ] 4.2 Revisar que los fixtures usen solo datos ficticios evidentes y que no haya `LocalDateTime` en el módulo; verificar con `grep` sobre `backend/src`
+- [x] 4.1 Agregar la regla ArchUnit "ningún módulo fuera de `auditoria` depende de `auditoria..`" y verificar `./gradlew test` completo en verde
+- [x] 4.2 Revisar que los fixtures usen solo datos ficticios evidentes y que no haya `LocalDateTime` en el módulo; verificar con `grep` sobre `backend/src`
 - [ ] 4.3 Abrir el PR listo para revisión con la evidencia de los tests y pedirle la revisión a Maxi; Fran revisa el uso del puerto
 
 ## Workflow follow-up
 
-- Maxi marca `[x]` en `CHANGES.md` al mergear.
+- Una vez aprobado el PR, el autor marca `[x]` en `CHANGES.md` y archiva el change en el último commit del PR (cambio de proceso del commit 06ada06).
 - Archivar el change (`/opsx:archive`) para que el delta se aplique sobre la capability `auditoria` que creó C-02.
