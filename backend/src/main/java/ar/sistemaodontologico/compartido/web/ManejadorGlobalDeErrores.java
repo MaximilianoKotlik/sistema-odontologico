@@ -142,6 +142,19 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
         }
     }
 
+    /**
+     * Problem Details con el mismo formato que el resto de la API, para quien responde fuera de Spring MVC
+     * (por ejemplo los filtros de seguridad de C-04).
+     */
+    public static ProblemDetail problemaPara(HttpStatus estado, String codigo, String detalle, String rutaPedida) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(estado, detalle);
+        problema.setTitle(estado.getReasonPhrase());
+        problema.setType(URI.create(PREFIJO_TYPE + codigo.toLowerCase(Locale.ROOT).replace('_', '-')));
+        problema.setProperty(PROPIEDAD_CODIGO, codigo);
+        problema.setInstance(URI.create(rutaPedida));
+        return problema;
+    }
+
     private static ResponseEntity<Object> respuesta(ProblemDetail problema) {
         return ResponseEntity.status(problema.getStatus()).body(problema);
     }

@@ -115,6 +115,7 @@
 - `auth.application`: `RegistrarOdontologo`, `IniciarSesion`, `RenovarSesion`, `CerrarSesion`, puertos `EmisorDeAccessToken`, `HasheadorDeContrasena`, `GeneradorDeSecretos`.
 - `auth.infrastructure`: JPA, Nimbus, BCrypt, `SecurityConfig`.
 - `auth.web`: controladores, DTOs y la cookie.
+- **El consultorio no es de `auth`**: `Consultorio`, `ConsultorioRepositorio`, `AltaDeConsultorio` y `AsignadorDeSlugUnico` (D6) viven en el módulo `consultorio`. El registro los usa por su capa `application`, y C-08 los extiende (acordado en el D1 de C-08, #15).
 
 ### D14 — Rutas públicas explícitas
 - `SecurityConfig` declara públicas **solo** estas rutas; todo lo demás bajo `/api/v1/**` exige access token (spec `seguridad-http`):

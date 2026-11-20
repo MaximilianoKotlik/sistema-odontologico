@@ -4,13 +4,13 @@
 
 ## 1. Preparación sobre C-02
 
-- [ ] 1.1 Rebasar sobre `main` con C-02 mergeado y revisar la tabla de §Context de `design.md` contra lo que efectivamente se mergeó; actualizar las decisiones afectadas (verificación: la tabla coincide con el código de `compartido`)
-- [ ] 1.2 Agregar `spring-boot-starter-security` y `spring-boot-starter-oauth2-resource-server`; configurar `JWT_SECRET`, TTLs, `APP_FRONTEND_ORIGIN` y `TERMINOS_VERSION_VIGENTE` con validación al arranque; sumar `JWT_SECRET` a `VariablesObligatorias` (verificación: test de contexto que falla con un secreto ausente, no base64 o de menos de 32 bytes, y arranca con uno válido)
+- [x] 1.1 Rebasar sobre `main` con C-02 mergeado y revisar la tabla de §Context de `design.md` contra lo que efectivamente se mergeó; actualizar las decisiones afectadas (verificación: la tabla coincide con el código de `compartido`)
+- [x] 1.2 Agregar `spring-boot-starter-security` y `spring-boot-starter-oauth2-resource-server`; configurar `JWT_SECRET`, TTLs, `APP_FRONTEND_ORIGIN` y `TERMINOS_VERSION_VIGENTE` con validación al arranque; sumar `JWT_SECRET` a `VariablesObligatorias` (verificación: test de contexto que falla con un secreto ausente, no base64 o de menos de 32 bytes, y arranca con uno válido)
 - [ ] 1.3 Reemplazar el `JWT_SECRET` de `.env.example` por un base64 de 48 bytes marcado como solo para desarrollo local (verificación: `docker compose up --build` levanta el backend y el healthcheck queda `healthy`)
 
 ## 2. Migración y modelo
 
-- [ ] 2.1 Test de integración (Testcontainers PG16) de las tablas `usuario` y `refresh_token`: email `CITEXT` único, 1:1 con consultorio, FK compuesta de `refresh_token` cruzada falla, `app_rw` sin `DELETE`; crear la migración `V2__usuario_y_refresh_token.sql` (verificación: tests verdes)
+- [x] 2.1 Test de integración (Testcontainers PG16) de las tablas `usuario` y `refresh_token`: email `CITEXT` único, 1:1 con consultorio, FK compuesta de `refresh_token` cruzada falla, `app_rw` sin `DELETE`; crear la migración `V2__usuario_y_refresh_token.sql` (verificación: tests verdes)
 - [ ] 2.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Usuario con `credenciales_version`, `terminos_version` y `terminos_aceptados_at`, y agregar `DD-23` en `knowledge-base/09_decisiones_y_supuestos.md` por PA-06 (verificación: el diff de 04 coincide con la migración y DD-23 cita PA-06 y LG-04)
 - [ ] 2.3 Sumar `uk_usuario_email` → 409 `EMAIL_EN_USO` al mapa de constraints de `ManejadorGlobalDeErrores` (verificación: test de dos registros concurrentes con el mismo email)
 
@@ -31,10 +31,10 @@
 
 ## 5. Rutas privadas y tenant
 
-- [ ] 5.1 `SecurityConfig` stateless con las rutas públicas de D14 (`/api/v1/auth/*`, `/api/v1/public/**`, `/actuator/health`, `/v3/api-docs/**` y Swagger solo en `local`) y el resto autenticado; entry point en Problem Details 401 `NO_AUTENTICADO` para token ausente, vencido, mal firmado, con `alg` distinto o malformado (verificación: escenarios de "Rutas privadas por defecto", y `SaludDelBackendTest`, `ContratoOpenApiTest` y `SwaggerUiLocalTest` de C-01 en verde **sin modificarlos**)
-- [ ] 5.2 Establecer el `TenantContext` desde `cid` y validar `ver` contra `credenciales_version` (verificación: escenario "Credenciales cambiadas" y test con el controlador de prueba de C-02: un recurso de otro consultorio con un JWT válido da 404)
+- [x] 5.1 `SecurityConfig` stateless con las rutas públicas de D14 (`/api/v1/auth/*`, `/api/v1/public/**`, `/actuator/health`, `/v3/api-docs/**` y Swagger solo en `local`) y el resto autenticado; entry point en Problem Details 401 `NO_AUTENTICADO` para token ausente, vencido, mal firmado, con `alg` distinto o malformado (verificación: escenarios de "Rutas privadas por defecto", y `SaludDelBackendTest`, `ContratoOpenApiTest` y `SwaggerUiLocalTest` de C-01 en verde **sin modificarlos**)
+- [x] 5.2 Establecer el `TenantContext` desde `cid` y validar `ver` contra `credenciales_version` (verificación: escenario "Credenciales cambiadas" y test con el controlador de prueba de C-02: un recurso de otro consultorio con un JWT válido da 404)
 - [ ] 5.3 Ampliar `repositoriosSiempreConTenant` para eximir métodos puntuales y documentar `UsuarioRepositorio.buscarPorEmail` y `RefreshTokenRepositorio.buscarPorHash` en `REPOSITORIOS_EXCEPTUADOS` (verificación: test con fixtures en `pruebas.arquitectura` donde la excepción de un método no cubre a otro método sin tenant de la misma clase; `ArchitectureTest` verde)
-- [ ] 5.4 Adaptar los tests de C-02 a la seguridad: `CompartidoAislamientoTest` usa un JWT real en lugar de `FiltroDeTenantDePrueba` (que se elimina) y `ManejadorGlobalDeErroresTest` desactiva los filtros de seguridad (verificación: los mismos escenarios siguen en verde y el 404 entre consultorios se prueba con autenticación real)
+- [x] 5.4 Adaptar los tests de C-02 a la seguridad: `CompartidoAislamientoTest` usa un JWT real en lugar de `FiltroDeTenantDePrueba` (que se elimina) y `ManejadorGlobalDeErroresTest` desactiva los filtros de seguridad (verificación: los mismos escenarios siguen en verde y el 404 entre consultorios se prueba con autenticación real)
 
 ## 6. Cabeceras y CORS
 
