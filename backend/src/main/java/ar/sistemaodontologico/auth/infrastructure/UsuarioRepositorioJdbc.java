@@ -15,7 +15,11 @@ import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
-/** Usuario con JdbcClient. El email es CITEXT: la búsqueda no distingue mayúsculas. */
+/**
+ * Usuario con JdbcClient. El email es CITEXT: la búsqueda no distingue mayúsculas siempre que el parámetro también
+ * sea {@code citext}. Sin el {@code CAST}, el driver lo manda como {@code varchar} y PostgreSQL compara como
+ * {@code text}, que sí distingue (C-05).
+ */
 @Repository
 class UsuarioRepositorioJdbc implements UsuarioRepositorio {
 
@@ -46,7 +50,7 @@ class UsuarioRepositorioJdbc implements UsuarioRepositorio {
     @Override
     public Optional<CredencialesDeUsuario> buscarPorEmail(String email) {
         return jdbc.sql("""
-                SELECT id, consultorio_id, password_hash, credenciales_version FROM usuario WHERE email = :email""")
+                SELECT id, consultorio_id, password_hash, credenciales_version FROM usuario WHERE email = CAST(:email AS citext)""")
                 .param("email", email.trim())
                 .query((fila, n) -> new CredencialesDeUsuario(
                         fila.getObject("id", UUID.class),
@@ -62,7 +66,7 @@ class UsuarioRepositorioJdbc implements UsuarioRepositorio {
 
     @Override
     public Optional<Usuario> buscarPorEmailParaActualizar(String email) {
-        return jdbc.sql("SELECT " + COLUMNAS_DE_USUARIO + " FROM usuario WHERE email = :email FOR UPDATE")
+        return jdbc.sql("SELECT " + COLUMNAS_DE_USUARIO + " FROM usuario WHERE email = CAST(:email AS citext) FOR UPDATE")
                 .param("email", email.trim())
                 .query((fila, n) -> usuario(fila))
                 .optional();

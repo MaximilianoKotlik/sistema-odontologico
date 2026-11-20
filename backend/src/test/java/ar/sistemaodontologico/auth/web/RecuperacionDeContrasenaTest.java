@@ -82,6 +82,15 @@ class RecuperacionDeContrasenaTest extends IntegracionPostgresTest {
         verify(enviador, timeout(ESPERA_DEL_EMAIL.toMillis())).enviarRecuperacion(eq(email), anyString());
     }
 
+    @Test
+    void laSolicitudNoDistingueMayusculasEnElEmail() {
+        String email = auth.registrar("recupero-mayusculas");
+
+        assertThat(solicitar(email.toUpperCase()).getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+
+        verify(enviador, timeout(ESPERA_DEL_EMAIL.toMillis())).enviarRecuperacion(eq(email), anyString());
+    }
+
     // Scenario: Email no registrado
     @Test
     void conUnEmailSinCuentaRespondeIgualYNoEnviaNada() {

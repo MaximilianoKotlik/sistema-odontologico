@@ -158,6 +158,14 @@ class BloqueoDeLoginTest extends IntegracionPostgresTest {
         assertThat(cantidadDeEventosDeLogin()).isEqualTo(antes);
     }
 
+    // El email es CITEXT (C-04): el login no distingue mayúsculas, tampoco con el lock de fila de C-05.
+    @Test
+    void elLoginNoDistingueMayusculasEnElEmail() {
+        String email = auth.registrar("mayusculas");
+
+        assertThat(auth.login(email.toUpperCase(), CONTRASENA).getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
     // Tarea 1.5: el lock de fila no pierde incrementos
     @Test
     void cincoFallosSimultaneosBloqueanLaCuenta() throws Exception {
