@@ -2,19 +2,20 @@
 
 ## Context
 
-- Ver `proposal.md` §Why. Dominio `auth`: governance **CRITICO** (RN-AU-06). Ninguna línea de código de producción se escribe antes de que Maxi apruebe esta propuesta.
-- C-04 se monta sobre C-01 (esqueleto, Spring Boot 3.3, roles `app_owner`/`app_rw`) y sobre **la propuesta de C-02 en el PR #4, todavía sin aprobar**. Usa estas piezas de C-02:
+- Ver `proposal.md` §Why. Dominio `auth`: governance **CRITICO** (RN-AU-06). Maxi aprobó la propuesta el 2026-11-20 (#8), con la condición de aplicar los ajustes de su revisión, que ya están incorporados en este diseño. La implementación arranca con C-02 mergeado.
+- C-04 se monta sobre C-01 (paquete raíz `ar.sistemaodontologico`, Spring Boot 3.5.16, Gradle 9.9.2, roles `app_owner`/`app_rw`, `IntegracionPostgresTest`) y sobre **C-02**: su propuesta está aprobada y mergeada (#4) y su implementación está en revisión en #12. Usa estas piezas tal como quedaron implementadas en #12:
 
-  | Pieza de C-02 (PR #4) | Uso en C-04 |
+  | Pieza de C-02 (#12) | Uso en C-04 |
   |---|---|
-  | Tabla `consultorio` (V1) y convención de FKs compuestas | Alta en el registro; FK desde `usuario` y `refresh_token` |
-  | `ConsultorioId`, `TenantContext.establecer()` | El filtro JWT establece el tenant desde `cid` |
-  | `GeneradorDeIds` (UUIDv7), `Clock` | Ids de usuario, consultorio y refresh; `iat`/`exp`, vencimientos, `prueba_hasta` |
-  | `SugeridorDeSlug`, `ValidadorDeSlug` | Slug sugerido en el registro; la unicidad con sufijo se resuelve acá (D6) |
-  | Problem Details + `ErrorDeNegocio` | Códigos nuevos: `EMAIL_EN_USO`, `PASSWORD_DEBIL`, `TERMINOS_NO_ACEPTADOS`, `CREDENCIALES_INVALIDAS`, `SESION_EXPIRADA`, `NO_AUTENTICADO`, `ORIGEN_NO_PERMITIDO` |
-  | Reglas ArchUnit de repositorios con tenant | Dos excepciones documentadas (D9) |
+  | `V1__consultorio_y_extensiones.sql`, `db/migration/CONVENCIONES.md` y el placeholder de Flyway `${app-user}` | Alta del consultorio en el registro; FK compuesta desde `refresh_token`; `REVOKE DELETE` con el placeholder (D12) |
+  | `compartido.domain.ConsultorioId`, `compartido.application.TenantContext.establecer()` | El filtro JWT establece el tenant desde `cid` |
+  | `compartido.domain.GeneradorDeIds` (`UUID nuevo()`), bean `Clock` en UTC | Ids de usuario, consultorio y refresh; `iat`/`exp`, vencimientos, `prueba_hasta`. La regla ArchUnit `horaSoloDesdeElClock` prohíbe `now()` sin `Clock` |
+  | `compartido.domain.slug.SugeridorDeSlug`, `ValidadorDeSlug` | Slug sugerido en el registro; la unicidad con sufijo se resuelve acá (D6) |
+  | `ErrorDeNegocio` (`ValidacionDeNegocio` → 400, `ConflictoDeNegocio` → 409, `RecursoNoEncontrado` → 404) y `compartido.web.ManejadorGlobalDeErrores` | Códigos nuevos: `EMAIL_EN_USO`, `PASSWORD_DEBIL`, `TERMINOS_NO_ACEPTADOS`, `CREDENCIALES_INVALIDAS`, `SESION_EXPIRADA`, `NO_AUTENTICADO`, `ORIGEN_NO_PERMITIDO`. `uk_usuario_email` se suma al mapa de constraints del manejador → 409 `EMAIL_EN_USO` |
+  | `compartido.domain.EnmascaradorDePii` | Nunca se loguean emails ni tokens en claro |
+  | `ReglasDeArquitectura.repositoriosSiempreConTenant` (exime clases enteras por nombre) | Hay que ampliarla para eximir métodos puntuales (D9) |
 
-  Si la revisión de C-02 cambia alguna de estas piezas, se actualiza esta tabla y las decisiones afectadas antes de implementar.
+  La tarea 1.1 vuelve a contrastar esta tabla contra lo que efectivamente se mergee de #12.
 - El frontend que consume esto es C-07 (Nacho). El contrato llega por `api-types.ts`.
 
 ## Goals / Non-Goals
@@ -38,7 +39,9 @@
 ### D2 — JWT con Spring Security OAuth2 Resource Server (Nimbus), HS256
 - **Validación**: `NimbusJwtDecoder.withSecretKey(key).macAlgorithm(HS256)` más validadores de `exp` (con el `Clock` de C-02) y de la versión de credenciales (D3). `BearerTokenAuthenticationFilter` hace la extracción estándar del `Authorization: Bearer`.
 - **Emisión**: `NimbusJwtEncoder` con la misma clave, detrás del puerto `EmisorDeAccessToken` (en `auth.application`), así el dominio no conoce Nimbus.
-- `JWT_SECRET` en base64 de ≥ 32 bytes. El arranque **falla** si la clave es más corta o falta (salvo en el perfil `test`, que usa una fija de prueba).
+- `JWT_SECRET` en base64 de ≥ 32 bytes. El arranque **falla** si la clave es más corta, no es base64 válido o falta (en el perfil `test` se usa una fija de prueba).
+  - `JWT_SECRET` se suma a `VariablesObligatorias` (C-01), que ya corta el arranque nombrando la variable faltante.
+  - El valor de ejemplo de `.env.example` hoy no es base64 válido y haría que el backend no arranque en Docker Compose. Se reemplaza por un base64 de 48 bytes **marcado como solo para desarrollo local**, y se verifica que `docker compose up --build` levante el backend sano (revisión de #8, ajuste 2).
 - *Alternativas*: `jjwt` + filtro propio (más código de seguridad escrito a mano para lo mismo); sesiones de servidor (DD-06 las descartó).
 
 ### D3 — `ver` = `usuario.credenciales_version`, verificado en cada petición
@@ -71,6 +74,7 @@
 - La versión vigente sale de la configuración (`app.terminos.version-vigente`, variable `TERMINOS_VERSION_VIGENTE`, default `2026-11-borrador`). El cliente envía `aceptaTerminos: true` y el servidor registra la versión vigente, nunca una que mande el cliente.
 - El texto de `/terminos` es `(TBD)` hasta la asesoría legal (PA-06). Cuando se publique la versión revisada, alcanza con cambiar la variable: no hace falta migración ni código.
 - **Se actualiza `knowledge-base/04_modelo_de_datos.md` §Usuario** con estas dos columnas y `credenciales_version`, porque LG-04 de 11 exige la aceptación en el registro y 04 no la modelaba.
+- Como toca **PA-06** (pregunta Alta), la regla dura 16 pide registrar la decisión: se agrega **`DD-23`** en `knowledge-base/09_decisiones_y_supuestos.md` ("aceptación de términos versionada sin texto definitivo hasta la asesoría legal"), en la misma tarea que actualiza 04.
 
 ### D8 — Errores de seguridad en Problem Details
 - Un `AuthenticationEntryPoint` y un `AccessDeniedHandler` propios escriben `application/problem+json` con el mismo formato del manejador de C-02 (401 `NO_AUTENTICADO`, 403 `ORIGEN_NO_PERMITIDO`).
@@ -79,11 +83,13 @@
 ### D9 — Excepciones a la regla ArchUnit de tenant
 - `UsuarioRepositorio.buscarPorEmail(email)`: el login todavía no tiene tenant. El email es único global (RN-TE-02).
 - `RefreshTokenRepositorio.buscarPorHash(hash)`: el refresh llega sin access token. El hash de 256 bits es la credencial misma.
-- Ambas quedan en una lista explícita de excepciones dentro de `ArchitectureTest`, con un comentario que cita esta decisión. Cualquier otra excepción necesita aprobación en un PR.
+- La regla de C-02 (`repositoriosSiempreConTenant`) hoy solo exime **clases enteras** por nombre (`ConsultorioRepositorio`). Eximir `UsuarioRepositorio` completo dejaría pasar cualquier método nuevo sin tenant, así que la regla se amplía para aceptar excepciones por método (`"UsuarioRepositorio.buscarPorEmail"`, `"RefreshTokenRepositorio.buscarPorHash"`). Un test con fixtures verifica que la excepción cubre solo ese método.
+- Ambas quedan en la lista explícita `REPOSITORIOS_EXCEPTUADOS` de `ArchitectureTest`, con un comentario que cita esta decisión. Cualquier otra excepción necesita aprobación en un PR.
 
 ### D10 — Chequeo de origen en refresh y logout (defensa contra CSRF)
 - La cookie ya es `SameSite=Strict` con `Path=/api/v1/auth`. Además, un filtro solo para esas dos rutas rechaza con 403 cuando hay un `Origin` presente y distinto de `APP_FRONTEND_ORIGIN`.
 - No se usa el token CSRF de Spring: la API es stateless y con esta combinación alcanza. Login y registro no usan cookie de entrada.
+- A través del proxy de Vite el navegador manda `Origin: http://localhost:5173`, que coincide con `APP_FRONTEND_ORIGIN` en local. Hay un test con ese `Origin` exacto, para que el chequeo no rompa el flujo de desarrollo (revisión de #8, ajuste 8).
 
 ### D11 — Cookie `Secure` también en local
 - Chrome y Firefox aceptan cookies `Secure` en `http://localhost`. En local el frontend llega por el proxy de Vite al mismo origen.
@@ -110,9 +116,18 @@
 - `auth.infrastructure`: JPA, Nimbus, BCrypt, `SecurityConfig`.
 - `auth.web`: controladores, DTOs y la cookie.
 
+### D14 — Rutas públicas explícitas
+- `SecurityConfig` declara públicas **solo** estas rutas; todo lo demás bajo `/api/v1/**` exige access token (spec `seguridad-http`):
+  - `/api/v1/auth/registro`, `/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/logout`;
+  - **`/api/v1/public/**`**: la API del paciente (C-15) y `/public/planes` (C-21). Se libera desde ahora para que esos changes no tengan que tocar `SecurityConfig`, que es dominio CRITICO (revisión de #8, ajuste 4);
+  - las rutas técnicas de C-01: `/actuator/health`, `/v3/api-docs/**` y, solo con el perfil `local`, `/swagger-ui.html` y `/swagger-ui/**`. Sin esto se rompen el healthcheck de Docker Compose, el contrato que consume el CI del frontend y los tests de C-01 (revisión de #8, ajuste 1).
+- **Verificación**: `SaludDelBackendTest`, `ContratoOpenApiTest` y `SwaggerUiLocalTest` (C-01) siguen en verde **sin modificarlos**.
+- **CSP y Swagger UI**: `default-src 'self'` puede bloquear los estilos y scripts inline de Swagger UI. Se verifica que `/swagger-ui.html` funcione con el perfil `local`; si no, se relaja la CSP **solo para `/swagger-ui/**` y solo en `local`**, nunca en el perfil por defecto (revisión de #8, ajuste 6).
+
 ## Risks / Trade-offs
 
-- [La propuesta de C-02 puede cambiar en la revisión] → la tabla de §Context lista exactamente qué se usa. La tarea 1.1 la revisa contra lo que se mergee.
+- [La implementación de C-02 (#12) puede cambiar en la revisión] → la tabla de §Context lista exactamente qué se usa. La tarea 1.1 la revisa contra lo que se mergee.
+- [Los tests de C-02 usan controladores de prueba bajo `/api/v1/pruebas/**`; con Spring Security van a recibir 401] → la tarea 5.4 los adapta sin cambiar lo que verifican. `CompartidoAislamientoTest` pasa de la cabecera de prueba a un **JWT real**, así el aislamiento queda probado de punta a punta con la autenticación. `ManejadorGlobalDeErroresTest` (`@WebMvcTest`) desactiva los filtros de seguridad, porque prueba solo el mapeo de errores. `FiltroDeTenantDePrueba` se elimina.
 - [Sin rate limit ni bloqueo hasta C-05] → C-04 no se despliega en un entorno público solo. C-05 es el siguiente de Mati en el mismo gate.
 - [Dos pestañas que renuevan a la vez cierran todas las sesiones] → un único refresh en vuelo en C-07 (D4).
 - [Los refresh vencidos o revocados se acumulan] → índice parcial y volumen bajo en v1. La limpieza periódica queda en backlog (se puede sumar a la tarea programada de C-20).
@@ -123,7 +138,7 @@
 ## Migration Plan
 
 - Migración nueva sobre la V1 de C-02, sin datos previos. Rollback = no mergear. Una vez mergeada, cualquier ajuste va en una migración nueva (regla dura 5).
-- Al mergear, todas las rutas `/api/v1/**` existentes pasan a exigir JWT. Hasta ese momento solo existirán los controladores de prueba de C-02 (en `src/test`), así que no se rompe nada.
+- Al mergear, todas las rutas `/api/v1/**` que no estén en la lista de D14 pasan a exigir JWT. En producción todavía no hay ninguna ruta de negocio. En los tests, los controladores de prueba de C-02 se adaptan en la tarea 5.4. Las rutas técnicas de C-01 quedan públicas (D14).
 
 ## UI Mockups
 

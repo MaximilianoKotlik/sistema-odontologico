@@ -1,16 +1,18 @@
 # Tasks
 
-> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que C-02 esté `[x]` y Maxi apruebe esta propuesta (governance CRITICO, RN-AU-06). Verificación base de cada grupo: `./gradlew test` en verde.
+> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. Propuesta aprobada por Maxi en #8 (2026-11-20, RN-AU-06) con ajustes, ya incorporados a `design.md` y a las tareas. **No arrancar** hasta que C-02 (#12) esté `[x]`. Verificación base de cada grupo: `./gradlew test` en verde.
 
 ## 1. Preparación sobre C-02
 
 - [ ] 1.1 Rebasar sobre `main` con C-02 mergeado y revisar la tabla de §Context de `design.md` contra lo que efectivamente se mergeó; actualizar las decisiones afectadas (verificación: la tabla coincide con el código de `compartido`)
-- [ ] 1.2 Agregar `spring-boot-starter-security` y `spring-boot-starter-oauth2-resource-server`; configurar `JWT_SECRET`, TTLs, `APP_FRONTEND_ORIGIN` y `TERMINOS_VERSION_VIGENTE` con validación al arranque (verificación: test de contexto que falla con un secreto de menos de 32 bytes y arranca con uno válido)
+- [ ] 1.2 Agregar `spring-boot-starter-security` y `spring-boot-starter-oauth2-resource-server`; configurar `JWT_SECRET`, TTLs, `APP_FRONTEND_ORIGIN` y `TERMINOS_VERSION_VIGENTE` con validación al arranque; sumar `JWT_SECRET` a `VariablesObligatorias` (verificación: test de contexto que falla con un secreto ausente, no base64 o de menos de 32 bytes, y arranca con uno válido)
+- [ ] 1.3 Reemplazar el `JWT_SECRET` de `.env.example` por un base64 de 48 bytes marcado como solo para desarrollo local (verificación: `docker compose up --build` levanta el backend y el healthcheck queda `healthy`)
 
 ## 2. Migración y modelo
 
 - [ ] 2.1 Test de integración (Testcontainers PG16) de las tablas `usuario` y `refresh_token`: email `CITEXT` único, 1:1 con consultorio, FK compuesta de `refresh_token` cruzada falla, `app_rw` sin `DELETE`; crear la migración `V2__usuario_y_refresh_token.sql` (verificación: tests verdes)
-- [ ] 2.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Usuario con `credenciales_version`, `terminos_version` y `terminos_aceptados_at` (verificación: el diff de 04 coincide con la migración)
+- [ ] 2.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Usuario con `credenciales_version`, `terminos_version` y `terminos_aceptados_at`, y agregar `DD-23` en `knowledge-base/09_decisiones_y_supuestos.md` por PA-06 (verificación: el diff de 04 coincide con la migración y DD-23 cita PA-06 y LG-04)
+- [ ] 2.3 Sumar `uk_usuario_email` → 409 `EMAIL_EN_USO` al mapa de constraints de `ManejadorGlobalDeErrores` (verificación: test de dos registros concurrentes con el mismo email)
 
 ## 3. Registro
 
@@ -25,18 +27,20 @@
 - [ ] 4.2 `POST /api/v1/auth/login`: 200 con `accessToken`/`expiraEn` y cookie con todos sus atributos; 401 `CREDENCIALES_INVALIDAS` idéntico para email inexistente y contraseña incorrecta, con hash ficticio para igualar tiempos (verificación: escenarios "Login exitoso", "Fallo de login genérico" y "Atributos de la cookie")
 - [ ] 4.3 `RenovarSesion`: rotación con `FOR UPDATE`, detección de reuso que revoca todo, vencido o desconocido → 401 `SESION_EXPIRADA` con la cookie borrada, solo el hash en la base (verificación: escenarios de rotación, reuso y "Refresh solo como hash", más un test de dos refresh concurrentes del mismo token)
 - [ ] 4.4 `POST /api/v1/auth/logout` con y sin cookie (verificación: escenarios de "Logout")
-- [ ] 4.5 Filtro de origen en refresh y logout (verificación: escenario "Refresh desde otro sitio")
+- [ ] 4.5 Filtro de origen en refresh y logout (verificación: escenario "Refresh desde otro sitio" y un test con `Origin: http://localhost:5173` igual a `APP_FRONTEND_ORIGIN`, el caso del proxy de Vite)
 
 ## 5. Rutas privadas y tenant
 
-- [ ] 5.1 `SecurityConfig` stateless: rutas públicas explícitas y el resto autenticado; entry point en Problem Details 401 `NO_AUTENTICADO` para token ausente, vencido, mal firmado, con `alg` distinto o malformado (verificación: escenarios de "Rutas privadas por defecto")
+- [ ] 5.1 `SecurityConfig` stateless con las rutas públicas de D14 (`/api/v1/auth/*`, `/api/v1/public/**`, `/actuator/health`, `/v3/api-docs/**` y Swagger solo en `local`) y el resto autenticado; entry point en Problem Details 401 `NO_AUTENTICADO` para token ausente, vencido, mal firmado, con `alg` distinto o malformado (verificación: escenarios de "Rutas privadas por defecto", y `SaludDelBackendTest`, `ContratoOpenApiTest` y `SwaggerUiLocalTest` de C-01 en verde **sin modificarlos**)
 - [ ] 5.2 Establecer el `TenantContext` desde `cid` y validar `ver` contra `credenciales_version` (verificación: escenario "Credenciales cambiadas" y test con el controlador de prueba de C-02: un recurso de otro consultorio con un JWT válido da 404)
-- [ ] 5.3 Excepciones documentadas de ArchUnit para `buscarPorEmail` y `buscarPorHash` (verificación: `ArchitectureTest` verde y falla si se agrega otro método sin tenant)
+- [ ] 5.3 Ampliar `repositoriosSiempreConTenant` para eximir métodos puntuales y documentar `UsuarioRepositorio.buscarPorEmail` y `RefreshTokenRepositorio.buscarPorHash` en `REPOSITORIOS_EXCEPTUADOS` (verificación: test con fixtures en `pruebas.arquitectura` donde la excepción de un método no cubre a otro método sin tenant de la misma clase; `ArchitectureTest` verde)
+- [ ] 5.4 Adaptar los tests de C-02 a la seguridad: `CompartidoAislamientoTest` usa un JWT real en lugar de `FiltroDeTenantDePrueba` (que se elimina) y `ManejadorGlobalDeErroresTest` desactiva los filtros de seguridad (verificación: los mismos escenarios siguen en verde y el 404 entre consultorios se prueba con autenticación real)
 
 ## 6. Cabeceras y CORS
 
 - [ ] 6.1 Cabeceras CSP, nosniff, Referrer-Policy y HSTS fuera de `local` (verificación: escenarios de "Cabeceras de seguridad" con ambos perfiles)
-- [ ] 6.2 CORS solo para `APP_FRONTEND_ORIGIN` con credenciales (verificación: escenarios de "CORS restringido al frontend")
+- [ ] 6.2 Verificar Swagger UI con la CSP en el perfil `local`; si se rompe, relajar la CSP solo para `/swagger-ui/**` y solo en `local` (verificación: `/swagger-ui.html` carga sin errores de CSP en la consola del navegador, y el perfil por defecto mantiene `default-src 'self'`)
+- [ ] 6.3 CORS solo para `APP_FRONTEND_ORIGIN` con credenciales (verificación: escenarios de "CORS restringido al frontend")
 
 ## 7. Cierre del change
 
