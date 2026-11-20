@@ -12,15 +12,15 @@
 
 ## Decisions
 
-Las decisiones de UI que salen de los mockups están en `mockups/README.md` §Decisiones para revisar. Dos de ellas afectan a otros changes y necesitan el OK de Maxi:
+Las decisiones de UI que salen de los mockups están en `mockups/README.md` §Decisiones para revisar. Maxi resolvió las tres que afectaban a otros changes (revisión del PR #14, 2026-11-20):
 
-- **Navegación**: se agrega "Cambiar contraseña" al bloque de cuenta del app-shell de C-06, en la barra lateral y en la hoja "Más".
-- **Después del registro**: se lleva al login con el email cargado. La alternativa es el login automático, que FL-01 deja abierto.
+- **Después del registro se entra directo**: el backend no cambia. Con el 201 de `POST /auth/registro`, el frontend llama a `POST /auth/login` con las mismas credenciales y entra a la app. Si ese login falla, lleva a `/login` con el email cargado y un aviso.
+- **La ruta del login es `/login`**, igual que en el shell de C-06.
+- **"Cambiar contraseña" va en el menú del shell**, arriba de "Cerrar sesión", en la barra lateral y en la hoja "Más". Toca el shell de C-06 (Nacho).
 
 ## Open Questions
 
-- Textos y versión de términos y condiciones y política de privacidad (PA-06): el registro no puede publicarse sin ellos.
-- ¿Login automático después del registro? Hoy C-04 no devuelve tokens en `POST /auth/registro`.
+- Textos y versión de términos y condiciones y política de privacidad: según DD-28, el equipo escribe un borrador marcado "pendiente de revisión legal" y lo revisa un abogado. El registro no se publica con datos reales sin esa revisión.
 
 ## UI Mockups
 
