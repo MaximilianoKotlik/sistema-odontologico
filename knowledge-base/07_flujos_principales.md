@@ -27,7 +27,7 @@ sequenceDiagram
     API->>DB: buscar usuario por email
     DB-->>API: usuario (hash, intentos, bloqueado_hasta)
     alt credenciales válidas
-        API->>DB: reset intentos, guardar hash refresh, evento LOGIN_OK
+        API->>DB: reset intentos, guardar hash refresh, evento LOGIN_EXITOSO
         API-->>SPA: 200 {accessToken} + Set-Cookie refresh
         SPA-->>O: agenda
     else inválidas

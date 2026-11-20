@@ -5,8 +5,8 @@
 
 ## 0. Alinear con C-02, C-03 y C-04 implementados
 
-- [ ] 0.1 Contrastar la tabla de §Context de `design.md` con el código mergeado (nombres de casos de uso, puertos, columnas de `usuario`, revocación masiva de refresh, rutas públicas de `SecurityConfig`). Actualizar `design.md`/specs si algo cambia y verificar con `openspec validate auth-recuperacion-hardening --strict`
-- [ ] 0.2 Fijar el número de la migración con el siguiente `V{n}` libre y verificar que no choque con otras ramas abiertas
+- [x] 0.1 Contrastar la tabla de §Context de `design.md` con el código mergeado (nombres de casos de uso, puertos, columnas de `usuario`, revocación masiva de refresh, rutas públicas de `SecurityConfig`). Actualizar `design.md`/specs si algo cambia y verificar con `openspec validate auth-recuperacion-hardening --strict`
+- [x] 0.2 Fijar el número de la migración con el siguiente `V{n}` libre y verificar que no choque con otras ramas abiertas
 - [x] 0.3 Agregar `spring-boot-starter-mail`, `bucket4j_jdk17-core` y `caffeine` a `build.gradle.kts`, y la configuración SMTP (`SMTP_*`, `MAIL_FROM`) y `app.rate-limit.*` a `application.yml` (y valores bajos en `application-test.yml`); verificar que `./gradlew test` sigue en verde
 
 ## 1. Bloqueo por fallos y auditoría del login
@@ -43,14 +43,14 @@
 - [x] 5.1 Tests unitarios del `LimitadorBucket4j` (consume, agota, informa `Retry-After`, se recupera con el tiempo); implementar con Caffeine; verificar en verde
 - [x] 5.2 Tests de integración de "Ráfaga de logins desde una IP" (429 que no suma intento fallido), "Recuperación del límite" y "Rutas fuera de autenticación"; implementar `LimiteDeSolicitudesFilter` con los límites por IP de D8; verificar en verde
 - [x] 5.3 Tests de integración de "Recuperación repetida para un mismo email" (desde IPs distintas, y también para un email sin cuenta) y "Cambio de contraseña repetido"; conectar `LimitadorDeSolicitudes` a los casos de uso; verificar en verde
-- [ ] 5.4 Documentar en `backend/README.md` los límites, `app.rate-limit.*` y la configuración de `server.forward-headers-strategy` detrás de un proxy; verificar que lo documentado coincide con `application.yml`
+- [x] 5.4 Documentar en `backend/README.md` los límites, `app.rate-limit.*` y la configuración de `server.forward-headers-strategy` detrás de un proxy; verificar que lo documentado coincide con `application.yml`
 
 ## 6. Integración y cierre
 
 - [ ] 6.1 Agregar `TokenDeRecuperacionRepositorio.buscarPorHash` a la lista de excepciones ArchUnit (con referencia a D10) y verificar `./gradlew test` completo en verde
-- [ ] 6.2 Corregir en `knowledge-base/07_flujos_principales.md` `LOGIN_OK` → `LOGIN_EXITOSO` y en `CHANGES.md` la ruta `confirmar-recuperacion` → `recuperacion/confirmar`; verificar con `grep` que no queden las formas viejas
+- [x] 6.2 Corregir en `knowledge-base/07_flujos_principales.md` `LOGIN_OK` → `LOGIN_EXITOSO` y en `CHANGES.md` la ruta `confirmar-recuperacion` → `recuperacion/confirmar`; verificar con `grep` que no queden las formas viejas
 - [ ] 6.3 Regenerar el contrato OpenAPI y `api-types.ts` (`npm run api:types`) con los endpoints y códigos nuevos; verificar que el chequeo de CI del contrato pasa
-- [ ] 6.4 Pasar el PR de borrador a listo con la evidencia de los tests; pedir la revisión a Maxi, avisar a Fran (cambios en `IniciarSesion`/`RegistrarOdontologo`) y a Nacho (link con `#token=` para C-07)
+- [ ] 6.4 Pasar el PR de borrador a listo con la evidencia de los tests; pedir la revisión a Maxi, avisar a Fran (cambios en `GestionDeSesion.iniciar`/`RegistrarOdontologo` y el fix de `CITEXT`) y a Nacho (link con `#token=` para C-07)
 
 ## Workflow follow-up
 

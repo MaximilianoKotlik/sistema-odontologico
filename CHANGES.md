@@ -213,7 +213,7 @@ Reglas de coordinación del paralelismo:
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - Migración: `token_recuperacion` (hash, 30 min, un solo uso).
-  - `POST /api/v1/auth/recuperacion` (202 idéntica exista o no el email) y `confirmar-recuperacion` (400 `TOKEN_INVALIDO` si está usado o vencido; revoca todos los refresh tokens); email por SMTP (Mailpit en local).
+  - `POST /api/v1/auth/recuperacion` (202 idéntica exista o no el email) y `POST /api/v1/auth/recuperacion/confirmar` (400 `TOKEN_INVALIDO` si está usado o vencido; revoca todos los refresh tokens); email por SMTP (Mailpit en local).
   - Cambio de contraseña con sesión iniciada (US-005, RN-AU-05): `POST /api/v1/auth/cambiar-password` con la contraseña actual; valida RN-AU-01; revoca **todos** los refresh tokens e incrementa `ver` (invalida los access tokens emitidos); 400 `PASSWORD_ACTUAL_INVALIDA` / `PASSWORD_DEBIL`.
   - Bloqueo de cuenta tras 5 fallos consecutivos (423 `CUENTA_BLOQUEADA` 15 min, mensaje genérico) y rate limiting Bucket4j sobre `/api/v1/auth/**`.
   - Eventos de auditoría de auth vía el puerto de C-02 (RN-AD-04): `CUENTA_CREADA`, `LOGIN_EXITOSO`, `LOGIN_FALLIDO`, `PASSWORD_CAMBIADA`, `PASSWORD_RECUPERADA`; nunca contraseñas, hashes ni tokens (RN-AD-05).

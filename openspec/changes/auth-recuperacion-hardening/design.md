@@ -3,14 +3,17 @@
 ## Context
 
 - Ver `proposal.md` §Why. Dominio `auth`: governance **CRITICO** (RN-AU-06). No se escribe código de producción antes de que Maxi apruebe esta propuesta y de que C-03 y C-04 estén en `[x]`.
-- Estado al escribir esto (2026-11-20): en `main` está mergeado C-01 y están las **propuestas** de C-02 (PR #4) y C-04 (PR #8). La propuesta de C-03 está aprobada (PR #10). No hay código de C-02, C-03 ni C-04.
+- Estado al escribir la propuesta (2026-11-20): en `main` estaba mergeado C-01 y las **propuestas** de C-02 (PR #4) y C-04 (PR #8); la de C-03 estaba aprobada (PR #10).
+- Alineado con el código mergeado (tarea 0.1, 2026-11-20): C-02 (PR #12), C-03 (PR #21) y C-04 (PR #16) están en `main`. Lo que cambió respecto de la propuesta está marcado como **Ajuste 0.1** en cada decisión.
 - Piezas que se consumen:
 
   | Pieza | De | Uso en C-05 |
   |---|---|---|
   | `usuario.intentos_fallidos`, `bloqueado_hasta`, `password_cambiado_at`, `credenciales_version` | C-04 D3/D12 | Bloqueo (D1), invalidación de access tokens (D6) |
   | `refresh_token` y su revocación masiva por usuario | C-04 D4 | Revocar todas las sesiones (D6) |
-  | `IniciarSesion`, `RegistrarOdontologo` | C-04 D13 | Se modifican para el bloqueo y la auditoría (D2, D9) |
+  | `GestionDeSesion.iniciar` (el login), `RegistrarOdontologo` | C-04 D13 | Se modifican para el bloqueo y la auditoría (D2, D9) |
+  | `CredencialesDeUsuario`, `UsuarioRepositorio` (JDBC) | C-04 | El login lee la cuenta; C-05 agrega `Usuario` con el estado de acceso |
+  | `RefreshTokenRepositorio.revocarTodos` | C-04 D4 | Revocar todas las sesiones (D6) |
   | `HasheadorDeContrasena`, `GeneradorDeSecretos`, `PoliticaDeContrasena` | C-04 D13 | Contraseña nueva y token de recuperación |
   | Filtro JWT, `TenantContext`, Problem Details, `ErrorDeNegocio` | C-02 / C-04 | Cambio de contraseña autenticado; códigos de error nuevos |
   | `PublicadorDeAuditoria`, `EventoDeAuditoria` | C-02 D10 | Eventos de auth (D9) |
@@ -35,7 +38,10 @@
 ## Decisions
 
 ### D1 Bloqueo con el estado de `usuario` y `SELECT … FOR UPDATE`
-- `IniciarSesion` lee al usuario por email con lock de fila. Dos logins fallidos simultáneos no pueden contar como uno solo.
+- El login (`GestionDeSesion.iniciar`) lee al usuario por email con lock de fila (`UsuarioRepositorio.buscarPorEmailParaActualizar`). Dos logins fallidos simultáneos no pueden contar como uno solo.
+- **Ajuste 0.1**: C-04 no tenía una clase `Usuario`, solo `CredencialesDeUsuario` (lo que el login necesitaba). C-05 agrega el record inmutable `auth.domain.Usuario` con el estado de acceso y deja `CredencialesDeUsuario` para el registro.
+- **Ajuste al implementar**: PostgreSQL guarda microsegundos y **redondea** lo que sobra. Un `bloqueado_hasta` calculado con nanosegundos podía quedar guardado hasta medio microsegundo después y responder "16 minutos". Los repositorios truncan los instantes a microsegundos al escribir.
+- **Ajuste al implementar**: la búsqueda por email casteaba mal. Con el parámetro como `varchar`, PostgreSQL compara la columna `CITEXT` como `text` y distingue mayúsculas, así que el login con `Odontologa@Example.com` fallaba también en C-04. Las búsquedas usan `CAST(:email AS citext)`.
 - Reglas puras en `auth.domain.Usuario`: `estaBloqueado(ahora)`, `registrarFallo(ahora)` y `registrarExito()`.
   - Con `bloqueado_hasta > ahora` se responde 423 **sin** evaluar BCrypt (evita gastar CPU en un login que igual se rechaza) y sin tocar el contador: los intentos durante el bloqueo no lo extienden.
   - Con contraseña incorrecta, `intentos_fallidos + 1`. Al llegar a 5 se fija `bloqueado_hasta = ahora + 15 min` y el contador vuelve a 0.
@@ -46,14 +52,14 @@
 
 ### D2 El login fallido confirma su transacción
 - Un `LOGIN_FALLIDO` y el contador tienen que persistir aunque la respuesta sea 401 o 423. Si el caso de uso lanzara una excepción dentro de `@Transactional`, el rollback se los llevaría.
-- `IniciarSesion` devuelve un resultado cerrado (`sealed interface ResultadoLogin` con `Exitoso`, `CredencialesInvalidas` y `Bloqueada`) y la transacción confirma siempre. `auth.web` lo traduce a 200, 401 o 423.
+- `GestionDeSesion.iniciar` devuelve un resultado cerrado (`sealed interface ResultadoLogin` con `Exitoso`, `CredencialesInvalidas` y `Bloqueada`) y la transacción confirma siempre. `auth.web` lo traduce a 200, 401 o 423. Es el mismo patrón que C-04 ya usaba para la renovación del refresh.
 - *Alternativa descartada*: registrar el fallo en una transacción `REQUIRES_NEW` y después lanzar la excepción. Son dos transacciones para un solo hecho, y es más fácil que el contador y el evento diverjan.
-- Se modifica `IniciarSesion` de C-04 (Fran revisa).
+- Se modifica `GestionDeSesion.iniciar` de C-04 (Fran revisa).
 
 ### D3 Token de recuperación
 - Tabla `token_recuperacion`:
   - `id`, `consultorio_id`, `usuario_id`, `token_hash CHAR(64) UNIQUE`, `expira_at`, `usado_at NULL`, `revocado_at NULL`, `created_at`.
-  - FK compuesta `(consultorio_id, usuario_id) → usuario (consultorio_id, id)` e índice parcial `(usuario_id) WHERE usado_at IS NULL AND revocado_at IS NULL`.
+  - FK compuesta `(consultorio_id, usuario_id) → usuario (consultorio_id, id)` e índice parcial `(consultorio_id, usuario_id) WHERE usado_at IS NULL AND revocado_at IS NULL` (**ajuste 0.1**: empieza por `consultorio_id`, regla 4 de `CONVENCIONES.md`). Migración `V4__token_recuperacion.sql` (tarea 0.2).
   - `GRANT SELECT, INSERT, UPDATE` y `REVOKE DELETE, TRUNCATE` al rol de la aplicación, por los privilegios por defecto de C-01. El rol se nombra con el placeholder de Flyway `"${app-user}"` (`DB_APP_USER`), la convención que fijó C-03 (D-1), y no con `app_rw` fijo.
 - **Emisión**: 32 bytes de `GeneradorDeSecretos` en base64url. Se guarda el SHA-256 hex. En la misma transacción se marcan `revocado_at` los tokens anteriores no usados del usuario, así hay como máximo un token vigente por cuenta.
 - **Confirmación**:
@@ -87,7 +93,7 @@
 - `POST /api/v1/auth/cambiar-password` exige JWT. El consultorio sale del `TenantContext` y el usuario del `sub`.
 - Se verifica la contraseña actual con BCrypt (400 `PASSWORD_ACTUAL_INVALIDA`), después la política (400 `PASSWORD_DEBIL`), y después D6 y el evento `PASSWORD_CAMBIADA`. Responde 204 y borra la cookie de refresh, porque esa sesión también queda revocada (US-005).
 - Una contraseña actual incorrecta **no** suma al contador de bloqueo del login. Quien la escribe mal en un formulario no debería quedar afuera de su cuenta. Contra alguien que robó un access token, ya hay un límite por usuario (D8) y el token vence en 15 minutos.
-- Ruta `/api/v1/auth/cambiar-password`: queda bajo el `Path` de la cookie de refresh, que así viaja y se puede borrar desde ahí. C-04 deja públicas las rutas de `auth`, así que `SecurityConfig` la exceptúa explícitamente y exige JWT (test "Sin sesión" de la spec).
+- Ruta `/api/v1/auth/cambiar-password`: queda bajo el `Path` de la cookie de refresh, que así viaja y se puede borrar desde ahí. **Ajuste 0.1**: C-04 no deja públicas todas las rutas de `auth`, sino solo las que lista (`ConfiguracionDeSeguridad.RUTAS_DE_SESION`). Por eso `cambiar-password` exige JWT sin ninguna excepción, y lo que se agrega a la lista son las dos rutas públicas de la recuperación (test "Sin sesión" de la spec).
 
 ### D8 Rate limiting con Bucket4j en dos niveles
 - **Por IP, en un filtro** (`LimiteDeSolicitudesFilter`): va en la cadena de Spring Security, antes de la autenticación, solo para `/api/v1/auth/**`. Responde 429 en Problem Details con `Retry-After`. Al cortar antes del caso de uso, el 429 no cuenta como intento fallido.
@@ -114,8 +120,8 @@ Todos con `entidad = "usuario"`, `entidadId = usuario.id`, el consultorio del us
 | Acción | Actor | `valorNuevo` | Dónde |
 |---|---|---|---|
 | `CUENTA_CREADA` | `ODONTOLOGO`, id del usuario | `{slug, plan, prueba_hasta}` | `RegistrarOdontologo` (C-04, se modifica) |
-| `LOGIN_EXITOSO` | `ODONTOLOGO`, id del usuario | — | `IniciarSesion` |
-| `LOGIN_FALLIDO` | `ODONTOLOGO`, **sin id** (no autenticado) | `{intentos_fallidos, bloqueado_hasta}` | `IniciarSesion` |
+| `LOGIN_EXITOSO` | `ODONTOLOGO`, id del usuario | — | `GestionDeSesion.iniciar` |
+| `LOGIN_FALLIDO` | `ODONTOLOGO`, **sin id** (no autenticado) | `{intentos_fallidos, bloqueado_hasta}` | `GestionDeSesion.iniciar` |
 | `PASSWORD_CAMBIADA` | `ODONTOLOGO`, id del usuario | `{credenciales_version}` | `CambiarContrasena` |
 | `PASSWORD_RECUPERADA` | `ODONTOLOGO`, id del usuario | `{credenciales_version}` | `ConfirmarRecuperacion` |
 
@@ -126,10 +132,14 @@ Todos con `entidad = "usuario"`, `entidadId = usuario.id`, el consultorio del us
 
 ### D10 Estructura
 - `auth.domain`: `Usuario` (reglas de D1 y D6) y `TokenDeRecuperacion` (vigente, usado, revocado y vencido, como funciones puras).
-- `auth.application`: `SolicitarRecuperacion`, `ConfirmarRecuperacion` y `CambiarContrasena`; cambios en `IniciarSesion` y `RegistrarOdontologo`; puertos `EnviadorDeEmails`, `LimitadorDeSolicitudes` y `TokenDeRecuperacionRepositorio`.
+- `auth.application`: `SolicitarRecuperacion`, `ConfirmarRecuperacion`, `CambiarContrasena` y `NuevaContrasena` (la operación de D6); cambios en `GestionDeSesion` y `RegistrarOdontologo`; puertos `EnviadorDeEmails`, `LimitadorDeSolicitudes` y `TokenDeRecuperacionRepositorio`; `LimitesPorCuenta` (límites por email y por usuario de D8) y la excepción `LimiteExcedido`.
 - `auth.infrastructure`: JPA de `token_recuperacion`, `EnviadorDeEmailsSmtp`, `LimitadorBucket4j` y `LimiteDeSolicitudesFilter`.
 - `auth.web`: tres endpoints nuevos, el mapeo de `ResultadoLogin` y los códigos nuevos `CUENTA_BLOQUEADA` (423), `TOKEN_INVALIDO` (400), `PASSWORD_ACTUAL_INVALIDA` (400) y `DEMASIADAS_SOLICITUDES` (429).
-- Excepción a la regla ArchUnit de tenant, que se agrega a la lista de C-04 D9: `TokenDeRecuperacionRepositorio.buscarPorHash(hash)`, porque la confirmación llega sin sesión y el hash de 256 bits es la credencial.
+- Excepciones a la regla ArchUnit de tenant, que se agregan a la lista de C-04 D9 (`ArchitectureTest.REPOSITORIOS_EXCEPTUADOS`):
+  - `TokenDeRecuperacionRepositorio.buscarPorHashParaActualizar(hash)`: la confirmación llega sin sesión y el hash de 256 bits es la credencial.
+  - `UsuarioRepositorio.buscarPorEmailParaActualizar(email)`: la misma búsqueda del login que C-04 ya exceptuaba (`buscarPorEmail`), con lock de fila (D1).
+- **Ajuste 0.1**: el origen del link (D5) sale de `PropiedadesDeAuth.frontendOrigin()` de C-04, que ya valida y normaliza `APP_FRONTEND_ORIGIN`. El remitente sale de `app.mail.from` (`MAIL_FROM`).
+- **Ajuste 0.1**: el filtro de D8 vive en `auth.infrastructure.seguridad` y va antes que el `FiltroDeOrigenDeSesion` de C-04, así un 429 corta antes que todo. El 429 de los límites por cuenta lo traduce `auth.web.ManejadorDeLimites`.
 
 ### D11 Estrategia de tests (Strict TDD)
 - **Unitarios**:
