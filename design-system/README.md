@@ -14,7 +14,6 @@
 - `brand.js`, `brand.md`, `assets/logo.svg`, `previews/`.
 
 ## Decisiones abiertas (TBD)
-- (TBD) Nombre del producto (hoy "Turnos Odonto (TBD)").
 - (TBD) Logo definitivo (hoy un isotipo provisorio rotulado).
 - (TBD) Guía de imágenes/ilustración.
 - (TBD) Tema oscuro: tokens incluidos, sin revisión visual.

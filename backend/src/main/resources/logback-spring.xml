@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Logs sin datos personales (C-03, design D-6; RN-GL-01, Ley 25.326).
+  Se usa el patrón por defecto de Spring Boot, pero las palabras de conversión del mensaje (%m, %msg,
+  %message) y de las excepciones (%wEx, %ex) se redefinen con conversores que enmascaran emails, teléfonos
+  y tokens. Las reglas van DESPUÉS de los include: si no, defaults.xml vuelve a registrar las suyas.
+-->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <conversionRule conversionWord="m" class="ar.sistemaodontologico.compartido.infrastructure.logging.MensajeSinPii"/>
+    <conversionRule conversionWord="msg" class="ar.sistemaodontologico.compartido.infrastructure.logging.MensajeSinPii"/>
+    <conversionRule conversionWord="message" class="ar.sistemaodontologico.compartido.infrastructure.logging.MensajeSinPii"/>
+    <conversionRule conversionWord="wEx" class="ar.sistemaodontologico.compartido.infrastructure.logging.ExcepcionSinPii"/>
+    <conversionRule conversionWord="ex" class="ar.sistemaodontologico.compartido.infrastructure.logging.ExcepcionSinPii"/>
+    <conversionRule conversionWord="exception" class="ar.sistemaodontologico.compartido.infrastructure.logging.ExcepcionSinPii"/>
+
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

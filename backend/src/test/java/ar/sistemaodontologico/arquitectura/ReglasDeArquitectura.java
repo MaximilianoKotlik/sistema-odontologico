@@ -50,18 +50,37 @@ public final class ReglasDeArquitectura {
         return new ArchCondition<>("recibir ConsultorioId en todo método de consulta") {
             @Override
             public void check(JavaClass clase, ConditionEvents eventos) {
-                if (exceptuados.contains(clase.getSimpleName())) {
+                if (exceptuada(clase, null, exceptuados)) {
                     return;
                 }
                 clase.getMethods().stream()
                         .filter(metodo -> metodo.getModifiers().contains(com.tngtech.archunit.core.domain.JavaModifier.PUBLIC))
                         .filter(metodo -> PREFIJOS_DE_CONSULTA.stream().anyMatch(metodo.getName()::startsWith))
+                        .filter(metodo -> !exceptuada(clase, metodo.getName(), exceptuados))
                         .filter(metodo -> metodo.getRawParameterTypes().stream()
                                 .noneMatch(tipo -> tipo.getFullName().equals(CONSULTORIO_ID)))
                         .forEach(metodo -> eventos.add(SimpleConditionEvent.violated(metodo,
                                 clase.getSimpleName() + "." + metodo.getName() + " no recibe ConsultorioId")));
             }
         };
+    }
+
+    /**
+     * Una excepción es {@code "Interfaz"} (toda la interfaz) o {@code "Interfaz.metodo"} (solo ese método). Cubre la
+     * interfaz nombrada y las clases que la implementan, no cualquier clase cuyo nombre empiece igual: un futuro
+     * {@code ConsultorioRepositorioDePrestaciones} sigue sujeto a la regla (revisión de Mati en #16).
+     */
+    private static boolean exceptuada(JavaClass clase, String metodo, java.util.Set<String> exceptuados) {
+        return exceptuados.stream().anyMatch(excepcion -> {
+            int punto = excepcion.indexOf('.');
+            String nombreExceptuado = punto < 0 ? excepcion : excepcion.substring(0, punto);
+            boolean esOImplementa = clase.getSimpleName().equals(nombreExceptuado)
+                    || clase.getAllRawInterfaces().stream().anyMatch(i -> i.getSimpleName().equals(nombreExceptuado));
+            if (!esOImplementa) {
+                return false;
+            }
+            return punto < 0 || (metodo != null && metodo.equals(excepcion.substring(punto + 1)));
+        });
     }
 
     /**
@@ -89,6 +108,20 @@ public final class ReglasDeArquitectura {
                 .orShould().callMethod(java.time.ZonedDateTime.class, "now")
                 .orShould().callMethod(java.time.OffsetDateTime.class, "now")
                 .as("la hora se toma solo del Clock inyectado, nunca con now() sin argumentos")
+                .allowEmptyShould(true);
+    }
+
+    /**
+     * Los módulos auditan solo por el puerto {@code PublicadorDeAuditoria} de {@code compartido}: ninguna clase
+     * fuera de {@code auditoria} depende del módulo de auditoría (C-03, design D-3).
+     */
+    public static ArchRule auditoriaSoloPorElPuerto(String paqueteRaiz) {
+        String auditoria = paqueteRaiz + ".auditoria..";
+        return noClasses()
+                .that().resideInAPackage(paqueteRaiz + "..")
+                .and().resideOutsideOfPackage(auditoria)
+                .should().dependOnClassesThat().resideInAPackage(auditoria)
+                .as("ningún módulo fuera de auditoria depende de auditoria: se audita por el puerto de compartido")
                 .allowEmptyShould(true);
     }
 

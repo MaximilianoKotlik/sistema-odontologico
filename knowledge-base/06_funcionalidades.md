@@ -142,11 +142,11 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 ### US-030 — Reservar un turno por link sin cuenta (P0)
 **Como** paciente **quiero** reservar desde el link del consultorio **para** no tener que llamar ni escribir por WhatsApp.
 
-- [ ] **Dado** una prestación de 30 min y un hueco libre, **cuando** envío nombre, apellido, teléfono y acepto la privacidad, **entonces** se crea un turno `RESERVADO` con `origen = LINK` y veo una confirmación con el link `/t/{token}` para guardar.
+- [ ] **Dado** una prestación de 30 min y un hueco libre, **cuando** envío nombre, apellido, DNI, teléfono y acepto la privacidad, **entonces** se crea un turno `RESERVADO` con `origen = LINK` y veo una confirmación con el link `/t/{token}` para guardar.
 - [ ] **Dado** un hueco a menos de 2 h, **entonces** no se ofrece y reservarlo por API responde 409 `HUECO_NO_DISPONIBLE`.
 - [ ] **Dado** dos reservas concurrentes al mismo hueco, **entonces** exactamente una prospera.
-- [ ] **Dado** un teléfono `011 15-1234-5678` ya registrado como `+5491112345678`, **entonces** se reutiliza el paciente existente.
-- [ ] **Dado** un teléfono con 2 turnos futuros activos, **cuando** reserva un tercero, **entonces** recibo 409 `LIMITE_TURNOS`.
+- [ ] **Dado** un DNI `30.000.001` ya registrado como `30000001`, **entonces** se reutiliza el paciente existente.
+- [ ] **Dado** un paciente (DNI) con 2 turnos futuros activos, **cuando** reserva un tercero, **entonces** recibo 409 `LIMITE_TURNOS`.
 
 **Reglas**: RN-RP-01, RN-RP-02, RN-RP-03, RN-RP-06, RN-RP-07, RN-RP-08, RN-RP-10
 
@@ -221,7 +221,7 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 ### US-070 — Revisar pacientes marcados por la deduplicación (P1)
 **Como** odontólogo **quiero** ver los pacientes cuyos datos no coincidieron al reservar **para** confirmarlos o corregirlos.
 
-- [ ] **Dado** un teléfono ya registrado como "Ana Pérez", **cuando** reserva por link "Ana Peres" con ese teléfono, **entonces** se reutiliza el paciente sin sobrescribir sus datos, queda con `requiere_revision = true` y aparece al filtrar "requiere revisión".
+- [ ] **Dado** un DNI ya registrado como "Ana Pérez", **cuando** reserva por link "Ana Peres" con ese DNI, **entonces** se reutiliza el paciente sin sobrescribir sus datos, queda con `requiere_revision = true` y aparece al filtrar "requiere revisión".
 - [ ] **Dado** un paciente marcado, **cuando** confirmo sus datos o corrijo nombre, apellido o email, **entonces** `requiere_revision` pasa a `false` y se registra `PACIENTE_REVISADO` solo con los campos modificados.
 - [ ] **Dado** un paciente de otro consultorio, **cuando** intento revisarlo, **entonces** recibo 404.
 

@@ -43,7 +43,9 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
 
     /** Constraints de la base que representan un error de negocio esperado (design D6). */
     private static final Map<String, ErrorDeConstraint> ERRORES_DE_CONSTRAINT = Map.of(
-            "uk_consultorio_slug", new ErrorDeConstraint(HttpStatus.CONFLICT, "SLUG_EN_USO"));
+            "uk_consultorio_slug", new ErrorDeConstraint(HttpStatus.CONFLICT, "SLUG_EN_USO"),
+            // C-04: dos registros simultáneos con el mismo email (el chequeo previo no ve la carrera).
+            "uk_usuario_email", new ErrorDeConstraint(HttpStatus.CONFLICT, "EMAIL_EN_USO"));
 
     private static final Map<Integer, String> CODIGOS_POR_ESTADO = Map.of(
             400, "SOLICITUD_INVALIDA",
@@ -66,6 +68,7 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
     ResponseEntity<Object> errorDeNegocio(ErrorDeNegocio error, WebRequest peticion) {
         HttpStatus estado = switch (error.getTipo()) {
             case VALIDACION -> HttpStatus.BAD_REQUEST;
+            case NO_AUTENTICADO -> HttpStatus.UNAUTHORIZED;
             case NO_ENCONTRADO -> HttpStatus.NOT_FOUND;
             case CONFLICTO -> HttpStatus.CONFLICT;
         };
@@ -140,6 +143,19 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
         if (peticion instanceof ServletWebRequest servlet) {
             problema.setInstance(URI.create(servlet.getRequest().getRequestURI()));
         }
+    }
+
+    /**
+     * Problem Details con el mismo formato que el resto de la API, para quien responde fuera de Spring MVC
+     * (por ejemplo los filtros de seguridad de C-04).
+     */
+    public static ProblemDetail problemaPara(HttpStatus estado, String codigo, String detalle, String rutaPedida) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(estado, detalle);
+        problema.setTitle(estado.getReasonPhrase());
+        problema.setType(URI.create(PREFIJO_TYPE + codigo.toLowerCase(Locale.ROOT).replace('_', '-')));
+        problema.setProperty(PROPIEDAD_CODIGO, codigo);
+        problema.setInstance(URI.create(rutaPedida));
+        return problema;
     }
 
     private static ResponseEntity<Object> respuesta(ProblemDetail problema) {

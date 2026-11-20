@@ -13,8 +13,8 @@
 | **Sistema** (actor técnico) | Procesos internos: expiración de tokens, marcado de prueba vencida | Tareas programadas (`@Scheduled`) dentro del backend | Registrado en auditoría como `actor_tipo = SISTEMA` |
 
 > El paciente **no** es un usuario del sistema: no se loguea, no tiene sesión y no ve nada fuera de su
-> propio turno. Ver la decisión de identidad en [DD-09](09_decisiones_y_supuestos.md) y la pregunta
-> abierta [PA-01](10_preguntas_abiertas.md).
+> propio turno. Se identifica por DNI ([DD-24](09_decisiones_y_supuestos.md), que resuelve
+> [PA-01](10_preguntas_abiertas.md)).
 
 ## RBAC — Matriz de permisos
 
@@ -28,7 +28,7 @@ En v1 **no hay RBAC**. La autorización se reduce a dos reglas:
 
 | Actor | Recurso | C | R | U | D | Notas |
 |-------|---------|---|---|---|---|-------|
-| Odontólogo | Consultorio propio | — (en registro) | ✅ | ✅ | ❌ | La baja de cuenta se pide por soporte en v1 ([PA-07](10_preguntas_abiertas.md)) |
+| Odontólogo | Consultorio propio | — (en registro) | ✅ | ✅ | ❌ | La baja de cuenta se pide por soporte en v1 y la deja desactivada ([DD-29](09_decisiones_y_supuestos.md)) |
 | Odontólogo | Prestaciones | ✅ | ✅ | ✅ | Desactivar | No se borran si tienen turnos |
 | Odontólogo | Disponibilidad | ✅ | ✅ | ✅ | ✅ | Reemplazo completo de la semana tipo |
 | Odontólogo | Bloqueos | ✅ | ✅ | ❌ | ✅ | Para cambiar un bloqueo se borra y se crea otro |
