@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest';
+import fuenteBrand from '../../../design-system/brand.js?raw';
+import { leerNombreDeMarca } from '../pwa/opciones';
 import { nombreDeMarca } from './marca';
+
+/** El nombre tal como está escrito en brand.js: el test no repite el nombre, así un renombre no lo rompe. */
+const nombreEnBrandJs = () => leerNombreDeMarca(fuenteBrand);
 
 describe('nombreDeMarca', () => {
   const original: unknown = Reflect.get(window, 'BRAND_NAME');
@@ -8,7 +13,7 @@ describe('nombreDeMarca', () => {
   });
 
   it('lee la constante de design-system/brand.js', () => {
-    expect(nombreDeMarca()).toBe('Turnos Odonto (TBD)');
+    expect(nombreDeMarca()).toBe(nombreEnBrandJs());
   });
 
   it('refleja un cambio de la constante', () => {
