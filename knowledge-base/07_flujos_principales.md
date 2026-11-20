@@ -58,7 +58,7 @@ sequenceDiagram
 **Disparador**: toque en un hueco de la agenda o botón "+". **Actor**: odontólogo.
 
 **Pasos**:
-1. SPA abre el formulario: paciente (búsqueda por nombre/teléfono o alta rápida), prestación, inicio, checkbox **"Sobreturno"**.
+1. SPA abre el formulario: paciente (búsqueda por nombre, DNI o teléfono, o alta rápida), prestación, inicio, checkbox **"Sobreturno"**.
 2. `POST /turnos` con `{pacienteId | pacienteNuevo, prestacionId, inicio, duracionMin?, esSobreturno}`.
 3. Svc `agenda` calcula `fin`, valida disponibilidad y bloqueos ([RN-AG-03/04](05_reglas_de_negocio.md)) y solapamiento si no es sobreturno ([RN-AG-01](05_reglas_de_negocio.md)).
 4. Inserta el turno; la restricción de exclusión actúa como red de seguridad ante carreras; escribe `TURNO_CREADO` en la misma transacción.
@@ -97,8 +97,8 @@ sequenceDiagram
 1. SPA → `GET /public/consultorios/{slug}`: nombre, dirección, prestaciones visibles.
 2. Paciente elige prestación y día → `GET /public/consultorios/{slug}/huecos?prestacionId&fecha`.
 3. Svc `reserva` calcula huecos = franjas del día − bloqueos − turnos activos (incl. sobreturnos), en pasos de `paso_huecos_min`, dentro de `[ahora + anticipación de reserva, ahora + horizonte]` ([RN-RP-01](05_reglas_de_negocio.md)).
-4. Paciente elige hueco, completa nombre, apellido, teléfono (email opcional) y acepta la política de privacidad.
-5. `POST /public/consultorios/{slug}/turnos`. Svc normaliza teléfono a E.164, deduplica paciente ([RN-RP-03](05_reglas_de_negocio.md)), verifica límite de turnos futuros, revalida el hueco, inserta turno + token de gestión (hash) + evento, todo en una transacción.
+4. Paciente elige hueco, completa nombre, apellido, DNI, teléfono (email opcional) y acepta la política de privacidad.
+5. `POST /public/consultorios/{slug}/turnos`. Svc normaliza DNI y teléfono (E.164), deduplica paciente por DNI ([RN-RP-03](05_reglas_de_negocio.md)), verifica límite de turnos futuros, revalida el hueco, inserta turno + token de gestión (hash) + evento, todo en una transacción.
 6. API devuelve el token en claro **una vez**; la SPA muestra la confirmación con el link `/t/{token}`, botón copiar, "agregar al calendario" (archivo `.ics` generado en el cliente) y aviso de que lo guarde.
 
 ```mermaid
@@ -116,7 +116,7 @@ sequenceDiagram
     P->>SPA: elige hueco + datos + consentimiento
     SPA->>API: POST /public/consultorios/{slug}/turnos
     API->>Svc: reservar(...)
-    Svc->>DB: upsert paciente por teléfono, INSERT turno, token_hash, evento (1 tx)
+    Svc->>DB: upsert paciente por DNI, INSERT turno, token_hash, evento (1 tx)
     alt hueco tomado por otro
         DB-->>Svc: violación de exclusión
         API-->>SPA: 409 HUECO_NO_DISPONIBLE + huecos actualizados
