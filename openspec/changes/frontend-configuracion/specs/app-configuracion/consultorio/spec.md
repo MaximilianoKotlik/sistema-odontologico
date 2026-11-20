@@ -48,11 +48,23 @@ Ante 409 `SLUG_EN_USO`, la pantalla SHALL marcar el campo del slug y mostrar las
 - **THEN** el campo del slug dice que esa dirección está reservada y pide elegir otra
 
 ### Requirement: Validación antes de enviar
-La pantalla MUST validar antes de enviar el formato del slug, el nombre obligatorio de hasta 120 caracteres, la anticipación de cancelación de 0 a 168 horas, la de reserva de 0 o más y el horizonte de 1 a 365 días. Con errores, MUST mostrar un resumen arriba con links a cada campo y no enviar.
+La pantalla MUST validar antes de enviar el formato del slug, el nombre obligatorio de hasta 120 caracteres, el teléfono obligatorio, la anticipación de cancelación de 0 a 168 horas, la de reserva de 0 o más y el horizonte de 1 a 365 días. Con errores, MUST mostrar un resumen arriba con links a cada campo y no enviar.
 
 #### Scenario: Horizonte fuera de rango
 - **WHEN** el odontólogo escribe 400 días en el horizonte y guarda
 - **THEN** no se envía nada, el campo queda marcado y el resumen de errores lleva a ese campo
+
+#### Scenario: Teléfono vacío
+- **WHEN** el odontólogo borra el teléfono de contacto y guarda
+- **THEN** no se envía nada y el campo del teléfono dice que es obligatorio
+
+### Requirement: Anticipación de reserva menor que el horizonte
+La anticipación de reserva MUST ser menor que el horizonte (días × 24 horas); si no, la pantalla MUST marcar el campo de anticipación de reserva y no enviar. El mismo error devuelto por la API MUST mostrarse en ese campo.
+
+#### Scenario: Anticipación igual o mayor que el horizonte
+- **GIVEN** un horizonte de 60 días
+- **WHEN** el odontólogo pone 1500 horas de anticipación de reserva y guarda
+- **THEN** no se envía nada y el campo de anticipación dice que tiene que ser menor que 1440 horas
 
 ### Requirement: Errores de la API por campo
 Los errores 400 de la API (`VALIDACION` con detalle por campo, `TELEFONO_INVALIDO`, `ZONA_HORARIA_INVALIDA`) SHALL mostrarse junto al campo correspondiente, conservando lo que escribió el odontólogo.

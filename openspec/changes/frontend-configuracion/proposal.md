@@ -11,11 +11,11 @@ Después de registrarse, el odontólogo no tiene prestaciones ni horarios, y sin
 ## What Changes
 
 - **Asistente de primer ingreso** (`/app/bienvenida`, FL-02). Se abre después del login mientras el consultorio no tenga prestaciones activas. Tiene cuatro pasos:
-  1. Consultorio: nombre, slug con vista previa del link y teléfono de contacto.
+  1. Consultorio: nombre, slug con vista previa del link y teléfono de contacto (obligatorio).
   2. Prestaciones: al menos una, con atajos para las más comunes.
   3. Horarios: grilla semanal, con un atajo de "lunes a viernes".
   4. Compartir: link `/c/{slug}` con Copiar y Compartir (Web Share API, solo si el navegador la ofrece).
-  Se puede salir y retomar. Cada paso guarda en la API apenas se confirma.
+  Se puede salir con "Terminar después" y retomar. Cada paso guarda en la API apenas se confirma.
 - **Sección Configuración** (`/app/configuracion`), con tres pestañas:
   - **Consultorio**: datos, slug con su link público copiable, reglas de reserva (anticipación de cancelación y de reserva, horizonte, paso de huecos), reserva pública activa o pausada, y zona horaria.
   - **Prestaciones** (`/app/configuracion/prestaciones`): listado con duración y visibilidad, alta y edición en un diálogo, orden con botones subir/bajar, desactivar y reactivar (no hay borrado, RN-AG-07).
@@ -24,7 +24,8 @@ Después de registrarse, el odontólogo no tiene prestaciones ni horarios, y sin
   - duración entre 5 y 480 min, múltiplo de 5;
   - horas de franja en múltiplos de 5, fin posterior al inicio y sin solapamientos en el mismo día;
   - formato del slug (RN-TE-03);
-  - rangos de las reglas de reserva.
+  - teléfono de contacto obligatorio (decisión de Maxi en #23);
+  - rangos de las reglas de reserva, con la anticipación de reserva menor que el horizonte.
   El backend sigue siendo la autoridad: los errores de C-08 se muestran junto al campo o al día que corresponde.
 - **Errores de C-08 traducidos a mensajes**: `SLUG_EN_USO` con slugs sugeridos para elegir con un toque, `SLUG_RESERVADO`, `SLUG_INVALIDO`, `TELEFONO_INVALIDO`, `ZONA_HORARIA_INVALIDA`, `VALIDACION` por campo, `DURACION_INVALIDA`, `PRESTACION_DUPLICADA`, `FRANJAS_SOLAPADAS` con los días en conflicto, `FRANJA_INVALIDA` y `CONFLICTO_CONCURRENCIA`.
 - **Mockups** de las cuatro pantallas y sus estados, revisados y aprobados por Maxi antes de implementar.

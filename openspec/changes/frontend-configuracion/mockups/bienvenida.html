@@ -10,7 +10,7 @@
 <script src="../../../../design-system/brand.js" defer></script>
 <script src="mockup.js" defer></script>
 </head>
-<body data-estados="paso-1:1 · Consultorio|paso-1-slug:1 · Slug en uso (409)|paso-1-guardando:1 · Guardando|paso-2:2 · Prestaciones (vacío)|paso-2-cargado:2 · Prestaciones cargadas|paso-2-minimo:2 · Sin prestaciones al avanzar|paso-3:3 · Horarios (vacío)|paso-3-cargado:3 · Horarios con atajo|paso-4:4 · Compartir|paso-4-copiado:4 · Link copiado|paso-4-sin-share:4 · Navegador sin compartir nativo">
+<body data-estados="paso-1:1 · Consultorio|paso-1-slug:1 · Slug en uso (409)|paso-1-telefono:1 · Sin teléfono|paso-1-guardando:1 · Guardando|paso-2:2 · Prestaciones (vacío)|paso-2-cargado:2 · Prestaciones cargadas|paso-2-minimo:2 · Sin prestaciones al avanzar|paso-3:3 · Horarios (vacío)|paso-3-cargado:3 · Horarios con atajo|paso-4:4 · Compartir|paso-4-copiado:4 · Link copiado|paso-4-sin-share:4 · Navegador sin compartir nativo">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
@@ -44,7 +44,7 @@
 <div class="wizard">
   <header class="wz-top">
     <div class="left">
-      <span class="brand"><span class="brand-mark"><svg aria-hidden="true"><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></span>
+      <span class="brand"><span class="brand-mark"><svg aria-hidden="true"><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></span>
       <span class="prov" title="Pendiente de aprobación">Borrador C-09</span>
     </div>
     <a class="btn btn-ghost btn-sm-text nowrap" href="#" data-no="paso-4 paso-4-copiado paso-4-sin-share">Terminar después</a>
@@ -53,14 +53,14 @@
   <main class="wz-main" id="contenido" tabindex="-1">
     <!-- Progreso -->
     <ol class="steps" aria-label="Pasos de la configuración">
-      <li data-solo="paso-1 paso-1-slug paso-1-guardando" aria-current="step"><span class="bar"></span><span class="lbl"><span class="t">Consultorio</span></span></li>
-      <li data-no="paso-1 paso-1-slug paso-1-guardando" class="done"><span class="bar"></span><span class="lbl"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="t">Consultorio</span><span class="sr"> (completo)</span></span></li>
+      <li data-solo="paso-1 paso-1-slug paso-1-telefono paso-1-guardando" aria-current="step"><span class="bar"></span><span class="lbl"><span class="t">Consultorio</span></span></li>
+      <li data-no="paso-1 paso-1-slug paso-1-telefono paso-1-guardando" class="done"><span class="bar"></span><span class="lbl"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="t">Consultorio</span><span class="sr"> (completo)</span></span></li>
 
-      <li data-solo="paso-1 paso-1-slug paso-1-guardando"><span class="bar"></span><span class="lbl"><span class="t">Prestaciones</span></span></li>
+      <li data-solo="paso-1 paso-1-slug paso-1-telefono paso-1-guardando"><span class="bar"></span><span class="lbl"><span class="t">Prestaciones</span></span></li>
       <li data-solo="paso-2 paso-2-cargado paso-2-minimo" aria-current="step"><span class="bar"></span><span class="lbl"><span class="t">Prestaciones</span></span></li>
       <li data-solo="paso-3 paso-3-cargado paso-4 paso-4-copiado paso-4-sin-share" class="done"><span class="bar"></span><span class="lbl"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="t">Prestaciones</span><span class="sr"> (completo)</span></span></li>
 
-      <li data-solo="paso-1 paso-1-slug paso-1-guardando paso-2 paso-2-cargado paso-2-minimo"><span class="bar"></span><span class="lbl"><span class="t">Horarios</span></span></li>
+      <li data-solo="paso-1 paso-1-slug paso-1-telefono paso-1-guardando paso-2 paso-2-cargado paso-2-minimo"><span class="bar"></span><span class="lbl"><span class="t">Horarios</span></span></li>
       <li data-solo="paso-3 paso-3-cargado" aria-current="step"><span class="bar"></span><span class="lbl"><span class="t">Horarios</span></span></li>
       <li data-solo="paso-4 paso-4-copiado paso-4-sin-share" class="done"><span class="bar"></span><span class="lbl"><svg aria-hidden="true"><use href="#i-check"/></svg><span class="t">Horarios</span><span class="sr"> (completo)</span></span></li>
 
@@ -69,7 +69,7 @@
     </ol>
 
     <!-- ===== Paso 1 ===== -->
-    <section data-solo="paso-1 paso-1-slug paso-1-guardando" aria-labelledby="p1-t">
+    <section data-solo="paso-1 paso-1-slug paso-1-telefono paso-1-guardando" aria-labelledby="p1-t">
       <p class="wz-count">Paso 1 de 4</p>
       <h1 id="p1-t">¡Hola, Dra. Ejemplo! Armemos tu consultorio</h1>
       <p class="lede">En 4 pasos vas a tener tu link para que tus pacientes reserven. Lo podés cambiar todo después.</p>
@@ -93,9 +93,10 @@
           </ul>
         </div>
         <div class="field">
-          <label for="w-tel">Teléfono de contacto <span class="opt">(opcional)</span></label>
-          <input class="input" id="w-tel" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="w-tel-h" placeholder="11 0000-0001">
-          <p class="hint" id="w-tel-h">Se muestra a los pacientes cuando ya no pueden cancelar por el link.</p>
+          <label for="w-tel">Teléfono de contacto</label>
+          <input class="input" id="w-tel" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="w-tel-h w-tel-err" placeholder="11 0000-0001" data-invalido="paso-1-telefono" data-valor="*=+54 9 11 0000-0001|paso-1=|paso-1-telefono=">
+          <p class="hint" id="w-tel-h" data-no="paso-1-telefono">Se muestra en tu página y cuando tus pacientes ya no pueden cancelar por el link.</p>
+          <p class="error-msg" id="w-tel-err" data-solo="paso-1-telefono"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Poné un teléfono de contacto: es lo que ven tus pacientes cuando no pueden cancelar por el link.</span></p>
         </div>
         <p class="hint">Las reglas de reserva arrancan con valores comunes: cancelar hasta 24 h antes, reservar con 2 h de anticipación y hasta 60 días adelante. Las cambiás en Configuración.</p>
       </form>
@@ -282,8 +283,8 @@
 
   <footer class="wz-foot">
     <div class="in">
-      <a class="btn btn-ghost" href="#" data-no="paso-1 paso-1-slug paso-1-guardando paso-4 paso-4-copiado paso-4-sin-share"><svg aria-hidden="true"><use href="#i-left"/></svg>Atrás</a>
-      <button class="btn btn-primary" type="button" data-solo="paso-1 paso-1-slug paso-2 paso-2-cargado paso-2-minimo paso-3-cargado">Siguiente<svg aria-hidden="true"><use href="#i-right"/></svg></button>
+      <a class="btn btn-ghost" href="#" data-no="paso-1 paso-1-slug paso-1-telefono paso-1-guardando paso-4 paso-4-copiado paso-4-sin-share"><svg aria-hidden="true"><use href="#i-left"/></svg>Atrás</a>
+      <button class="btn btn-primary" type="button" data-solo="paso-1 paso-1-slug paso-1-telefono paso-2 paso-2-cargado paso-2-minimo paso-3-cargado">Siguiente<svg aria-hidden="true"><use href="#i-right"/></svg></button>
       <button class="btn btn-primary" type="button" disabled data-solo="paso-1-guardando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Guardando…</button>
       <button class="btn btn-primary" type="button" data-solo="paso-3">Siguiente<svg aria-hidden="true"><use href="#i-right"/></svg></button>
       <a class="btn btn-primary" href="#" data-solo="paso-4 paso-4-copiado paso-4-sin-share">Ir a mi agenda<svg aria-hidden="true"><use href="#i-right"/></svg></a>

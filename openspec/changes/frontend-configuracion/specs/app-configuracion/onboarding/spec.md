@@ -45,6 +45,14 @@ El paso 1 SHALL mostrar el nombre y el slug que el consultorio ya tiene desde el
 - **WHEN** se abre el paso 1
 - **THEN** los campos muestran esos valores
 
+### Requirement: Teléfono obligatorio en el paso 1
+El paso 1 MUST exigir el teléfono de contacto para avanzar, porque es lo que ve el paciente cuando no puede cancelar por el link o el consultorio no toma turnos online.
+
+#### Scenario: Sin teléfono
+- **GIVEN** el paso 1 con el teléfono vacío
+- **WHEN** el odontólogo toca "Siguiente"
+- **THEN** no avanza, no se envía nada y el campo del teléfono queda marcado con "Poné un teléfono de contacto"
+
 ### Requirement: Mínimo para avanzar
 El paso de Prestaciones MUST exigir al menos una prestación activa para avanzar. El paso de Horarios MUST exigir al menos una franja para avanzar.
 
@@ -78,9 +86,9 @@ El último paso SHALL mostrar el link público completo `/c/{slug}` con un botó
 - **THEN** no aparece el botón "Compartir" y sí "Copiar link"
 
 ### Requirement: Salir y retomar
-El odontólogo SHALL poder salir del asistente en cualquier paso. Lo ya guardado MUST conservarse, y el asistente MUST volver a abrirse en el próximo ingreso mientras no haya prestaciones activas.
+El odontólogo SHALL poder salir del asistente en cualquier paso con "Terminar después". Lo ya guardado MUST conservarse, y el asistente MUST volver a abrirse en el próximo ingreso mientras no haya prestaciones activas.
 
 #### Scenario: Salir en el paso 2
 - **GIVEN** el paso 1 guardado y ninguna prestación cargada
-- **WHEN** el odontólogo sale del asistente y vuelve a ingresar más tarde
+- **WHEN** el odontólogo toca "Terminar después" y vuelve a ingresar más tarde
 - **THEN** se abre el asistente con los datos del paso 1 ya guardados

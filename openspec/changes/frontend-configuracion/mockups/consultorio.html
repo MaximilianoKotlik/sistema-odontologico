@@ -10,7 +10,7 @@
 <script src="../../../../design-system/brand.js" defer></script>
 <script src="mockup.js" defer></script>
 </head>
-<body data-estados="normal:Datos guardados|cargando:Cargando|slug-editando:Slug editado sin guardar|slug-en-uso:Slug en uso con sugerencias (409)|slug-reservado:Slug reservado (400)|validacion:Errores antes de enviar|telefono-invalido:Teléfono inválido (400)|guardando:Guardando|guardado:Guardado|pausada:Reserva pública pausada|conflicto:Cambió en otro dispositivo (409)|salir:Salir con cambios sin guardar">
+<body data-estados="normal:Datos guardados|cargando:Cargando|slug-editando:Slug editado sin guardar|slug-en-uso:Slug en uso con sugerencias (409)|slug-reservado:Slug reservado (400)|validacion:Errores antes de enviar|telefono-vacio:Teléfono vacío|telefono-invalido:Teléfono inválido (400)|anticipacion:Anticipación mayor que el horizonte|guardando:Guardando|guardado:Guardado|pausada:Reserva pública pausada|conflicto:Cambió en otro dispositivo (409)|salir:Salir con cambios sin guardar">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
@@ -35,7 +35,7 @@
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <div class="shell">
   <nav class="sidebar" aria-label="Secciones">
-    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></a>
+    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
     <span class="prov" title="Pendiente de aprobación">Borrador C-09</span>
     <ul>
       <li><a class="sidelink" href="#"><svg><use href="#i-cal"/></svg>Agenda</a></li>
@@ -129,9 +129,10 @@
                 <input class="input" id="direccion" autocomplete="street-address" data-valor="*=Calle Falsa 123, CABA">
               </div>
               <div class="field">
-                <label for="tel">Teléfono de contacto <span class="opt">(opcional)</span></label>
-                <input class="input" id="tel" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="tel-hint tel-err" data-invalido="telefono-invalido" data-valor="*=+54 9 11 0000-0001|telefono-invalido=123">
-                <p class="hint" id="tel-hint" data-no="telefono-invalido">Se muestra a los pacientes cuando ya no pueden cancelar por el link.</p>
+                <label for="tel">Teléfono de contacto</label>
+                <input class="input" id="tel" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="tel-hint tel-err tel-vacio" data-invalido="telefono-invalido telefono-vacio" data-valor="*=+54 9 11 0000-0001|telefono-invalido=123|telefono-vacio=">
+                <p class="hint" id="tel-hint" data-no="telefono-invalido telefono-vacio">Se muestra en tu página y cuando los pacientes ya no pueden cancelar por el link o pausás la reserva.</p>
+                <p class="error-msg" id="tel-vacio" data-solo="telefono-vacio"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Poné un teléfono de contacto: es lo que ven tus pacientes cuando no pueden cancelar por el link o si pausás la reserva.</span></p>
                 <p class="error-msg" id="tel-err" data-solo="telefono-invalido"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Este teléfono no es válido. Probá con el código de área, por ejemplo 11 0000-0001.</span></p>
               </div>
             </section>
@@ -142,7 +143,7 @@
 
             <div class="switch-row field">
               <div class="txt"><strong id="rp-l">Reserva pública</strong><p class="hint" id="rp-h" data-no="pausada">Los pacientes pueden reservar, reprogramar y cancelar desde tu link.</p><p class="hint" data-solo="pausada">Pausada: los pacientes no pueden reservar desde el link hasta que la actives. Tus turnos no cambian.</p></div>
-              <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="rp-l" aria-describedby="rp-h" data-solo="normal cargando slug-editando slug-en-uso slug-reservado validacion telefono-invalido guardando guardado conflicto salir"><span class="track" aria-hidden="true"></span><span class="state">Activa</span></button>
+              <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="rp-l" aria-describedby="rp-h" data-solo="normal cargando slug-editando slug-en-uso slug-reservado validacion telefono-vacio telefono-invalido anticipacion guardando guardado conflicto salir"><span class="track" aria-hidden="true"></span><span class="state">Activa</span></button>
               <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="rp-l" data-solo="pausada"><span class="track" aria-hidden="true"></span><span class="state">Pausada</span></button>
             </div>
 
@@ -153,8 +154,9 @@
             </div>
             <div class="field">
               <label for="reserva">Con cuánta anticipación pueden reservar</label>
-              <div class="affix short"><input class="input" id="reserva" type="number" inputmode="numeric" min="0" step="1" aria-describedby="reserva-h" data-valor="*=2"><span class="suf">horas antes</span></div>
-              <p class="hint" id="reserva-h">Evita que te reserven un turno para dentro de 10 minutos.</p>
+              <div class="affix short" data-error-en="anticipacion"><input class="input" id="reserva" type="number" inputmode="numeric" min="0" step="1" aria-describedby="reserva-h reserva-err" data-invalido="anticipacion" data-valor="*=2|anticipacion=1500"><span class="suf">horas antes</span></div>
+              <p class="hint" id="reserva-h" data-no="anticipacion">Evita que te reserven un turno para dentro de 10 minutos. Tiene que ser menor que el horizonte.</p>
+              <p class="error-msg" id="reserva-err" data-solo="anticipacion"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Tiene que ser menor que el horizonte (60 días = 1440 horas). Si no, no queda ningún horario para reservar.</span></p>
             </div>
             <div class="field">
               <label for="horizonte">Hasta cuántos días adelante</label>
@@ -181,7 +183,7 @@
         </form>
 
         <!-- Barra de guardado: solo con cambios -->
-        <div class="savebar" data-solo="slug-editando slug-en-uso slug-reservado validacion telefono-invalido guardando conflicto pausada salir">
+        <div class="savebar" data-solo="slug-editando slug-en-uso slug-reservado validacion telefono-vacio telefono-invalido anticipacion guardando conflicto pausada salir">
           <p class="msg" style="margin:0"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Tenés cambios sin guardar</p>
           <div class="btns">
             <button class="btn btn-ghost" type="button" data-no="guardando">Descartar</button>

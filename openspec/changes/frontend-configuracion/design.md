@@ -37,7 +37,7 @@
 - Rutas: `/app/configuracion`, `/app/configuracion/prestaciones`, `/app/configuracion/horarios` y `/app/bienvenida`.
 - Las pestañas son links (`<a>` con `aria-current="page"`), no un `tablist` de ARIA: cada una es una URL navegable con historial propio, y el patrón de pestañas ARIA es para paneles en la misma página.
 - En mobile las pestañas se desplazan en horizontal si no entran. En 360 px entran las tres.
-- El asistente se muestra **sin** la navegación del shell: solo la marca, el progreso y "Salir". Así el primer ingreso no se distrae con secciones vacías. "Salir" lleva a la agenda.
+- El asistente se muestra **sin** la navegación del shell: solo la marca, el progreso y "Terminar después". Así el primer ingreso no se distrae con secciones vacías. "Terminar después" lleva a la agenda.
 
 ### D3 — Cuándo se abre el asistente
 - Después del login (C-07) y al restaurar la sesión, la app pide `GET /api/v1/prestaciones`. Si no hay activas, va a `/app/bienvenida`.
@@ -48,7 +48,12 @@
 ### D4 — Unidades en el formulario
 - Anticipación de cancelación y de reserva en **horas** (enteros), horizonte en **días** y paso en un `<select>` (5, 10, 15, 20, 30).
 - Si la API devuelve minutos que no son horas enteras (por ejemplo 90, cargado por otro cliente), el campo muestra minutos con la unidad "minutos" para no redondear en silencio.
-- Rango de cancelación: 0 a 168 h (= 10080 min de C-08). Reserva: 0 a 720 h en el cliente (30 días), porque C-08 solo exige `>= 0` y un valor mayor que el horizonte no tiene sentido. **Para revisar**: si Maxi prefiere no limitarla en el cliente, se quita.
+- Rango de cancelación: 0 a 168 h (= 10080 min de C-08).
+- Anticipación de reserva: 0 o más, y **menor que el horizonte** (horizonte en días × 24 h). Si no, no queda ningún horario para reservar. Se valida cruzando los dos campos, y el mensaje va en el campo de anticipación (decisión de Maxi en #23; C-08 la valida en `ReglasDeReserva`).
+
+### D4b — Teléfono de contacto obligatorio
+- Es lo que ve el paciente en la página pública (DD-33), cuando ya no puede cancelar por el link (RN-RP-04) y cuando el consultorio no toma turnos online (RN-RP-11). Por eso es obligatorio en el asistente y en Configuración (decisión de Maxi en #23; C-08 rechaza un teléfono vacío).
+- El registro (C-04) puede crear el consultorio sin teléfono: el asistente lo pide en el paso 1.
 
 ### D5 — Slug
 - Se normaliza mientras se escribe: minúsculas, espacios a guiones y sin tildes. Se valida con las reglas de RN-TE-03: 3 a 40 caracteres de `[a-z0-9-]`, sin guiones al inicio ni al final ni dobles.
@@ -78,6 +83,8 @@
 | `SLUG_INVALIDO`, `SLUG_RESERVADO` | En el campo del slug |
 | `SLUG_EN_USO` (`sugerencias`) | En el campo del slug, con chips de sugerencias |
 | `TELEFONO_INVALIDO` | En el campo del teléfono, con un ejemplo de formato |
+| Teléfono vacío (`VALIDACION` en `telefonoContacto`) | En el campo del teléfono: "Poné un teléfono de contacto…" |
+| Anticipación de reserva ≥ horizonte (código que defina C-08 en `ReglasDeReserva`; si llega como `VALIDACION`, por campo) | En el campo de anticipación de reserva |
 | `ZONA_HORARIA_INVALIDA` | En el selector de zona horaria |
 | `DURACION_INVALIDA` | En la duración del diálogo |
 | `PRESTACION_DUPLICADA` | En el nombre del diálogo |

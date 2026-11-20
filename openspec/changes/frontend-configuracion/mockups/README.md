@@ -26,12 +26,12 @@ Cada archivo elige el estado con `?estado=…`. Al pie de cada pantalla hay una 
 
 | Pantalla | Archivo | Estados (`?estado=`) |
 |---|---|---|
-| Asistente (`/app/bienvenida`) | `bienvenida.html` | `paso-1`, `paso-1-slug` (409 con sugerencias), `paso-1-guardando`, `paso-2` (vacío con atajos), `paso-2-cargado`, `paso-2-minimo` (avanzar sin prestaciones), `paso-3` (vacío con atajo), `paso-3-cargado`, `paso-4`, `paso-4-copiado`, `paso-4-sin-share` |
-| Consultorio (`/app/configuracion`) | `consultorio.html` | `normal`, `cargando`, `slug-editando` (aviso de que el link anterior deja de funcionar), `slug-en-uso` (409), `slug-reservado` (400), `validacion` (resumen de errores), `telefono-invalido` (400), `guardando`, `guardado`, `pausada` (reserva pública pausada), `conflicto` (409 `CONFLICTO_CONCURRENCIA`), `salir` (cambios sin guardar) |
+| Asistente (`/app/bienvenida`) | `bienvenida.html` | `paso-1`, `paso-1-slug` (409 con sugerencias), `paso-1-telefono` (sin teléfono), `paso-1-guardando`, `paso-2` (vacío con atajos), `paso-2-cargado`, `paso-2-minimo` (avanzar sin prestaciones), `paso-3` (vacío con atajo), `paso-3-cargado`, `paso-4`, `paso-4-copiado`, `paso-4-sin-share` |
+| Consultorio (`/app/configuracion`) | `consultorio.html` | `normal`, `cargando`, `slug-editando` (aviso de que el link anterior deja de funcionar), `slug-en-uso` (409), `slug-reservado` (400), `validacion` (resumen de errores), `telefono-vacio`, `telefono-invalido` (400), `anticipacion` (mayor que el horizonte), `guardando`, `guardado`, `pausada` (reserva pública pausada), `conflicto` (409 `CONFLICTO_CONCURRENCIA`), `salir` (cambios sin guardar) |
 | Prestaciones (`/app/configuracion/prestaciones`) | `prestaciones.html` | `normal`, `vacio`, `alta`, `duracion-invalida`, `duplicada` (409), `editar` (aviso RN-AG-02), `agregada`, `inactivas`, `desactivar`, `desactivar-ultima` |
 | Horarios (`/app/configuracion/horarios`) | `horarios.html` | `normal`, `vacia`, `editando`, `solapadas` (detectado en el cliente), `invalida` (fin antes del inicio), `api-solapadas` (400 con `dias: [3]`), `copiar`, `guardando`, `guardado`, `vaciar` (confirmar semana sin horarios), `zona` (zona horaria distinta) |
 
-Capturas: `previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png` (88 en total).
+Capturas: `previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png` (94 en total).
 
 Para verlos: abrir el HTML con el navegador o servir la raíz del repo (`python -m http.server`) y entrar a `/openspec/changes/frontend-configuracion/mockups/bienvenida.html`.
 
@@ -43,7 +43,8 @@ Para verlos: abrir el HTML con el navegador o servir la raíz del repo (`python 
    - Horarios: "Lunes a viernes, 9 a 13 y 15 a 19".
    Cada atajo carga datos que después se pueden editar.
 3. **Reglas de reserva con valores por defecto en el asistente**: el paso 1 no las pregunta para no alargar el primer ingreso. Muestra los valores con que arrancan y dice dónde se cambian.
-4. **Unidades legibles** (D4): anticipaciones en horas, horizonte en días y paso de huecos como opciones. En el cliente, la anticipación de reserva se limita a 720 h. **Para revisar**: si preferís no limitarla, se quita.
+4. **Unidades legibles** (D4): anticipaciones en horas, horizonte en días y paso de huecos como opciones. La anticipación de reserva tiene que ser menor que el horizonte, con el mensaje en su campo (revisión de Maxi).
+4b. **Teléfono de contacto obligatorio** en el asistente y en Configuración (D4b, revisión de Maxi).
 5. **Slug**:
    - Se normaliza mientras se escribe.
    - Las palabras reservadas las valida el backend (D5), para no mantener dos listas.
@@ -60,7 +61,7 @@ Para verlos: abrir el HTML con el navegador o servir la raíz del repo (`python 
 
 ## (TBD) y datos ficticios
 
-- Nombre y logo provisorios: `BRAND_NAME` de `design-system/brand.js` ("Turnos Odonto (TBD)") y el isotipo de diente de C-06.
+- Nombre: **Muelas Felices** (DD-34), desde `BRAND_NAME` de `design-system/brand.js`. El logo sigue provisorio (isotipo de diente de C-06), igual que en el sistema de diseño.
 - Dominio del link: `turnos.example.com` es un placeholder. En producción sale de `location.origin`.
 - Datos ficticios: "Dra. Ejemplo", "Consultorio Demo Sur", "Calle Falsa 123, CABA", `+54 9 11 0000-0001` y los slugs `dra-ejemplo*`.
 - El link público no muestra nada hasta C-16.
