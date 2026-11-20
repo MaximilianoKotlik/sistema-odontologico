@@ -12,7 +12,7 @@
 2. Leer los docs de la knowledge-base indicados en "Leer antes". En los changes de frontend, leer además el sistema de diseño aprobado (`design-system/README.md`, `tokens.css`, `components.html`).
 3. Acordar el alcance y los criterios de aceptación del item (los Given/When/Then de `06_funcionalidades.md` son la base; Strict TDD: cada criterio se escribe primero como test en rojo).
 4. Implementar, verificar los criterios acordados y registrar la evidencia en el PR.
-5. Marcar el checkbox `[x]` en este archivo al completar la verificación técnica.
+5. Cerrar el change en el mismo PR de implementación: cuando el PR está aprobado (o el líder confirma que no quedan cambios pedidos), el autor suma un último commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). No hace falta un PR aparte para el cierre.
 
 Reglas del equipo:
 - **Governance**: CRITICO = solo análisis hasta aprobación humana explícita; ALTO = proponer y esperar revisión antes de escribir; MEDIO = implementar con checkpoints; BAJO = autonomía si los tests pasan.
@@ -138,7 +138,7 @@ Reglas de coordinación del paralelismo:
 - **Propuestas un paso antes**: los changes CRITICO y ALTO preparan su propuesta en el paso previo, para que la aprobación del líder no frene el change.
 - **Prioridad de revisión**: los PRs del camino crítico (C-02, C-04, C-08, C-10, C-11, C-12, C-13, C-14/C-18) se revisan antes que el resto.
 - **Migraciones Flyway**: cada change numera su migración provisoriamente y, al rebasar sobre `main` antes del merge, la pasa al siguiente número libre (una migración no mergeada todavía se puede renumerar; una mergeada nunca se edita).
-- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el líder al mergear.
+- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, recién con la aprobación del líder (paso 5). Los PRs de solo propuesta o mockups no marcan `[x]`.
 - **Trabajo anticipado**: se pueden preparar mockups, tests y propuestas antes de que se habilite un change, pero su PR se abre recién con las dependencias en `[x]`.
 
 ---
@@ -177,7 +177,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-08
 
 ### [C-03] `auditoria-base`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #21, 2026-11-20)
 - **Scope**:
   - Migración: `evento_auditoria` append-only (actor_tipo, entidad, acción, `valor_anterior/nuevo` JSONB, ip) con trigger `BEFORE UPDATE OR DELETE` que falla y rol `app_rw` solo con `INSERT, SELECT`.
   - Listener `@TransactionalEventListener(BEFORE_COMMIT)` que persiste en la misma transacción los eventos del puerto de C-02; enmascarado de PII en logs.
@@ -299,7 +299,7 @@ Reglas de coordinación del paralelismo:
 ### [C-10] `agenda-esquema-dominio`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Migración: `paciente` (único `(consultorio_id, telefono_e164)`, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
+  - Migración: `paciente` (único `(consultorio_id, dni)` por DD-24, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
   - Dominio puro (sin Spring/JPA): entidades y value objects (`Intervalo` semiabierto, `Duracion` múltiplo de 5), `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento`, `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), derivación `fin = inicio + duracion_min` (RN-AG-12), reglas de bloqueo (rechazo con lista de conflictos), invariantes de sobreturno.
   - Tests: unitarios de dominio con `Clock` inyectado (la mayoría) + integración de la exclusión GiST (la base rechaza el solapamiento aun salteando el servicio); ArchUnit "dominio sin Spring/JPA".
   - **Requisito del `proposal.md`**: justificar explícitamente la granularidad de la prevención de solapamientos. La práctica de referencia es "por profesional y por sillón/box"; la v1 la evalúa **por consultorio** porque tiene un único profesional y un único sillón implícito (RN-AG-13, DD-17). Citar [PA-14](knowledge-base/10_preguntas_abiertas.md) como la pregunta abierta que decide cuándo adelantar multi-sillón, y el punto de extensión de RN-AG-13 (dos restricciones de exclusión por `profesional_id` y `sillon_id`, migración aditiva).
@@ -522,7 +522,7 @@ Reglas de coordinación del paralelismo:
   - Revisión de seguridad: CSP/cabeceras, rate limits, enmascarado de PII en logs, ausencia de tokens en `Referer`/caché, secretos solo por entorno; aislamiento entre tenants en toda la API; matriz completa de escrituras bloqueadas en plan `VENCIDO` (incluidos los endpoints de C-17).
   - Revisión de `/seguridad` contra el código (RN-PL-06) antes del release.
   - Seed local completo para demo; README de arranque (`docker compose up --build`); textos de privacidad y términos como borrador marcado "pendiente de revisión legal" (PA-06), sin declarar cumplimiento no verificado.
-  - Checklist previo al piloto (PA-02 hosting, PA-06 asesoría legal, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
+  - Checklist previo al lanzamiento (PA-02 país del VPS y backups, revisión legal de DD-28, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
 - **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
 - **Leer antes**:

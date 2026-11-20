@@ -13,6 +13,10 @@ El sistema SHALL persistir cada evento de auditoría publicado con un id único 
 - **WHEN** se publica un evento con actor `SISTEMA`, sin id de actor, sin valor anterior y sin IP
 - **THEN** el evento se persiste con esos campos vacíos
 
+#### Scenario: IP con formato inválido
+- **WHEN** se publica un evento cuya IP no es una dirección IPv4 ni IPv6 válida
+- **THEN** el evento se persiste con la IP vacía y el cambio auditado se confirma
+
 ### Requirement: Atomicidad entre el evento y el cambio auditado
 El evento SHALL persistirse en la misma transacción que el cambio que lo origina: si la transacción se revierte el evento no queda, y si la persistencia del evento falla el cambio se revierte.
 
