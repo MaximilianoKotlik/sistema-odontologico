@@ -84,7 +84,7 @@ public class RegistrarOdontologo {
         }
         ConsultorioCreado consultorio = consultorios.darDeAlta(solicitud.nombreConsultorio().trim());
         UUID usuario = ids.nuevo();
-        usuarios.guardarNuevo(new NuevoUsuario(usuario, consultorio.id(), solicitud.email().trim(), hash,
+        usuarios.guardarNuevo(new NuevoUsuario(usuario, consultorio.id(), solicitud.email(), hash,
                 solicitud.nombre().trim(), solicitud.apellido().trim(), Instant.now(reloj), terminosVersionVigente));
         return new Resultado(usuario, consultorio.id(), consultorio.slug());
     }

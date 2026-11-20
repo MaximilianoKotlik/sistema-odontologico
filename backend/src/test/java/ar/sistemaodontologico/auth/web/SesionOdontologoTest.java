@@ -108,6 +108,17 @@ class SesionOdontologoTest extends IntegracionPostgresTest {
         assertThat(sinCuenta.getHeaders().get(HttpHeaders.SET_COOKIE)).isNull();
     }
 
+    @Test
+    void loginConContrasenaDeMasDeSetentaYDosBytesEsCredencialesInvalidas() throws Exception {
+        String email = registrar();
+
+        for (ResponseEntity<String> respuesta : List.of(login(email, "ñ".repeat(40)),
+                login("nadie-" + sufijo() + "@example.com", "a".repeat(100)))) {
+            assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+            assertThat(sinInstance(respuesta).path("codigo").asText()).isEqualTo("CREDENCIALES_INVALIDAS");
+        }
+    }
+
     // Requirement: Rotación del refresh
     @Test
     void refreshValidoRotaElToken() throws Exception {

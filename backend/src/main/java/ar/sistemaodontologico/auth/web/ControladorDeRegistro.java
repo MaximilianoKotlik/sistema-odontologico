@@ -32,6 +32,11 @@ class ControladorDeRegistro {
             @NotBlank @Size(max = 120) String nombreConsultorio,
             Boolean aceptaTerminos) {
 
+        /** El email se normaliza una sola vez, acá, antes de validarlo y de usarlo (revisión de #16). */
+        RegistroRequest {
+            email = email == null ? null : email.trim();
+        }
+
         @Override
         public String toString() {
             return "RegistroRequest[consultorio=" + nombreConsultorio + "]";

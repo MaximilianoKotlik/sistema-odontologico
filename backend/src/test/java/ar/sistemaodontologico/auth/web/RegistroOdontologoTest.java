@@ -133,6 +133,27 @@ class RegistroOdontologoTest extends IntegracionPostgresTest {
     }
 
     @Test
+    void contrasenaDeMasDeSetentaYDosBytesNoDaErrorInterno() throws Exception {
+        for (String larga : new String[] {"a".repeat(73), "ñ".repeat(37)}) {
+            ResponseEntity<String> respuesta = registrar(email(), larga, "Consultorio " + sufijo(), true);
+
+            assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(codigo(respuesta)).isEqualTo("PASSWORD_DEBIL");
+        }
+    }
+
+    @Test
+    void elEmailSeNormalizaUnaSolaVez() throws Exception {
+        String email = email();
+        registrar("  " + email + "  ", CONTRASENA, "Consultorio Espacios " + sufijo(), true);
+
+        ResponseEntity<String> repetido = registrar(email, CONTRASENA, "Otro " + sufijo(), true);
+
+        assertThat(jdbc.queryForObject("SELECT email FROM usuario WHERE email = ?", String.class, email)).isEqualTo(email);
+        assertThat(codigo(repetido)).isEqualTo("EMAIL_EN_USO");
+    }
+
+    @Test
     void contrasenaIgualAlEmail() throws Exception {
         String email = email();
 

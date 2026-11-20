@@ -26,6 +26,25 @@ class PoliticaDeContrasenaTest {
     }
 
     @Test
+    void setentaYDosBytesAlcanzan() {
+        assertThatCode(() -> PoliticaDeContrasena.validar("a".repeat(72), EMAIL)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void masDeSetentaYDosBytesEsDebil() {
+        assertThatThrownBy(() -> PoliticaDeContrasena.validar("a".repeat(73), EMAIL))
+                .extracting("codigo").isEqualTo("PASSWORD_DEBIL");
+    }
+
+    @Test
+    void elLimiteEsEnBytesUtf8YNoEnCaracteres() {
+        // 37 "ñ" son 37 caracteres pero 74 bytes en UTF-8: BCrypt los rechazaría.
+        assertThatThrownBy(() -> PoliticaDeContrasena.validar("ñ".repeat(37), EMAIL))
+                .extracting("codigo").isEqualTo("PASSWORD_DEBIL");
+        assertThatCode(() -> PoliticaDeContrasena.validar("ñ".repeat(36), EMAIL)).doesNotThrowAnyException();
+    }
+
+    @Test
     void igualAlEmailEsDebilAunqueCambienLasMayusculas() {
         assertThatThrownBy(() -> PoliticaDeContrasena.validar("A.Perez@Example.com", EMAIL))
                 .extracting("codigo").isEqualTo("PASSWORD_DEBIL");

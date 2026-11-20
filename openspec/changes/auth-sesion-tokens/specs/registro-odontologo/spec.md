@@ -29,7 +29,11 @@ El email MUST ser único sin distinguir mayúsculas; registrarse con un email ex
 - **THEN** la respuesta es 409 con código `EMAIL_EN_USO` y la cantidad de consultorios no cambia
 
 ### Requirement: Política de contraseña
-La contraseña MUST tener al menos 10 caracteres y no ser igual al email (sin distinguir mayúsculas); si no cumple, el registro MUST responder 400 `PASSWORD_DEBIL`. La contraseña MUST guardarse solo como hash BCrypt de costo 12.
+La contraseña MUST tener al menos 10 caracteres, como máximo 72 bytes en UTF-8 (el límite de BCrypt) y no ser igual al email (sin distinguir mayúsculas); si no cumple, el registro MUST responder 400 `PASSWORD_DEBIL`. La contraseña MUST guardarse solo como hash BCrypt de costo 12.
+
+#### Scenario: Contraseña de más de 72 bytes
+- **WHEN** se registra con una contraseña de 73 bytes, o de 37 letras `ñ` (74 bytes en UTF-8)
+- **THEN** la respuesta es 400 con código `PASSWORD_DEBIL`, nunca 500
 
 #### Scenario: Contraseña corta
 - **WHEN** se registra con una contraseña de 9 caracteres
