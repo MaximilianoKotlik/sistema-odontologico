@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tu turno · Consultorio Demo Sur (mockup C-16)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="publica.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+<style>
+  .chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:2px 10px;border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--weight-semibold);border:1px solid}
+  .chip svg{width:14px;height:14px;flex:none}
+  .chip.reservado{color:var(--state-reservado-fg);background:var(--state-reservado-bg);border-color:var(--state-reservado-bd)}
+  .until{display:flex;gap:var(--space-2);align-items:flex-start;color:var(--color-text-muted);font-size:var(--text-sm);margin:var(--space-3) 0 var(--space-4)}
+  .until svg{flex:none;width:16px;height:16px;margin-top:3px}
+  .label-top{font-size:var(--text-xs);font-weight:var(--weight-semibold);text-transform:uppercase;letter-spacing:.04em;color:var(--color-text-muted)}
+</style>
+</head>
+<!-- /t/{token}: gestión del turno por el paciente, sin cuenta (FL-05) -->
+<body data-estados="ver:Ver turno|reprogramar:Elegir horario nuevo|reprogramar-confirmar:Confirmar el cambio|reprogramado:Turno reprogramado|hueco-ocupado:Horario recién ocupado (409)|cancelar:Confirmar cancelación|cancelado:Turno cancelado|fuera-de-plazo:Fuera de plazo (409)|solo-cancelar:Reserva online pausada|invalido:Link inválido o vencido (404)">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5h2.6l1.4 4.1-1.9 1.3a11 11 0 006.4 6.4l1.3-1.9 4.1 1.4v2.6a2.1 2.1 0 01-2.2 2.1A16.5 16.5 0 014.5 5.7a2.1 2.1 0 012.1-2.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.3l2.7 2.7L16 9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 9l6 6M15 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-link-off" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1M4 4l16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6.5 13.5L12 19l5.5-5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal-plus" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+
+<div class="page">
+  <div class="prov-bar">Borrador C-16 · pendiente de aprobación · datos ficticios</div>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+
+  <header class="cons" data-no="invalido">
+    <div class="wrap">
+      <p class="name">Consultorio Demo Sur</p>
+      <div class="meta">
+        <span><svg aria-hidden="true"><use href="#i-pin"/></svg>Av. Ejemplo 1234, CABA</span>
+        <a href="tel:+5491100000001"><svg aria-hidden="true"><use href="#i-phone"/></svg>11 0000-0001</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido" tabindex="-1">
+   <div class="wrap">
+
+    <!-- ===== VER TURNO (también base de cancelar, fuera de plazo y solo cancelar) ===== -->
+    <section data-solo="ver cancelar fuera-de-plazo solo-cancelar" aria-labelledby="v-t">
+      <h1 class="title" id="v-t">Tu turno</h1>
+      <div class="summary">
+        <div class="head"><span class="label-top">Ana Ejemplo</span><span class="chip reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span></div>
+        <div class="row"><svg aria-hidden="true"><use href="#i-cal"/></svg><div><div class="when">Martes 24 de noviembre, 10:30</div><div class="sub">Limpieza dental · 45 min · hasta las 11:15</div></div></div>
+      </div>
+      <p class="muted" style="margin:var(--space-2) 0 0">"Reservado" quiere decir que el consultorio todavía no lo confirmó. No tenés que hacer nada.</p>
+
+      <div class="notice warn" role="status" data-solo="fuera-de-plazo" style="margin-top:var(--space-4)">
+        <svg aria-hidden="true"><use href="#i-clock"/></svg>
+        <div><strong>Ya no podés cambiarlo ni cancelarlo por acá.</strong><p>Faltan menos de 24 horas para el turno. Si necesitás cambiarlo, llamá al consultorio.</p></div>
+      </div>
+      <div class="notice info" role="status" data-solo="solo-cancelar" style="margin-top:var(--space-4)">
+        <svg aria-hidden="true"><use href="#i-info"/></svg>
+        <div><strong>El consultorio no está tomando turnos online.</strong><p>Podés cancelar tu turno, pero no cambiarlo de horario. Para cambiarlo, llamá al consultorio.</p></div>
+      </div>
+
+      <p class="until" data-solo="ver cancelar solo-cancelar"><svg aria-hidden="true"><use href="#i-info"/></svg><span>Podés cambiarlo o cancelarlo por acá hasta el <b>lunes 23 a las 10:30</b> (24 horas antes).</span></p>
+
+      <div class="stack" data-solo="ver cancelar">
+        <a class="btn btn-secondary btn-block" href="?estado=reprogramar">Cambiar día u horario</a>
+        <a class="btn btn-danger-outline btn-block" href="?estado=cancelar">Cancelar turno</a>
+        <button class="btn btn-ghost btn-block" type="button"><svg aria-hidden="true"><use href="#i-cal-plus"/></svg>Agregar al calendario</button>
+      </div>
+      <div class="stack" data-solo="solo-cancelar">
+        <a class="btn btn-danger-outline btn-block" href="?estado=cancelar">Cancelar turno</a>
+        <a class="call" href="tel:+5491100000001"><svg aria-hidden="true"><use href="#i-phone"/></svg>Llamar al 11 0000-0001</a>
+      </div>
+      <div class="stack" data-solo="fuera-de-plazo">
+        <a class="call" href="tel:+5491100000001"><svg aria-hidden="true"><use href="#i-phone"/></svg>Llamar al 11 0000-0001</a>
+      </div>
+    </section>
+
+    <!-- ===== REPROGRAMAR ===== -->
+    <section data-solo="reprogramar reprogramar-confirmar hueco-ocupado" aria-labelledby="r-t">
+      <a class="btn btn-ghost" href="?estado=ver" style="margin:0 0 var(--space-3) calc(var(--space-4) * -1)"><svg aria-hidden="true"><use href="#i-left"/></svg>Volver a mi turno</a>
+      <h1 class="title" id="r-t">Cambiá el día u horario</h1>
+      <div class="notice danger" role="alert" data-solo="hueco-ocupado">
+        <svg aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>Ese horario se ocupó hace un instante.</strong><p>Tu turno sigue el <b>martes 24 a las 10:30</b>. Elegí otro horario si querés moverlo.</p></div>
+      </div>
+      <div class="summary"><span class="label-top">Tu turno actual</span><div class="row"><svg aria-hidden="true"><use href="#i-cal"/></svg><div><div class="when" style="font-size:var(--text-base)">Martes 24 de noviembre, 10:30</div><div class="sub">Limpieza dental · 45 min</div></div></div></div>
+
+      <h2 class="step">Elegí el día nuevo</h2>
+      <p class="month">noviembre 2026</p>
+      <div class="days" role="group" aria-label="Días con horarios">
+        <button class="day" type="button" aria-pressed="false"><small>mar</small>24</button>
+        <button class="day" type="button" aria-pressed="false"><small>mié</small>25</button>
+        <button class="day" type="button" aria-pressed="true"><small>jue</small>26</button>
+        <button class="day" type="button" aria-pressed="false"><small>vie</small>27</button>
+        <button class="day" type="button" aria-pressed="false"><small>lun</small>30</button>
+      </div>
+      <h2 class="step">Elegí el horario nuevo</h2>
+      <p class="period" style="margin-top:0">Tarde</p>
+      <div class="times" role="group" aria-label="Horarios de la tarde">
+        <button class="time" type="button" data-pressed="reprogramar reprogramar-confirmar" data-no="hueco-ocupado">15:00</button>
+        <button class="time gone" type="button" disabled data-solo="hueco-ocupado" aria-label="15:00, ya no está disponible">15:00</button>
+        <button class="time" type="button" aria-pressed="false">15:15</button>
+        <button class="time" type="button" aria-pressed="false">16:00</button>
+        <button class="time" type="button" aria-pressed="false">17:30</button>
+        <button class="time" type="button" aria-pressed="false">18:15</button>
+      </div>
+      <p class="tz"><svg aria-hidden="true"><use href="#i-clock"/></svg>Horarios en hora de Buenos Aires.</p>
+      <div class="cta-bar">
+        <button class="btn btn-primary btn-block" type="button" data-no="hueco-ocupado">Mover al jueves 26, 15:00</button>
+        <button class="btn btn-primary btn-block" type="button" disabled data-solo="hueco-ocupado">Elegí un horario</button>
+      </div>
+    </section>
+
+    <!-- ===== REPROGRAMADO ===== -->
+    <section class="result" data-solo="reprogramado" aria-labelledby="ro-t">
+      <div class="ico ok" aria-hidden="true"><svg><use href="#i-check-circle"/></svg></div>
+      <h1 class="title" id="ro-t">Listo, cambiaste tu turno</h1>
+      <p>Tu link sigue sirviendo para verlo, cambiarlo o cancelarlo.</p>
+      <div class="summary old"><div class="row"><svg aria-hidden="true"><use href="#i-cal"/></svg><div><span class="sr">Antes: </span><div class="when" style="font-size:var(--text-base)">Martes 24 de noviembre, 10:30</div></div></div></div>
+      <div style="display:grid;place-items:center;margin:var(--space-2) 0;color:var(--color-text-muted)" aria-hidden="true"><svg width="20" height="20"><use href="#i-arrow-down"/></svg></div>
+      <div class="summary"><div class="row"><svg aria-hidden="true"><use href="#i-cal"/></svg><div><span class="sr">Ahora: </span><div class="when">Jueves 26 de noviembre, 15:00</div><div class="sub">Limpieza dental · 45 min · hasta las 15:45</div></div></div></div>
+      <div class="stack">
+        <button class="btn btn-secondary btn-block" type="button"><svg aria-hidden="true"><use href="#i-cal-plus"/></svg>Agregar el horario nuevo al calendario</button>
+        <a class="btn btn-ghost btn-block" href="?estado=ver">Ver mi turno</a>
+      </div>
+    </section>
+
+    <!-- ===== CANCELADO ===== -->
+    <section class="result" data-solo="cancelado" aria-labelledby="c-t">
+      <div class="ico muted" aria-hidden="true"><svg><use href="#i-x-circle"/></svg></div>
+      <h1 class="title" id="c-t">Cancelaste tu turno</h1>
+      <p>El horario del <b>martes 24 a las 10:30</b> quedó libre. Este link ya no funciona: si querés otro turno, reservá de nuevo.</p>
+      <a class="btn btn-primary btn-block" href="reserva.html?estado=inicio">Reservar otro turno</a>
+    </section>
+
+    <!-- ===== 404 UNIFORME (token inexistente, vencido o revocado) ===== -->
+    <section class="result" data-solo="invalido" aria-labelledby="i-t">
+      <div class="ico muted" aria-hidden="true"><svg><use href="#i-link-off"/></svg></div>
+      <h1 class="title" id="i-t">Este link no funciona</h1>
+      <p>Puede que el turno ya haya pasado o se haya cancelado, o que el link esté incompleto. Si tenés dudas sobre tu turno, comunicate con el consultorio.</p>
+    </section>
+
+    <section class="review" aria-labelledby="rev-t">
+      <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+      <ul id="estados"></ul>
+    </section>
+   </div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <span>Turnos online con <span data-brand-name>Muelas Felices</span></span>
+      <a href="#">Política de privacidad</a>
+    </div>
+  </footer>
+</div>
+
+<!-- Confirmar el cambio -->
+<div class="scrim" data-solo="reprogramar-confirmar cancelar"></div>
+<div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dr-t" aria-describedby="dr-d" data-solo="reprogramar-confirmar">
+  <div class="grab" aria-hidden="true"></div>
+  <h2 id="dr-t">¿Mover tu turno al jueves 26 a las 15:00?</h2>
+  <p id="dr-d">Dejás libre el martes 24 a las 10:30. Es la misma prestación: Limpieza dental, 45 min.</p>
+  <div class="stack"><button class="btn btn-primary btn-block" type="button">Sí, mover mi turno</button><button class="btn btn-ghost btn-block" type="button">No, dejarlo como está</button></div>
+</div>
+<!-- Confirmar cancelación -->
+<div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dc-t" aria-describedby="dc-d" data-solo="cancelar">
+  <div class="grab" aria-hidden="true"></div>
+  <h2 id="dc-t">¿Cancelar tu turno del martes 24 a las 10:30?</h2>
+  <p id="dc-d">El horario queda libre para otra persona y este link deja de funcionar. No se puede deshacer.</p>
+  <div class="stack"><button class="btn btn-danger btn-block" type="button">Sí, cancelar turno</button><button class="btn btn-ghost btn-block" type="button">No, mantenerlo</button></div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var e = document.body.getAttribute("data-estado");
+    document.querySelectorAll("[data-pressed]").forEach(function (el) { el.setAttribute("aria-pressed", String(el.getAttribute("data-pressed").split(" ").indexOf(e) >= 0)); });
+  });
+</script>
+</body>
+</html>

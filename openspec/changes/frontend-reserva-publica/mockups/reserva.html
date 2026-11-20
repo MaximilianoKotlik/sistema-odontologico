@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reservá tu turno · Consultorio Demo Sur (mockup C-16)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="publica.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<!-- /c/{slug}: página pública del consultorio, sin cuenta (FL-04) -->
+<body data-estados="inicio:Elegir prestación|horarios:Elegir día y horario|dia-sin-horarios:Día sin horarios|datos:Tus datos|datos-errores:Datos con errores|enviando:Reservando|hueco-ocupado:Horario recién ocupado (409)|limite-turnos:Límite de turnos (409)|confirmado:Turno reservado|no-toma-turnos:No toma turnos online|limite:Demasiadas consultas (429)|no-encontrado:Consultorio inexistente (404)">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5h2.6l1.4 4.1-1.9 1.3a11 11 0 006.4 6.4l1.3-1.9 4.1 1.4v2.6a2.1 2.1 0 01-2.2 2.1A16.5 16.5 0 014.5 5.7a2.1 2.1 0 012.1-2.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.3l2.7 2.7L16 9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 8.5v7M14 8.5v7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 8.5V6.7a2.2 2.2 0 00-2.2-2.2H6.7a2.2 2.2 0 00-2.2 2.2v6.6a2.2 2.2 0 002.2 2.2h1.8" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-cal-plus" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6.5 4h11v16.5L12 16.5l-5.5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.8 7l8.2 6 8.2-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+</svg>
+
+<div class="page">
+  <div class="prov-bar">Borrador C-16 · pendiente de aprobación · datos ficticios</div>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+
+  <!-- Encabezado del consultorio (DD-33): nombre, dirección y teléfono -->
+  <header class="cons" data-no="no-encontrado">
+    <div class="wrap">
+      <p class="name" data-no="inicio horarios dia-sin-horarios hueco-ocupado no-toma-turnos limite">Consultorio Demo Sur</p>
+      <h1 data-solo="inicio horarios dia-sin-horarios hueco-ocupado no-toma-turnos limite">Consultorio Demo Sur</h1>
+      <div class="meta">
+        <span><svg aria-hidden="true"><use href="#i-pin"/></svg>Av. Ejemplo 1234, CABA</span>
+        <a href="tel:+5491100000001"><svg aria-hidden="true"><use href="#i-phone"/></svg>11 0000-0001</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido" tabindex="-1">
+   <div class="wrap">
+
+    <!-- ===== 429 ===== -->
+    <div class="notice warn" role="alert" data-solo="limite">
+      <svg aria-hidden="true"><use href="#i-clock"/></svg>
+      <div><strong>Hiciste muchas consultas seguidas.</strong><p>Esperá un minuto y volvé a intentar.</p></div>
+    </div>
+
+    <!-- ===== NO TOMA TURNOS ONLINE (RN-RP-11) ===== -->
+    <section class="result" data-solo="no-toma-turnos" aria-labelledby="nt-t">
+      <div class="ico muted" aria-hidden="true"><svg><use href="#i-pause"/></svg></div>
+      <h2 class="title" id="nt-t" style="font-size:var(--text-xl);margin:0 0 var(--space-2)">Por ahora este consultorio no toma turnos online</h2>
+      <p>Para pedir un turno, llamá al consultorio. Si ya tenés un turno reservado, podés cancelarlo desde el link que guardaste.</p>
+      <a class="call" href="tel:+5491100000001"><svg aria-hidden="true"><use href="#i-phone"/></svg>Llamar al 11 0000-0001</a>
+    </section>
+
+    <!-- ===== 404 ===== -->
+    <section class="result" data-solo="no-encontrado" aria-labelledby="nf-t">
+      <div class="ico muted" aria-hidden="true"><svg><use href="#i-search"/></svg></div>
+      <h1 class="title" id="nf-t">No encontramos este consultorio</h1>
+      <p>Revisá que el link esté completo, tal como te lo pasaron. Si sigue sin funcionar, pedile al consultorio el link de reservas.</p>
+    </section>
+
+    <!-- ===== PASO 1-3: PRESTACIÓN, DÍA Y HORARIO ===== -->
+    <section data-solo="inicio horarios dia-sin-horarios hueco-ocupado limite" aria-label="Elegí tu turno">
+      <div class="notice danger" role="alert" data-solo="hueco-ocupado">
+        <svg aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>Alguien reservó las 10:30 hace un instante.</strong><p>Actualizamos los horarios: elegí otro.</p></div>
+      </div>
+
+      <h2 class="step">1. ¿Qué necesitás?</h2>
+      <div class="stack" role="group" aria-label="Prestaciones">
+        <button class="presta" type="button" data-pressed="horarios dia-sin-horarios hueco-ocupado limite"><span>Limpieza dental</span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>45 min<span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></span></button>
+        <button class="presta" type="button" aria-pressed="false"><span>Consulta y control</span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>30 min<span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></span></button>
+        <button class="presta" type="button" aria-pressed="false"><span>Arreglo de caries</span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>60 min<span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></span></button>
+      </div>
+
+      <div data-no="inicio" style="margin-top:var(--space-5)">
+        <h2 class="step">2. Elegí el día</h2>
+        <p class="month">noviembre 2026</p>
+        <div class="days" role="group" aria-label="Días con horarios">
+          <button class="day sin" type="button" disabled><small>vie</small>20<span class="none">sin turnos</span></button>
+          <button class="day" type="button" data-pressed="dia-sin-horarios"><small>lun</small>23</button>
+          <button class="day" type="button" data-pressed="horarios hueco-ocupado limite"><small>mar</small>24</button>
+          <button class="day" type="button" aria-pressed="false"><small>mié</small>25</button>
+          <button class="day" type="button" aria-pressed="false"><small>jue</small>26</button>
+          <button class="day" type="button" aria-pressed="false"><small>vie</small>27</button>
+          <button class="day" type="button" aria-pressed="false"><small>lun</small>30</button>
+        </div>
+
+        <h2 class="step">3. Elegí el horario</h2>
+        <div data-no="dia-sin-horarios">
+          <p class="period" style="margin-top:0">Mañana</p>
+          <div class="times" role="group" aria-label="Horarios de la mañana">
+            <button class="time" type="button" aria-pressed="false">9:00</button>
+            <button class="time" type="button" aria-pressed="false">9:15</button>
+            <button class="time" type="button" aria-pressed="false">9:30</button>
+            <button class="time" type="button" data-pressed="horarios limite" data-no="hueco-ocupado">10:30</button>
+            <button class="time gone" type="button" disabled data-solo="hueco-ocupado" aria-label="10:30, ya no está disponible">10:30</button>
+            <button class="time" type="button" aria-pressed="false">10:45</button>
+            <button class="time" type="button" aria-pressed="false">11:00</button>
+            <button class="time" type="button" aria-pressed="false">11:15</button>
+            <button class="time" type="button" aria-pressed="false">12:00</button>
+            <button class="time" type="button" aria-pressed="false">12:15</button>
+          </div>
+          <p class="period">Tarde</p>
+          <div class="times" role="group" aria-label="Horarios de la tarde">
+            <button class="time" type="button" aria-pressed="false">15:00</button>
+            <button class="time" type="button" aria-pressed="false">15:15</button>
+            <button class="time" type="button" aria-pressed="false">15:30</button>
+            <button class="time" type="button" aria-pressed="false">16:45</button>
+            <button class="time" type="button" aria-pressed="false">17:00</button>
+            <button class="time" type="button" aria-pressed="false">18:00</button>
+            <button class="time" type="button" aria-pressed="false">18:15</button>
+          </div>
+        </div>
+        <div class="empty-day" data-solo="dia-sin-horarios">
+          <p>No quedan horarios para <b>Limpieza dental</b> el lunes 23.</p>
+          <button class="btn btn-secondary" type="button">Ver el martes 24</button>
+        </div>
+        <p class="tz"><svg aria-hidden="true"><use href="#i-clock"/></svg>Horarios en hora de Buenos Aires.</p>
+      </div>
+
+      <div class="cta-bar">
+        <button class="btn btn-primary btn-block" type="button" disabled data-solo="inicio">Elegí qué necesitás</button>
+        <button class="btn btn-primary btn-block" type="button" disabled data-solo="dia-sin-horarios hueco-ocupado">Elegí un horario</button>
+        <button class="btn btn-primary btn-block" type="button" data-solo="horarios limite">Continuar con martes 24, 10:30</button>
+      </div>
+    </section>
+
+    <!-- ===== PASO 4: DATOS ===== -->
+    <section data-solo="datos datos-errores enviando limite-turnos" aria-labelledby="dt-t">
+      <button class="btn btn-ghost" type="button" style="margin:0 0 var(--space-3) calc(var(--space-4) * -1)"><svg aria-hidden="true"><use href="#i-left"/></svg>Cambiar día u horario</button>
+      <h1 class="title" id="dt-t">Completá tus datos</h1>
+
+      <div class="summary" style="margin-bottom:var(--space-5)">
+        <div class="row"><svg aria-hidden="true"><use href="#i-cal"/></svg><div><div class="when">Martes 24 de noviembre, 10:30</div><div class="sub">Limpieza dental · 45 min · hasta las 11:15</div></div></div>
+      </div>
+
+      <div class="notice danger" role="alert" tabindex="-1" data-solo="datos-errores">
+        <svg aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>Revisá 3 datos para reservar:</strong>
+          <ul><li><a href="#dni">El DNI tiene que tener 7 u 8 números.</a></li><li><a href="#tel">Falta la característica en el celular.</a></li><li><a href="#acepto">Tenés que aceptar el uso de tus datos.</a></li></ul>
+        </div>
+      </div>
+      <div class="notice warn" role="alert" data-solo="limite-turnos">
+        <svg aria-hidden="true"><use href="#i-alert"/></svg>
+        <div><strong>Ya tenés 2 turnos próximos en este consultorio.</strong><p>Para sacar otro, cancelá uno desde el link que guardaste o llamá al <a href="tel:+5491100000001">11 0000-0001</a>.</p></div>
+      </div>
+
+      <form novalidate>
+        <div class="row-2">
+          <div class="field"><label for="nombre">Nombre</label><input class="input" id="nombre" autocomplete="given-name" data-valor="*=Ana"></div>
+          <div class="field"><label for="apellido">Apellido</label><input class="input" id="apellido" autocomplete="family-name" data-valor="*=Ejemplo"></div>
+        </div>
+        <div class="field">
+          <label for="dni">DNI</label>
+          <input class="input" id="dni" inputmode="numeric" autocomplete="off" aria-describedby="dni-hint dni-err" data-invalido="datos-errores" data-valor="*=30.000.001|datos-errores=30.001">
+          <p class="hint" id="dni-hint" data-no="datos-errores">Con o sin puntos. ¿No tenés DNI argentino? Pedí tu turno llamando al <a href="tel:+5491100000001">11 0000-0001</a>.</p>
+          <p class="error-msg" id="dni-err" data-solo="datos-errores"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>El DNI tiene que tener 7 u 8 números, por ejemplo 30.000.001.</span></p>
+        </div>
+        <div class="field">
+          <label for="tel">Celular</label>
+          <input class="input" id="tel" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="tel-hint tel-err" data-invalido="datos-errores" data-valor="*=11 0000-0042|datos-errores=0000-0042">
+          <p class="hint" id="tel-hint" data-no="datos-errores">El consultorio te va a llamar a este número si necesita avisarte algo.</p>
+          <p class="error-msg" id="tel-err" data-solo="datos-errores"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Escribilo con característica, por ejemplo 11 0000-0042.</span></p>
+        </div>
+        <div class="field">
+          <label for="email">Email <span class="hint">(opcional)</span></label>
+          <input class="input" id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" aria-describedby="email-hint" data-valor="*=ana@example.com|datos-errores=">
+          <p class="hint" id="email-hint">Si lo dejás, te mandamos la confirmación y los cambios de tu turno.</p>
+        </div>
+        <!-- Texto de docs/legal/politica-de-privacidad.md §Anexo (versión 2026-11-borrador) -->
+        <div class="consent" data-error-when="datos-errores">
+          <input type="checkbox" id="acepto" aria-describedby="acepto-err" data-invalido="datos-errores">
+          <label for="acepto">Acepto que <b>Consultorio Demo Sur</b> use mis datos (nombre, apellido, DNI, teléfono y, si lo dejo, mi email) para gestionar este turno, según la <a href="#">política de privacidad</a>.</label>
+        </div>
+        <p class="error-msg" id="acepto-err" data-solo="datos-errores" style="margin:calc(var(--space-2) * -1) 0 var(--space-4)"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Para reservar tenés que aceptarlo.</span></p>
+
+        <button class="btn btn-primary btn-block" type="submit" data-no="enviando" data-desactivar="limite-turnos">Reservar turno</button>
+        <button class="btn btn-primary btn-block" type="button" disabled data-solo="enviando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Reservando…</button>
+        <p class="muted" style="text-align:center;margin:var(--space-3) 0 0">No necesitás crear una cuenta.</p>
+      </form>
+    </section>
+
+    <!-- ===== CONFIRMADO ===== -->
+    <section class="result" data-solo="confirmado" aria-labelledby="ok-t">
+      <div class="ico ok" aria-hidden="true"><svg><use href="#i-check-circle"/></svg></div>
+      <h1 class="title" id="ok-t">¡Listo, reservaste tu turno!</h1>
+      <p>El consultorio lo va a confirmar. Si dejaste tu email, también te llega la confirmación por ahí.</p>
+      <div class="summary">
+        <div class="row"><svg aria-hidden="true"><use href="#i-cal"/></svg><div><div class="when">Martes 24 de noviembre, 10:30</div><div class="sub">Limpieza dental · 45 min · Consultorio Demo Sur</div></div></div>
+        <div class="row"><svg aria-hidden="true"><use href="#i-pin"/></svg><div class="sub">Av. Ejemplo 1234, CABA</div></div>
+      </div>
+
+      <!-- RN-RP-06: el link se muestra una sola vez -->
+      <div class="keep" role="region" aria-labelledby="keep-t">
+        <h2 id="keep-t"><svg aria-hidden="true"><use href="#i-bookmark"/></svg>Guardá este link</h2>
+        <p>Con él podés ver, cambiar o cancelar tu turno. <b>No lo vamos a volver a mostrar.</b></p>
+        <div class="url">agenda.example/t/ejemplo-ficticio-7Qm2yR8vLxA4</div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar link</button>
+          <button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-cal-plus"/></svg>Agregar al calendario</button>
+        </div>
+        <p>"Agregar al calendario" descarga un archivo que incluye el link, así lo tenés junto al turno.</p>
+      </div>
+    </section>
+
+    <section class="review" aria-labelledby="rev-t">
+      <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+      <ul id="estados"></ul>
+    </section>
+   </div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <span>Turnos online con <span data-brand-name>Muelas Felices</span></span>
+      <a href="#">Política de privacidad</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  /* Solo mockup: selección por estado y marcas de error */
+  document.addEventListener("DOMContentLoaded", function () {
+    var e = document.body.getAttribute("data-estado");
+    document.querySelectorAll("[data-pressed]").forEach(function (el) { el.setAttribute("aria-pressed", String(el.getAttribute("data-pressed").split(" ").indexOf(e) >= 0)); });
+    document.querySelectorAll("[data-error-when]").forEach(function (el) { if (el.getAttribute("data-error-when") === e) el.setAttribute("data-error", ""); });
+    if (["datos", "enviando", "limite-turnos"].indexOf(e) >= 0) document.getElementById("acepto").checked = true;
+  });
+</script>
+</body>
+</html>
