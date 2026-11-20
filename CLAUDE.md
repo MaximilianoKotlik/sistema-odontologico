@@ -1,5 +1,5 @@
 <!-- active-stack:agent-instruction -->
-# Agenda Odontológica SaaS (nombre comercial TBD · repo `sistema-odontologico`) — Instrucciones para Agentes
+# Muelas Felices — Agenda Odontológica SaaS (repo `sistema-odontologico`) — Instrucciones para Agentes
 
 > Este archivo (y su copia `CLAUDE.md`) es lo PRIMERO que todo agente lee al entrar al repo.
 > Generado a partir de `knowledge-base/` y `CHANGES.md`. No editar a mano sin re-sincronizar ambos archivos.
@@ -52,7 +52,7 @@ La fuente de verdad del dominio vive en `knowledge-base/` ([README](knowledge-ba
 
 **Sistema de diseño**: [design-system/README.md](design-system/README.md) (modo `system-and-mockups`, rev. 1 aprobada). Todo change con pantallas necesita un mockup revisado y aprobado antes de implementar; el sistema de diseño aprobado es la base visual.
 
-> Antes de arrancar los changes afectados, resolver las preguntas **Alta** PA-01..PA-06 (PA-01 resuelta → DD-24; PA-03 resuelta → DD-22) de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
+> Antes de arrancar los changes afectados, resolver las preguntas **Alta** abiertas: hoy solo queda **PA-02** acotada a país del VPS y backups (DD-25). PA-01 → DD-24, PA-03 → DD-22, PA-04..PA-06 → DD-26..DD-28 de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
 
 **Discovery**: [docs/discovery/](docs/discovery/) (`discovery.md` e `informe-discovery.md`).
 

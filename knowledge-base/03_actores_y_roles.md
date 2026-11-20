@@ -28,7 +28,7 @@ En v1 **no hay RBAC**. La autorización se reduce a dos reglas:
 
 | Actor | Recurso | C | R | U | D | Notas |
 |-------|---------|---|---|---|---|-------|
-| Odontólogo | Consultorio propio | — (en registro) | ✅ | ✅ | ❌ | La baja de cuenta se pide por soporte en v1 ([PA-07](10_preguntas_abiertas.md)) |
+| Odontólogo | Consultorio propio | — (en registro) | ✅ | ✅ | ❌ | La baja de cuenta se pide por soporte en v1 y la deja desactivada ([DD-29](09_decisiones_y_supuestos.md)) |
 | Odontólogo | Prestaciones | ✅ | ✅ | ✅ | Desactivar | No se borran si tienen turnos |
 | Odontólogo | Disponibilidad | ✅ | ✅ | ✅ | ✅ | Reemplazo completo de la semana tipo |
 | Odontólogo | Bloqueos | ✅ | ✅ | ❌ | ✅ | Para cambiar un bloqueo se borra y se crea otro |
