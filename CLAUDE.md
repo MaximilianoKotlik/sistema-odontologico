@@ -52,7 +52,9 @@ La fuente de verdad del dominio vive en `knowledge-base/` ([README](knowledge-ba
 
 **Sistema de diseño**: [design-system/README.md](design-system/README.md) (modo `system-and-mockups`, rev. 1 aprobada). Todo change con pantallas necesita un mockup revisado y aprobado antes de implementar; el sistema de diseño aprobado es la base visual.
 
-> Antes de arrancar los changes afectados, resolver las preguntas **Alta** PA-01..PA-06 y las inconsistencias IN-01..IN-03 de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md).
+> Antes de arrancar los changes afectados, resolver las preguntas **Alta** PA-01..PA-06 de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
+
+**Discovery**: [docs/discovery/](docs/discovery/) (`discovery.md` e `informe-discovery.md`).
 
 ---
 
@@ -62,7 +64,7 @@ Fuente de verdad: [.atl/skill-registry.md](.atl/skill-registry.md). Solo se list
 
 | Agente | Rol | Skills que carga |
 |--------|-----|------------------|
-| **Backend Core** | Spring Boot, dominio, JPA, Postgres/Flyway, tests | `springboot-patterns`, `springboot-tdd`, `springboot-security`, `tdd`, `supabase-postgres-best-practices`, `jpa-patterns`, `java-springboot` |
+| **Backend Core** | Spring Boot, dominio, JPA, Postgres/Flyway, tests | `springboot-patterns`, `springboot-tdd`, `springboot-security`, `tdd`, `supabase-postgres-best-practices` (solo Postgres plano, **sin RLS**), `jpa-patterns`, `java-springboot` |
 | **Backend Aux** | Infraestructura, contenedores, seguridad | `docker-patterns`, `springboot-security` |
 | **Frontend** | TypeScript vanilla, Vite, Tailwind, PWA, accesibilidad | `typescript-advanced-types`, `javascript-pro`, `responsive-design`, `accessibility`, `web-design-guidelines` |
 | **QA / E2E** | Pruebas de navegador y E2E | `playwright-best-practices`, `e2e-testing-patterns`, `playwright-cli` |
@@ -71,7 +73,7 @@ Fuente de verdad: [.atl/skill-registry.md](.atl/skill-registry.md). Solo se list
 
 Cargá la skill correspondiente al contexto ANTES de escribir código.
 
-> Los compact rules de cada skill los resuelve el orquestador desde [.atl/skill-registry.md](.atl/skill-registry.md) (generado por `skill-registry`; no versionado — no está en el repo). Esta tabla solo mapea skill→rol.
+> Los compact rules de cada skill los resuelve el orquestador desde [.atl/skill-registry.md](.atl/skill-registry.md) (generado por `skill-registry` y versionado en el repo, con rutas `~` portables). Ahí también está la justificación de cada skill recomendada (instalada, reutilizada o descartada). Esta tabla solo mapea skill→rol.
 
 ---
 
@@ -118,7 +120,8 @@ El plan de implementación completo está en [CHANGES.md](CHANGES.md). Resumen:
 13. **NUNCA** implementar algo fuera de la v1 (DD-16, DD-18: WhatsApp, historia clínica, cobros, obras sociales, roles, 2FA, etc.) → primero actualizar la KB y `CHANGES.md`.
 14. **NUNCA** `LocalDateTime` para turnos → `timestamptz` / `Instant` en UTC; convertir a `America/Argentina/Buenos_Aires` solo en presentación.
 15. **NUNCA** `float`/`double` para precios → `numeric` en Postgres y `BigDecimal` en Java, en ARS.
-16. **NUNCA** implementar un change que toque una pregunta abierta Alta (PA-01..PA-06) o una inconsistencia IN-0x sin resolverla → resolverla o documentar la decisión antes de implementar.
+16. **NUNCA** implementar un change que toque una pregunta abierta Alta (PA-01..PA-06) o una inconsistencia IN-0x abierta sin resolverla → resolverla o documentar la decisión (`DD-NN`) antes de implementar. IN-01..IN-03 ya están resueltas (DD-19..DD-21).
+17. **NUNCA** datos reales de pacientes en el repo ni en los ejemplos (seeds, fixtures, tests, mocks, capturas, mockups, logs, issues o PRs) → usar datos ficticios evidentes (p. ej. teléfonos `+54 9 11 0000-00xx`, emails `@example.com`); todo dato de paciente es sensible (Ley 25.326, [11_marco_legal_argentino.md](knowledge-base/11_marco_legal_argentino.md)).
 
 ---
 

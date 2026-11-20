@@ -27,4 +27,4 @@ Plan gratuito, IA en WhatsApp, adaptación fiscal multipaís, convenios con cole
 ## Notas del investigador
 Presencia en Argentina: No evidenciado explícitamente: declara presencia en +20 países de Latinoamérica pero con adaptaciones fiscales solo en Perú, México, Ecuador y Colombia.
 Limitaciones: Sin facturación AR, precios no confirmados en la página oficial consultada, producto generalista (no solo dental).
-Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver discovery/research/doctocliq.md.
+Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver docs/discovery/research/doctocliq.md.

@@ -211,7 +211,7 @@ C-01 → C-02 → C-04 → C-08 → C-10 → C-11 → C-12 → C-13 → C-14* / 
   - `knowledge-base/06_funcionalidades.md` §US-002, US-003, US-005
   - `knowledge-base/07_flujos_principales.md` §FL-01
   - `knowledge-base/08_arquitectura_propuesta.md` §Seguridad, §Variables de entorno
-  - `knowledge-base/10_preguntas_abiertas.md` §IN-01, PA-09
+  - `knowledge-base/10_preguntas_abiertas.md` §IN-01 (resuelta → DD-19 en `09_decisiones_y_supuestos.md`), PA-09
 
 ### [C-06] `frontend-shell-pwa`
 - **Estado**: `[ ]` pendiente
@@ -288,12 +288,14 @@ C-01 → C-02 → C-04 → C-08 → C-10 → C-11 → C-12 → C-13 → C-14* / 
   - Migración: `paciente` (único `(consultorio_id, telefono_e164)`, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
   - Dominio puro (sin Spring/JPA): entidades y value objects (`Intervalo` semiabierto, `Duracion` múltiplo de 5), `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento`, `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), derivación `fin = inicio + duracion_min` (RN-AG-12), reglas de bloqueo (rechazo con lista de conflictos), invariantes de sobreturno.
   - Tests: unitarios de dominio con `Clock` inyectado (la mayoría) + integración de la exclusión GiST (la base rechaza el solapamiento aun salteando el servicio); ArchUnit "dominio sin Spring/JPA".
+  - **Requisito del `proposal.md`**: justificar explícitamente la granularidad de la prevención de solapamientos. La práctica de referencia es "por profesional y por sillón/box"; la v1 la evalúa **por consultorio** porque tiene un único profesional y un único sillón implícito (RN-AG-13, DD-17). Citar [PA-14](knowledge-base/10_preguntas_abiertas.md) como la pregunta abierta que decide cuándo adelantar multi-sillón, y el punto de extensión de RN-AG-13 (dos restricciones de exclusión por `profesional_id` y `sillon_id`, migración aditiva).
 - **Dependencias**: `C-08`
 - **Governance**: ALTO
 - **Leer antes**:
   - `knowledge-base/04_modelo_de_datos.md` §Paciente, §Turno, §Bloqueo
   - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG-01 a RN-AG-13)
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-10, DD-12, DD-17
+  - `knowledge-base/10_preguntas_abiertas.md` §PA-14
   - `knowledge-base/08_arquitectura_propuesta.md` §Patrones aplicados, §Estrategia de tests
 
 ### [C-11] `agenda-casos-de-uso`
@@ -549,4 +551,4 @@ C-01 → C-02 → C-04 → C-08 → C-10 → C-11 → C-12 → C-13 → C-14* / 
 
 > Renumeración (revisión del 2026-11-20, decisión del usuario). IDs anteriores → actuales: C-01 → C-01; C-02 → C-02; C-03 → C-03; C-04 `auth-backend` → C-04 `auth-sesion-tokens` + C-05 `auth-recuperacion-hardening`; C-05 → C-06; C-06 → C-07; C-07 → C-08; C-08 → C-09; C-09 `agenda-dominio-y-esquema` → C-10 `agenda-esquema-dominio` + C-11 `agenda-casos-de-uso`; C-10 → C-12; C-11 → C-13; C-12 → C-14; C-13 → C-15; C-14 → C-16; C-15 → C-18; C-16 → C-19; C-17 `plan-precios-y-seguridad` → C-20 `plan-ciclo-de-vida` + C-21 `pagina-precios` + C-22 `pagina-seguridad`; C-18 → C-23. Nuevo: C-17 `pacientes-revision`.
 
-> Nota post-v1 (no son changes de este roadmap): el backlog diferido (recordatorios/WhatsApp, incluido el botón de compartir el link de reserva por WhatsApp; 2FA del odontólogo (PA-13), ambos fuera de v1 por decisión del usuario, DD-18; historia clínica y odontograma, cobros, obras sociales, ARCA, multi-profesional/multi-sillón y roles) está en `knowledge-base/06_funcionalidades.md` §Backlog post-v1 y en `discovery/informe-discovery.md` D.3, "Etapas posteriores", primera etapa posterior a la v1 (orden sugerido: WhatsApp recordatorios/confirmación, HC/odontograma, presupuestos, caja/MP, obras sociales base, multiprofesional/sillón y roles), y se planifica tras el piloto (PA-05).
+> Nota post-v1 (no son changes de este roadmap): el backlog diferido (recordatorios/WhatsApp, incluido el botón de compartir el link de reserva por WhatsApp; 2FA del odontólogo (PA-13), ambos fuera de v1 por decisión del usuario, DD-18; historia clínica y odontograma, cobros, obras sociales, ARCA, multi-profesional/multi-sillón y roles) está en `knowledge-base/06_funcionalidades.md` §Backlog post-v1 y en `docs/discovery/informe-discovery.md` D.3, "Etapas posteriores", primera etapa posterior a la v1 (orden sugerido: WhatsApp recordatorios/confirmación, HC/odontograma, presupuestos, caja/MP, obras sociales base, multiprofesional/sillón y roles), y se planifica tras el piloto (PA-05).

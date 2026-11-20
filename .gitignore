@@ -22,5 +22,3 @@ target/
 .env.*
 !.env.example
 
-# Skill registry local (no se versiona)
-.atl/

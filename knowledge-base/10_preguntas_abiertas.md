@@ -1,24 +1,29 @@
 # Preguntas Abiertas
 
-> Fuentes: [`../discovery/discovery.md`](../discovery/discovery.md) §10–§11, el informe competitivo ([`../discovery/informe-discovery.md`](../discovery/informe-discovery.md), puntos "No evidenciado") y las decisiones técnicas
+> Fuentes: [`../docs/discovery/discovery.md`](../docs/discovery/discovery.md) §10–§11, el informe competitivo ([`../docs/discovery/informe-discovery.md`](../docs/discovery/informe-discovery.md), puntos "No evidenciado") y las decisiones técnicas
 > del 2026-11-16. Cada pregunta indica qué bloquea y quién decide. Las respuestas se registran
 > moviendo la pregunta a [09](09_decisiones_y_supuestos.md) como `DD-NN`.
 
 ## Inconsistencias detectadas
 
+> Las tres inconsistencias quedaron **resueltas** el 2026-11-20 con decisión confirmada por el usuario (DD-19, DD-20, DD-21). Ya no bloquean ningún change; se conservan acá como trazabilidad.
+
 ### IN-01 — "Sin integraciones externas" vs. recuperación de contraseña por email
+**Estado**: **Resuelta (2026-11-20)** → [DD-19](09_decisiones_y_supuestos.md#dd-19--smtp-es-infraestructura-no-integración-de-negocio-resuelve-in-01-confirmada-por-el-usuario-2026-11-20).
 **Documento A dice**: v1 sin integraciones externas ([DD-07](09_decisiones_y_supuestos.md)).
 **Documento B dice**: v1 incluye recuperación de contraseña del odontólogo, que necesita un canal fuera de banda (email).
 **Impacto**: sin SMTP no hay recuperación de contraseña; un odontólogo que la olvida pierde acceso.
-**Resolución propuesta**: tratar SMTP como infraestructura genérica, no como integración de negocio: Mailpit en local ([DD-15](09_decisiones_y_supuestos.md)) y un proveedor SMTP estándar en producción (decisión ligada a [PA-02](#preguntas-abiertas-priorizadas)). Confirmar con el usuario.
+**Resolución propuesta**: tratar SMTP como infraestructura genérica, no como integración de negocio: Mailpit en local ([DD-15](09_decisiones_y_supuestos.md)) y un proveedor SMTP estándar en producción (decisión ligada a [PA-02](#preguntas-abiertas-priorizadas)). Confirmada por el usuario (DD-19).
 
 ### IN-02 — "Sobreturno" listado como estado del turno
+**Estado**: **Resuelta (2026-11-20)** → [DD-20](09_decisiones_y_supuestos.md#dd-20--sobreturno-como-marca-es_sobreturno--4-estados-resuelve-in-02-confirmada-por-el-usuario-2026-11-20).
 **Documento A dice**: estados reservado / confirmado / cancelado / sobreturno / ausente.
 **Documento B dice**: un sobreturno también puede confirmarse, cancelarse o quedar ausente.
 **Impacto**: modelar sobreturno como estado haría imposible cancelar un sobreturno sin perder la marca.
 **Resolución propuesta**: marca `es_sobreturno` + 4 estados ([DD-10](09_decisiones_y_supuestos.md)). Ya aplicada en [04](04_modelo_de_datos.md).
 
 ### IN-03 — "Precios públicos con prueba gratuita" sin cobro integrado
+**Estado**: **Resuelta (2026-11-20)** → [DD-21](09_decisiones_y_supuestos.md#dd-21--activación-manual-del-plan-durante-el-piloto-resuelve-in-03-confirmada-por-el-usuario-2026-11-20).
 **Documento A dice**: precios públicos en ARS y prueba gratuita en v1.
 **Documento B dice**: sin Mercado Pago ni otro medio de cobro en v1.
 **Impacto**: al vencer la prueba no hay forma automática de pagar.
@@ -30,12 +35,12 @@
 |----|-----------|----------|-----------------------|---------|---------|
 | PA-01 | **Alta** | ¿Cómo se identifica al paciente sin cuenta para evitar duplicados: nombre + teléfono, DNI o código de verificación? | Teléfono E.164 como clave + nombre; verificación por código como opción futura ([DD-09](09_decisiones_y_supuestos.md), **Suposición:** a confirmar) | Modelo de `paciente` y change de reserva pública | Product Owner |
 | PA-02 | **Alta** | ¿Dónde se aloja en producción y en qué país residen los datos? ¿Proveedor con región en Argentina o transferencia internacional con garantías? | Seguir local-first hasta tener asesoría legal; elegir proveedor con Postgres gestionado, backups cifrados y región compatible con la Ley 25.326 ([11](11_marco_legal_argentino.md)) | Piloto con pacientes reales y lanzamiento | Product Owner + asesor legal |
-| PA-03 | **Alta** | Modelo de precios: ¿plan fijo, por profesional o por sillón? ¿Hay plan gratuito? ¿Cuánto dura la prueba? | Plan único fijo por consultorio + prueba de 30 días, sin plan gratuito permanente (**decisión de diseño** por defecto, registrada en [`discovery.md` §7](../discovery/discovery.md); el modelo de precios sigue abierto en §11) | Página `/precios` y RN-PL | Product Owner |
-| PA-04 | **Alta** | Sin WhatsApp, ¿cómo se notifica al paciente (confirmación, cambios hechos por el odontólogo)? ¿Email transaccional opcional? | v1: link en pantalla + `.ics`; email opcional si el paciente lo deja y hay SMTP (P1) | Alcance de la reserva pública; depende de IN-01 | Product Owner |
-| PA-05 | **Alta** | ¿Cómo se valida el supuesto principal (el paciente reserva por link) antes de invertir más? | Piloto con 3–5 consultorios y métrica `origen = LINK` ≥ 40 % a 60 días (hipótesis a validar, [`discovery.md` §10](../discovery/discovery.md); [SU-01](09_decisiones_y_supuestos.md)) | Priorización post-v1 (odontograma vs. WhatsApp) | Product Owner |
+| PA-03 | **Alta** | Modelo de precios: ¿plan fijo, por profesional o por sillón? ¿Hay plan gratuito? ¿Cuánto dura la prueba? | Plan único fijo por consultorio + prueba de 30 días, sin plan gratuito permanente (**decisión de diseño** por defecto, registrada en [`discovery.md` §7](../docs/discovery/discovery.md); el modelo de precios sigue abierto en §11) | Página `/precios` y RN-PL | Product Owner |
+| PA-04 | **Alta** | Sin WhatsApp, ¿cómo se notifica al paciente (confirmación, cambios hechos por el odontólogo)? ¿Email transaccional opcional? | v1: link en pantalla + `.ics`; email opcional si el paciente lo deja y hay SMTP (P1) | Alcance de la reserva pública; IN-01 resuelta (DD-19) | Product Owner |
+| PA-05 | **Alta** | ¿Cómo se valida el supuesto principal (el paciente reserva por link) antes de invertir más? | Piloto con 3–5 consultorios y métrica `origen = LINK` ≥ 40 % a 60 días (hipótesis a validar, [`discovery.md` §10](../docs/discovery/discovery.md); [SU-01](09_decisiones_y_supuestos.md)) | Priorización post-v1 (odontograma vs. WhatsApp) | Product Owner |
 | PA-06 | **Alta** | ¿Quién da la asesoría legal sobre Leyes 25.326 y 26.529, inscripción ante la AAIP y textos de privacidad/términos? | Contratar revisión puntual antes del piloto; hasta entonces declarar cumplimiento con honestidad, sin certificaciones | Lanzamiento | Product Owner |
 | PA-07 | Media | ¿Cómo se da de baja una cuenta y qué pasa con los datos (plazo de retención, borrado, export previo)? | Baja por soporte; export ofrecido antes; borrado definitivo a los 30 días salvo obligación legal | Política de privacidad | Product Owner + legal |
-| PA-08 | Media | ¿El odontólogo debe poder recibir aviso cuando un paciente reserva, reprograma o cancela? | En v1, indicador de "nuevos" en la agenda; email opcional si se resuelve IN-01 | UX de agenda | Product Owner |
+| PA-08 | Media | ¿El odontólogo debe poder recibir aviso cuando un paciente reserva, reprograma o cancela? | En v1, indicador de "nuevos" en la agenda; email opcional vía SMTP (IN-01 resuelta, DD-19) | UX de agenda | Product Owner |
 | PA-09 | Media | ¿Se necesita verificación de email del odontólogo al registrarse? | No en v1 (fricción); sí antes de habilitar cobro | Change de auth (CRITICAL) | Tech Lead + PO |
 | PA-10 | Media | ¿Los pacientes cargados manualmente sin teléfono (p. ej. adultos mayores) se permiten? | Teléfono obligatorio también en carga manual; revisar con odontólogos | Modelo de `paciente` | Product Owner |
 | PA-11 | Baja | ¿Se permite que el odontólogo personalice la página pública (logo, colores, texto)? | Solo nombre, dirección y teléfono en v1 | — | Product Owner |
@@ -45,7 +50,7 @@
 
 ## Puntos "No evidenciado" (NE) del Discovery que importan para decidir
 
-> Fuente: [`informe-discovery.md`](../discovery/informe-discovery.md), metodología (limitaciones), tablas A.1–A.3 y C.
+> Fuente: [`informe-discovery.md`](../docs/discovery/informe-discovery.md), metodología (limitaciones), tablas A.1–A.3 y C.
 > **NE no equivale a "no existe"**: significa que no apareció en las fuentes consultadas. El Discovery no hizo demos ni
 > cuentas de prueba, no accedió a reseñas independientes (Capterra y G2 devolvieron 403) y WebFetch entrega resúmenes
 > automáticos. Solo se listan los NE que afectan una decisión de este producto; no se vuelcan todas las celdas NE.

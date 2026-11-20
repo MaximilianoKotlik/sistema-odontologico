@@ -1,8 +1,8 @@
 # Agenda Odontológica SaaS — Base de Conocimiento
 
 Base de conocimiento canónica del proyecto. Se construyó a partir del Discovery confirmado
-([`../discovery/discovery.md`](../discovery/discovery.md)), del informe competitivo
-([`../discovery/informe-discovery.md`](../discovery/informe-discovery.md)) y de las decisiones
+([`../docs/discovery/discovery.md`](../docs/discovery/discovery.md)), del informe competitivo
+([`../docs/discovery/informe-discovery.md`](../docs/discovery/informe-discovery.md)) y de las decisiones
 técnicas que el usuario confirmó el 2026-11-16.
 
 > **Nombre comercial**: a definir. En toda la KB se lo llama "el sistema".

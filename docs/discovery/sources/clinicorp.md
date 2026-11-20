@@ -27,4 +27,4 @@ Suite muy completa (IA, finanzas, app paciente); precios publicados; escala decl
 ## Notas del investigador
 Presencia en Argentina: No evidenciado; el sitio indica operación solo en Brasil. ComparaSoftware lo lista como no disponible en México.
 Limitaciones: Solo Brasil, portugués, integraciones fiscales/pago brasileñas (Pix, boletos) no reutilizables en AR.
-Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver discovery/research/clinicorp.md.
+Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver docs/discovery/research/clinicorp.md.

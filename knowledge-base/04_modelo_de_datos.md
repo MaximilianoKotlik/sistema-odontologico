@@ -93,7 +93,7 @@ erDiagram
 - `anticipacion_reserva_min INT NOT NULL DEFAULT 120`, `horizonte_reserva_dias INT NOT NULL DEFAULT 60`, `paso_huecos_min INT NOT NULL DEFAULT 15` (`CHECK IN (5,10,15,20,30)`).
 - `reserva_publica_activa BOOLEAN NOT NULL DEFAULT true`.
 - `plan VARCHAR(10) NOT NULL CHECK (plan IN ('PRUEBA','ACTIVO','VENCIDO'))`, `prueba_hasta DATE`.
-- Constraint: `slug ~ '^[a-z0-9](-?[a-z0-9])+$'`, palabras reservadas validadas en aplicación ([RN-TE-03](05_reglas_de_negocio.md)).
+- Constraint: `slug ~ '^([a-z0-9])(-?[a-z0-9])+$'`, palabras reservadas validadas en aplicación ([RN-TE-03](05_reglas_de_negocio.md)).
 
 ### Usuario (odontólogo)
 - `id UUID PK`, `consultorio_id UUID UNIQUE NOT NULL FK` (relación 1:1 en v1), `email CITEXT UNIQUE NOT NULL`, `password_hash VARCHAR(100) NOT NULL` (BCrypt), `nombre`, `apellido`, `matricula VARCHAR(30) NULL`.

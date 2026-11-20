@@ -27,4 +27,4 @@ Fichas clínicas especializadas y facturación fiscal local integrada (modelo re
 ## Notas del investigador
 Presencia en Argentina: No evidenciado (países: Chile, Rep. Dominicana, 'Latinoamérica').
 Limitaciones: WhatsApp aún en desarrollo, sin precios, sin presencia AR.
-Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver discovery/research/dentidesk.md.
+Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver docs/discovery/research/dentidesk.md.

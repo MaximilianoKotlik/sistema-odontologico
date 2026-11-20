@@ -27,4 +27,4 @@ Marketing y captación integrados (referidos, web, enlace de agendamiento, Whats
 ## Notas del investigador
 Presencia en Argentina: No evidenciado; solo mercado brasileño (se autodefine 'número uno en América Latina').
 Limitaciones: Solo Brasil, precios opacos en la fuente consultada, integraciones locales no aplicables en AR.
-Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver discovery/research/simples-dental.md.
+Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver docs/discovery/research/simples-dental.md.
