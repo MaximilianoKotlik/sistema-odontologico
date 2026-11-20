@@ -1,6 +1,6 @@
 # Marca (provisoria)
 
-- **Nombre**: "Turnos Odonto (TBD)" — provisorio. Fuente: `knowledge-base/` no define nombre; ver `10_preguntas_abiertas.md`. Se cambia en `brand.js`.
+- **Nombre**: "Muelas Felices" (DD-34, 2026-11-20). Dominio pendiente. Se cambia en `brand.js`.
 - **Logo**: `assets/logo.svg`, marcado "PROVISORIO (TBD)". (TBD) logo definitivo.
 - **Tono**: sereno, claro, confiable; cálido-profesional. Ni clínico frío ni juguetón. Español rioplatense con voseo ("Elegí", "Confirmá", "Reservá tu turno").
 - **Principios de confianza** (fuente: `01_vision_y_objetivos.md`): precios públicos en ARS, exportación de datos y auditoría visibles, sin letra chica.

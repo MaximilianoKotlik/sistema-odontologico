@@ -1,5 +1,5 @@
 <!-- active-stack:agent-instruction -->
-# Agenda Odontológica SaaS (nombre comercial TBD · repo `sistema-odontologico`) — Instrucciones para Agentes
+# Muelas Felices — Agenda Odontológica SaaS (repo `sistema-odontologico`) — Instrucciones para Agentes
 
 > Este archivo (y su copia `CLAUDE.md`) es lo PRIMERO que todo agente lee al entrar al repo.
 > Generado a partir de `knowledge-base/` y `CHANGES.md`. No editar a mano sin re-sincronizar ambos archivos.
@@ -15,18 +15,18 @@ SaaS web multi-consultorio para odontólogos independientes de Argentina. Cada c
 | Capa | Tecnologías | Versión mínima |
 |------|-------------|----------------|
 | Lenguaje backend | Java | 21 (LTS) |
-| Framework backend | Spring Boot (Web, Validation, Data JPA, Security, Actuator, Mail) | 3.3 |
-| Build backend | Gradle (Kotlin DSL, wrapper versionado) | 8.8 |
-| Documentación de API | springdoc-openapi (OpenAPI 3 + Swagger UI) | 2.6 |
+| Framework backend | Spring Boot (Web, Validation, Data JPA, Security, Actuator, Mail) | 3.5 |
+| Build backend | Gradle (Kotlin DSL, wrapper versionado) | 9.9 |
+| Documentación de API | springdoc-openapi (OpenAPI 3 + Swagger UI) | 2.8 |
 | Base de datos | PostgreSQL (extensión `btree_gist` para exclusión de solapamientos) | 16 |
-| Migraciones | Flyway | 10 |
+| Migraciones | Flyway (versión del BOM de Spring Boot) | 11 |
 | Autenticación | Spring Security + JWT propio (access + refresh), BCrypt | — |
-| Lenguaje frontend | TypeScript (strict), **sin framework** | 5.5 |
-| Bundler / dev server | Vite | 5 |
+| Lenguaje frontend | TypeScript (strict), **sin framework** | 5.9 |
+| Bundler / dev server | Vite | 7 |
 | Estilos | Tailwind CSS | 3.4 |
 | PWA | Web App Manifest + Service Worker (`vite-plugin-pwa` / Workbox) | — |
 | Tests backend | JUnit 5, Mockito, AssertJ, Spring Boot Test, Testcontainers (PostgreSQL) | — |
-| Tests frontend | Vitest + jsdom | 2 |
+| Tests frontend | Vitest + jsdom | 4 |
 | Contenedores | Docker + Docker Compose (postgres + backend + frontend + mailpit) | Compose v2 |
 
 Detalle completo: [knowledge-base/02_descripcion_general.md](knowledge-base/02_descripcion_general.md)
@@ -52,7 +52,7 @@ La fuente de verdad del dominio vive en `knowledge-base/` ([README](knowledge-ba
 
 **Sistema de diseño**: [design-system/README.md](design-system/README.md) (modo `system-and-mockups`, rev. 1 aprobada). Todo change con pantallas necesita un mockup revisado y aprobado antes de implementar; el sistema de diseño aprobado es la base visual.
 
-> Antes de arrancar los changes afectados, resolver las preguntas **Alta** PA-01..PA-06 (PA-01 resuelta → DD-24; PA-03 resuelta → DD-22) de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
+> Antes de arrancar los changes afectados, resolver las preguntas **Alta** abiertas: hoy solo queda **PA-02** acotada a país del VPS y backups (DD-25). PA-01 → DD-24, PA-03 → DD-22, PA-04..PA-06 → DD-26..DD-28 de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
 
 **Discovery**: [docs/discovery/](docs/discovery/) (`discovery.md` e `informe-discovery.md`).
 
