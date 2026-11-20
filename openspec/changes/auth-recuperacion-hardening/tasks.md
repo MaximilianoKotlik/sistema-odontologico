@@ -34,9 +34,9 @@
 
 ## 4. Cambio de contraseña
 
-- [ ] 4.1 Tests de integración de "Cambio exitoso" (204, cookie borrada, access y refresh invalidados), "Contraseña actual incorrecta", "Contraseña nueva débil" y "Sin sesión"; implementar `CambiarContrasena`, el endpoint y la excepción en `SecurityConfig`; verificar en verde
-- [ ] 4.2 Test de que una contraseña actual incorrecta no suma al contador de bloqueo del login; verificar en verde
-- [ ] 4.3 Test de integración del evento `PASSWORD_CAMBIADA` sin secretos; verificar en verde
+- [x] 4.1 Tests de integración de "Cambio exitoso" (204, cookie borrada, access y refresh invalidados), "Contraseña actual incorrecta", "Contraseña nueva débil" y "Sin sesión"; implementar `CambiarContrasena`, el endpoint y la excepción en `SecurityConfig`; verificar en verde
+- [x] 4.2 Test de que una contraseña actual incorrecta no suma al contador de bloqueo del login; verificar en verde
+- [x] 4.3 Test de integración del evento `PASSWORD_CAMBIADA` sin secretos; verificar en verde
 
 ## 5. Rate limiting
 
