@@ -48,7 +48,8 @@ En v1 **no hay RBAC**. La autorización se reduce a dos reglas:
 | Ruta | Tipo | Pantalla |
 |------|------|----------|
 | `/` | Pública | Landing con propuesta de valor |
-| `/precios` | Pública | Planes en ARS y prueba gratuita |
+| `/precios` | Pública | Planes en ARS y prueba gratuita (sin tarjeta) |
+| `/seguridad` | Pública | Seguridad, tratamiento de datos y cumplimiento (con lo que aún no está) |
 | `/privacidad`, `/terminos` | Pública | Política de privacidad y términos ([11](11_marco_legal_argentino.md)) |
 | `/registro`, `/login`, `/recuperar`, `/recuperar/confirmar` | Pública | Cuenta del odontólogo |
 | `/c/{slug}` | Pública | Reserva del paciente |

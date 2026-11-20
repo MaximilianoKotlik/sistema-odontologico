@@ -153,18 +153,19 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 **Como** odontólogo **quiero** descargar todos mis datos en formato abierto **para** no quedar atado al sistema.
 
 - [ ] **Dado** un consultorio con datos, **cuando** exporto, **entonces** descargo un ZIP con JSON y CSV por entidad y un `manifest.json` cuyas cantidades coinciden con la base.
+- [ ] **Dado** el ZIP generado, **entonces** incluye un PDF legible con datos del consultorio, prestaciones, pacientes, listado de turnos y resumen de auditoría, sin hashes ni tokens.
 - [ ] **Dado** el ZIP generado, **entonces** no contiene ningún hash ni token.
 - [ ] **Dado** un consultorio en plan `VENCIDO`, **cuando** exporto, **entonces** funciona igual.
 - [ ] **Dado** una exportación hace 2 min, **cuando** pido otra, **entonces** recibo 429.
 
-**Reglas**: RN-EX-01..04
+**Reglas**: RN-EX-01..05
 
 ## Épica 7: Precios y plan
 
 ### US-060 — Ver precios públicos en ARS (P0)
 **Como** visitante **quiero** ver los precios sin registrarme **para** decidir con información completa.
 
-- [ ] **Dado** que no estoy logueado, **cuando** entro a `/precios`, **entonces** veo planes en ARS, qué incluye cada uno, la prueba gratuita y la fecha de actualización.
+- [ ] **Dado** que no estoy logueado, **cuando** entro a `/precios`, **entonces** veo planes en ARS, qué incluye cada uno, la prueba gratuita (sin tarjeta) y la fecha de actualización.
 
 **Reglas**: RN-PL-01
 
@@ -175,6 +176,15 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 - [ ] **Dado** `prueba_hasta` vencida, **cuando** corre la tarea diaria, **entonces** el plan pasa a `VENCIDO`, la agenda queda en solo lectura y la página pública deja de tomar reservas.
 
 **Reglas**: RN-PL-02, RN-PL-03, RN-RP-11
+
+### US-062 — Ver la página pública de seguridad y cumplimiento (P1)
+**Como** visitante u odontólogo **quiero** leer cómo se protegen y tratan mis datos, qué garantías hay y qué todavía falta **para** confiar antes de cargar información de mis pacientes.
+
+- [ ] **Dado** que no estoy logueado, **cuando** entro a `/seguridad`, **entonces** veo cómo se tratan los datos, el registro de auditoría inmutable, la exportación completa, el hosting/tratamiento y la fecha de última actualización.
+- [ ] **Dado** la página, **entonces** declara explícitamente lo que aún no existe (sin 2FA en v1, sin revisión legal profesional todavía) y no afirma cumplimiento ni certificaciones no respaldadas.
+- [ ] **Dado** cada afirmación de la página, **entonces** corresponde a una capacidad implementada (RN-PL-06) y el contenido sale de una fuente editable.
+
+**Reglas**: RN-PL-05, RN-PL-06, RN-AD-02, RN-EX-01
 
 ## Trazabilidad con el Discovery y el mercado
 
@@ -187,12 +197,17 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 | Auditoría de cambios sobre turnos | US-040 | Referente MedicAI; vacío C.3 n.º 7 |
 | Exportación completa en formato abierto | US-050 | Solo MedicAI, YoFacturo (Premium) y DentalSoft exportan |
 | Precios públicos en ARS con prueba gratuita | US-060, US-061 | Solo DentalSoft publica todo entre los dentales argentinos |
+| D.3 diferenciador: página pública de seguridad y cumplimiento (Leyes 25.326/26.529) con auditoría inmutable | US-062, US-040 | NE-13: solo AgendaPro y MedicAI lo mencionan, como afirmación comercial; acá se declara con honestidad, sin certificaciones |
+| D.3: exportación completa (CSV/PDF) | US-050 | Ampliada con PDF legible (RN-EX-05) |
+| D.3: prueba sin tarjeta | US-060, US-061 | RN-PL-02: sin medio de pago |
 
 > Brecha conocida: recordatorios (92 % del mercado) y WhatsApp (87 % del lote AR + LATAM) son estándar y **no** están en
 > v1 por decisión del Discovery ([DD-16](09_decisiones_y_supuestos.md), [SU-02](09_decisiones_y_supuestos.md)).
 
 ## Backlog post-v1 (no implementar)
 
-Odontograma y presupuestos (primer incremento), WhatsApp, caja/Mercado Pago, obras sociales, ARCA,
+Los imprescindibles del informe que la v1 no cubre están en [D.3 Etapas posteriores, primera etapa posterior a la v1](../discovery/informe-discovery.md) (orden sugerido: WhatsApp, HC/odontograma, presupuestos, caja/MP, obras sociales, multiprofesional/sillón y roles); el mercado los considera estándar (SU-02).
+
+Odontograma y presupuestos (primer incremento), WhatsApp (incluido el botón de compartir el link por WhatsApp, DD-18), 2FA del odontólogo (PA-13, DD-18), caja/Mercado Pago, obras sociales, ARCA,
 lista de espera/recall, multi-profesional/roles, periodontograma, Google Calendar. Ver
 [01 §Fuera de alcance](01_vision_y_objetivos.md#fuera-de-alcance).

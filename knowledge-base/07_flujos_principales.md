@@ -168,9 +168,11 @@ sequenceDiagram
 **Pasos**:
 1. SPA → `GET /exportacion` (JWT).
 2. Svc `exportacion` verifica el límite de 1 cada 5 min ([RN-EX-04](05_reglas_de_negocio.md)) y abre una transacción `READ ONLY` con aislamiento `REPEATABLE READ` para obtener una foto consistente.
-3. Recorre cada entidad del tenant en streaming y escribe en un `ZipOutputStream` hacia la respuesta: `{entidad}.json`, `{entidad}.csv` y `manifest.json`. Excluye secretos ([RN-EX-02](05_reglas_de_negocio.md)).
+3. Recorre cada entidad del tenant en streaming y escribe en un `ZipOutputStream` hacia la respuesta: `{entidad}.json`, `{entidad}.csv`, `resumen.pdf` (PDF legible, [RN-EX-05](05_reglas_de_negocio.md)) y `manifest.json`. Excluye secretos ([RN-EX-02](05_reglas_de_negocio.md)).
 4. Registra `EXPORTACION_GENERADA` (en transacción separada, ya que la principal es de solo lectura).
 5. El navegador descarga `export-{slug}-{fecha}.zip`.
+
+**Nota**: `/seguridad` (US-062) es una página estática pública sin flujo propio; su texto describe, entre otras cosas, este flujo de exportación y debe mantenerse alineado (RN-PL-06).
 
 **Casos de error**: límite excedido → 429 con `Retry-After`; error a mitad del streaming → se corta la descarga y el evento no se registra; se reintenta manualmente.
 

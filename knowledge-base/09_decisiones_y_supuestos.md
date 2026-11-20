@@ -1,6 +1,6 @@
 # Decisiones y Supuestos
 
-> DD-01 a DD-08 fueron **confirmadas por el usuario** el 2026-11-16 y DD-16 el 2026-11-20. El resto
+> DD-01 a DD-08 fueron **confirmadas por el usuario** el 2026-11-16 y DD-16 y DD-18 el 2026-11-20. El resto
 > (DD-09 a DD-15 y DD-17) son decisiones por defecto propuestas al armar la KB: se aplican salvo que el usuario
 > las revise. Las decisiones de diseño derivadas de las reglas (RN-AG-03/04/05/08/13, valores por defecto) están
 > registradas en el Discovery ([`discovery.md` §7](../discovery/discovery.md)), con su procedencia.
@@ -88,8 +88,8 @@
 **Justificación**: no depender de integraciones para el flujo principal.
 **Trade-offs aceptados**: si el paciente pierde el link, debe contactar al consultorio para cancelar.
 
-### DD-14 — Exportación síncrona por streaming (ZIP con JSON + CSV)
-**Decisión**: `GET /exportacion` genera el ZIP en streaming dentro de la request.
+### DD-14 — Exportación síncrona por streaming (ZIP con JSON + CSV + PDF)
+**Decisión**: `GET /exportacion` genera el ZIP (JSON, CSV y PDF legible, RN-EX-05; ver DD-18) en streaming dentro de la request.
 **Justificación**: volúmenes chicos por consultorio; sin colas ni almacenamiento de archivos.
 **Trade-offs aceptados**: si un consultorio crece mucho, migrar a generación asíncrona.
 
@@ -101,7 +101,7 @@
 ### DD-16 — v1 acotada a la agenda de un profesional, más chica que el MVP del informe (Discovery) (confirmada por el usuario, 2026-11-20)
 **Estado**: **Confirmada por el usuario (2026-11-20)**: la v1 es deliberadamente modesta (solo la agenda de un odontólogo, sin multi-profesional, sin secretaria/recepción y sin roles); es una decisión intencional del equipo, no un descuido, aunque el MVP del informe (D.3) sea mayor. Registrada en [`discovery.md` §2 y §10](../discovery/discovery.md) y en la nota de alcance de [`informe-discovery.md` D.3](../discovery/informe-discovery.md).
 **Decisión**: v1 = agenda de un único profesional + reserva pública + auditoría + exportación + precios públicos. Se difieren WhatsApp, historia clínica/odontograma, caja/Mercado Pago, obras sociales, ARCA, multi-profesional, múltiples sillones y roles ([`discovery.md` §5–§6, §8](../discovery/discovery.md)).
-**Contexto**: el informe competitivo (D.3) sugiere un MVP mucho mayor (agenda multiprofesional y por sillón, WhatsApp con reinsistencia, HC y odontograma, presupuestos, caja con MP, obras sociales, roles) y advierte que en Argentina "no tener WA descalifica" (C.1). El Discovery eligió, y el usuario confirmó, en cambio, equipo chico, presupuesto acotado y transparencia como diferenciador.
+**Contexto**: el informe competitivo (D.3) sugería un MVP mucho mayor (los imprescindibles no cubiertos por la v1 están ahora en "D.3 Etapas posteriores, primera etapa posterior a la v1", pero el mercado los sigue considerando estándar; riesgo SU-02) (agenda multiprofesional y por sillón, WhatsApp con reinsistencia, HC y odontograma, presupuestos, caja con MP, obras sociales, roles) y advierte que en Argentina "no tener WA descalifica" (C.1). El Discovery eligió, y el usuario confirmó, en cambio, equipo chico, presupuesto acotado y transparencia como diferenciador.
 **Alternativas consideradas**: seguir el MVP del informe (más alcance y costo); v1 mínima (elegida).
 **Justificación**: validar primero el supuesto principal (reserva por link) con el menor costo ([SU-01](#su-01--el-paciente-argentino-acepta-reservar-por-link)).
 **Trade-offs aceptados**: riesgo de no igualar el estándar de mercado (recordatorios, odontograma); mitigado con el piloto y la priorización post-v1 ([PA-05](10_preguntas_abiertas.md)).
@@ -110,6 +110,13 @@
 **Decisión**: no existe la entidad "sillón"; el no-solapamiento se evalúa por consultorio ([RN-AG-13](05_reglas_de_negocio.md)). Multi-sillón es opcional del Discovery y queda fuera de v1.
 **Alternativas consideradas**: modelar `sillon` desde ya (agrega alcance y UI que el Discovery no pide).
 **Trade-offs aceptados**: agregar sillones luego requiere una migración aditiva y una segunda restricción de exclusión; ver [PA-14](10_preguntas_abiertas.md).
+
+### DD-18 — Revisión del roadmap contra D.3 (2026-11-20) (confirmada por el usuario)
+**Estado**: **Confirmada por el usuario (2026-11-20)**, tras revisar la v1 contra D.3 (MVP sugerido) del [informe](../discovery/informe-discovery.md). No modifica DD-16: la v1 sigue siendo solo la agenda de un profesional + link público.
+**Agregado a v1**: (1) página pública `/seguridad` de seguridad y cumplimiento, honesta (RN-PL-05/06, US-062, dentro de C-17); (2) PDF legible en la exportación, además de JSON y CSV (RN-EX-05, US-050, C-16); (3) prueba gratuita **sin tarjeta** explícita (RN-PL-02, C-17).
+**Dejado fuera de v1 por decisión del usuario**: (a) botón de compartir el link de reserva por WhatsApp (`wa.me` / compartir nativo); (b) 2FA del odontólogo (sigue en v2, [PA-13](10_preguntas_abiertas.md)). Ninguno se implementa en v1; ambos quedan en el backlog post-v1.
+**Justificación**: sumar los diferenciadores de transparencia de D.3 que cuestan poco y no requieren integraciones; (a) queda fuera por decisión del usuario, en línea con cero integraciones ([DD-07](#dd-07--sin-integraciones-externas-en-v1-confirmada)); (b) porque aún no hay historia clínica en v1 ([PA-13](10_preguntas_abiertas.md)).
+**Trade-offs aceptados**: `/seguridad` debe declarar que no hay 2FA ni revisión legal profesional aún; el link se comparte copiándolo.
 
 ## Supuestos inferidos
 

@@ -81,13 +81,16 @@ Valores por defecto configurables por consultorio se indican como `(config, defa
 - **RN-EX-02**: Nunca incluye secretos (hash de contraseña, refresh tokens, tokens de recuperación o de gestión).
 - **RN-EX-03**: Está disponible en cualquier estado del plan, incluido `VENCIDO`. — Pilar de transparencia: el odontólogo nunca queda rehén.
 - **RN-EX-04**: Cada exportación genera un evento `EXPORTACION_GENERADA`. Límite: 1 exportación cada 5 minutos por consultorio.
+- **RN-EX-05**: El mismo ZIP incluye un **PDF legible** (`resumen.pdf`) con, como mínimo: datos del consultorio, prestaciones, pacientes, listado de turnos y resumen de auditoría. Lo genera el backend, aplica la misma exclusión de secretos (RN-EX-02) y sus cantidades coinciden con el `manifest.json`. La librería de generación se decide al proponer el change (p. ej. OpenPDF), no acá. Respaldado en D.3 del informe ("Exportación completa de datos (CSV/PDF)").
 
 ## Dominio: Plan y precios (RN-PL)
 
 - **RN-PL-01**: Los planes y precios se publican en ARS en `/precios`, accesibles sin registrarse, con impuestos incluidos y la fecha de última actualización visible.
-- **RN-PL-02**: Todo consultorio nuevo arranca en plan `PRUEBA` por 30 días sin pedir medio de pago. **Decisión de diseño** sobre la duración (respaldada en [`discovery.md` §7](../discovery/discovery.md); el Discovery §5 pide prueba gratuita sin fijar plazo; modelo de precios en [PA-03](10_preguntas_abiertas.md)).
+- **RN-PL-02**: Todo consultorio nuevo arranca en plan `PRUEBA` por 30 días **sin pedir tarjeta ni ningún medio de pago** ("prueba sin tarjeta", D.3; coherente con la ausencia de cobro integrado, RN-PL-04). **Decisión de diseño** sobre la duración (respaldada en [`discovery.md` §7](../discovery/discovery.md); el Discovery §5 pide prueba gratuita sin fijar plazo; modelo de precios en [PA-03](10_preguntas_abiertas.md)).
 - **RN-PL-03**: Vencida la prueba sin plan activo, el consultorio pasa a `VENCIDO`: agenda en solo lectura, reserva pública desactivada (RN-RP-11), exportación habilitada (RN-EX-03). Ningún dato se borra.
 - **RN-PL-04**: En v1 no hay cobro integrado; el pase a `ACTIVO` se hace manualmente por el equipo (operación interna auditada con `actor_tipo = SISTEMA`).
+- **RN-PL-05**: La página pública `/seguridad` (sin autenticación) explica con honestidad cómo se tratan los datos, el registro de auditoría inmutable, la exportación completa, el hosting/tratamiento y **lo que todavía no está**: sin 2FA en v1 y sin revisión legal profesional aún ([PA-06](10_preguntas_abiertas.md), [11](11_marco_legal_argentino.md)). No declara cumplimiento ni certificaciones que no pueda respaldar.
+- **RN-PL-06**: Todo lo que `/seguridad` afirma debe corresponder a una capacidad realmente implementada (auditoría append-only, exportación, aislamiento por tenant, etc.); cada afirmación se revisa contra el código antes de cada release y la página muestra la fecha de última actualización. El contenido vive en una fuente editable versionada, no hardcodeado en componentes.
 
 ## Dominio: Historia clínica (RN-HC) — vigente desde v2
 

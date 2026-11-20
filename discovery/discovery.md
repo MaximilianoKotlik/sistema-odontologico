@@ -33,7 +33,8 @@ Dos únicos actores. No hay recepción, ni roles, ni permisos en la v1.
 modesta: solo la agenda de un odontólogo, sin multi-profesional, sin
 secretaria/recepción y sin roles. Es una decisión intencional del equipo, no un
 descuido, aunque el MVP sugerido por el informe (D.3) es más grande (ver la
-nota de alcance en `informe-discovery.md`, D.3).
+nota de alcance en `informe-discovery.md`, D.3; los imprescindibles que la v1 no cubre
+quedaron en "D.3 Etapas posteriores, primera etapa posterior a la v1").
 
 ## 3. Casos de uso
 
@@ -194,7 +195,8 @@ costo y riesgo propios:
   v1 es más chica que el MVP que sugiere el informe (D.3: multi-profesional,
   WhatsApp, historia clínica, caja, obras sociales, roles). Puede no igualar el
   estándar de mercado (recordatorios, odontograma); se mitiga con un piloto y
-  con la priorización posterior.
+  con la priorización posterior (D.3, "Etapas posteriores": WhatsApp, HC/odontograma,
+  presupuestos, caja/MP, obras sociales, multiprofesional/sillón y roles).
 - **Hipótesis a validar (meta tentativa, definida al armar la KB, 2026-11-20)**:
   que al menos el 40 % de los turnos se cree por link a los 60 días de uso. Es
   una meta de trabajo sin fuente de mercado; se recalibra tras el piloto. Las

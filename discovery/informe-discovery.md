@@ -311,19 +311,16 @@ Cada oportunidad indica qué vacío de C.3 la justifica.
 
 ### D.3 MVP sugerido
 
-> **Nota de alcance confirmado (2026-11-20).** El equipo confirmó que la v1 del producto es deliberadamente más modesta que este MVP: solo la agenda de un odontólogo (con reserva pública por link, auditoría, exportación y precios públicos), sin multi-profesional, sin secretaria/recepción y sin roles. Es una decisión intencional, no un descuido. Lo que este MVP lista y la v1 difiere (agenda por sillón, WhatsApp, historia clínica, presupuestos, caja con Mercado Pago, obras sociales, roles) queda como priorización posterior. El análisis y las recomendaciones de abajo no se modifican.
+> **Nota de alcance confirmado (2026-11-20).** El equipo confirmó que la v1 del producto es deliberadamente más modesta que el MVP que sugería este informe: solo la agenda de un odontólogo (con reserva pública por link, auditoría, exportación y precios públicos), sin multi-profesional, sin secretaria/recepción y sin roles. Es una decisión intencional, no un descuido. El 2026-11-20 se movió a "Etapas posteriores" todo imprescindible que la v1 no cubre (agenda por sillón y multiprofesional, WhatsApp, historia clínica, presupuestos, caja con Mercado Pago, obras sociales, roles), conservando su evidencia; también quedan fuera de la v1 por decisión del usuario el botón de compartir por WhatsApp y el 2FA. El análisis competitivo y los puntajes (secciones A a C, D.1 y D.2) no se modifican. Nota honesta: el mercado sigue considerando estándar lo que se difiere (riesgo SU-02).
 
 #### Imprescindibles (sin esto no se compite)
 
-- **Agenda multiprofesional y por sillón, con bloqueos, duración por práctica, sobreturnos y detección de solapamiento.** Es la operación central del consultorio y hoy está repartida entre DentalSoft (sobreturnos) y AgendaPro (sillones).
-- **Reserva online por link, sin cuenta del paciente, compartible por WhatsApp.** Es estándar (88%); la diferencia está en minimizar la fricción.
-- **Recordatorios y confirmación automática por WhatsApp, con reinsistencia y un cupo de mensajes incluido.** WA está en el 87% de la oferta regional, e incluir el cupo resuelve el costo opaco (vacío 11).
-- **Ficha clínica, historia clínica y odontograma FDI con historial.** Es requisito de entrada en el vertical dental (89% de los dentales lo tiene).
-- **Presupuestos y plan de tratamiento vinculados al odontograma y enviados por link.** Es la base del ingreso, y solo el 31% lo tiene.
-- **Caja con cierre diario, cuenta corriente del paciente y cobro por Mercado Pago (seña o total).** Solo 2 verticales dentales argentinos documentan MP.
-- **Obras sociales en nivel base: padrón de coberturas por paciente, registro de prestaciones por OS y reporte mensual de liquidación exportable.** El 78% de los argentinos lo menciona; no tenerlo descalifica.
-- **Roles y permisos (odontólogo, recepción, administrador) y log de auditoría de cambios en la HC y el odontograma.** Lo exige la Ley 26.529 y es un vacío del mercado (vacío 7).
-- **Exportación completa de datos (CSV/PDF) en todos los planes.** Elimina el lock-in que hoy impone el mercado (solo el 12% exporta).
+*Cubiertos por la v1.*
+
+- **Agenda de un odontólogo, con bloqueos, duración por práctica, sobreturnos y detección de solapamiento.** Es la operación central del consultorio y hoy está repartida entre DentalSoft (sobreturnos) y AgendaPro (sillones). La agenda por sillón y multiprofesional pasa a la primera etapa posterior.
+- **Reserva online por link, sin cuenta del paciente (reservar, reprogramar y cancelar).** Es estándar (88%); la diferencia está en minimizar la fricción. El botón para compartir el link por WhatsApp pasa a la primera etapa posterior.
+- **Auditoría de cambios en turnos y configuración, visible para el profesional.** Es un vacío del mercado (vacío 7) y la base de la transparencia. El log de auditoría de la HC y el odontograma, y los roles y permisos, pasan a la primera etapa posterior.
+- **Exportación completa de datos (JSON, CSV y PDF) en todos los planes.** Elimina el lock-in que hoy impone el mercado (solo el 12% exporta).
 - **Precios públicos en ARS, con plan de entrada y prueba sin tarjeta.** En el vertical dental solo DentalSoft lo hace; reduce la fricción de venta.
 
 #### Diferenciadores del MVP (para ganarle a DentalSoft y AgendaPro)
@@ -333,10 +330,23 @@ Cada oportunidad indica qué vacío de C.3 la justifica.
 - **Autogestión del paciente: confirmar, cancelar y reprogramar desde WhatsApp o un link.** En Argentina solo existe en forma parcial o como AC.
 - **Periodontograma incluido en el plan base.** Ningún nativo argentino lo evidencia.
 - **Seguimiento automático de presupuestos pendientes, con indicador de conversión.** Solo AgendaPro lo documenta, y tiene impacto directo en la facturación.
-- **Página pública de seguridad y cumplimiento (Leyes 25.326/26.529), con auditoría inmutable y 2FA.** Ningún vertical dental argentino lo comunica; convierte la confianza en argumento de venta.
+- **Página pública de seguridad y cumplimiento (Leyes 25.326/26.529), con auditoría inmutable y 2FA (2FA diferido, DD-18).** Ningún vertical dental argentino lo comunica; convierte la confianza en argumento de venta.
 - **Precio por sillón o por clínica, sin costo por usuario.** Contrasta con el precio por profesional de DentalSoft y MedicAI.
 
 #### Etapas posteriores
+
+##### Primera etapa posterior a la v1 (imprescindibles del mercado diferidos por alcance)
+
+Son imprescindibles según este informe que la v1 no cubre, por decisión confirmada del equipo (2026-11-20). Se listan por prioridad sugerida.
+
+- **Recordatorios y confirmación automática por WhatsApp, con reinsistencia y un cupo de mensajes incluido.** WA está en el 87% de la oferta regional, e incluir el cupo resuelve el costo opaco (vacío 11). Incluye el botón para compartir por WhatsApp el link de reserva pública (diferido por el usuario).
+- **Ficha clínica, historia clínica y odontograma FDI con historial.** Es requisito de entrada en el vertical dental (89% de los dentales lo tiene). Incluye el log de auditoría de cambios en la HC y el odontograma (Ley 26.529, vacío 7).
+- **Presupuestos y plan de tratamiento vinculados al odontograma y enviados por link.** Es la base del ingreso, y solo el 31% lo tiene.
+- **Caja con cierre diario, cuenta corriente del paciente y cobro por Mercado Pago (seña o total).** Solo 2 verticales dentales argentinos documentan MP.
+- **Obras sociales en nivel base: padrón de coberturas por paciente, registro de prestaciones por OS y reporte mensual de liquidación exportable.** El 78% de los argentinos lo menciona; no tenerlo descalifica.
+- **Agenda multiprofesional y por sillón, y roles y permisos (odontólogo, recepción, administrador).** La agenda por sillón es la operación central de clínicas con varios boxes (AgendaPro); los roles los exige la Ley 26.529 cuando hay más de un usuario.
+
+##### Etapas posteriores restantes
 
 - **Recall de controles periódicos y seguimiento de ausentes.** Estándar en EEUU y ausente en Argentina, pero necesita historial de turnos acumulado.
 - **Motor avanzado de obras sociales: nomenclador parametrizable, autorizaciones, verificación por PUCO y conciliación.** De alto valor, pero complejo y distinto para cada financiador; conviene validarlo con clientes.
