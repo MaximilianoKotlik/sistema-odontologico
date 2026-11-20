@@ -25,15 +25,18 @@ public class SolicitarRecuperacion {
     private final GeneradorDeIds ids;
     private final Clock reloj;
     private final ApplicationEventPublisher eventos;
+    private final LimitesPorCuenta limites;
 
     public SolicitarRecuperacion(UsuarioRepositorio usuarios, TokenDeRecuperacionRepositorio tokens,
-            GeneradorDeSecretos secretos, GeneradorDeIds ids, Clock reloj, ApplicationEventPublisher eventos) {
+            GeneradorDeSecretos secretos, GeneradorDeIds ids, Clock reloj, ApplicationEventPublisher eventos,
+            LimitesPorCuenta limites) {
         this.usuarios = usuarios;
         this.tokens = tokens;
         this.secretos = secretos;
         this.ids = ids;
         this.reloj = reloj;
         this.eventos = eventos;
+        this.limites = limites;
     }
 
     @Transactional
@@ -41,6 +44,8 @@ public class SolicitarRecuperacion {
         if (email == null || email.isBlank()) {
             return;
         }
+        // Antes de buscar la cuenta: el límite por email cuenta igual exista o no (design D8).
+        limites.consumirRecuperacion(email);
         Optional<Usuario> cuenta = usuarios.buscarPorEmailParaActualizar(email);
         if (cuenta.isEmpty()) {
             return;

@@ -41,8 +41,8 @@
 ## 5. Rate limiting
 
 - [x] 5.1 Tests unitarios del `LimitadorBucket4j` (consume, agota, informa `Retry-After`, se recupera con el tiempo); implementar con Caffeine; verificar en verde
-- [ ] 5.2 Tests de integración de "Ráfaga de logins desde una IP" (429 que no suma intento fallido), "Recuperación del límite" y "Rutas fuera de autenticación"; implementar `LimiteDeSolicitudesFilter` con los límites por IP de D8; verificar en verde
-- [ ] 5.3 Tests de integración de "Recuperación repetida para un mismo email" (desde IPs distintas, y también para un email sin cuenta) y "Cambio de contraseña repetido"; conectar `LimitadorDeSolicitudes` a los casos de uso; verificar en verde
+- [x] 5.2 Tests de integración de "Ráfaga de logins desde una IP" (429 que no suma intento fallido), "Recuperación del límite" y "Rutas fuera de autenticación"; implementar `LimiteDeSolicitudesFilter` con los límites por IP de D8; verificar en verde
+- [x] 5.3 Tests de integración de "Recuperación repetida para un mismo email" (desde IPs distintas, y también para un email sin cuenta) y "Cambio de contraseña repetido"; conectar `LimitadorDeSolicitudes` a los casos de uso; verificar en verde
 - [ ] 5.4 Documentar en `backend/README.md` los límites, `app.rate-limit.*` y la configuración de `server.forward-headers-strategy` detrás de un proxy; verificar que lo documentado coincide con `application.yml`
 
 ## 6. Integración y cierre

@@ -29,18 +29,22 @@ public class CambiarContrasena {
     private final NuevaContrasena nuevaContrasena;
     private final PublicadorDeAuditoria auditoria;
     private final Clock reloj;
+    private final LimitesPorCuenta limites;
 
     public CambiarContrasena(UsuarioRepositorio usuarios, HasheadorDeContrasena hasheador,
-            NuevaContrasena nuevaContrasena, PublicadorDeAuditoria auditoria, Clock reloj) {
+            NuevaContrasena nuevaContrasena, PublicadorDeAuditoria auditoria, Clock reloj, LimitesPorCuenta limites) {
         this.usuarios = usuarios;
         this.hasheador = hasheador;
         this.nuevaContrasena = nuevaContrasena;
         this.auditoria = auditoria;
         this.reloj = reloj;
+        this.limites = limites;
     }
 
     @Transactional
     public void cambiar(ConsultorioId consultorio, UUID usuarioId, String actual, String nueva, String ip) {
+        // Contra quien robó un access token y prueba contraseñas actuales (design D7 y D8).
+        limites.consumirCambioDeContrasena(usuarioId);
         Usuario usuario = usuarios.buscarParaActualizar(consultorio, usuarioId)
                 .orElseThrow(() -> new AutenticacionRechazada("NO_AUTENTICADO", "No autenticado"));
         if (actual == null || !hasheador.coincide(actual, usuario.passwordHash())) {
