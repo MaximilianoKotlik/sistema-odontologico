@@ -125,7 +125,7 @@ Roles (los nombres se pueden reasignar sin tocar las dependencias):
 |------|------|------|------|-------|------|
 | 1 | **C-01** | propuesta C-02 | propuesta C-03 | mockup del app-shell (C-06) | mockup C-21 |
 | 2 | revisión | **C-02** | propuesta C-05 | **C-06** | mockups C-07/C-09 |
-| 3 | revisión | **C-04** | **C-03** | mockups C-13/C-14 | **C-21** |
+| 3 | revisión + mockups C-13/C-14 (reasignado) | **C-04** | **C-03** | apoyo y tests | **C-21** |
 | 4 | revisión | **C-08** | **C-05** | apoyo y tests | mockups C-16/C-17 |
 | 5 | revisión | **C-10** | propuesta C-15 | **C-07** | mockups C-18/C-19/C-22 |
 | 6 | revisión | **C-11** | propuesta C-19 | **C-09** | mockup C-20 |
@@ -350,6 +350,7 @@ Reglas de coordinación del paralelismo:
   - Feature `agenda/`: vista diaria por defecto en mobile y semanal desde `md`; tarjetas de turno con color + ícono + texto, sobreturno con borde punteado, bloqueo rayado, cancelados atenuados y ocultables; lectura sin scroll horizontal a 360 px; indicador de "nuevos"; caché offline de la última agenda (solo lectura).
   - Mockup revisado de vista diaria, semanal y detalle de turno antes de implementar.
   - Tests Vitest de render de componentes de agenda y fechas/TZ.
+- **Mockups (trabajo anticipado)**: los prepara **Maxi** (en curso desde 2026-11-20, rama `feat/C-13-frontend-agenda`), en lugar del paso 3 de Nacho. La implementación sigue siendo de Nacho.
 - **Dependencias**: `C-07`, `C-12`
 - **Governance**: MEDIO
 - **Leer antes**:
@@ -364,6 +365,7 @@ Reglas de coordinación del paralelismo:
   - Features `turnos/` y `bloqueos/`: crear turno manual (prestación, hueco, paciente por teléfono), agregar sobreturno, confirmar/cancelar/marcar ausente, reprogramar, **ajustar la duración** (selector en pasos de 5 min, muestra el nuevo fin), **agregar/editar la nota interna** (contador de 500), crear y eliminar bloqueos; manejo de errores 409 con mensajes y lista de conflictos de bloqueo.
   - Mockup revisado de formularios y diálogos antes de implementar.
   - Tests Vitest de validaciones y mapeo de errores.
+- **Mockups (trabajo anticipado)**: los prepara **Maxi** (en curso desde 2026-11-20, rama `feat/C-13-frontend-agenda`, junto con los de C-13), en lugar del paso 3 de Nacho. La implementación sigue siendo de Nacho.
 - **Dependencias**: `C-13`
 - **Governance**: MEDIO
 - **Leer antes**:
