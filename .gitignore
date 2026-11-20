@@ -22,3 +22,6 @@ target/
 .env.*
 !.env.example
 
+coverage/
+*.tsbuildinfo
+!gradle/wrapper/gradle-wrapper.jar

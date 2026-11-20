@@ -1,0 +1,44 @@
+# Configuración base (design D6). Todo secreto llega por variables de entorno, sin valores por defecto.
+spring:
+  application:
+    name: sistema-odontologico
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_APP_USER}
+    password: ${DB_APP_PASSWORD}
+  flyway:
+    user: ${DB_OWNER_USER}
+    password: ${DB_OWNER_PASSWORD}
+    locations: classpath:db/migration
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+server:
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+  info:
+    env:
+      enabled: false
+
+springdoc:
+  paths-to-match: /api/v1/**
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false
