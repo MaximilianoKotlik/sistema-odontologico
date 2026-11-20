@@ -7,7 +7,7 @@
 
 - [ ] 0.1 Contrastar la tabla de §Context de `design.md` con el código mergeado (nombres de casos de uso, puertos, columnas de `usuario`, revocación masiva de refresh, rutas públicas de `SecurityConfig`). Actualizar `design.md`/specs si algo cambia y verificar con `openspec validate auth-recuperacion-hardening --strict`
 - [ ] 0.2 Fijar el número de la migración con el siguiente `V{n}` libre y verificar que no choque con otras ramas abiertas
-- [ ] 0.3 Agregar `spring-boot-starter-mail`, `bucket4j_jdk17-core` y `caffeine` a `build.gradle.kts`, y la configuración SMTP (`SMTP_*`, `MAIL_FROM`) y `app.rate-limit.*` a `application.yml` (y valores bajos en `application-test.yml`); verificar que `./gradlew test` sigue en verde
+- [x] 0.3 Agregar `spring-boot-starter-mail`, `bucket4j_jdk17-core` y `caffeine` a `build.gradle.kts`, y la configuración SMTP (`SMTP_*`, `MAIL_FROM`) y `app.rate-limit.*` a `application.yml` (y valores bajos en `application-test.yml`); verificar que `./gradlew test` sigue en verde
 
 ## 1. Bloqueo por fallos y auditoría del login
 
