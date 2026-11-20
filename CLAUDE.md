@@ -90,6 +90,30 @@ El plan de implementación completo está en [CHANGES.md](CHANGES.md). Resumen:
 
 ---
 
+## Equipo e identificación del programador
+
+Cada integrante tiene un rol fijo y una lista de changes en [CHANGES.md](CHANGES.md) §Plan del equipo. **Al iniciar una sesión, el agente identifica a la persona** por el nombre que dice ("soy Fran") o, si no lo dice, por `git config user.name` / `gh api user --jq .login`, y le responde con su situación actual.
+
+| Nombre | GitHub | Rol | Changes |
+|--------|--------|-----|---------|
+| Maxi | `MaximilianoKotlik` | Líder e integrador, code owner | C-01, C-23 + aprobación de propuestas, mockups y PRs |
+| Fran | `FrancisCMarsala` | Backend núcleo (camino crítico) | C-02, C-04, C-08, C-10, C-11, C-12, C-20 |
+| Mati | `MatiBarfi` | Backend seguridad y datos | C-03, C-05, C-15, C-19, C-18 |
+| Nacho | `nachitobbarrera` | Frontend de la app | C-06, C-07, C-09, C-13, C-14 |
+| Octi | `Octavio221218` | Frontend público y fullstack | C-21, C-17, C-16, C-22 |
+
+Qué responde el agente al identificar a alguien:
+
+1. Leer [CHANGES.md](CHANGES.md) (estados `[x]`) y `git log origin/main` para ver qué está mergeado; revisar con `gh pr list` qué PRs abiertos tiene esa persona.
+2. Decirle **su tarea actual**: el primer change de su lista que no esté `[x]`. Si sus dependencias están `[x]` → puede implementarlo. Si no → indicarle qué trabajo anticipado le toca según la tabla de pasos (propuesta, mockup o tests) y de qué change o persona está esperando.
+3. Recordarle el ciclo del PR:
+   - Rama `feat/C-NN-nombre` creada desde `main` actualizado.
+   - Si el change es CRITICO/ALTO o tiene pantallas: primero propuesta y/o mockup en un **PR en borrador**; no se escribe código de producción hasta que Maxi lo apruebe.
+   - Implementar con Strict TDD, marcar el PR como listo y pedir la revisión a Maxi. No marcar el `[x]` en CHANGES.md: lo hace Maxi al mergear.
+4. Si la persona pide un change que no es suyo, avisarle a quién está asignado y no empezarlo sin el OK de Maxi.
+
+---
+
 ## Reglas Duras (específicas del proyecto)
 
 > Reglas globales ya definidas en el archivo global de instrucciones del cliente activo (orquestador, governance, TDD, engram): el proyecto las hereda. Acá viven solo las reglas **específicas de este proyecto** + las universales que el global no cubra. Son contrato; romperlas es un defecto.

@@ -57,50 +57,48 @@ C-23 e2e-hardening-release  ← depende de C-14, C-16, C-17, C-18, C-19, C-20, C
 
 ```
 GATE 0: ninguna
-  → C-01 foundation-setup                         [Agente A]
-  (mockup del app-shell de C-06 en revisión        [Agente C])
+  → C-01 foundation-setup                         [Maxi]
+  (propuestas de C-02/C-03 [Fran, Mati]; mockups de C-06 y C-21 [Nacho, Octi])
 
 GATE 1: C-01 ✓
-  → C-02 core-compartido-tenant                   [Agente A]
-  → C-06 frontend-shell-pwa                       [Agente C]
+  → C-02 core-compartido-tenant                   [Fran]
+  → C-06 frontend-shell-pwa                       [Nacho]
 
 GATE 2: C-02 ✓                                    ← FORK
-  → C-04 auth-sesion-tokens                       [Agente A]
-  → C-03 auditoria-base                           [Agente B]
-  → C-21 pagina-precios                           [Agente C — si C-06 ✓]
+  → C-04 auth-sesion-tokens                       [Fran]
+  → C-03 auditoria-base                           [Mati]
+  → C-21 pagina-precios                           [Octi — si C-06 ✓]
 
 GATE 3: C-03 ✓ + C-04 ✓
-  → C-08 consultorio-config-backend               [Agente A]
-  → C-05 auth-recuperacion-hardening              [Agente B]
+  → C-08 consultorio-config-backend               [Fran]
+  → C-05 auth-recuperacion-hardening              [Mati]
 
 GATE 4: C-05 ✓ + C-06 ✓ / C-08 ✓
-  → C-07 frontend-auth                            [Agente C — requiere C-05 ✓ y C-06 ✓]
-  → C-10 agenda-esquema-dominio                   [Agente A — requiere C-08 ✓]
+  → C-07 frontend-auth                            [Nacho — requiere C-05 ✓ y C-06 ✓]
+  → C-10 agenda-esquema-dominio                   [Fran — requiere C-08 ✓]
 
 GATE 5: C-07 ✓ + C-10 ✓
-  → C-09 frontend-configuracion                   [Agente C — si C-08 ✓]
-  → C-11 agenda-casos-de-uso                      [Agente A]
+  → C-09 frontend-configuracion                   [Nacho — si C-08 ✓]
+  → C-11 agenda-casos-de-uso                      [Fran]
 
 GATE 6: C-11 ✓                                    ← FORK
-  → C-12 agenda-api-odontologo                    [Agente A]
-  → C-15 reserva-publica-backend                  [Agente B]
-  → C-17 pacientes-revision                       [Agente C — si C-09 ✓]
+  → C-12 agenda-api-odontologo                    [Fran]
+  → C-15 reserva-publica-backend                  [Mati]
+  → C-17 pacientes-revision                       [Octi — si C-09 ✓]
 
-GATE 7: C-15 ✓                                    ← FORK
-  → C-16 frontend-reserva-publica                 [Agente B — solo requiere C-06 ✓ y C-15 ✓]
-  → C-19 exportacion-datos                        [Agente A — si C-09 ✓]
-  → C-20 plan-ciclo-de-vida                       [Agente A — si C-09 ✓ y C-12 ✓]
+GATE 7: C-12 ✓ / C-15 ✓                           ← FORK
+  → C-13 frontend-agenda                          [Nacho — requiere C-07 ✓ y C-12 ✓]
+  → C-16 frontend-reserva-publica                 [Octi — solo requiere C-06 ✓ y C-15 ✓]
+  → C-19 exportacion-datos                        [Mati — si C-09 ✓]
+  → C-20 plan-ciclo-de-vida                       [Fran — si C-09 ✓, C-12 ✓ y C-15 ✓]
 
-GATE 8: C-12 ✓
-  → C-13 frontend-agenda                          [Agente C — si C-07 ✓]
+GATE 8: C-13 ✓ / C-19 ✓                           ← FORK
+  → C-14 frontend-turnos-bloqueos                 [Nacho — requiere C-13 ✓]
+  → C-18 historial-auditoria                      [Mati — requiere C-12 ✓ y C-13 ✓]
+  → C-22 pagina-seguridad                         [Octi — requiere C-19 ✓ (y C-03, C-06 ✓)]
 
-GATE 9: C-13 ✓ / C-19 ✓                           ← FORK
-  → C-14 frontend-turnos-bloqueos                 [Agente C — requiere C-13 ✓]
-  → C-18 historial-auditoria                      [Agente A — requiere C-12 ✓ y C-13 ✓]
-  → C-22 pagina-seguridad                         [Agente B — requiere C-19 ✓ (y C-03, C-06 ✓)]
-
-GATE 10: C-14, C-16, C-17, C-18, C-19, C-20, C-21, C-22 ✓
-  → C-23 e2e-hardening-release                    [Agente A; B y C revisan y corrigen hallazgos]
+GATE 9: C-14, C-16, C-17, C-18, C-19, C-20, C-21, C-22 ✓
+  → C-23 e2e-hardening-release                    [Maxi; Fran, Mati, Nacho y Octi corrigen hallazgos]
 ```
 
 ### Camino crítico (10 changes — mínimo irreducible)
@@ -109,23 +107,39 @@ GATE 10: C-14, C-16, C-17, C-18, C-19, C-20, C-21, C-22 ✓
 C-01 → C-02 → C-04 → C-08 → C-10 → C-11 → C-12 → C-13 → C-14* / C-18* → C-23
 ```
 
-`*` C-14 y C-18 son ambos "penúltimos" (se pueden hacer en paralelo); C-22 también puede cerrar en ese mismo nivel (C-11 → C-15 → C-19 → C-22). Quedan fuera del camino crítico: C-03 y C-05 (paralelos a C-04/C-08), C-06/C-07/C-09 (frontend de base, absorbidos por la holgura del backend), C-21 (arranca en el GATE 2), C-15/C-16/C-17/C-19/C-20/C-22 (ramas paralelas a C-12 → C-13). Con 3 agentes el plan cierra en 11 pasos: el paso 10 absorbe por capacidad el último change de la rama de plan (C-20), no por dependencia.
+`*` C-14 y C-18 son ambos "penúltimos" (se pueden hacer en paralelo); C-22 también puede cerrar en ese mismo nivel (C-11 → C-15 → C-19 → C-22). Quedan fuera del camino crítico: C-03 y C-05 (paralelos a C-04/C-08), C-06/C-07/C-09 (frontend de base, absorbidos por la holgura del backend), C-21 (arranca en el GATE 2), C-15/C-16/C-17/C-19/C-20/C-22 (ramas paralelas a C-12 → C-13). Como el camino crítico tiene 10 changes, ningún plan cierra en menos de 10 pasos; el ancho máximo es 4 changes simultáneos (paso 8), así que con 4 personas programando y el líder revisando se alcanza ese mínimo.
 
-### Plan óptimo con 3 agentes
+### Plan del equipo (5 personas, 10 pasos)
 
-| Paso | Agente A (Backend core) | Agente B (Backend aux) | Agente C (Frontend) |
-|------|-------------------------|------------------------|---------------------|
-| 1 | C-01 | — | mockup del app-shell de C-06 (revisión) |
-| 2 | C-02 | mockups de C-07 y C-21 (revisión) | C-06 |
-| 3 | C-04 | C-03 | C-21 |
-| 4 | C-08 | C-05 | mockups de C-09/C-13/C-14 (revisión) |
-| 5 | C-10 | mockups de C-16/C-17 (revisión) | C-07 |
-| 6 | C-11 | mockups de C-18/C-19/C-20/C-22 (revisión) | C-09 |
-| 7 | C-12 | C-15 | C-17 |
-| 8 | C-19 | C-16 | C-13 |
-| 9 | C-18 | C-22 | C-14 |
-| 10 | C-20 | apoyo de revisión (C-20) | aviso de prueba de C-20 junto con A |
-| 11 | C-23 | apoyo de revisión | apoyo de revisión |
+Roles (los nombres se pueden reasignar sin tocar las dependencias):
+
+| Persona | Rol | Changes |
+|---------|-----|---------|
+| Maxi | Líder e integrador: dueño del repo, aprueba propuestas CRITICO/ALTO, mockups y todos los PRs | C-01, C-23 |
+| Fran | Backend núcleo (camino crítico de la agenda) | C-02, C-04, C-08, C-10, C-11, C-12, C-20 |
+| Mati | Backend seguridad y datos; además revisa técnicamente los PRs de Fran para cubrir el camino crítico | C-03, C-05, C-15, C-19, C-18 |
+| Nacho | Frontend de la app del odontólogo | C-06, C-07, C-09, C-13, C-14 |
+| Octi | Frontend público y fullstack; responsable de preparar los mockups | C-21, C-17, C-16, C-22 |
+
+| Paso | Maxi | Fran | Mati | Nacho | Octi |
+|------|------|------|------|-------|------|
+| 1 | **C-01** | propuesta C-02 | propuesta C-03 | mockup del app-shell (C-06) | mockup C-21 |
+| 2 | revisión | **C-02** | propuesta C-05 | **C-06** | mockups C-07/C-09 |
+| 3 | revisión | **C-04** | **C-03** | mockups C-13/C-14 | **C-21** |
+| 4 | revisión | **C-08** | **C-05** | apoyo y tests | mockups C-16/C-17 |
+| 5 | revisión | **C-10** | propuesta C-15 | **C-07** | mockups C-18/C-19/C-22 |
+| 6 | revisión | **C-11** | propuesta C-19 | **C-09** | mockup C-20 |
+| 7 | revisión | **C-12** | **C-15** | prepara C-13 sobre el contrato OpenAPI | **C-17** |
+| 8 | revisión | **C-20** | **C-19** | **C-13** | **C-16** |
+| 9 | prepara Playwright para C-23 | apoyo C-23 | **C-18** | **C-14** | **C-22** |
+| 10 | **C-23** | corrige hallazgos | corrige hallazgos | corrige hallazgos | corrige hallazgos |
+
+Reglas de coordinación del paralelismo:
+- **Propuestas un paso antes**: los changes CRITICO y ALTO preparan su propuesta en el paso previo, para que la aprobación del líder no frene el change.
+- **Prioridad de revisión**: los PRs del camino crítico (C-02, C-04, C-08, C-10, C-11, C-12, C-13, C-14/C-18) se revisan antes que el resto.
+- **Migraciones Flyway**: cada change numera su migración provisoriamente y, al rebasar sobre `main` antes del merge, la pasa al siguiente número libre (una migración no mergeada todavía se puede renumerar; una mergeada nunca se edita).
+- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el líder al mergear.
+- **Trabajo anticipado**: se pueden preparar mockups, tests y propuestas antes de que se habilite un change, pero su PR se abre recién con las dependencias en `[x]`.
 
 ---
 
