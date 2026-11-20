@@ -35,7 +35,7 @@
 
 - [x] 4.1 Agregar la regla ArchUnit "ningún módulo fuera de `auditoria` depende de `auditoria..`" y verificar `./gradlew test` completo en verde
 - [x] 4.2 Revisar que los fixtures usen solo datos ficticios evidentes y que no haya `LocalDateTime` en el módulo; verificar con `grep` sobre `backend/src`
-- [ ] 4.3 Abrir el PR listo para revisión con la evidencia de los tests y pedirle la revisión a Maxi; Fran revisa el uso del puerto
+- [x] 4.3 Abrir el PR listo para revisión con la evidencia de los tests y pedirle la revisión a Maxi; Fran revisa el uso del puerto
 
 ## Workflow follow-up
 
