@@ -45,7 +45,7 @@ Reglas:
 Los privilegios por defecto de C-01 (`docker/postgres/init/01-roles.sh`) le dan a `app_rw` `SELECT, INSERT, UPDATE, DELETE` sobre **toda** tabla nueva de `app_owner`. Si una tabla no debe permitir alguna operación, la migración la quita explícitamente con el placeholder del rol de la aplicación, y un test de integración lo verifica:
 
 ```sql
-REVOKE DELETE ON consultorio FROM "${app_user}";
+REVOKE DELETE ON consultorio FROM "${app-user}";
 ```
 
 Un `GRANT` acotado no alcanza: no quita lo que ya dieron los privilegios por defecto.

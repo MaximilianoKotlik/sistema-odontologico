@@ -57,7 +57,8 @@
 ### D7 — Migración `V1__consultorio_y_extensiones.sql`
 - `CREATE EXTENSION IF NOT EXISTS btree_gist; CREATE EXTENSION IF NOT EXISTS citext;` en `V1`: `app_owner` es dueño de la base y del esquema `public`, y ambas son extensiones confiables (*trusted*) en PG16, así que no hace falta superusuario (confirmado en la revisión del PR #4).
 - Tabla `consultorio` exactamente como 04 §Consultorio, con constraints con nombre (`ck_consultorio_*`, `uk_consultorio_slug`), `created_at`/`updated_at TIMESTAMPTZ NOT NULL DEFAULT now()` y `version BIGINT NOT NULL DEFAULT 0`.
-- `REVOKE DELETE ON consultorio FROM app_rw;` (la baja de consultorio no está en v1). Hace falta un `REVOKE` explícito porque los privilegios por defecto de C-01 ya le dan `DELETE` a `app_rw`; un `GRANT` acotado no lo quitaría.
+- `REVOKE DELETE ON consultorio FROM "${app-user}";` (la baja de consultorio no está en v1). Hace falta un `REVOKE` explícito porque los privilegios por defecto de C-01 ya le dan `DELETE` a `app_rw`; un `GRANT` acotado no lo quitaría.
+- El rol no va fijo: `${app-user}` es un placeholder de Flyway definido en `application.yml` (`spring.flyway.placeholders.app-user: ${DB_APP_USER}`). Es la misma convención que usa C-03 (PR #10) para todas las migraciones con `GRANT`/`REVOKE`.
 - **Convención de FKs compuestas** documentada en `backend/src/main/resources/db/migration/CONVENCIONES.md`: cada tabla de negocio declara `consultorio_id UUID NOT NULL REFERENCES consultorio(id)`, `UNIQUE (consultorio_id, id)` y referencia a otras tablas de negocio con `FOREIGN KEY (consultorio_id, x_id) REFERENCES x (consultorio_id, id)`; todo índice empieza por `consultorio_id`.
 
 ### D8 — Tests de aislamiento con tablas y controlador de prueba, sin contaminar producción

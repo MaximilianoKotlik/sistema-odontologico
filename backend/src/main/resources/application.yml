@@ -12,7 +12,7 @@ spring:
     locations: classpath:db/migration
     # Rol de la aplicación, para los REVOKE de las migraciones (C-02, design D7)
     placeholders:
-      app_user: ${DB_APP_USER}
+      app-user: ${DB_APP_USER}
   jpa:
     open-in-view: false
     hibernate:

@@ -43,5 +43,5 @@ CREATE TABLE consultorio (
 );
 
 -- Los privilegios por defecto de C-01 le dan DELETE a app_rw; la baja de consultorio no existe en v1.
--- ${app_user} = DB_APP_USER (placeholder de Flyway en application.yml).
-REVOKE DELETE ON consultorio FROM "${app_user}";
+-- ${app-user} = DB_APP_USER (placeholder de Flyway en application.yml).
+REVOKE DELETE ON consultorio FROM "${app-user}";
