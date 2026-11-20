@@ -176,6 +176,21 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 
 **Reglas**: RN-PL-02, RN-PL-03, RN-RP-11
 
+## Trazabilidad con el Discovery y el mercado
+
+| Funcionalidad necesaria (Discovery §5) | Historias | Vacío o referente del informe |
+|----------------------------------------|-----------|-------------------------------|
+| Agenda diaria y semanal de un único profesional | US-020 | Agenda multiprofesional/por sillón queda fuera ([RN-AG-13](05_reglas_de_negocio.md)); AgendaPro la documenta |
+| Bloqueos y sobreturnos marcados | US-012, US-022 | Solo DentalSoft documenta sobreturnos con solapamiento |
+| Duración por prestación y prevención de solapamientos | US-010, US-021 | Combina lo repartido entre DentalSoft y AgendaPro (menos sillones) |
+| Reserva pública sin cuenta: reservar, reprogramar, cancelar | US-030 a US-032 | Referente Turnito; la autogestión del paciente es un vacío (C.3 n.º 6) |
+| Auditoría de cambios sobre turnos | US-040 | Referente MedicAI; vacío C.3 n.º 7 |
+| Exportación completa en formato abierto | US-050 | Solo MedicAI, YoFacturo (Premium) y DentalSoft exportan |
+| Precios públicos en ARS con prueba gratuita | US-060, US-061 | Solo DentalSoft publica todo entre los dentales argentinos |
+
+> Brecha conocida: recordatorios (92 % del mercado) y WhatsApp (87 % del lote AR + LATAM) son estándar y **no** están en
+> v1 por decisión del Discovery ([DD-16](09_decisiones_y_supuestos.md), [SU-02](09_decisiones_y_supuestos.md)).
+
 ## Backlog post-v1 (no implementar)
 
 Odontograma y presupuestos (primer incremento), WhatsApp, caja/Mercado Pago, obras sociales, ARCA,

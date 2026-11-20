@@ -170,7 +170,8 @@
     "problema": "Los consultorios odontológicos chicos de Argentina gestionan turnos, historia clínica y cobros con planillas, papel, WhatsApp y sistemas sueltos. El proyecto apunta a la gestión integral del consultorio, empezando por la agenda de un odontólogo independiente con reserva de turnos por link sin cuenta. Diferenciador v1: transparencia (precios públicos en ARS, exportación completa de datos, auditoría, cumplimiento declarado con honestidad).",
     "usuarios": [
       "Odontólogo independiente: dueño y único usuario; administra su agenda, bloquea horarios, agrega sobreturnos, exporta sus datos. Una cuenta por consultorio. Sin recepción, roles ni permisos en v1.",
-      "Paciente: reserva, reprograma o cancela un turno desde un link público sin crear cuenta."
+      "Paciente: reserva, reprograma o cancela un turno desde un link público sin crear cuenta.",
+      "Alcance v1 confirmado por el usuario (2026-11-20): v1 deliberadamente modesta, solo la agenda de un odontólogo, sin multi-profesional, sin secretaria/recepción y sin roles; decisión intencional aunque el MVP del informe (D.3) es mayor"
     ],
     "casos_de_uso": [
       "Como odontólogo, quiero ver mi agenda del día y de la semana para saber cuántos pacientes tengo y a qué hora.",
@@ -204,7 +205,14 @@
       "Un turno no puede solaparse con otro del mismo profesional salvo que se marque explícitamente como sobreturno",
       "El paciente solo puede cancelar o reprogramar por link con una anticipación mínima configurable por el odontólogo (p. ej. 24 h)",
       "Todo cambio sobre un turno queda registrado con autor, fecha y valor anterior",
-      "Documentada para v2: evoluciones y odontograma se versionan con autor y fecha, nunca se borran ni editan en el lugar (Ley 26.529)"
+      "Documentada para v2: evoluciones y odontograma se versionan con autor y fecha, nunca se borran ni editan en el lugar (Ley 26.529)",
+      "Decisión de diseño (definida al armar la KB, 2026-11-20): un turno no-sobreturno debe caer completo dentro de una franja de disponibilidad y no intersectar bloqueos (KB RN-AG-03)",
+      "Decisión de diseño (definida al armar la KB, 2026-11-20): el sobreturno solo lo crea el odontólogo, puede solaparse y salirse de la disponibilidad pero no caer en un bloqueo, y nunca se ofrece al público (KB RN-AG-04)",
+      "Decisión de diseño (definida al armar la KB, 2026-11-20): no se puede crear un bloqueo sobre turnos activos; se rechaza y se listan los conflictos (KB RN-AG-05)",
+      "Decisión de diseño (definida al armar la KB, 2026-11-20): horarios de turnos y bloqueos en múltiplos de 5 minutos (KB RN-AG-08)",
+      "Decisión de diseño (definida al armar la KB, 2026-11-20): un único sillón/box implícito en v1; no-solapamiento por consultorio; al sumar multi-profesional o multi-sillón pasa a evaluarse por profesional y por sillón con migración aditiva (KB RN-AG-13)",
+      "Decisión de diseño (definida al armar la KB, 2026-11-20): valores por defecto configurables: cancelación 24 h, anticipación de reserva 2 h, horizonte 60 días, paso de huecos 15 min, máximo 2 turnos futuros activos por teléfono, prueba gratuita de 30 días sin medio de pago",
+      "Decisión de diseño (definida al armar la KB, 2026-11-20): deduplicación de pacientes por teléfono normalizado dentro del consultorio (KB RN-RP-03)"
     ],
     "integraciones": [],
     "integraciones_diferidas": [
@@ -216,19 +224,27 @@
     "restricciones": [
       "Equipo chico y presupuesto acotado: simplicidad y servicios gratuitos o baratos",
       "Mobile-first obligatorio: paciente y odontólogo usan el teléfono",
-      "Datos de salud tratados conforme a la Ley 25.326; hosting y tratamiento acordes; registro ante la AAIP si corresponde"
+      "Datos de salud tratados conforme a la Ley 25.326; hosting y tratamiento acordes; registro ante la AAIP si corresponde",
+      "Marco normativo complementario (referencia de diseño, 2026-11-20): Decreto 1558/2001 (reglamenta Ley 25.326), Decreto 746/2017 (la AAIP pasa a ser órgano de control de la ley de datos personales), Resolución AAIP 47/2018 (medidas de seguridad recomendadas), Ley 27.483 (aprueba Convenio 108 del Consejo de Europa); existencia verificada en fuentes oficiales el 2026-11-20, sin revisión profesional de su aplicación",
+      "Decisión de diseño (2026-11-20): todos los datos de pacientes se tratan como sensibles y se minimiza la recolección (nombre, apellido, teléfono, email opcional; sin DNI ni datos clínicos)"
     ],
     "riesgos": [
       "Supuesto sin probar (principal): que el paciente argentino prefiera reservar por link antes que llamar o escribir por WhatsApp",
       "Supuesto sin probar: que la agenda sola aporte valor sin recordatorios; el ausentismo puede no bajar en v1",
       "Supuesto sin probar: que la transparencia sea motivo de compra frente a DentalSoft o AgendaPro",
       "Riesgo legal: interpretar Leyes 25.326 y 26.529 sin asesoría y prometer un cumplimiento que no es tal",
-      "Riesgo de evidencia: el análisis competitivo se basa en afirmaciones comerciales; las demos pueden cambiar el mapa"
+      "Riesgo de evidencia: el análisis competitivo se basa en afirmaciones comerciales; las demos pueden cambiar el mapa",
+      "Riesgo de alcance aceptado (confirmado por el usuario, 2026-11-20): la v1 es más chica que el MVP del informe (D.3) y puede no igualar el estándar de mercado (recordatorios, odontograma); se mitiga con piloto y priorización posterior",
+      "Hipótesis a validar (meta tentativa definida al armar la KB, 2026-11-20): al menos 40 % de los turnos por link a los 60 días de uso; sin fuente de mercado, se recalibra tras el piloto (idem activación ≥ 60 %, retención ≥ 50 % a 4 semanas, reserva < 90 s en mobile)",
+      "Supuesto de diseño (2026-11-20): una zona horaria argentina por consultorio y una sola instancia de backend alcanzan para el volumen inicial"
     ],
     "preguntas_abiertas": [
       "Cómo identificar al paciente sin cuenta para evitar duplicados: nombre y teléfono, DNI o verificación por código",
       "Modelo de precios (plan fijo, por profesional o por sillón) y si existe plan gratuito (decidir más adelante)",
-      "Validar con usuarios si la reserva por link reemplaza o complementa el WhatsApp del consultorio"
+      "Validar con usuarios si la reserva por link reemplaza o complementa el WhatsApp del consultorio",
+      "Validar con 3 odontólogos antes del piloto los valores por defecto de diseño (24 h, 2 h, 60 días, 15 min, 2 turnos por teléfono, 30 días de prueba)",
+      "Política de baja de cuenta y retención de datos, y quién inscribe las bases ante la AAIP (suposiciones de diseño: 30 días para exportar y luego borrado; cada consultorio su base de pacientes y el proveedor la de sus clientes); decidir con asesoría",
+      "Revisión legal profesional de las normas del marco complementario antes del piloto con pacientes reales"
     ]
   },
   "kb": {

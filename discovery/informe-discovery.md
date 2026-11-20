@@ -268,6 +268,8 @@ Ordenados por gravedad (impacto en el consultorio × rareza en la oferta):
 11. **Costo de WhatsApp opaco o adicional.** DentalSoft traslada el costo de Meta, MedicAI lo vende como add-on (ARS 19.900 a 29.900 + IVA) y Turnito lo limita por plan. Solo Klinicos (Uruguay) lo incluye desde el plan básico.
 12. **Evidencia de adopción verificable.** No hay reseñas independientes accesibles. Las cifras de clientes son autodeclaradas (Bilog 1.500+, DentalSoft 300+) o no existen (MedicAI, ClinIA, Turnito). Como dato de contexto **no verificado** (citado por buscador en la ficha de Doctoralia), una tesis de UdeSA estimaría unos 70.000 odontólogos en Argentina, de los cuales ~3% usaría software de gestión. Si se confirma, el mercado está muy poco penetrado.
 
+> **Nota de marco regulatorio (2026-11-20).** Fuera del alcance de la investigación de mercado, al armar la Knowledge Base se relevó el marco normativo de referencia y se verificó su existencia en fuentes oficiales: Ley 25.326 y su Decreto reglamentario 1558/2001; Decreto 746/2017 (la Agencia de Acceso a la Información Pública pasa a ser el órgano de control de la ley de datos personales); Resolución AAIP 47/2018 (medidas de seguridad recomendadas); Ley 27.483 (aprueba el Convenio 108 del Consejo de Europa) y Ley 26.529 (derechos del paciente e historia clínica). No hay revisión profesional de su aplicación al producto.
+
 ### C.4 Oportunidades de innovación para un nuevo sistema
 
 Cada oportunidad indica qué vacío de C.3 la justifica.
@@ -308,6 +310,8 @@ Cada oportunidad indica qué vacío de C.3 la justifica.
 *Referencias secundarias:* Dentally (precio por sillón; portal del paciente según plan), ClinIA y Klinicos (odontograma versionado con comparación entre fechas) y tab32 (lista de espera y columnas por operatorio).
 
 ### D.3 MVP sugerido
+
+> **Nota de alcance confirmado (2026-11-20).** El equipo confirmó que la v1 del producto es deliberadamente más modesta que este MVP: solo la agenda de un odontólogo (con reserva pública por link, auditoría, exportación y precios públicos), sin multi-profesional, sin secretaria/recepción y sin roles. Es una decisión intencional, no un descuido. Lo que este MVP lista y la v1 difiere (agenda por sillón, WhatsApp, historia clínica, presupuestos, caja con Mercado Pago, obras sociales, roles) queda como priorización posterior. El análisis y las recomendaciones de abajo no se modifican.
 
 #### Imprescindibles (sin esto no se compite)
 

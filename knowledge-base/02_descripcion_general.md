@@ -4,6 +4,17 @@
 > [09_decisiones_y_supuestos.md](09_decisiones_y_supuestos.md). Detalle de implementación en
 > [08_arquitectura_propuesta.md](08_arquitectura_propuesta.md).
 
+## Contexto de producto y mercado
+
+SaaS para odontólogos independientes de Argentina; v1 = solo la agenda de **un** profesional con reserva pública por link
+sin cuenta. Competidores de referencia del Discovery: DentalSoft (3,65/5, sobreturnos y precios públicos por profesional),
+AgendaPro AR (3,40, agenda por sillón y recordatorios), MedicAI (3,05, auditoría y exportación; no dental), Dentalink (2,95)
+y ClinIA (2,85, todo afirmación comercial). El espacio que v1 apunta a ocupar es la combinación de agenda con
+sobreturnos y solapamiento, autogestión del paciente, auditoría, exportación completa y precios públicos
+([01 §Posicionamiento](01_vision_y_objetivos.md#posicionamiento-frente-a-la-competencia-y-espacio-libre-del-mercado)).
+Un solo sillón implícito en v1 ([RN-AG-13](05_reglas_de_negocio.md)); WhatsApp, Mercado Pago, ARCA y Google Calendar
+diferidos, como en el Discovery §8.
+
 ## Stack tecnológico
 
 | Capa | Tecnologías | Versión mínima |

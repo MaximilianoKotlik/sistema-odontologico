@@ -29,6 +29,12 @@ Dos únicos actores. No hay recepción, ni roles, ni permisos en la v1.
 - **Paciente**: reserva, reprograma o cancela un turno desde un link público,
   sin registrarse ni crear cuenta.
 
+**Alcance v1 confirmado por el usuario (2026-11-20)**: la v1 es deliberadamente
+modesta: solo la agenda de un odontólogo, sin multi-profesional, sin
+secretaria/recepción y sin roles. Es una decisión intencional del equipo, no un
+descuido, aunque el MVP sugerido por el informe (D.3) es más grande (ver la
+nota de alcance en `informe-discovery.md`, D.3).
+
 ## 3. Casos de uso
 
 1. Como odontólogo, quiero ver mi agenda del día y de la semana para saber
@@ -105,6 +111,36 @@ En orden tentativo de llegada, todas fuera de la v1:
   odontograma no se borran ni se editan en el lugar, se versionan con autor y
   fecha, en línea con la Ley 26.529 sobre historia clínica.
 
+### Decisiones de diseño derivadas (definidas al armar la KB, 2026-11-20)
+
+Estas reglas no surgieron de la investigación de mercado: son **decisiones de
+diseño** tomadas al armar la Knowledge Base para volver operables las reglas
+anteriores. Se registran acá para que la KB tenga respaldo explícito y quedan
+sujetas a validación con odontólogos reales.
+
+- **Decisión de diseño** (KB RN-AG-03): un turno que no es sobreturno debe caer
+  completo dentro de una franja de disponibilidad y no intersectar ningún
+  bloqueo.
+- **Decisión de diseño** (KB RN-AG-04): el sobreturno solo lo crea el
+  odontólogo, puede solaparse con otros turnos y salirse de la disponibilidad,
+  pero no puede caer dentro de un bloqueo; nunca se ofrece en la página pública.
+- **Decisión de diseño** (KB RN-AG-05): no se puede crear un bloqueo sobre
+  turnos activos; el sistema lo rechaza y lista los turnos en conflicto para
+  cancelarlos o reprogramarlos primero.
+- **Decisión de diseño** (KB RN-AG-08): horarios de turnos y bloqueos en
+  múltiplos de 5 minutos.
+- **Decisión de diseño** (KB RN-AG-13): un único sillón/box implícito; el
+  no-solapamiento se evalúa por consultorio. Punto de extensión: al incorporar
+  multi-profesional o multi-sillón (opcionales, §6 ítem 7), el no-solapamiento
+  pasa a evaluarse por profesional y por sillón mediante una migración aditiva.
+- **Valores por defecto (decisión de diseño, configurables)**: anticipación
+  mínima de cancelación 24 h (concreta el "por ejemplo, 24 horas" de arriba),
+  anticipación mínima de reserva 2 h, horizonte de reserva 60 días, paso de
+  huecos 15 min, máximo 2 turnos futuros activos por teléfono vía link
+  (anti-abuso) y prueba gratuita de 30 días sin medio de pago.
+- **Decisión de diseño** (KB RN-RP-03): el paciente se deduplica por teléfono
+  normalizado dentro del consultorio (ver pregunta abierta sobre identidad, §11).
+
 ## 8. Integraciones
 
 Ninguna integración externa en la v1, por decisión explícita. La reserva por
@@ -125,6 +161,18 @@ costo y riesgo propios:
 - Datos de salud tratados conforme a la Ley 25.326 de protección de datos
   personales: hosting y tratamiento acordes, registro de base de datos ante la
   AAIP si corresponde.
+- **Marco normativo complementario (referencia de diseño, 2026-11-20)**: la KB
+  también considera el Decreto 1558/2001 (reglamenta la Ley 25.326), el Decreto
+  746/2017 (la AAIP pasa a ser el órgano de control de la ley de datos
+  personales), la Resolución AAIP 47/2018 (medidas de seguridad
+  *recomendadas*) y la Ley 27.483 (aprueba el Convenio 108 del Consejo de
+  Europa). Su existencia y alcance se verificaron en fuentes oficiales
+  (argentina.gob.ar/normativa, Boletín Oficial) el 2026-11-20; su aplicación al
+  producto **no tiene revisión profesional** y queda pendiente de asesoría legal.
+- **Decisión de diseño (2026-11-20)**: se tratan como datos sensibles todos los
+  datos de pacientes (un turno más la prestación puede revelar información de
+  salud), y se limita la recolección al mínimo: nombre, apellido, teléfono y
+  email opcional, sin DNI ni datos clínicos.
 
 ## 10. Riesgos
 
@@ -142,6 +190,18 @@ costo y riesgo propios:
 - **Riesgo de evidencia**: el análisis competitivo se basa en afirmaciones
   comerciales; las demos de los cinco competidores priorizados pueden cambiar
   el mapa de diferenciadores.
+- **Riesgo de alcance (aceptado, confirmado por el usuario el 2026-11-20)**: la
+  v1 es más chica que el MVP que sugiere el informe (D.3: multi-profesional,
+  WhatsApp, historia clínica, caja, obras sociales, roles). Puede no igualar el
+  estándar de mercado (recordatorios, odontograma); se mitiga con un piloto y
+  con la priorización posterior.
+- **Hipótesis a validar (meta tentativa, definida al armar la KB, 2026-11-20)**:
+  que al menos el 40 % de los turnos se cree por link a los 60 días de uso. Es
+  una meta de trabajo sin fuente de mercado; se recalibra tras el piloto. Las
+  otras metas tentativas (activación ≥ 60 %, retención ≥ 50 % a 4 semanas,
+  reserva en menos de 90 s en mobile) tienen el mismo carácter.
+- **Supuesto de diseño (2026-11-20)**: una zona horaria argentina por
+  consultorio y una sola instancia de backend alcanzan para el volumen inicial.
 
 ## 11. Preguntas abiertas
 
@@ -151,3 +211,12 @@ costo y riesgo propios:
   profesional o por sillón) y si existe plan gratuito.
 - Pendiente de validar con usuarios: si la reserva por link reemplaza o
   complementa el WhatsApp del consultorio.
+- Pendiente de validar con 3 odontólogos antes del piloto: los valores por
+  defecto de diseño (24 h de cancelación, 2 h de reserva, 60 días, 15 min de
+  paso, 2 turnos por teléfono, 30 días de prueba).
+- Pendiente de decidir con asesoría: política de baja de cuenta y retención de
+  datos (suposición de diseño: 30 días para exportar y luego borrado, salvo
+  obligación legal) y quién debe inscribir las bases ante la AAIP (suposición:
+  cada consultorio su base de pacientes y el proveedor la de sus clientes).
+- Pendiente de revisión legal profesional: las normas del marco complementario
+  (§9) antes del piloto con pacientes reales.

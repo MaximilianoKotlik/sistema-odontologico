@@ -6,14 +6,16 @@
 > con el diferenciador de transparencia, el cumplimiento se declara con honestidad y **sin
 > certificaciones ni sellos**.
 
+> **Origen de las normas**: el Discovery menciona las Leyes 25.326 (incluido el registro ante la AAIP "si corresponde") y 26.529 ([`discovery.md` §7 y §9](../discovery/discovery.md)). El resto de las normas de la tabla (Decreto 1558/2001, Decreto 746/2017, Res. AAIP 47/2018, Ley 27.483) son aportes de la KB que el Discovery registra ahora como **marco normativo complementario** ([`discovery.md` §9](../discovery/discovery.md); nota en [`informe-discovery.md` C.3](../discovery/informe-discovery.md)). Su existencia y tema se **verificaron el 2026-11-20 en fuentes oficiales** (argentina.gob.ar/normativa, Boletín Oficial); su **aplicación al producto sigue sin revisión profesional** y se valida en [PA-06](10_preguntas_abiertas.md). Además, el informe solo registra a AgendaPro y MedicAI declarando estas leyes, como afirmación comercial sin auditoría externa ([10 NE-13](10_preguntas_abiertas.md)).
+
 ## Normas relevantes
 
 | Norma | Tema | Aplica a v1 | Aplica a v2+ |
 |-------|------|-------------|--------------|
-| Ley 25.326 de Protección de Datos Personales y Decreto 1558/2001 | Tratamiento de datos personales; datos sensibles | **Sí** | Sí |
-| Decreto 746/2017 | Designa a la **AAIP** (Agencia de Acceso a la Información Pública) como autoridad de control | Sí | Sí |
-| Resolución AAIP 47/2018 | Medidas de seguridad recomendadas para el tratamiento de datos | Sí (guía) | Sí |
-| Ley 27.483 | Aprueba el Convenio 108 del Consejo de Europa y su protocolo | Sí (marco) | Sí |
+| Ley 25.326 de Protección de Datos Personales y Decreto reglamentario 1558/2001 (B.O. 03/12/2001) | Tratamiento de datos personales; datos sensibles | **Sí** | Sí |
+| Decreto 746/2017 (DNU, set. 2017; complementado por el Decreto 899/2017) | Sustituye el art. 19 de la Ley 27.275: la **AAIP** (Agencia de Acceso a la Información Pública) pasa a ser el órgano de control de la Ley 25.326 | Sí | Sí |
+| Resolución AAIP 47/2018 (B.O. 25/07/2018) | Medidas de seguridad **recomendadas** (no obligatorias) para el tratamiento y conservación de datos personales, en medios informatizados y no informatizados | Sí (guía) | Sí |
+| Ley 27.483 (sancionada 06/12/2018) | Aprueba el Convenio 108 del Consejo de Europa (1981) sobre tratamiento automatizado de datos personales. *Corrección:* la KB decía "y su protocolo"; el protocolo modificatorio (Convenio 108+) lo aprueba la Ley 27.699 (2022), verificada solo en fuentes secundarias | Sí (marco) | Sí |
 | Ley 26.529 de Derechos del Paciente (modif. Ley 26.742) | Derechos del paciente, consentimiento informado, **historia clínica** | Parcial (confidencialidad) | **Sí, plena** al entrar la historia clínica |
 
 ## Ley 25.326 — Protección de datos personales

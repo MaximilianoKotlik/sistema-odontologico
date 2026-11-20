@@ -14,7 +14,7 @@ tenant con un único usuario (el odontólogo). La v1 resuelve **solo la agenda**
 semanal, bloqueos, sobreturnos marcados, duración por prestación, prevención de solapamientos y una
 página pública donde el paciente, sin crear cuenta, reserva, reprograma o cancela su turno. El
 diferenciador es la **transparencia**: precios públicos en ARS, exportación completa de datos,
-registro de auditoría y cumplimiento legal declarado con honestidad. Stack: Java 21 + Spring Boot +
+registro de auditoría y cumplimiento legal declarado con honestidad. Posicionamiento: frente a DentalSoft, AgendaPro, MedicAI, Dentalink y ClinIA, apunta al vacío de auditoría, exportación, autogestión del paciente y precios públicos (la v1 es más chica que el MVP que sugiere el informe: [DD-16](09_decisiones_y_supuestos.md)). Stack: Java 21 + Spring Boot +
 PostgreSQL en el backend, TypeScript vanilla + Vite + Tailwind (PWA) en el frontend, todo corriendo
 en local con Docker Compose.
 
@@ -31,7 +31,7 @@ en local con Docker Compose.
 | [07_flujos_principales.md](07_flujos_principales.md) | Flujos extremo a extremo con diagramas de secuencia mermaid y casos de error |
 | [08_arquitectura_propuesta.md](08_arquitectura_propuesta.md) | Directorios, paquetes, capas, seguridad JWT, OpenAPI, Flyway, Docker Compose, variables de entorno, estrategia de tests, PWA |
 | [09_decisiones_y_supuestos.md](09_decisiones_y_supuestos.md) | Decisiones `DD-NN` con alternativas y trade-offs; supuestos `SU-NN` con riesgo y validación |
-| [10_preguntas_abiertas.md](10_preguntas_abiertas.md) | Inconsistencias y preguntas priorizadas (identidad del paciente, hosting, precios, notificaciones, legal) |
+| [10_preguntas_abiertas.md](10_preguntas_abiertas.md) | Inconsistencias, preguntas priorizadas (identidad del paciente, hosting, precios, notificaciones, legal), puntos "No evidenciado" del Discovery y supuestos a validar |
 | [11_marco_legal_argentino.md](11_marco_legal_argentino.md) | Ley 25.326 (AAIP, datos sensibles, ARCO), Ley 26.529 (historia clínica) e implicancias para v1 |
 
 ## Cómo navegar
@@ -54,6 +54,7 @@ en local con Docker Compose.
 | `DD-NN` | Decisión documentada | [09](09_decisiones_y_supuestos.md) |
 | `SU-NN` | Supuesto a validar | [09](09_decisiones_y_supuestos.md) |
 | `PA-NN` / `IN-NN` | Pregunta abierta / inconsistencia | [10](10_preguntas_abiertas.md) |
+| `NE-NN` | Punto "No evidenciado" del Discovery a verificar | [10](10_preguntas_abiertas.md) |
 | `LG-NN` | Obligación legal derivada | [11](11_marco_legal_argentino.md) |
 
 ## Niveles de gobernanza por dominio

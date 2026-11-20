@@ -1,7 +1,9 @@
 # Decisiones y Supuestos
 
-> DD-01 a DD-08 fueron **confirmadas por el usuario** el 2026-11-16. DD-09 en adelante son
-> decisiones por defecto propuestas al armar la KB: se aplican salvo que el usuario las revise.
+> DD-01 a DD-08 fueron **confirmadas por el usuario** el 2026-11-16 y DD-16 el 2026-11-20. El resto
+> (DD-09 a DD-15 y DD-17) son decisiones por defecto propuestas al armar la KB: se aplican salvo que el usuario
+> las revise. Las decisiones de diseño derivadas de las reglas (RN-AG-03/04/05/08/13, valores por defecto) están
+> registradas en el Discovery ([`discovery.md` §7](../discovery/discovery.md)), con su procedencia.
 
 ## Decisiones documentadas
 
@@ -96,6 +98,19 @@
 **Contexto**: recuperar la contraseña requiere un canal fuera de banda; ver [IN-01](10_preguntas_abiertas.md).
 **Trade-offs aceptados**: en producción hará falta un proveedor SMTP real.
 
+### DD-16 — v1 acotada a la agenda de un profesional, más chica que el MVP del informe (Discovery) (confirmada por el usuario, 2026-11-20)
+**Estado**: **Confirmada por el usuario (2026-11-20)**: la v1 es deliberadamente modesta (solo la agenda de un odontólogo, sin multi-profesional, sin secretaria/recepción y sin roles); es una decisión intencional del equipo, no un descuido, aunque el MVP del informe (D.3) sea mayor. Registrada en [`discovery.md` §2 y §10](../discovery/discovery.md) y en la nota de alcance de [`informe-discovery.md` D.3](../discovery/informe-discovery.md).
+**Decisión**: v1 = agenda de un único profesional + reserva pública + auditoría + exportación + precios públicos. Se difieren WhatsApp, historia clínica/odontograma, caja/Mercado Pago, obras sociales, ARCA, multi-profesional, múltiples sillones y roles ([`discovery.md` §5–§6, §8](../discovery/discovery.md)).
+**Contexto**: el informe competitivo (D.3) sugiere un MVP mucho mayor (agenda multiprofesional y por sillón, WhatsApp con reinsistencia, HC y odontograma, presupuestos, caja con MP, obras sociales, roles) y advierte que en Argentina "no tener WA descalifica" (C.1). El Discovery eligió, y el usuario confirmó, en cambio, equipo chico, presupuesto acotado y transparencia como diferenciador.
+**Alternativas consideradas**: seguir el MVP del informe (más alcance y costo); v1 mínima (elegida).
+**Justificación**: validar primero el supuesto principal (reserva por link) con el menor costo ([SU-01](#su-01--el-paciente-argentino-acepta-reservar-por-link)).
+**Trade-offs aceptados**: riesgo de no igualar el estándar de mercado (recordatorios, odontograma); mitigado con el piloto y la priorización post-v1 ([PA-05](10_preguntas_abiertas.md)).
+
+### DD-17 — Un único sillón/box implícito en v1
+**Decisión**: no existe la entidad "sillón"; el no-solapamiento se evalúa por consultorio ([RN-AG-13](05_reglas_de_negocio.md)). Multi-sillón es opcional del Discovery y queda fuera de v1.
+**Alternativas consideradas**: modelar `sillon` desde ya (agrega alcance y UI que el Discovery no pide).
+**Trade-offs aceptados**: agregar sillones luego requiere una migración aditiva y una segunda restricción de exclusión; ver [PA-14](10_preguntas_abiertas.md).
+
 ## Supuestos inferidos
 
 ### SU-01 — El paciente argentino acepta reservar por link
@@ -106,7 +121,7 @@
 
 ### SU-02 — La agenda sola aporta valor
 **Supuesto**: sin recordatorios automáticos, el odontólogo igual percibe mejora frente a planilla + WhatsApp.
-**Origen**: Discovery §10.
+**Origen**: Discovery §10. El informe agrava el riesgo: los recordatorios son estándar (92 %) y WhatsApp está en el 87 % de la oferta AR + LATAM (C.1).
 **Riesgo si es falso**: baja retención; habría que adelantar recordatorios.
 **Cómo validar**: retención semanal a 4 semanas y entrevista de salida.
 
@@ -114,7 +129,7 @@
 **Supuesto**: precios públicos, exportación y auditoría inclinan la decisión frente a DentalSoft o AgendaPro.
 **Origen**: Discovery §1 y §10; informe competitivo.
 **Riesgo si es falso**: el diferenciador no convierte.
-**Cómo validar**: preguntar en onboarding por qué eligió el sistema; demos de los 5 competidores priorizados.
+**Cómo validar**: preguntar en onboarding por qué eligió el sistema; demos de los 5 competidores priorizados (DentalSoft, AgendaPro AR, ClinIA, Bilog, Dentalink; [10 §NE](10_preguntas_abiertas.md)).
 
 ### SU-04 — El teléfono basta como identidad del paciente
 **Supuesto**: duplicados y suplantaciones serán raros en consultorios chicos. **Suposición:** a confirmar en [PA-01](10_preguntas_abiertas.md).
@@ -122,11 +137,16 @@
 **Cómo validar**: medir `requiere_revision` y cancelaciones por "no fui yo" en el piloto.
 
 ### SU-05 — Valores por defecto de configuración
-**Supuesto**: anticipación de cancelación 24 h, de reserva 2 h, horizonte 60 días, paso de huecos 15 min, prueba de 30 días, máximo 2 turnos futuros por teléfono. **Suposición:** todos configurables o fáciles de cambiar.
+**Supuesto**: anticipación de cancelación 24 h, de reserva 2 h, horizonte 60 días, paso de huecos 15 min, prueba de 30 días, máximo 2 turnos futuros por teléfono. **Decisión de diseño** (registrada en [`discovery.md` §7](../discovery/discovery.md) y a validar con 3 odontólogos, §11): todos configurables o fáciles de cambiar.
 **Riesgo si es falso**: fricción en el onboarding.
 **Cómo validar**: revisar con 3 odontólogos antes del piloto.
 
 ### SU-06 — Una zona horaria por consultorio y una instancia de backend
-**Supuesto**: cada consultorio opera en una sola zona horaria argentina; el volumen inicial cabe en una instancia (rate limit en memoria). **Suposición.**
+**Supuesto**: cada consultorio opera en una sola zona horaria argentina; el volumen inicial cabe en una instancia (rate limit en memoria). **Supuesto de diseño** (registrado en [`discovery.md` §10](../discovery/discovery.md)).
 **Riesgo si es falso**: hay que mover rate limiting a almacenamiento compartido.
 **Cómo validar**: revisar al decidir hosting.
+
+### SU-07 — El mapa competitivo del Discovery es correcto
+**Supuesto**: las posiciones y los vacíos del informe (DentalSoft 3,65, AgendaPro 3,40, etc.) reflejan la realidad. **Origen**: informe, metodología: casi toda la evidencia es afirmación comercial, sin demos ni reseñas verificadas; "No evidenciado" no equivale a "no existe".
+**Riesgo si es falso**: un competidor ya cubre auditoría, exportación o autogestión mejor de lo documentado y el diferenciador se achica.
+**Cómo validar**: demos de los cinco priorizados y revisión manual de DentalCore, ZYRA y XIAgenda ([10 §NE](10_preguntas_abiertas.md)).
