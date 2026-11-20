@@ -44,6 +44,29 @@ class EnmascaradorDePiiTest {
     }
 
     @Test
+    void enmascaraTokensDe256BitsEnBase64Url() {
+        // 32 bytes en base64url sin relleno = 43 caracteres, como los refresh y los tokens de recuperación (C-03).
+        String token = "q7Zt_9xYv2LmN0pK-4sDfGhJ8wErTyUi1oPa3bCdE5f";
+
+        assertThat(EnmascaradorDePii.enmascarar("refresh " + token + " rotado"))
+                .isEqualTo("refresh *** rotado");
+    }
+
+    @Test
+    void enmascaraHashesSha256EnHexadecimal() {
+        String hash = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
+
+        assertThat(EnmascaradorDePii.enmascarar("token_hash=" + hash)).isEqualTo("token_hash=***");
+    }
+
+    @Test
+    void conservaPalabrasYUuidMasCortosQueUnToken() {
+        String texto = "excepcion_de_negocio_conocida id=01936b2e-7c4f-7d4a-9e1b-3f6a2c1d0e9f";
+
+        assertThat(EnmascaradorDePii.enmascarar(texto)).isEqualTo(texto);
+    }
+
+    @Test
     void toleraNulo() {
         assertThat(EnmascaradorDePii.enmascarar(null)).isNull();
     }

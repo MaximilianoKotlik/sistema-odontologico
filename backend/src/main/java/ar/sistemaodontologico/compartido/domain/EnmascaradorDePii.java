@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Enmascara teléfonos y emails en textos que van a los logs (RN-GL-01). Es una red de seguridad para
+ * Enmascara teléfonos, emails y tokens en textos que van a los logs (RN-GL-01). Es una red de seguridad para
  * mensajes de excepciones inesperadas; el código no debe loguear datos personales a propósito.
  */
 public final class EnmascaradorDePii {
@@ -18,6 +18,10 @@ public final class EnmascaradorDePii {
     // Una fecha ISO (2026-11-20) tiene 8 dígitos con guiones, igual que un teléfono: se deja legible en el log.
     private static final Pattern FECHA_ISO = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
     private static final Pattern TELEFONO =Pattern.compile("(?<![\\w-])\\+?\\d[\\d\\s()\\-]{5,}\\d(?![\\w-])");
+    // Secretos de 256 bits o más (C-03): tokens en base64url (43+ caracteres) y hashes SHA-256 en hexadecimal.
+    // Un UUID tiene 36 caracteres, así que queda legible.
+    private static final Pattern TOKEN = Pattern.compile("(?<![A-Za-z0-9_-])[A-Za-z0-9_-]{43,}(?![A-Za-z0-9_-])");
+    private static final String MASCARA_TOKEN = "***";
 
     private EnmascaradorDePii() {
     }
@@ -26,7 +30,9 @@ public final class EnmascaradorDePii {
         if (texto == null) {
             return null;
         }
-        String sinEmails = EMAIL.matcher(texto).replaceAll(MASCARA_EMAIL);
+        // Los tokens van primero: pueden contener tramos de dígitos que el patrón de teléfono cortaría a medias.
+        String sinTokens = TOKEN.matcher(texto).replaceAll(MASCARA_TOKEN);
+        String sinEmails = EMAIL.matcher(sinTokens).replaceAll(MASCARA_EMAIL);
         Matcher telefonos = TELEFONO.matcher(sinEmails);
         StringBuilder resultado = new StringBuilder();
         while (telefonos.find()) {

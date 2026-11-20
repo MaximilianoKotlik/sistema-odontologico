@@ -17,7 +17,7 @@
 
 ## 2. Persistencia desde el puerto de C-02
 
-- [ ] 2.1 Test unitario del mapeo de `EventoDeAuditoria` al registro (`id` desde un `GeneradorDeIds` de prueba, instante del evento, actor y valores) y de la IP inválida que queda en `null` sin resolver DNS; implementarlo en `auditoria.domain`; verificar en verde
+- [x] 2.1 Test unitario del mapeo de `EventoDeAuditoria` al registro (`id` desde un `GeneradorDeIds` de prueba, instante del evento, actor y valores) y de la IP inválida que queda en `null` sin resolver DNS; implementarlo en `auditoria.domain`; verificar en verde
 - [ ] 2.2 Implementar `RepositorioDeAuditoriaJdbc` con `JdbcClient` en `auditoria.infrastructure` (JSONB e INET con `CAST`); verificar con tests de integración que persisten un evento con valores anidados y otro de `SISTEMA` sin actor, sin valor anterior y sin IP
 - [ ] 2.3 Test de integración: el caso de uso publica el evento y confirma → el evento queda; publica y después se revierte → no queda. Implementar `RegistradorDeAuditoria` con `@TransactionalEventListener(BEFORE_COMMIT)`; verificar en verde
 - [ ] 2.4 Test de integración: el caso de uso inserta un consultorio y publica un evento de otro consultorio inexistente → la persistencia del evento falla y el consultorio tampoco queda; verificar en verde
@@ -26,8 +26,8 @@
 
 ## 3. Logs sin PII
 
-- [ ] 3.1 Tests unitarios del caso nuevo de `EnmascaradorDePii`: token base64url de 43 caracteres y hash SHA-256 hex → `***`, UUID legible. Implementarlo; verificar en verde junto con los tests existentes de C-02
-- [ ] 3.2 Tests unitarios de `MensajeSinPii` y `ExcepcionSinPii` (email, teléfono `+54 9 11 0000-0001`, token y texto sin PII intacto, en el mensaje y en el stack trace); implementarlos en `compartido.infrastructure.logging`; verificar en verde
+- [x] 3.1 Tests unitarios del caso nuevo de `EnmascaradorDePii`: token base64url de 43 caracteres y hash SHA-256 hex → `***`, UUID legible. Implementarlo; verificar en verde junto con los tests existentes de C-02
+- [x] 3.2 Tests unitarios de `MensajeSinPii` y `ExcepcionSinPii` (email, teléfono `+54 9 11 0000-0001`, token y texto sin PII intacto, en el mensaje y en el stack trace); implementarlos en `compartido.infrastructure.logging`; verificar en verde
 - [ ] 3.3 Test con `OutputCaptureExtension` que loguea una `DataIntegrityViolationException` cuya causa contiene `Key (email)=(odontologa@example.com) already exists` y comprueba que ni el mensaje ni el stack trace muestran el email en claro; crear `logback-spring.xml` con las conversiones redefinidas; verificar en verde
 - [ ] 3.4 Test que captura el log del listener ante un fallo y comprueba que contiene `accion`/`entidad` pero no los valores; verificar en verde
 
