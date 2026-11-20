@@ -23,6 +23,11 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 class ConfiguracionJwt {
 
     @Bean
+    ar.sistemaodontologico.auth.application.TerminosVigentes terminosVigentes(PropiedadesDeAuth propiedades) {
+        return propiedades::terminosVersionVigente;
+    }
+
+    @Bean
     SecretKey claveJwt(PropiedadesDeAuth propiedades) {
         return new SecretKeySpec(propiedades.claveJwt(), "HmacSHA256");
     }

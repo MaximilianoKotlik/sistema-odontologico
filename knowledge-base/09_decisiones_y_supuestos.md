@@ -143,6 +143,13 @@
 **Alternativas consideradas**: dos planes (no hay funciones de v1 que los diferencien); ARS 19.900 o 24.900 (difíciles de justificar sin WhatsApp); plan gratuito limitado (agrega reglas y complica C-20).
 **Trade-offs aceptados**: margen bajo durante el piloto; el precio se revisa con la métrica de conversión de prueba ([01](01_vision_y_objetivos.md)) y cada cambio actualiza la fuente versionada de C-21 y su fecha visible ([RN-PL-01](05_reglas_de_negocio.md)).
 
+### DD-23 — Aceptación de términos versionada sin texto definitivo (avanza sobre PA-06) (aprobada en la revisión de C-04, 2026-11-20)
+**Estado**: aprobada por Maxi en la revisión de la propuesta de C-04 (#8). **No cierra [PA-06](10_preguntas_abiertas.md#preguntas-abiertas-priorizadas)**: el texto legal sigue pendiente de la asesoría.
+**Decisión**: el registro exige aceptar los términos y guarda en `usuario` la **versión** aceptada (`terminos_version`) y el **instante** (`terminos_aceptados_at`). La versión vigente sale de la configuración (`TERMINOS_VERSION_VIGENTE`, por defecto `2026-11-borrador`) y nunca la manda el cliente. El texto de `/terminos` queda `(TBD)` hasta la revisión legal.
+**Contexto**: LG-04 de [11](11_marco_legal_argentino.md) exige la aceptación de los términos (con el contrato de encargo de tratamiento) en el registro, pero el texto depende de la asesoría de PA-06, que todavía no existe.
+**Alternativas consideradas**: no registrar la aceptación hasta tener el texto (deja cuentas sin constancia); bloquear el registro hasta la asesoría (frena el piloto); guardar el texto completo aceptado (no hay texto todavía y duplica contenido).
+**Trade-offs aceptados**: las cuentas del piloto aceptan una versión borrador. Cuando se publique el texto revisado, alcanza con cambiar la variable y pedir aceptación de nuevo a quienes tengan una versión anterior (sin migración ni código).
+
 ## Supuestos inferidos
 
 ### SU-01 — El paciente argentino acepta reservar por link

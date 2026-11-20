@@ -11,15 +11,15 @@
 ## 2. Migración y modelo
 
 - [x] 2.1 Test de integración (Testcontainers PG16) de las tablas `usuario` y `refresh_token`: email `CITEXT` único, 1:1 con consultorio, FK compuesta de `refresh_token` cruzada falla, `app_rw` sin `DELETE`; crear la migración `V2__usuario_y_refresh_token.sql` (verificación: tests verdes)
-- [ ] 2.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Usuario con `credenciales_version`, `terminos_version` y `terminos_aceptados_at`, y agregar `DD-23` en `knowledge-base/09_decisiones_y_supuestos.md` por PA-06 (verificación: el diff de 04 coincide con la migración y DD-23 cita PA-06 y LG-04)
-- [ ] 2.3 Sumar `uk_usuario_email` → 409 `EMAIL_EN_USO` al mapa de constraints de `ManejadorGlobalDeErrores` (verificación: test de dos registros concurrentes con el mismo email)
+- [x] 2.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Usuario con `credenciales_version`, `terminos_version` y `terminos_aceptados_at`, y agregar `DD-23` en `knowledge-base/09_decisiones_y_supuestos.md` por PA-06 (verificación: el diff de 04 coincide con la migración y DD-23 cita PA-06 y LG-04)
+- [x] 2.3 Sumar `uk_usuario_email` → 409 `EMAIL_EN_USO` al mapa de constraints de `ManejadorGlobalDeErrores` (verificación: test de dos registros concurrentes con el mismo email)
 
 ## 3. Registro
 
-- [ ] 3.1 `PoliticaDeContrasena` en el dominio: 9 caracteres falla, 10 pasa, igual al email (con otras mayúsculas) falla (verificación: escenarios de "Política de contraseña")
-- [ ] 3.2 Caso de uso `RegistrarOdontologo` con consultorio en `PRUEBA`, `prueba_hasta` = hoy en la zona del consultorio + 30 días con `Clock` fijo, BCrypt de costo 12 y términos versionados (verificación: escenarios "Registro exitoso" y "Versión registrada")
-- [ ] 3.3 Slug único con sufijo y reintento ante violación de `uk_consultorio_slug` (verificación: escenario "Slug ya tomado" y test de dos registros concurrentes con el mismo nombre)
-- [ ] 3.4 `POST /api/v1/auth/registro` con MockMvc + Testcontainers: 201 sin cookie ni token, 409 `EMAIL_EN_USO` con otras mayúsculas, 400 `PASSWORD_DEBIL`, `TERMINOS_NO_ACEPTADOS`, `VALIDACION` por campo y rollback total ante falla parcial (verificación: todos los escenarios de `registro-odontologo`)
+- [x] 3.1 `PoliticaDeContrasena` en el dominio: 9 caracteres falla, 10 pasa, igual al email (con otras mayúsculas) falla (verificación: escenarios de "Política de contraseña")
+- [x] 3.2 Caso de uso `RegistrarOdontologo` con consultorio en `PRUEBA`, `prueba_hasta` = hoy en la zona del consultorio + 30 días con `Clock` fijo, BCrypt de costo 12 y términos versionados (verificación: escenarios "Registro exitoso" y "Versión registrada")
+- [x] 3.3 Slug único con sufijo y reintento ante violación de `uk_consultorio_slug` (verificación: escenario "Slug ya tomado" y test de dos registros concurrentes con el mismo nombre)
+- [x] 3.4 `POST /api/v1/auth/registro` con MockMvc + Testcontainers: 201 sin cookie ni token, 409 `EMAIL_EN_USO` con otras mayúsculas, 400 `PASSWORD_DEBIL`, `TERMINOS_NO_ACEPTADOS`, `VALIDACION` por campo y rollback total ante falla parcial (verificación: todos los escenarios de `registro-odontologo`)
 
 ## 4. Sesión
 

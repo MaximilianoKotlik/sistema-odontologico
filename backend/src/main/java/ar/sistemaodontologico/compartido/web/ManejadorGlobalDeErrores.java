@@ -43,7 +43,9 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
 
     /** Constraints de la base que representan un error de negocio esperado (design D6). */
     private static final Map<String, ErrorDeConstraint> ERRORES_DE_CONSTRAINT = Map.of(
-            "uk_consultorio_slug", new ErrorDeConstraint(HttpStatus.CONFLICT, "SLUG_EN_USO"));
+            "uk_consultorio_slug", new ErrorDeConstraint(HttpStatus.CONFLICT, "SLUG_EN_USO"),
+            // C-04: dos registros simultáneos con el mismo email (el chequeo previo no ve la carrera).
+            "uk_usuario_email", new ErrorDeConstraint(HttpStatus.CONFLICT, "EMAIL_EN_USO"));
 
     private static final Map<Integer, String> CODIGOS_POR_ESTADO = Map.of(
             400, "SOLICITUD_INVALIDA",
