@@ -177,7 +177,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-08
 
 ### [C-03] `auditoria-base`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #21, 2026-11-20)
 - **Scope**:
   - Migración: `evento_auditoria` append-only (actor_tipo, entidad, acción, `valor_anterior/nuevo` JSONB, ip) con trigger `BEFORE UPDATE OR DELETE` que falla y rol `app_rw` solo con `INSERT, SELECT`.
   - Listener `@TransactionalEventListener(BEFORE_COMMIT)` que persiste en la misma transacción los eventos del puerto de C-02; enmascarado de PII en logs.
