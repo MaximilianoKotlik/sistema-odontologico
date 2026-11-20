@@ -122,6 +122,20 @@ class MigracionEventoAuditoriaTest extends IntegracionPostgresTest {
                 .hasMessageContaining("ck_evento_auditoria_actor_tipo");
     }
 
+    @Test
+    void aceptaUnOdontologoSinIdParaIntentosNoAutenticados() {
+        // C-05 D9: LOGIN_FALLIDO tiene actor ODONTOLOGO sin id, porque todavía no hay sesión. Por eso la base no
+        // exige actor_id para los tipos distintos de SISTEMA.
+        jdbc.update("""
+                INSERT INTO evento_auditoria (id, consultorio_id, actor_tipo, entidad, entidad_id, accion)
+                VALUES (?, ?, 'ODONTOLOGO', 'usuario', ?, 'LOGIN_FALLIDO')
+                """, UUID.randomUUID(), consultorio, UUID.randomUUID());
+
+        assertThat(jdbc.queryForObject(
+                "SELECT count(*) FROM evento_auditoria WHERE consultorio_id = ? AND actor_id IS NULL",
+                Integer.class, consultorio)).isEqualTo(1);
+    }
+
     private UUID insertarEvento(UUID deConsultorio) {
         UUID id = UUID.randomUUID();
         jdbc.update("""
