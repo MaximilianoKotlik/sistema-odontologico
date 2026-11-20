@@ -19,7 +19,7 @@
 
 ## 2. Auditoría del registro
 
-- [ ] 2.1 Tests de integración de "Registro auditado" (`CUENTA_CREADA` con `{slug, plan, prueba_hasta}` e IP, sin contraseña ni hash) y de "Registro rechazado no deja evento"; publicar el evento desde `RegistrarOdontologo`; verificar en verde
+- [x] 2.1 Tests de integración de "Registro auditado" (`CUENTA_CREADA` con `{slug, plan, prueba_hasta}` e IP, sin contraseña ni hash) y de "Registro rechazado no deja evento"; publicar el evento desde `RegistrarOdontologo`; verificar en verde
 
 ## 3. Recuperación de contraseña
 

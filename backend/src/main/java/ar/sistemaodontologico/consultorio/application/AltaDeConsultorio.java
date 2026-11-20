@@ -15,8 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AltaDeConsultorio {
 
-    public record ConsultorioCreado(ConsultorioId id, String slug) {
+    /** Consultorio recién creado, con lo que audita el registro (C-05, design D9). */
+    public record ConsultorioCreado(ConsultorioId id, String slug, String plan, LocalDate pruebaHasta) {
     }
+
+    static final String PLAN_INICIAL = "PRUEBA";
 
     private final ConsultorioRepositorio consultorios;
     private final AsignadorDeSlugUnico slugs;
@@ -36,7 +39,8 @@ public class AltaDeConsultorio {
         String slug = slugs.asignar(nombre);
         // "Hoy" en la zona del consultorio, no en UTC (RN-TE-05).
         LocalDate hoy = LocalDate.now(reloj.withZone(ZoneId.of(NuevoConsultorio.ZONA_POR_DEFECTO)));
-        consultorios.guardarNuevo(new NuevoConsultorio(id, nombre, slug, hoy.plusDays(NuevoConsultorio.DIAS_DE_PRUEBA)));
-        return new ConsultorioCreado(id, slug);
+        LocalDate pruebaHasta = hoy.plusDays(NuevoConsultorio.DIAS_DE_PRUEBA);
+        consultorios.guardarNuevo(new NuevoConsultorio(id, nombre, slug, pruebaHasta));
+        return new ConsultorioCreado(id, slug, PLAN_INICIAL, pruebaHasta);
     }
 }
