@@ -83,7 +83,7 @@
 ### D9 — Excepciones a la regla ArchUnit de tenant
 - `UsuarioRepositorio.buscarPorEmail(email)`: el login todavía no tiene tenant. El email es único global (RN-TE-02).
 - `RefreshTokenRepositorio.buscarPorHashParaActualizar(hash)` (con `FOR UPDATE`, D4): el refresh llega sin access token. El hash de 256 bits es la credencial misma.
-- La regla de C-02 (`repositoriosSiempreConTenant`) hoy solo exime **clases enteras** por nombre (`ConsultorioRepositorio`). Eximir `UsuarioRepositorio` completo dejaría pasar cualquier método nuevo sin tenant, así que la regla se amplía para aceptar excepciones por método (`"UsuarioRepositorio.buscarPorEmail"`, `"RefreshTokenRepositorio.buscarPorHashParaActualizar"`). La excepción vale para la clase nombrada y sus implementaciones (por prefijo del nombre, por ejemplo `UsuarioRepositorioJdbc`). Un test con fixtures verifica que la excepción cubre solo ese método.
+- La regla de C-02 (`repositoriosSiempreConTenant`) hoy solo exime **clases enteras** por nombre (`ConsultorioRepositorio`). Eximir `UsuarioRepositorio` completo dejaría pasar cualquier método nuevo sin tenant, así que la regla se amplía para aceptar excepciones por método (`"UsuarioRepositorio.buscarPorEmail"`, `"RefreshTokenRepositorio.buscarPorHashParaActualizar"`). La excepción vale para la interfaz nombrada y las clases que la implementan (por ejemplo `UsuarioRepositorioJdbc`), no para cualquier clase cuyo nombre empiece igual (revisión de Mati en #16). Un test con fixtures verifica que la excepción cubre solo ese método.
 - Ambas quedan en la lista explícita `REPOSITORIOS_EXCEPTUADOS` de `ArchitectureTest`, con un comentario que cita esta decisión. Cualquier otra excepción necesita aprobación en un PR.
 
 ### D10 — Chequeo de origen en refresh y logout (defensa contra CSRF)
@@ -104,7 +104,7 @@
 - **`refresh_token`**:
   - `FOREIGN KEY (consultorio_id, usuario_id) REFERENCES usuario (consultorio_id, id)`.
   - `token_hash CHAR(64) UNIQUE`, `expira_at`, `revocado_at`, `created_at`.
-  - Índice parcial `(usuario_id) WHERE revocado_at IS NULL`.
+  - Índice parcial `ix_refresh_token_vigentes (consultorio_id, usuario_id) WHERE revocado_at IS NULL`, que empieza por `consultorio_id` como pide `CONVENCIONES.md`.
 - **Permisos**: `REVOKE DELETE ON usuario, refresh_token FROM "${app-user}"`.
   - Hace falta un `REVOKE` explícito: los privilegios por defecto de C-01 ya le dan `SELECT, INSERT, UPDATE, DELETE` a `app_rw` sobre toda tabla nueva, y un `GRANT` acotado no quitaría el `DELETE`.
   - `${app-user}` es el placeholder de Flyway (`spring.flyway.placeholders.app-user: ${DB_APP_USER}`) que ya define C-02 (#12) y usa C-03 (#10). El rol nunca va fijo en el SQL.

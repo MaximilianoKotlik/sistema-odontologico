@@ -48,8 +48,9 @@ CREATE TABLE refresh_token (
         FOREIGN KEY (consultorio_id, usuario_id) REFERENCES usuario (consultorio_id, id)
 );
 
--- Para revocar la familia completa de un usuario (detección de reuso).
-CREATE INDEX ix_refresh_token_usuario_vigentes ON refresh_token (usuario_id) WHERE revocado_at IS NULL;
+-- Para revocar la familia completa de un usuario (detección de reuso). Empieza por consultorio_id como todo
+-- índice de consulta (CONVENCIONES.md, regla 4).
+CREATE INDEX ix_refresh_token_vigentes ON refresh_token (consultorio_id, usuario_id) WHERE revocado_at IS NULL;
 
 -- Los privilegios por defecto de C-01 le dan DELETE a app_rw: cuentas y tokens se revocan, no se borran.
 REVOKE DELETE ON usuario, refresh_token FROM "${app-user}";

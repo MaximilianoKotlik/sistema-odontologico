@@ -2,6 +2,7 @@ package ar.sistemaodontologico.consultorio.application;
 
 import ar.sistemaodontologico.compartido.domain.slug.SugeridorDeSlug;
 import ar.sistemaodontologico.compartido.domain.slug.ValidadorDeSlug;
+import java.util.HashSet;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +24,22 @@ public class AsignadorDeSlugUnico {
     }
 
     String primeroLibre(String base) {
-        // El prefijo ya recortado cubre la base completa y los candidatos con sufijo recortados (hasta "-999").
-        Set<String> tomados = enUso.empiezanCon(recortar(base, ValidadorDeSlug.LARGO_MAXIMO - 4));
+        // Se consulta por el prefijo que comparten la base y los candidatos de la longitud de sufijo en curso. Cuando
+        // el sufijo crece (de "-999" a "-1000") la base se recorta más, así que se vuelve a consultar con ese prefijo
+        // más corto (revisión de Mati en #16).
+        int largoConsultado = ValidadorDeSlug.LARGO_MAXIMO - 4;
+        Set<String> tomados = new HashSet<>(enUso.empiezanCon(recortar(base, largoConsultado)));
         if (!tomados.contains(base)) {
             return base;
         }
         for (int numero = 2; ; numero++) {
             String sufijo = "-" + numero;
-            String candidato = recortar(base, ValidadorDeSlug.LARGO_MAXIMO - sufijo.length()) + sufijo;
+            int largoDeBase = ValidadorDeSlug.LARGO_MAXIMO - sufijo.length();
+            if (largoDeBase < largoConsultado) {
+                largoConsultado = largoDeBase;
+                tomados.addAll(enUso.empiezanCon(recortar(base, largoConsultado)));
+            }
+            String candidato = recortar(base, largoDeBase) + sufijo;
             if (!tomados.contains(candidato)) {
                 return candidato;
             }

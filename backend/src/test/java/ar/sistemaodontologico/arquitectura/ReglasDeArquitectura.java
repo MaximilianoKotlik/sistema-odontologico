@@ -50,13 +50,13 @@ public final class ReglasDeArquitectura {
         return new ArchCondition<>("recibir ConsultorioId en todo método de consulta") {
             @Override
             public void check(JavaClass clase, ConditionEvents eventos) {
-                if (exceptuada(clase.getSimpleName(), null, exceptuados)) {
+                if (exceptuada(clase, null, exceptuados)) {
                     return;
                 }
                 clase.getMethods().stream()
                         .filter(metodo -> metodo.getModifiers().contains(com.tngtech.archunit.core.domain.JavaModifier.PUBLIC))
                         .filter(metodo -> PREFIJOS_DE_CONSULTA.stream().anyMatch(metodo.getName()::startsWith))
-                        .filter(metodo -> !exceptuada(clase.getSimpleName(), metodo.getName(), exceptuados))
+                        .filter(metodo -> !exceptuada(clase, metodo.getName(), exceptuados))
                         .filter(metodo -> metodo.getRawParameterTypes().stream()
                                 .noneMatch(tipo -> tipo.getFullName().equals(CONSULTORIO_ID)))
                         .forEach(metodo -> eventos.add(SimpleConditionEvent.violated(metodo,
@@ -66,14 +66,17 @@ public final class ReglasDeArquitectura {
     }
 
     /**
-     * Una excepción es {@code "Clase"} (toda la clase) o {@code "Clase.metodo"} (solo ese método). Se aplica a la
-     * clase nombrada y a las que empiezan con ese nombre (sus implementaciones, como {@code ...RepositorioJdbc}).
+     * Una excepción es {@code "Interfaz"} (toda la interfaz) o {@code "Interfaz.metodo"} (solo ese método). Cubre la
+     * interfaz nombrada y las clases que la implementan, no cualquier clase cuyo nombre empiece igual: un futuro
+     * {@code ConsultorioRepositorioDePrestaciones} sigue sujeto a la regla (revisión de Mati en #16).
      */
-    private static boolean exceptuada(String clase, String metodo, java.util.Set<String> exceptuados) {
+    private static boolean exceptuada(JavaClass clase, String metodo, java.util.Set<String> exceptuados) {
         return exceptuados.stream().anyMatch(excepcion -> {
             int punto = excepcion.indexOf('.');
-            String claseExceptuada = punto < 0 ? excepcion : excepcion.substring(0, punto);
-            if (!clase.startsWith(claseExceptuada)) {
+            String nombreExceptuado = punto < 0 ? excepcion : excepcion.substring(0, punto);
+            boolean esOImplementa = clase.getSimpleName().equals(nombreExceptuado)
+                    || clase.getAllRawInterfaces().stream().anyMatch(i -> i.getSimpleName().equals(nombreExceptuado));
+            if (!esOImplementa) {
                 return false;
             }
             return punto < 0 || (metodo != null && metodo.equals(excepcion.substring(punto + 1)));

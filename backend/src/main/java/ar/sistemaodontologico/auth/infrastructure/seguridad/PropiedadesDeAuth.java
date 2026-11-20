@@ -26,9 +26,38 @@ public record PropiedadesDeAuth(
 
     public PropiedadesDeAuth {
         claveDesde(jwtSecreto);
-        if (!StringUtils.hasText(frontendOrigin)) {
+        frontendOrigin = origenNormalizado(frontendOrigin);
+    }
+
+    /**
+     * El navegador manda {@code Origin} sin barra final ni ruta: se quita la barra y se rechaza cualquier otra cosa
+     * al arrancar, para que el chequeo de origen y CORS no fallen en silencio (revisión de Mati en #16).
+     */
+    private static String origenNormalizado(String origen) {
+        if (!StringUtils.hasText(origen)) {
             throw new IllegalStateException("Falta APP_FRONTEND_ORIGIN");
         }
+        String sinBarra = origen.trim().replaceAll("/+$", "");
+        java.net.URI uri;
+        try {
+            uri = java.net.URI.create(sinBarra);
+        } catch (IllegalArgumentException e) {
+            throw origenInvalido();
+        }
+        boolean esOrigen = ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme()))
+                && uri.getHost() != null
+                && (uri.getRawPath() == null || uri.getRawPath().isEmpty())
+                && uri.getRawQuery() == null
+                && uri.getRawFragment() == null
+                && uri.getRawUserInfo() == null;
+        if (!esOrigen) {
+            throw origenInvalido();
+        }
+        return sinBarra;
+    }
+
+    private static IllegalStateException origenInvalido() {
+        return new IllegalStateException("APP_FRONTEND_ORIGIN tiene que ser un origen: esquema://host[:puerto], sin ruta");
     }
 
     /** La clave HS256 decodificada. */

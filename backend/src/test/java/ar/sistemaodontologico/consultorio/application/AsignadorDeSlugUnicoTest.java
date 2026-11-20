@@ -55,6 +55,23 @@ class AsignadorDeSlugUnicoTest {
     }
 
     @Test
+    void conLosSufijosDeTresDigitosTomadosVeTambienLosDeCuatro() {
+        // Revisión de Mati en #16: con "-1000" la base se recorta a 35 caracteres, más que el prefijo de la consulta.
+        String base = "centro-integral-de-odontologia-avanzada";
+        tomados.add(base);
+        for (int n = 2; n <= 999; n++) {
+            String sufijo = "-" + n;
+            tomados.add(base.substring(0, Math.min(base.length(), 40 - sufijo.length())).replaceAll("-+$", "") + sufijo);
+        }
+        String conCuatroDigitos = base.substring(0, 35).replaceAll("-+$", "") + "-1000";
+        tomados.add(conCuatroDigitos);
+
+        String slug = asignador.asignar("Centro Integral de Odontología Avanzada");
+
+        assertThat(slug).isNotEqualTo(conCuatroDigitos).endsWith("-1001").hasSizeLessThanOrEqualTo(40);
+    }
+
+    @Test
     void conBaseLargaVeLosCandidatosRecortadosYaTomados() {
         // La base tiene 39 caracteres: con "-2" se recorta a 38 ("...avanzad-2").
         tomados.addAll(Set.of("centro-integral-de-odontologia-avanzada", "centro-integral-de-odontologia-avanzad-2"));

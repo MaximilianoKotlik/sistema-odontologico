@@ -78,6 +78,15 @@ class MigracionAuthTest extends IntegracionPostgresTest {
     }
 
     @Test
+    void elIndiceDeRefreshVigentesEmpiezaPorElConsultorio() {
+        // CONVENCIONES.md regla 4: todo índice de consulta empieza por consultorio_id (revisión de Mati en #16).
+        String definicion = jdbc.queryForObject(
+                "SELECT indexdef FROM pg_indexes WHERE indexname = 'ix_refresh_token_vigentes'", String.class);
+
+        assertThat(definicion).contains("(consultorio_id, usuario_id)").contains("WHERE (revocado_at IS NULL)");
+    }
+
+    @Test
     void elRolDeAplicacionNoBorraUsuariosNiRefresh() {
         UUID consultorio = insertarConsultorio();
         UUID usuario = insertarUsuario(consultorio, "permisos-" + sufijo() + "@example.com");

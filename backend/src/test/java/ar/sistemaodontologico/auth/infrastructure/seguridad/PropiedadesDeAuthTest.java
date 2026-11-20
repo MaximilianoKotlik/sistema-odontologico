@@ -36,6 +36,21 @@ class PropiedadesDeAuthTest {
     }
 
     @Test
+    void elOrigenDelFrontendSeNormalizaSinBarraFinal() {
+        contexto.withPropertyValues("app.auth.jwt-secreto=" + SECRETO_VALIDO, "app.auth.frontend-origin=https://app.example.com/")
+                .run(arranque -> assertThat(arranque.getBean(PropiedadesDeAuth.class).frontendOrigin())
+                        .isEqualTo("https://app.example.com"));
+    }
+
+    @Test
+    void unOrigenConRutaNoArranca() {
+        contexto.withPropertyValues("app.auth.jwt-secreto=" + SECRETO_VALIDO,
+                        "app.auth.frontend-origin=https://app.example.com/agenda")
+                .run(arranque -> assertThat(arranque).hasFailed()
+                        .getFailure().rootCause().hasMessageContaining("APP_FRONTEND_ORIGIN"));
+    }
+
+    @Test
     void sinSecretoNoArranca() {
         contexto.run(arranque -> assertThat(arranque).hasFailed()
                 .getFailure().rootCause().hasMessageContaining("JWT_SECRET"));
