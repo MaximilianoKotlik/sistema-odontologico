@@ -15,18 +15,18 @@ SaaS web multi-consultorio para odontólogos independientes de Argentina. Cada c
 | Capa | Tecnologías | Versión mínima |
 |------|-------------|----------------|
 | Lenguaje backend | Java | 21 (LTS) |
-| Framework backend | Spring Boot (Web, Validation, Data JPA, Security, Actuator, Mail) | 3.3 |
-| Build backend | Gradle (Kotlin DSL, wrapper versionado) | 8.8 |
-| Documentación de API | springdoc-openapi (OpenAPI 3 + Swagger UI) | 2.6 |
+| Framework backend | Spring Boot (Web, Validation, Data JPA, Security, Actuator, Mail) | 3.5 |
+| Build backend | Gradle (Kotlin DSL, wrapper versionado) | 9.9 |
+| Documentación de API | springdoc-openapi (OpenAPI 3 + Swagger UI) | 2.8 |
 | Base de datos | PostgreSQL (extensión `btree_gist` para exclusión de solapamientos) | 16 |
-| Migraciones | Flyway | 10 |
+| Migraciones | Flyway (versión del BOM de Spring Boot) | 11 |
 | Autenticación | Spring Security + JWT propio (access + refresh), BCrypt | — |
-| Lenguaje frontend | TypeScript (strict), **sin framework** | 5.5 |
-| Bundler / dev server | Vite | 5 |
+| Lenguaje frontend | TypeScript (strict), **sin framework** | 5.9 |
+| Bundler / dev server | Vite | 7 |
 | Estilos | Tailwind CSS | 3.4 |
 | PWA | Web App Manifest + Service Worker (`vite-plugin-pwa` / Workbox) | — |
 | Tests backend | JUnit 5, Mockito, AssertJ, Spring Boot Test, Testcontainers (PostgreSQL) | — |
-| Tests frontend | Vitest + jsdom | 2 |
+| Tests frontend | Vitest + jsdom | 4 |
 | Contenedores | Docker + Docker Compose (postgres + backend + frontend + mailpit) | Compose v2 |
 
 Detalle completo: [knowledge-base/02_descripcion_general.md](knowledge-base/02_descripcion_general.md)
