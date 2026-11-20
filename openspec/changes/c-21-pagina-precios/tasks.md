@@ -2,9 +2,9 @@
 
 ## 1. Compuertas previas (sin código de producción)
 
-- [ ] 1.1 Resolver PA-03 y registrar la decisión como `DD-NN` en `knowledge-base/09_decisiones_y_supuestos.md` con modelo de plan, duración de prueba e importes; verificar que la KB ya no marca PA-03 como bloqueante y que el mockup usa los importes aprobados
+- [x] 1.1 Resolver PA-03 y registrar la decisión como `DD-NN` en `knowledge-base/09_decisiones_y_supuestos.md` con modelo de plan, duración de prueba e importes; verificar que la KB ya no marca PA-03 como bloqueante y que el mockup usa los importes aprobados
 - [ ] 1.2 Confirmar que C-02 y C-06 están mergeados en `origin/main` y `[x]` en `CHANGES.md`; verificar con `git log origin/main --oneline` que aparecen ambos merges
-- [ ] 1.3 Obtener aprobación de Maxi para el mockup de `/precios`; verificar que el PR en borrador contiene `mockups/precios.html` y el comentario de aprobación
+- [x] 1.3 Obtener aprobación de Maxi para el mockup de `/precios`; verificar que el PR en borrador contiene `mockups/precios.html` y el comentario de aprobación
 
 ## 2. Catálogo versionado y contrato público
 

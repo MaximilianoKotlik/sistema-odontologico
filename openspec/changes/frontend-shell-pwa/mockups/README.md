@@ -1,7 +1,7 @@
 # Mockups · C-06 frontend-shell-pwa (app-shell)
 
 - Design system revision: 1
-- Approval: pending
+- Approval: approved (2026-11-20, by user)
 - Preview: rendered (2026-11-20) · 390×844, 360×780 y 1440×900
 
 ## Brief

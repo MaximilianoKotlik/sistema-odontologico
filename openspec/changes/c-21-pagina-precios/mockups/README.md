@@ -1,6 +1,8 @@
 # Mockups de C-21 · `pagina-precios`
 
-`Approval: pending`
+`Approval: approved (2026-11-20, by user)`
+
+> Importe decidido después de aprobar el mockup: **ARS 14.900/mes con IVA** ([DD-22](../../../../knowledge-base/09_decisiones_y_supuestos.md)). La implementación lo toma de la fuente versionada; el marcador `(TBD) — PA-03` del mockup se reemplaza por ese valor.
 
 Mockup de revisión para la página pública `/precios`. **No es código de producción**: no hay cambios en `backend/` ni `frontend/`.
 

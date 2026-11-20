@@ -87,6 +87,6 @@ Sin migración de base de datos ni datos que preservar. El despliegue publica co
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: openspec/changes/c-21-pagina-precios/mockups/
-- Approval: pending
+- Approval: approved (2026-11-20, by user)
 - Preview: rendered (2026-11-20); `previews/precios-mobile-390x844.png`, `previews/precios-desktop-1440x900.png`
 - Visual verify: pending

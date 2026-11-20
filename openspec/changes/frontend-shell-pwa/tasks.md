@@ -8,7 +8,7 @@
 
 - [x] 1.1 Crear `mockups/` con el app-shell en mobile (360/390 px) y desktop (1440 px): navegación, estados carga, vacío, error y sin conexión, y "Más"; verificar que importa `design-system/tokens.css` y `brand.js` sin valores visuales sueltos
 - [x] 1.2 Renderizar los mockups a 390×844 y 1440×900, guardar capturas en `mockups/previews/` y registrar `Preview: rendered` en `design.md`
-- [ ] 1.3 Obtener la aprobación explícita de Maxi en el PR borrador y registrar `Approval: approved (<fecha>, by user)` en `design.md` y `mockups/README.md`
+- [x] 1.3 Obtener la aprobación explícita de Maxi en el PR borrador y registrar `Approval: approved (<fecha>, by user)` en `design.md` y `mockups/README.md`
 
 ## 2. Base de estilos y dependencias
 

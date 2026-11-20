@@ -51,7 +51,7 @@ Destinos principales (Agenda, Bloqueos, Configuración) + "Más" en mobile; en d
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: `openspec/changes/frontend-shell-pwa/mockups/` (`app-shell.html`, brief en `mockups/README.md`)
-- Approval: pending
+- Approval: approved (2026-11-20, by user)
 - Preview: rendered (2026-11-20, `mockups/previews/` a 390×844, 360×780 y 1440×900)
 - Visual verify: pending
 
