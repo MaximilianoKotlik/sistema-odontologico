@@ -43,7 +43,7 @@ _Ninguna_. `aislamiento-tenant` y `errores-api` vienen de C-02 y todavía no son
 
 ## Impact
 
-- **Código**: `backend/.../auth/**` (web, application, domain, infrastructure), configuración de Spring Security, `V2__usuario_y_refresh_token.sql` (número provisorio; se renumera al rebasar), tests espejo.
+- **Código**: `backend/.../auth/**` (web, application, domain, infrastructure), configuración de Spring Security, `V3__usuario_y_refresh_token.sql` (V2 es de C-03), tests espejo.
 - **Dependencias nuevas**: `spring-boot-starter-security` y `spring-boot-starter-oauth2-resource-server` (Nimbus JOSE para firmar y validar JWT HS256; ver design D2). No se agrega ninguna librería JWT de terceros.
 - **API**: 4 endpoints nuevos en `/api/v1/auth`; **todas** las rutas `/api/v1/**` pasan a exigir JWT; contrato regenerado en `api-types.ts`.
 - **Configuración**: usa `JWT_SECRET`, `JWT_ACCESS_TTL`, `JWT_REFRESH_TTL` y `APP_FRONTEND_ORIGIN` de 08 §Variables de entorno; sin variables nuevas salvo `TERMINOS_VERSION_VIGENTE` (ver design D7).

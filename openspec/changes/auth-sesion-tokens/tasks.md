@@ -10,7 +10,7 @@
 
 ## 2. Migración y modelo
 
-- [x] 2.1 Test de integración (Testcontainers PG16) de las tablas `usuario` y `refresh_token`: email `CITEXT` único, 1:1 con consultorio, FK compuesta de `refresh_token` cruzada falla, `app_rw` sin `DELETE`; crear la migración `V2__usuario_y_refresh_token.sql` (verificación: tests verdes)
+- [x] 2.1 Test de integración (Testcontainers PG16) de las tablas `usuario` y `refresh_token`: email `CITEXT` único, 1:1 con consultorio, FK compuesta de `refresh_token` cruzada falla, `app_rw` sin `DELETE`; crear la migración `V3__usuario_y_refresh_token.sql` (verificación: tests verdes)
 - [x] 2.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Usuario con `credenciales_version`, `terminos_version` y `terminos_aceptados_at`, y agregar `DD-23` en `knowledge-base/09_decisiones_y_supuestos.md` por PA-06 (verificación: el diff de 04 coincide con la migración y DD-23 cita PA-06 y LG-04)
 - [x] 2.3 Sumar `uk_usuario_email` → 409 `EMAIL_EN_USO` al mapa de constraints de `ManejadorGlobalDeErrores` (verificación: test de dos registros concurrentes con el mismo email)
 

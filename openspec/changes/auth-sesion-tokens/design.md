@@ -96,7 +96,7 @@
 - Si algún navegador de desarrollo (Safari) no la acepta, se documenta en el README de C-07. No se relaja el atributo por perfil, porque un relajamiento por configuración es el tipo de error que termina en producción.
 
 ### D12 — Migración y permisos
-- `V2__usuario_y_refresh_token.sql` (número provisorio; se pasa al siguiente libre al rebasar, según CHANGES.md).
+- `V3__usuario_y_refresh_token.sql` (V2 queda para `evento_auditoria` de C-03, acordado con Mati).
 - **`usuario`**:
   - `consultorio_id UUID NOT NULL UNIQUE REFERENCES consultorio(id)` y `UNIQUE (consultorio_id, id)`.
   - `email CITEXT NOT NULL` con `uk_usuario_email`.
