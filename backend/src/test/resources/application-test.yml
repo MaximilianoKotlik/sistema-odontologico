@@ -1,15 +1,16 @@
 # Perfil de tests: la base la provee Testcontainers (IntegracionPostgresTest).
 
-# Límites bajos para que los tests de rate limit los alcancen rápido (C-05, design D8). Los períodos quedan
-# como en producción: los tests avanzan el Clock.
+# Límites de solicitudes (C-05, design D8). Toda la suite comparte un limitador y la IP 127.0.0.1, así que los
+# límites por IP son altos para no interferir con los demás tests; los de rate limit usan su propio contexto con
+# límites bajos. Los límites por email y por usuario quedan bajos: cada test usa cuentas propias.
 app:
   rate-limit:
-    login: { capacidad: 3, periodo: 1m }
-    registro: { capacidad: 3, periodo: 1h }
-    refresh: { capacidad: 3, periodo: 1m }
-    recuperacion: { capacidad: 3, periodo: 1h }
+    login: { capacidad: 10000, periodo: 1m }
+    registro: { capacidad: 10000, periodo: 1h }
+    refresh: { capacidad: 10000, periodo: 1m }
+    recuperacion: { capacidad: 10000, periodo: 1h }
     recuperacion-por-email: { capacidad: 2, periodo: 1h }
-    confirmar-recuperacion: { capacidad: 3, periodo: 1h }
+    confirmar-recuperacion: { capacidad: 10000, periodo: 1h }
     cambiar-password: { capacidad: 3, periodo: 15m }
 
 logging:

@@ -30,7 +30,7 @@
 - [ ] 3.5 Tests unitarios de `Usuario.establecerContrasena` (sube versión, fija `password_cambiado_at`, limpia el bloqueo); implementar; verificar en verde
 - [ ] 3.6 Tests de integración de "Restablecimiento exitoso", "Restablecer desbloquea la cuenta", los tres de token inválido y "Contraseña nueva de 9 caracteres" (no consume el token); implementar `ConfirmarRecuperacion` y el endpoint; verificar en verde
 - [ ] 3.7 Test de integración del evento `PASSWORD_RECUPERADA` sin secretos; verificar en verde
-- [ ] 3.8 Test del adaptador `EnviadorDeEmailsSmtp` contra un contenedor de Mailpit: llega un email de `MAIL_FROM`, asunto en voseo y link `/recuperar#token=…`; implementar; verificar en verde
+- [x] 3.8 Test del adaptador `EnviadorDeEmailsSmtp` contra un contenedor de Mailpit: llega un email de `MAIL_FROM`, asunto en voseo y link `/recuperar#token=…`; implementar; verificar en verde
 
 ## 4. Cambio de contraseña
 

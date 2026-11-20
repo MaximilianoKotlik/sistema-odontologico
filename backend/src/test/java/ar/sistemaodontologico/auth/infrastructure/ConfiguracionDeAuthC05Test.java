@@ -12,8 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 
 /**
- * Tarea 0.3 de C-05: dependencias y configuración de mail y rate limit. En el perfil de tests los límites son bajos,
- * para que los tests de integración los alcancen rápido.
+ * Tarea 0.3 de C-05: dependencias y configuración de mail y rate limit (ver application-test.yml).
  */
 class ConfiguracionDeAuthC05Test extends IntegracionPostgresTest {
 
@@ -30,8 +29,8 @@ class ConfiguracionDeAuthC05Test extends IntegracionPostgresTest {
     private TestRestTemplate http;
 
     @Test
-    void elPerfilDeTestsUsaLimitesBajos() {
-        assertThat(limites.login().capacidad()).isEqualTo(3);
+    void elPerfilDeTestsUsaLimitesBajosPorCuentaYAltosPorIp() {
+        assertThat(limites.login().capacidad()).isGreaterThanOrEqualTo(1000);
         assertThat(limites.recuperacionPorEmail().capacidad()).isEqualTo(2);
         assertThat(limites.cambiarPassword().periodo()).isEqualTo(Duration.ofMinutes(15));
     }
