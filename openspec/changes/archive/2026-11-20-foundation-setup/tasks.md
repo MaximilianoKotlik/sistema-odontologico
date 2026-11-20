@@ -41,12 +41,12 @@
 
 ## 7. Integración continua
 
-- [ ] 7.1 Escribir `.github/workflows/ci.yml` con los jobs `backend`, `frontend` (descarga el contrato y compara `api-types.ts`) y `docker` (D7). Verificar la sintaxis con `actionlint` si está disponible, o con la primera ejecución en el PR.
+- [x] 7.1 Escribir `.github/workflows/ci.yml` con los jobs `backend`, `frontend` (descarga el contrato y compara `api-types.ts`) y `docker` (D7). Verificar la sintaxis con `actionlint` si está disponible, o con la primera ejecución en el PR.
 
 ## 8. Verificación integral
 
 - [x] 8.1 Desde un clon limpio, copiar `.env.example` a `.env` y ejecutar `docker compose up --build`. Verificar que `http://localhost:8080/actuator/health` devuelve `UP`, que `http://localhost:5173` carga el frontend, que `http://localhost:5173/api/...` llega al backend a través del proxy, que `http://localhost:8025` muestra Mailpit y que `http://localhost:8080/swagger-ui.html` responde con el perfil `local`. Bajar el entorno al terminar.
-- [ ] 8.2 Abrir el PR de C-01 y verificar que los tres jobs de CI terminan en verde. Pegar la evidencia de 8.1 y del CI en la descripción del PR.
+- [x] 8.2 Abrir el PR de C-01 y verificar que los tres jobs de CI terminan en verde. Pegar la evidencia de 8.1 y del CI en la descripción del PR.
 
 ## Workflow follow-up
 
