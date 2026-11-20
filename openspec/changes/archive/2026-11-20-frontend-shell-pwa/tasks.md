@@ -55,7 +55,7 @@
 - [x] 9.1 Correr `npm test`, `tsc --noEmit` y `npm run build` en verde
 - [x] 9.2 Verificación visual: levantar el dev server, capturar 390×844 y 1440×900 en `mockups/verify/`, revisar consola y red, comparar con el mockup aprobado y registrar `Visual verify` en `design.md`
 - [ ] 9.3 Verificación offline manual: visitar agenda con conexión, cortar red en DevTools, recargar y confirmar shell + aviso; confirmar que la caché no tiene entradas de `/auth/` ni `/public/`
-  - Parcial (2026-11-20, build con `vite preview` + Playwright): con la red cortada el shell abre desde el Service Worker y la caché solo tiene `workbox-precache` (nada de `/auth/` ni `/public/`). Falta el paso "agenda vista con conexión": requiere `GET /api/v1/agenda` (C-12) y la página de agenda (C-13).
+  - Parcial (2026-11-20, build con `vite preview` + Playwright): con la red cortada el shell abre desde el Service Worker y la caché solo tiene `workbox-precache` (nada de `/auth/` ni `/public/`). Falta el paso "agenda vista con conexión": requiere `GET /api/v1/agenda` (C-12) y la página de agenda (C-13). Queda abierta al cerrar C-06 (2026-11-20): se completa en la verificación de C-13.
 
 ## Workflow follow-up
 

@@ -228,7 +228,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/10_preguntas_abiertas.md` §IN-01 (resuelta → DD-19 en `09_decisiones_y_supuestos.md`), PA-09
 
 ### [C-06] `frontend-shell-pwa`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #17, 2026-11-20)
 - **Scope**:
   - `tokens.css` del sistema de diseño importado y mapeado en `tailwind.config.ts`; `BRAND_NAME` desde `design-system/brand.js`.
   - `shared/`: router, cliente HTTP (fetch + refresh por cookie, token solo en memoria), store, `ui/` (botón, campo, chip de estado, diálogo, aviso, estado vacío según `components.html`), formateo de fechas con `Intl.DateTimeFormat('es-AR', { timeZone })`, `api-types.ts` generado.
