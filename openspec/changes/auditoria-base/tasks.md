@@ -10,10 +10,10 @@
 
 ## 1. Esquema append-only
 
-- [ ] 1.1 Escribir el test de integración (extiende `IntegracionPostgresTest`) que inserta un evento completo y lo relee; verificar que falla en rojo porque la tabla no existe
-- [ ] 1.2 Crear la migración `V2__evento_auditoria.sql` con la tabla, `ck_evento_auditoria_actor_tipo`, la FK a `consultorio` sin `ON DELETE CASCADE`, `UNIQUE (consultorio_id, id)`, los índices de `04`, y `REVOKE UPDATE, DELETE, TRUNCATE` + `GRANT INSERT, SELECT` a `"${app-user}"` (el placeholder ya existe desde C-02); verificar que el test 1.1 pasa y que la aplicación arranca con la migración aplicada
-- [ ] 1.3 Tests de que `UPDATE`, `DELETE` y `TRUNCATE` con `app_rw` fallan, y de que el trigger rechaza `UPDATE`, `DELETE` y `TRUNCATE` conectado como `app_owner` (que tiene todos los privilegios); agregar `evento_auditoria_inmutable()` y los triggers de fila y de sentencia a la misma migración (todavía no mergeada); verificar en verde
-- [ ] 1.4 Tests de un consultorio inexistente (FK) y de un `actor_tipo` inválido (CHECK) que fallan; verificar en verde
+- [x] 1.1 Escribir el test de integración (extiende `IntegracionPostgresTest`) que inserta un evento completo y lo relee; verificar que falla en rojo porque la tabla no existe
+- [x] 1.2 Crear la migración `V2__evento_auditoria.sql` con la tabla, `ck_evento_auditoria_actor_tipo`, la FK a `consultorio` sin `ON DELETE CASCADE`, `UNIQUE (consultorio_id, id)`, los índices de `04`, y `REVOKE UPDATE, DELETE, TRUNCATE` + `GRANT INSERT, SELECT` a `"${app-user}"` (el placeholder ya existe desde C-02); verificar que el test 1.1 pasa y que la aplicación arranca con la migración aplicada
+- [x] 1.3 Tests de que `UPDATE`, `DELETE` y `TRUNCATE` con `app_rw` fallan, y de que el trigger rechaza `UPDATE`, `DELETE` y `TRUNCATE` conectado como `app_owner` (que tiene todos los privilegios); agregar `evento_auditoria_inmutable()` y los triggers de fila y de sentencia a la misma migración (todavía no mergeada); verificar en verde
+- [x] 1.4 Tests de un consultorio inexistente (FK) y de un `actor_tipo` inválido (CHECK) que fallan; verificar en verde
 
 ## 2. Persistencia desde el puerto de C-02
 
