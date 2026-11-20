@@ -6,7 +6,7 @@
 
 - [x] 1.1 Rebasar sobre `main` con C-02 mergeado y revisar la tabla de §Context de `design.md` contra lo que efectivamente se mergeó; actualizar las decisiones afectadas (verificación: la tabla coincide con el código de `compartido`)
 - [x] 1.2 Agregar `spring-boot-starter-security` y `spring-boot-starter-oauth2-resource-server`; configurar `JWT_SECRET`, TTLs, `APP_FRONTEND_ORIGIN` y `TERMINOS_VERSION_VIGENTE` con validación al arranque; sumar `JWT_SECRET` a `VariablesObligatorias` (verificación: test de contexto que falla con un secreto ausente, no base64 o de menos de 32 bytes, y arranca con uno válido)
-- [ ] 1.3 Reemplazar el `JWT_SECRET` de `.env.example` por un base64 de 48 bytes marcado como solo para desarrollo local (verificación: `docker compose up --build` levanta el backend y el healthcheck queda `healthy`)
+- [x] 1.3 Reemplazar el `JWT_SECRET` de `.env.example` por un base64 de 48 bytes marcado como solo para desarrollo local (verificación: `docker compose up --build` levanta el backend y el healthcheck queda `healthy`)
 
 ## 2. Migración y modelo
 

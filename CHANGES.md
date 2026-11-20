@@ -192,7 +192,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/11_marco_legal_argentino.md`
 
 ### [C-04] `auth-sesion-tokens`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #16, 2026-11-20)
 - **Scope**:
   - Migración: `usuario`, `refresh_token`.
   - `POST /api/v1/auth/registro` (crea usuario + consultorio en `PRUEBA`, `prueba_hasta = hoy + 30 d`, slug sugerido, consentimiento de términos; 409 `EMAIL_EN_USO`, 400 `PASSWORD_DEBIL`), `login`, `refresh` (rotación con detección de reuso que revoca toda la familia), `logout`.
