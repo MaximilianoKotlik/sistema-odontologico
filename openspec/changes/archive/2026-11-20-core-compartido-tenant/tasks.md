@@ -39,7 +39,7 @@
 ## 6. Cierre del change
 
 - [x] 6.1 `./gradlew test` completo en verde, cobertura ≥ 80 % en `compartido.domain` y `compartido.application`, y `npm run api:types` sin diferencias (verificación: salida de CI del PR)
-- [ ] 6.2 Pasar el PR de borrador a listo con evidencia (tests y cobertura) y pedir revisión a Maxi y revisión técnica a Mati (verificación: PR con ambos revisores asignados)
+- [x] 6.2 Pasar el PR de borrador a listo con evidencia (tests y cobertura) y pedir revisión a Maxi y revisión técnica a Mati (verificación: PR con ambos revisores asignados)
 
 ## Workflow follow-up
 

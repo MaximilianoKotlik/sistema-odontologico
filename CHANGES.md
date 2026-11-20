@@ -160,7 +160,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-01, DD-02, DD-04, DD-05
   - `knowledge-base/02_descripcion_general.md`
 
-### [C-02] `core-compartido-tenant`
+- **Estado**: `[x]` completado (PR #12, 2026-11-20)
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - Migración V1: tabla `consultorio` (slug, zona horaria, anticipaciones, plan/`prueba_hasta`, `reserva_publica_activa`) con constraints; extensiones `btree_gist`, `citext`; generador UUIDv7.
