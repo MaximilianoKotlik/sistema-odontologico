@@ -117,6 +117,6 @@ El proveedor, como encargado, debe asistir al odontólogo para responder en plaz
 | LG-05 | Auditoría de cambios con autor y fecha | [RN-AD-*](05_reglas_de_negocio.md) |
 | LG-06 | Portabilidad y devolución de datos al terminar el servicio | Exportación completa ([RN-EX-*](05_reglas_de_negocio.md)) |
 | LG-07 | Medidas de seguridad acordes a datos sensibles | [08 §Seguridad](08_arquitectura_propuesta.md#seguridad) |
-| LG-08 | Retención y destrucción definidas | **Suposición:** turnos y auditoría se conservan mientras la cuenta esté activa; tras la baja, 30 días para exportar y luego borrado, salvo obligación legal ([PA-07](10_preguntas_abiertas.md)) |
+| LG-08 | Retención y destrucción definidas | Decisión del usuario ([DD-29](09_decisiones_y_supuestos.md)): tras la baja la cuenta queda desactivada y los datos se conservan; **la revisión legal (DD-28) debe validar o fijar un plazo** |
 | LG-09 | Residencia de datos / transferencia internacional evaluada antes de hostear | [PA-02](10_preguntas_abiertas.md) |
 | LG-10 | No declarar certificaciones ni "cumplimiento total" sin revisión profesional | Landing, precios y privacidad |
