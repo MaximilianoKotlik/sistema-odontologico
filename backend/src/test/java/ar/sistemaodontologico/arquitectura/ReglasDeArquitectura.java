@@ -111,6 +111,20 @@ public final class ReglasDeArquitectura {
                 .allowEmptyShould(true);
     }
 
+    /**
+     * Los módulos auditan solo por el puerto {@code PublicadorDeAuditoria} de {@code compartido}: ninguna clase
+     * fuera de {@code auditoria} depende del módulo de auditoría (C-03, design D-3).
+     */
+    public static ArchRule auditoriaSoloPorElPuerto(String paqueteRaiz) {
+        String auditoria = paqueteRaiz + ".auditoria..";
+        return noClasses()
+                .that().resideInAPackage(paqueteRaiz + "..")
+                .and().resideOutsideOfPackage(auditoria)
+                .should().dependOnClassesThat().resideInAPackage(auditoria)
+                .as("ningún módulo fuera de auditoria depende de auditoria: se audita por el puerto de compartido")
+                .allowEmptyShould(true);
+    }
+
     /** Ningún módulo usa clases de la capa {@code infrastructure} de otro módulo. */
     public static ArchRule infraestructuraPrivadaDelModulo(String paqueteRaiz) {
         return classes()

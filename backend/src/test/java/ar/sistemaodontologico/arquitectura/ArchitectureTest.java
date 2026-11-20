@@ -20,6 +20,9 @@ class ArchitectureTest {
     @ArchTest
     static final ArchRule horaSoloDesdeElClock = ReglasDeArquitectura.horaSoloDesdeElClock();
 
+    @ArchTest
+    static final ArchRule auditoriaSoloPorElPuerto = ReglasDeArquitectura.auditoriaSoloPorElPuerto(RAIZ);
+
     /**
      * Excepciones a "repositorios siempre con tenant" (C-02, design D9). Cada una cita su decisión; agregar
      * otra requiere aprobación en el PR.

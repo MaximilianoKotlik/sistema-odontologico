@@ -96,6 +96,18 @@ class ReglasDeArquitecturaTest {
     }
 
     @Test
+    void usarElModuloDeAuditoriaDesdeOtroModuloViolaLaRegla() {
+        EvaluationResult resultado =
+                ReglasDeArquitectura.auditoriaSoloPorElPuerto(RAIZ_FIXTURES).evaluate(fixtures);
+
+        assertThat(resultado.hasViolation()).isTrue();
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("ServicioQueAuditaDirecto")
+                        && detalle.contains("RegistroDirectoDePrueba"))
+                .noneMatch(detalle -> detalle.contains("ValidadorInternoDePrueba"));
+    }
+
+    @Test
     void usarLaInfraestructuraDeOtroModuloViolaLaRegla() {
         EvaluationResult resultado =
                 ReglasDeArquitectura.infraestructuraPrivadaDelModulo(RAIZ_FIXTURES).evaluate(fixtures);
