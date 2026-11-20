@@ -23,6 +23,10 @@ Un email inexistente o una contraseña incorrecta MUST responder 401 `CREDENCIAL
 - **WHEN** se compara el login con contraseña incorrecta y el login con un email no registrado
 - **THEN** ambos responden 401 con código `CREDENCIALES_INVALIDAS` y el mismo `title` y `detail`
 
+#### Scenario: Contraseña de más de 72 bytes en el login
+- **WHEN** se hace login con una contraseña de más de 72 bytes, para un email existente o inexistente
+- **THEN** la respuesta es 401 con código `CREDENCIALES_INVALIDAS`, nunca 500
+
 ### Requirement: Cookie de refresh protegida
 La cookie de refresh MUST ser `HttpOnly`, `Secure`, `SameSite=Strict`, con `Path=/api/v1/auth` y `Max-Age` de 14 días; su valor MUST ser aleatorio de al menos 256 bits y la base MUST guardar solo su hash SHA-256.
 

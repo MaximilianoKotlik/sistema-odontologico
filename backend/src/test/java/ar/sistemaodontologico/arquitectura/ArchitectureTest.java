@@ -28,9 +28,16 @@ class ArchitectureTest {
      * otra requiere aprobación en el PR.
      * <ul>
      *   <li>{@code ConsultorioRepositorio}: es la raíz del tenant; se busca por su propio id o por slug.</li>
+     *   <li>{@code UsuarioRepositorio.buscarPorEmail}: el login todavía no tiene tenant y el email es único en todo
+     *       el sistema (RN-TE-02; C-04, design D9).</li>
+     *   <li>{@code RefreshTokenRepositorio.buscarPorHashParaActualizar}: el refresh llega sin access token; el hash de 256 bits
+     *       es la credencial misma (C-04, design D9).</li>
      * </ul>
      */
-    static final java.util.Set<String> REPOSITORIOS_EXCEPTUADOS = java.util.Set.of("ConsultorioRepositorio");
+    static final java.util.Set<String> REPOSITORIOS_EXCEPTUADOS = java.util.Set.of(
+            "ConsultorioRepositorio",
+            "UsuarioRepositorio.buscarPorEmail",
+            "RefreshTokenRepositorio.buscarPorHashParaActualizar");
 
     @ArchTest
     static final ArchRule repositoriosSiempreConTenant =
