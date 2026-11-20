@@ -1,6 +1,6 @@
 {
   "version": 5,
-  "step": "registry",
+  "step": "done",
   "owner": "active-orchestrator",
   "discovery": {
     "created_by": "discovery-research",
@@ -395,5 +395,30 @@
   "registry": {
     "created_by": "skill-registry",
     "file": ".atl/skill-registry.md"
+  },
+  "agents": {
+    "created_by": "agent-instruction",
+    "files": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ],
+    "reglas_applied": [
+      "strict-tdd",
+      "no-main-sin-pedido-rama-por-change",
+      "conventional-commits-es",
+      "sin-coauthored-by-ia",
+      "flyway-sin-ddl-auto-ni-editar-migraciones",
+      "aislamiento-consultorio-id",
+      "auditoria-en-misma-transaccion",
+      "testcontainers-postgres-sin-h2",
+      "ts-strict-sin-any-sin-frameworks",
+      "tokens-design-system",
+      "ui-es-ar-voseo-ars",
+      "accesibilidad-aa",
+      "sin-alcance-fuera-de-v1",
+      "timestamptz-instant-utc",
+      "numeric-bigdecimal-precios",
+      "resolver-PA-IN-antes-de-implementar"
+    ]
   }
 }
