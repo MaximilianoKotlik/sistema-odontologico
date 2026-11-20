@@ -10,17 +10,14 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static pruebas.seguridad.ClienteDeAuth.CONTRASENA;
 
-import ar.sistemaodontologico.auth.application.EnviadorDeEmails;
 import ar.sistemaodontologico.auth.application.EnvioDeEmailFallido;
 import ar.sistemaodontologico.auth.domain.HashDeToken;
-import ar.sistemaodontologico.compartido.IntegracionPostgresTest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,21 +25,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import pruebas.reloj.ConfiguracionDeRelojDePrueba;
-import pruebas.reloj.RelojDePrueba;
 import pruebas.seguridad.ClienteDeAuth;
-import pruebas.seguridad.ControladorPrivadoDePrueba;
 
 /** C-05, spec recuperacion-contrasena (tareas 3.3 a 3.7). El envío real por SMTP lo prueba EnviadorDeEmailsSmtpTest. */
-@Import({ConfiguracionDeRelojDePrueba.class, ControladorPrivadoDePrueba.class})
 @ExtendWith(OutputCaptureExtension.class)
-class RecuperacionDeContrasenaTest extends IntegracionPostgresTest {
+class RecuperacionDeContrasenaTest extends IntegracionDeAuthTest {
 
     private static final String NUEVA = "otra-clave-nueva";
     private static final String SOLICITUD = "/api/v1/auth/recuperacion";
@@ -50,26 +40,10 @@ class RecuperacionDeContrasenaTest extends IntegracionPostgresTest {
     private static final Duration ESPERA_DEL_EMAIL = Duration.ofSeconds(5);
 
     @Autowired
-    private TestRestTemplate http;
-
-    @Autowired
     private JdbcTemplate jdbc;
 
     @Autowired
     private ObjectMapper json;
-
-    @Autowired
-    private RelojDePrueba reloj;
-
-    @MockitoBean
-    private EnviadorDeEmails enviador;
-
-    private ClienteDeAuth auth;
-
-    @BeforeEach
-    void cliente() {
-        auth = new ClienteDeAuth(http, ORIGEN_FRONTEND);
-    }
 
     // Scenario: Email registrado
     @Test

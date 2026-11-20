@@ -3,44 +3,28 @@ package ar.sistemaodontologico.auth.web;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pruebas.seguridad.ClienteDeAuth.CONTRASENA;
 
-import ar.sistemaodontologico.compartido.IntegracionPostgresTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import pruebas.seguridad.ClienteDeAuth;
-import pruebas.seguridad.ControladorPrivadoDePrueba;
 
 /** C-05, spec sesion-odontologo: cambio de contraseña con sesión iniciada (US-005, tareas 4.1 a 4.3). */
-@Import(ControladorPrivadoDePrueba.class)
-class CambioDeContrasenaTest extends IntegracionPostgresTest {
+class CambioDeContrasenaTest extends IntegracionDeAuthTest {
 
     private static final String RUTA = "/api/v1/auth/cambiar-password";
     private static final String NUEVA = "otra-clave-nueva";
-
-    @Autowired
-    private TestRestTemplate http;
 
     @Autowired
     private JdbcTemplate jdbc;
 
     @Autowired
     private ObjectMapper json;
-
-    private ClienteDeAuth auth;
-
-    @BeforeEach
-    void cliente() {
-        auth = new ClienteDeAuth(http, ORIGEN_FRONTEND);
-    }
 
     // Scenario: Cambio exitoso
     @Test

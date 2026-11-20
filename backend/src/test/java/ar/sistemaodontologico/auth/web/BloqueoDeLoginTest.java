@@ -3,7 +3,6 @@ package ar.sistemaodontologico.auth.web;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pruebas.seguridad.ClienteDeAuth.CONTRASENA;
 
-import ar.sistemaodontologico.compartido.IntegracionPostgresTest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
@@ -14,43 +13,24 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import pruebas.reloj.ConfiguracionDeRelojDePrueba;
-import pruebas.reloj.RelojDePrueba;
 import pruebas.seguridad.ClienteDeAuth;
 
 /** C-05, spec sesion-odontologo: bloqueo tras 5 fallos y auditoría de logins (tareas 1.2 a 1.5). */
-@Import(ConfiguracionDeRelojDePrueba.class)
-class BloqueoDeLoginTest extends IntegracionPostgresTest {
+class BloqueoDeLoginTest extends IntegracionDeAuthTest {
 
     private static final String INCORRECTA = "otra-clave-larga";
-
-    @Autowired
-    private TestRestTemplate http;
 
     @Autowired
     private JdbcTemplate jdbc;
 
     @Autowired
     private ObjectMapper json;
-
-    @Autowired
-    private RelojDePrueba reloj;
-
-    private ClienteDeAuth auth;
-
-    @BeforeEach
-    void cliente() {
-        auth = new ClienteDeAuth(http, ORIGEN_FRONTEND);
-    }
 
     // Scenario: Sexto intento con la contraseña correcta
     @Test

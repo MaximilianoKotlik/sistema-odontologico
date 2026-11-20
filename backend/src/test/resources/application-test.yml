@@ -1,5 +1,13 @@
 # Perfil de tests: la base la provee Testcontainers (IntegracionPostgresTest).
 
+# Cada configuración de test distinta levanta su propio contexto de Spring (y su pool) contra el mismo PostgreSQL:
+# un pool chico evita agotar max_connections cuando la suite tiene varios contextos en caché.
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+
 # Límites de solicitudes (C-05, design D8). Toda la suite comparte un limitador y la IP 127.0.0.1, así que los
 # límites por IP son altos para no interferir con los demás tests; los de rate limit usan su propio contexto con
 # límites bajos. Los límites por email y por usuario quedan bajos: cada test usa cuentas propias.
