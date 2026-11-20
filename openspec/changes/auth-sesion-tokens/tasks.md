@@ -46,7 +46,7 @@
 
 - [x] 7.1 `./gradlew test` completo en verde, cobertura ≥ 80 % en `auth.domain` y `auth.application`, `npm run api:types` regenerado y commiteado (verificación: CI del PR)
 - [x] 7.2 Revisar que ningún log, respuesta o test imprima contraseñas, hashes ni tokens (verificación: búsqueda en los logs de los tests y revisión en el PR)
-- [ ] 7.3 Pasar el PR a listo con evidencia, pedir revisión a Maxi (aprobación humana obligatoria en `auth`) y revisión técnica a Mati; avisar a Nacho del contrato para C-07 (verificación: PR con revisores asignados)
+- [x] 7.3 Pasar el PR a listo con evidencia, pedir revisión a Maxi (aprobación humana obligatoria en `auth`) y revisión técnica a Mati; avisar a Nacho del contrato para C-07 (verificación: PR con revisores asignados)
 
 ## Workflow follow-up
 
