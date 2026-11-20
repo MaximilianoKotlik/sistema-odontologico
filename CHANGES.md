@@ -522,7 +522,7 @@ Reglas de coordinación del paralelismo:
   - Revisión de seguridad: CSP/cabeceras, rate limits, enmascarado de PII en logs, ausencia de tokens en `Referer`/caché, secretos solo por entorno; aislamiento entre tenants en toda la API; matriz completa de escrituras bloqueadas en plan `VENCIDO` (incluidos los endpoints de C-17).
   - Revisión de `/seguridad` contra el código (RN-PL-06) antes del release.
   - Seed local completo para demo; README de arranque (`docker compose up --build`); textos de privacidad y términos como borrador marcado "pendiente de revisión legal" (PA-06), sin declarar cumplimiento no verificado.
-  - Checklist previo al piloto (PA-02 hosting, PA-06 asesoría legal, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
+  - Checklist previo al lanzamiento (PA-02 país del VPS y backups, revisión legal de DD-28, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
 - **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
 - **Leer antes**:
