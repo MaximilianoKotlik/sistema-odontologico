@@ -23,29 +23,29 @@
 
 ## 4. Sesión
 
-- [ ] 4.1 Emisión del access token con Nimbus: claims `sub`, `cid`, `iat`, `exp` (+15 min con el `Clock`) y `ver`, firma HS256 (verificación: test que decodifica el token y verifica los claims)
-- [ ] 4.2 `POST /api/v1/auth/login`: 200 con `accessToken`/`expiraEn` y cookie con todos sus atributos; 401 `CREDENCIALES_INVALIDAS` idéntico para email inexistente y contraseña incorrecta, con hash ficticio para igualar tiempos (verificación: escenarios "Login exitoso", "Fallo de login genérico" y "Atributos de la cookie")
-- [ ] 4.3 `RenovarSesion`: rotación con `FOR UPDATE`, detección de reuso que revoca todo, vencido o desconocido → 401 `SESION_EXPIRADA` con la cookie borrada, solo el hash en la base (verificación: escenarios de rotación, reuso y "Refresh solo como hash", más un test de dos refresh concurrentes del mismo token)
-- [ ] 4.4 `POST /api/v1/auth/logout` con y sin cookie (verificación: escenarios de "Logout")
-- [ ] 4.5 Filtro de origen en refresh y logout (verificación: escenario "Refresh desde otro sitio" y un test con `Origin: http://localhost:5173` igual a `APP_FRONTEND_ORIGIN`, el caso del proxy de Vite)
+- [x] 4.1 Emisión del access token con Nimbus: claims `sub`, `cid`, `iat`, `exp` (+15 min con el `Clock`) y `ver`, firma HS256 (verificación: test que decodifica el token y verifica los claims)
+- [x] 4.2 `POST /api/v1/auth/login`: 200 con `accessToken`/`expiraEn` y cookie con todos sus atributos; 401 `CREDENCIALES_INVALIDAS` idéntico para email inexistente y contraseña incorrecta, con hash ficticio para igualar tiempos (verificación: escenarios "Login exitoso", "Fallo de login genérico" y "Atributos de la cookie")
+- [x] 4.3 `RenovarSesion`: rotación con `FOR UPDATE`, detección de reuso que revoca todo, vencido o desconocido → 401 `SESION_EXPIRADA` con la cookie borrada, solo el hash en la base (verificación: escenarios de rotación, reuso y "Refresh solo como hash", más un test de dos refresh concurrentes del mismo token)
+- [x] 4.4 `POST /api/v1/auth/logout` con y sin cookie (verificación: escenarios de "Logout")
+- [x] 4.5 Filtro de origen en refresh y logout (verificación: escenario "Refresh desde otro sitio" y un test con `Origin: http://localhost:5173` igual a `APP_FRONTEND_ORIGIN`, el caso del proxy de Vite)
 
 ## 5. Rutas privadas y tenant
 
 - [x] 5.1 `SecurityConfig` stateless con las rutas públicas de D14 (`/api/v1/auth/*`, `/api/v1/public/**`, `/actuator/health`, `/v3/api-docs/**` y Swagger solo en `local`) y el resto autenticado; entry point en Problem Details 401 `NO_AUTENTICADO` para token ausente, vencido, mal firmado, con `alg` distinto o malformado (verificación: escenarios de "Rutas privadas por defecto", y `SaludDelBackendTest`, `ContratoOpenApiTest` y `SwaggerUiLocalTest` de C-01 en verde **sin modificarlos**)
 - [x] 5.2 Establecer el `TenantContext` desde `cid` y validar `ver` contra `credenciales_version` (verificación: escenario "Credenciales cambiadas" y test con el controlador de prueba de C-02: un recurso de otro consultorio con un JWT válido da 404)
-- [ ] 5.3 Ampliar `repositoriosSiempreConTenant` para eximir métodos puntuales y documentar `UsuarioRepositorio.buscarPorEmail` y `RefreshTokenRepositorio.buscarPorHash` en `REPOSITORIOS_EXCEPTUADOS` (verificación: test con fixtures en `pruebas.arquitectura` donde la excepción de un método no cubre a otro método sin tenant de la misma clase; `ArchitectureTest` verde)
+- [x] 5.3 Ampliar `repositoriosSiempreConTenant` para eximir métodos puntuales y documentar `UsuarioRepositorio.buscarPorEmail` y `RefreshTokenRepositorio.buscarPorHash` en `REPOSITORIOS_EXCEPTUADOS` (verificación: test con fixtures en `pruebas.arquitectura` donde la excepción de un método no cubre a otro método sin tenant de la misma clase; `ArchitectureTest` verde)
 - [x] 5.4 Adaptar los tests de C-02 a la seguridad: `CompartidoAislamientoTest` usa un JWT real en lugar de `FiltroDeTenantDePrueba` (que se elimina) y `ManejadorGlobalDeErroresTest` desactiva los filtros de seguridad (verificación: los mismos escenarios siguen en verde y el 404 entre consultorios se prueba con autenticación real)
 
 ## 6. Cabeceras y CORS
 
-- [ ] 6.1 Cabeceras CSP, nosniff, Referrer-Policy y HSTS fuera de `local` (verificación: escenarios de "Cabeceras de seguridad" con ambos perfiles)
-- [ ] 6.2 Verificar Swagger UI con la CSP en el perfil `local`; si se rompe, relajar la CSP solo para `/swagger-ui/**` y solo en `local` (verificación: `/swagger-ui.html` carga sin errores de CSP en la consola del navegador, y el perfil por defecto mantiene `default-src 'self'`)
-- [ ] 6.3 CORS solo para `APP_FRONTEND_ORIGIN` con credenciales (verificación: escenarios de "CORS restringido al frontend")
+- [x] 6.1 Cabeceras CSP, nosniff, Referrer-Policy y HSTS fuera de `local` (verificación: escenarios de "Cabeceras de seguridad" con ambos perfiles)
+- [x] 6.2 Verificar Swagger UI con la CSP en el perfil `local`; si se rompe, relajar la CSP solo para `/swagger-ui/**` y solo en `local` (verificación: `/swagger-ui.html` carga sin errores de CSP en la consola del navegador, y el perfil por defecto mantiene `default-src 'self'`)
+- [x] 6.3 CORS solo para `APP_FRONTEND_ORIGIN` con credenciales (verificación: escenarios de "CORS restringido al frontend")
 
 ## 7. Cierre del change
 
-- [ ] 7.1 `./gradlew test` completo en verde, cobertura ≥ 80 % en `auth.domain` y `auth.application`, `npm run api:types` regenerado y commiteado (verificación: CI del PR)
-- [ ] 7.2 Revisar que ningún log, respuesta o test imprima contraseñas, hashes ni tokens (verificación: búsqueda en los logs de los tests y revisión en el PR)
+- [x] 7.1 `./gradlew test` completo en verde, cobertura ≥ 80 % en `auth.domain` y `auth.application`, `npm run api:types` regenerado y commiteado (verificación: CI del PR)
+- [x] 7.2 Revisar que ningún log, respuesta o test imprima contraseñas, hashes ni tokens (verificación: búsqueda en los logs de los tests y revisión en el PR)
 - [ ] 7.3 Pasar el PR a listo con evidencia, pedir revisión a Maxi (aprobación humana obligatoria en `auth`) y revisión técnica a Mati; avisar a Nacho del contrato para C-07 (verificación: PR con revisores asignados)
 
 ## Workflow follow-up

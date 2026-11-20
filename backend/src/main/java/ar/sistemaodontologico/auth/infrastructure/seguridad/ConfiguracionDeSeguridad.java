@@ -18,6 +18,7 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /**
  * Cadena de seguridad stateless (C-04, spec seguridad-http, design D14): solo las rutas listadas son públicas y
@@ -34,9 +35,33 @@ class ConfiguracionDeSeguridad {
 
     private static final long UN_ANIO_EN_SEGUNDOS = 31_536_000L;
 
+    /**
+     * Solo con el perfil {@code local} (design D14, tarea 6.2): Swagger UI aplica estilos inline y usa íconos
+     * {@code data:}, que {@code default-src 'self'} bloquea. Esta cadena relaja la CSP únicamente para sus rutas;
+     * los scripts siguen limitados a {@code 'self'}. Fuera de local la cadena no existe y Swagger responde 404.
+     */
     @Bean
+    @org.springframework.core.annotation.Order(1)
+    @org.springframework.context.annotation.Profile("local")
+    SecurityFilterChain cadenaDeSwaggerLocal(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/swagger-ui.html", "/swagger-ui/**")
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sesion -> sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .headers(cabeceras -> {
+                    cabeceras.contentSecurityPolicy(csp -> csp.policyDirectives(
+                            "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"));
+                    cabeceras.referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.NO_REFERRER));
+                    cabeceras.httpStrictTransportSecurity(hsts -> hsts.disable());
+                })
+                .authorizeHttpRequests(rutas -> rutas.anyRequest().permitAll());
+        return http.build();
+    }
+
+    @Bean
+    @org.springframework.core.annotation.Order(2)
     SecurityFilterChain cadenaDeSeguridad(HttpSecurity http, Environment entorno, TenantContext tenant,
-            RespuestasDeSeguridad respuestas) throws Exception {
+            RespuestasDeSeguridad respuestas, PropiedadesDeAuth propiedades) throws Exception {
         boolean local = entorno.acceptsProfiles(Profiles.of("local"));
         http
                 .csrf(csrf -> csrf.disable())
@@ -72,13 +97,17 @@ class ConfiguracionDeSeguridad {
                 .exceptionHandling(errores -> errores
                         .authenticationEntryPoint(respuestas.noAutenticado())
                         .accessDeniedHandler(respuestas.accesoDenegado()))
+                // Antes que CORS: un origen ajeno en refresh/logout tiene que responder ORIGEN_NO_PERMITIDO en
+                // Problem Details, no el 403 vacío del CorsFilter.
+                .addFilterBefore(new FiltroDeOrigenDeSesion(propiedades.frontendOrigin(), respuestas), CorsFilter.class)
                 .addFilterAfter(new FiltroDeConsultorioDeSesion(tenant), BearerTokenAuthenticationFilter.class);
         return http.build();
     }
 
-    /** CORS solo para el frontend propio, con credenciales para la cookie de refresh (spec seguridad-http). */
+    /** CORS solo para el frontend propio, con credenciales para la cookie de refresh (spec seguridad-http).
+     *  Spring Security lo encuentra por el nombre de bean {@code corsConfigurationSource}. */
     @Bean
-    CorsConfigurationSource origenesPermitidos(PropiedadesDeAuth propiedades) {
+    CorsConfigurationSource corsConfigurationSource(PropiedadesDeAuth propiedades) {
         CorsConfiguration cors = new CorsConfiguration();
         cors.setAllowedOrigins(List.of(propiedades.frontendOrigin()));
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

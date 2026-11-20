@@ -82,8 +82,8 @@
 
 ### D9 — Excepciones a la regla ArchUnit de tenant
 - `UsuarioRepositorio.buscarPorEmail(email)`: el login todavía no tiene tenant. El email es único global (RN-TE-02).
-- `RefreshTokenRepositorio.buscarPorHash(hash)`: el refresh llega sin access token. El hash de 256 bits es la credencial misma.
-- La regla de C-02 (`repositoriosSiempreConTenant`) hoy solo exime **clases enteras** por nombre (`ConsultorioRepositorio`). Eximir `UsuarioRepositorio` completo dejaría pasar cualquier método nuevo sin tenant, así que la regla se amplía para aceptar excepciones por método (`"UsuarioRepositorio.buscarPorEmail"`, `"RefreshTokenRepositorio.buscarPorHash"`). Un test con fixtures verifica que la excepción cubre solo ese método.
+- `RefreshTokenRepositorio.buscarPorHashParaActualizar(hash)` (con `FOR UPDATE`, D4): el refresh llega sin access token. El hash de 256 bits es la credencial misma.
+- La regla de C-02 (`repositoriosSiempreConTenant`) hoy solo exime **clases enteras** por nombre (`ConsultorioRepositorio`). Eximir `UsuarioRepositorio` completo dejaría pasar cualquier método nuevo sin tenant, así que la regla se amplía para aceptar excepciones por método (`"UsuarioRepositorio.buscarPorEmail"`, `"RefreshTokenRepositorio.buscarPorHashParaActualizar"`). La excepción vale para la clase nombrada y sus implementaciones (por prefijo del nombre, por ejemplo `UsuarioRepositorioJdbc`). Un test con fixtures verifica que la excepción cubre solo ese método.
 - Ambas quedan en la lista explícita `REPOSITORIOS_EXCEPTUADOS` de `ArchitectureTest`, con un comentario que cita esta decisión. Cualquier otra excepción necesita aprobación en un PR.
 
 ### D10 — Chequeo de origen en refresh y logout (defensa contra CSRF)
@@ -113,7 +113,7 @@
 ### D13 — Estructura del módulo
 - `auth.domain`: `Usuario`, `PoliticaDeContrasena`, `RefreshToken` (reglas puras: vigente, revocado, vencido).
 - `auth.application`: `RegistrarOdontologo`, `IniciarSesion`, `RenovarSesion`, `CerrarSesion`, puertos `EmisorDeAccessToken`, `HasheadorDeContrasena`, `GeneradorDeSecretos`.
-- `auth.infrastructure`: JPA, Nimbus, BCrypt, `SecurityConfig`.
+- `auth.infrastructure`: persistencia con `JdbcClient` (no JPA: son inserciones y lecturas puntuales, sin mapear `CITEXT` ni las columnas de C-02 en una entidad), Nimbus, BCrypt, `SecurityConfig`.
 - `auth.web`: controladores, DTOs y la cookie.
 - **El consultorio no es de `auth`**: `Consultorio`, `ConsultorioRepositorio`, `AltaDeConsultorio` y `AsignadorDeSlugUnico` (D6) viven en el módulo `consultorio`. El registro los usa por su capa `application`, y C-08 los extiende (acordado en el D1 de C-08, #15).
 
@@ -124,6 +124,8 @@
   - las rutas técnicas de C-01: `/actuator/health`, `/v3/api-docs/**` y, solo con el perfil `local`, `/swagger-ui.html` y `/swagger-ui/**`. Sin esto se rompen el healthcheck de Docker Compose, el contrato que consume el CI del frontend y los tests de C-01 (revisión de #8, ajuste 1).
 - **Verificación**: `SaludDelBackendTest`, `ContratoOpenApiTest` y `SwaggerUiLocalTest` (C-01) siguen en verde **sin modificarlos**.
 - **CSP y Swagger UI**: `default-src 'self'` puede bloquear los estilos y scripts inline de Swagger UI. Se verifica que `/swagger-ui.html` funcione con el perfil `local`; si no, se relaja la CSP **solo para `/swagger-ui/**` y solo en `local`**, nunca en el perfil por defecto (revisión de #8, ajuste 6).
+  - **Resultado de la verificación (2026-11-20)**: con `default-src 'self'`, Chrome bloqueaba estilos inline e íconos `data:` de Swagger UI. Se agregó una cadena de seguridad aparte (`@Profile("local")`, `@Order(1)`) solo para `/swagger-ui.html` y `/swagger-ui/**`, con `style-src 'self' 'unsafe-inline'; img-src 'self' data:`. Los scripts siguen limitados a `'self'`. Con ese cambio, la consola del navegador queda sin errores.
+  - Las rutas de Swagger son públicas en todos los perfiles: fuera de `local` springdoc las tiene apagadas y responden 404, que es lo que espera `ContratoOpenApiTest` (C-01).
 
 ## Risks / Trade-offs
 

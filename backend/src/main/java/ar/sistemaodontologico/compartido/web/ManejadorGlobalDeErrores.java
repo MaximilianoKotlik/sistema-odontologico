@@ -68,6 +68,7 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
     ResponseEntity<Object> errorDeNegocio(ErrorDeNegocio error, WebRequest peticion) {
         HttpStatus estado = switch (error.getTipo()) {
             case VALIDACION -> HttpStatus.BAD_REQUEST;
+            case NO_AUTENTICADO -> HttpStatus.UNAUTHORIZED;
             case NO_ENCONTRADO -> HttpStatus.NOT_FOUND;
             case CONFLICTO -> HttpStatus.CONFLICT;
         };

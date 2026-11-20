@@ -51,6 +51,18 @@ class ReglasDeArquitecturaTest {
     }
 
     @Test
+    void laExcepcionDeUnMetodoNoCubreAOtrosMetodosDeLaMismaClase() {
+        EvaluationResult resultado = ReglasDeArquitectura
+                .repositoriosSiempreConTenant(java.util.Set.of("ConsultorioRepositorio", "TurnoConExcepcionRepositorio.buscarPorCodigo"))
+                .evaluate(fixturesDeRepositorios);
+
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("TurnoConExcepcionRepositorio.buscarPorFecha"))
+                .anyMatch(detalle -> detalle.contains("TurnoConExcepcionRepositorioJdbc.buscarPorFecha"))
+                .noneMatch(detalle -> detalle.contains("buscarPorCodigo"));
+    }
+
+    @Test
     void usarSpringDataFueraDeLaInfraestructuraViolaLaRegla() {
         EvaluationResult resultado = ReglasDeArquitectura.springDataSoloEnInfraestructura().evaluate(fixturesDeRepositorios);
 

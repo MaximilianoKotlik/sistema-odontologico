@@ -28,6 +28,17 @@ class ConfiguracionJwt {
     }
 
     @Bean
+    ar.sistemaodontologico.auth.application.VigenciasDeSesion vigenciasDeSesion(PropiedadesDeAuth propiedades) {
+        return new ar.sistemaodontologico.auth.application.VigenciasDeSesion(propiedades.accessTtl(), propiedades.refreshTtl());
+    }
+
+    @Bean
+    ar.sistemaodontologico.auth.application.EmisorDeAccessToken emisorDeAccessToken(JwtEncoder encoder, Clock reloj,
+            PropiedadesDeAuth propiedades) {
+        return new EmisorDeAccessTokenNimbus(encoder, reloj, propiedades.accessTtl());
+    }
+
+    @Bean
     SecretKey claveJwt(PropiedadesDeAuth propiedades) {
         return new SecretKeySpec(propiedades.claveJwt(), "HmacSHA256");
     }

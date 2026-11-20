@@ -126,11 +126,12 @@ class SeguridadHttpTest extends IntegracionPostgresTest {
     }
 
     @Test
-    void lasRutasPublicasNoPidenToken() {
+    void lasRutasPublicasNoPidenToken() throws Exception {
         assertThat(http.getForEntity("/actuator/health", String.class).getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(http.getForEntity("/v3/api-docs", String.class).getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(http.postForEntity("/api/v1/auth/login", jsonVacio(), String.class).getStatusCode())
-                .isNotEqualTo(HttpStatus.UNAUTHORIZED);
+        // El login procesa el pedido (y lo rechaza por credenciales), en lugar de cortarlo la seguridad.
+        ResponseEntity<String> login = http.postForEntity("/api/v1/auth/login", jsonVacio(), String.class);
+        assertThat(json.readTree(login.getBody()).path("codigo").asText()).isEqualTo("CREDENCIALES_INVALIDAS");
     }
 
     @Test

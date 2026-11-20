@@ -50,18 +50,34 @@ public final class ReglasDeArquitectura {
         return new ArchCondition<>("recibir ConsultorioId en todo método de consulta") {
             @Override
             public void check(JavaClass clase, ConditionEvents eventos) {
-                if (exceptuados.contains(clase.getSimpleName())) {
+                if (exceptuada(clase.getSimpleName(), null, exceptuados)) {
                     return;
                 }
                 clase.getMethods().stream()
                         .filter(metodo -> metodo.getModifiers().contains(com.tngtech.archunit.core.domain.JavaModifier.PUBLIC))
                         .filter(metodo -> PREFIJOS_DE_CONSULTA.stream().anyMatch(metodo.getName()::startsWith))
+                        .filter(metodo -> !exceptuada(clase.getSimpleName(), metodo.getName(), exceptuados))
                         .filter(metodo -> metodo.getRawParameterTypes().stream()
                                 .noneMatch(tipo -> tipo.getFullName().equals(CONSULTORIO_ID)))
                         .forEach(metodo -> eventos.add(SimpleConditionEvent.violated(metodo,
                                 clase.getSimpleName() + "." + metodo.getName() + " no recibe ConsultorioId")));
             }
         };
+    }
+
+    /**
+     * Una excepción es {@code "Clase"} (toda la clase) o {@code "Clase.metodo"} (solo ese método). Se aplica a la
+     * clase nombrada y a las que empiezan con ese nombre (sus implementaciones, como {@code ...RepositorioJdbc}).
+     */
+    private static boolean exceptuada(String clase, String metodo, java.util.Set<String> exceptuados) {
+        return exceptuados.stream().anyMatch(excepcion -> {
+            int punto = excepcion.indexOf('.');
+            String claseExceptuada = punto < 0 ? excepcion : excepcion.substring(0, punto);
+            if (!clase.startsWith(claseExceptuada)) {
+                return false;
+            }
+            return punto < 0 || (metodo != null && metodo.equals(excepcion.substring(punto + 1)));
+        });
     }
 
     /**
