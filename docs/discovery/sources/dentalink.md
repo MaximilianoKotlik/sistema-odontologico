@@ -27,4 +27,4 @@ Módulo específico para Argentina (obras sociales, conciliaciones, receta elect
 ## Notas del investigador
 Presencia en Argentina: Comprobado: el help center oficial tiene la colección 'Módulo exclusivo para Argentina' (4 artículos: crear obra social, recaudar pago con obras sociales, conciliaciones con obras sociales, receta electrónica) - https://ayuda.softwaredentalink.com/es/collections/19196578-modulo-exclusivo-para-argentina. La home no menciona Argentina entre los teléfonos de contacto. Facturación AFIP/ARCA: no evidenciada. Clientes en AR: No evidenciado.
 Limitaciones: Precios opacos; Argentina no aparece en la home; facturación fiscal AR y Mercado Pago no evidenciados; cifras sin metodología.
-Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver discovery/research/dentalink.md.
+Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver docs/discovery/research/dentalink.md.

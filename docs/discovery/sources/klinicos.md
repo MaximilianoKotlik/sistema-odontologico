@@ -27,4 +27,4 @@ Precio publicado y bajo, WhatsApp automático incluido en plan básico, odontogr
 ## Notas del investigador
 Presencia en Argentina: No evidenciado (producto 'hecho en Uruguay, para Uruguay'; sin mención de Argentina).
 Limitaciones: Producto muy nuevo (anuncio de lanzamiento), sin clientes ni reseñas verificables, foco Uruguay, sin evidencia de facturación fiscal ni seguridad.
-Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver discovery/research/klinicos.md.
+Nota escrita manualmente con el esquema de 8 campos (sin invocar la skill). Ver docs/discovery/research/klinicos.md.

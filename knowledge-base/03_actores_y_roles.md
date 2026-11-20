@@ -1,6 +1,6 @@
 # Actores y Roles
 
-> Fuente: [`../discovery/discovery.md`](../discovery/discovery.md), punto 2. La v1 tiene **dos únicos
+> Fuente: [`../docs/discovery/discovery.md`](../docs/discovery/discovery.md), punto 2. La v1 tiene **dos únicos
 > actores humanos** y **no tiene roles ni permisos configurables**.
 
 ## Actores del sistema

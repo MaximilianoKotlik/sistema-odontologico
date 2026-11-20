@@ -1,6 +1,6 @@
 # Visión y Objetivos
 
-> Fuente: [`../discovery/discovery.md`](../discovery/discovery.md) (puntos 1, 2, 3, 5, 6 y 10). Fecha: 2026-11-16.
+> Fuente: [`../docs/discovery/discovery.md`](../docs/discovery/discovery.md) (puntos 1, 2, 3, 5, 6 y 10). Fecha: 2026-11-16.
 
 ## Propósito del sistema
 
@@ -12,7 +12,7 @@ papel, WhatsApp y sistemas sueltos. La visión de largo plazo es la gestión int
 en un solo lugar; la v1 arranca deliberadamente por la agenda, que es el dolor diario y el punto de
 entrada más barato de construir y de adoptar.
 
-El relevamiento de 30 sistemas (ver [informe competitivo](../discovery/informe-discovery.md))
+El relevamiento de 30 sistemas (ver [informe competitivo](../docs/discovery/informe-discovery.md))
 muestra que la agenda básica está resuelta por varios competidores (DentalSoft, AgendaPro, MedicAI,
 Dentalink, ClinIA; Bilog por declaración propia), pero que casi ninguno publica precios en el segmento dental, ofrece exportación
 completa de datos ni trazabilidad de cambios. La competencia real a desplazar es la combinación
@@ -97,4 +97,4 @@ hosting cloud productivo (ver [PA-02](10_preguntas_abiertas.md)), Supabase u otr
 | Solapamientos indebidos | Turnos no-sobreturno superpuestos en base | 0 (invariante cubierta por tests y constraint) | [RN-AG-01](05_reglas_de_negocio.md) |
 | Tiempo de reserva | Mediana desde abrir el link hasta confirmar | < 90 s en mobile | UX de la página pública |
 
-> **Hipótesis a validar:** las metas numéricas (incluido el ≥ 40 % de reservas por link) son tentativas, no tienen fuente de mercado y se recalibran tras el piloto con los primeros consultorios. Están registradas como hipótesis en [`discovery.md` §10](../discovery/discovery.md) (definidas al armar la KB, 2026-11-20).
+> **Hipótesis a validar:** las metas numéricas (incluido el ≥ 40 % de reservas por link) son tentativas, no tienen fuente de mercado y se recalibran tras el piloto con los primeros consultorios. Están registradas como hipótesis en [`discovery.md` §10](../docs/discovery/discovery.md) (definidas al armar la KB, 2026-11-20).

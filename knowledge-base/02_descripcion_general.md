@@ -73,7 +73,7 @@ Justificación de alto nivel:
 | Servicio | Propósito | Tipo | Estado v1 |
 |----------|-----------|------|-----------|
 | — | — | — | **Ninguna integración externa en v1** (decisión explícita, [DD-07](09_decisiones_y_supuestos.md)) |
-| Servidor SMTP | Email de recuperación de contraseña del odontólogo | SMTP | En local, **Mailpit** dentro de Compose (no sale a Internet). Proveedor real: abierto ([IN-01](10_preguntas_abiertas.md), [PA-04](10_preguntas_abiertas.md)) |
+| Servidor SMTP | Email de recuperación de contraseña del odontólogo | SMTP | En local, **Mailpit** dentro de Compose (no sale a Internet). Proveedor real: abierto ([PA-02](10_preguntas_abiertas.md)); SMTP como infraestructura según [DD-19](09_decisiones_y_supuestos.md) (resuelve IN-01) |
 | WhatsApp Business API | Recordatorios | REST | Diferido |
 | Mercado Pago | Señas y cobro de suscripción | REST + webhook | Diferido |
 | ARCA (ex AFIP) | Facturación electrónica | SOAP WS | Diferido |

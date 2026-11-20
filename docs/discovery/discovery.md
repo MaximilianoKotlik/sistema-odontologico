@@ -1,7 +1,7 @@
 # Discovery — Sistema de gestión para odontólogo independiente (Argentina)
 
 **Fecha**: 2026-11-16
-**Fuentes investigadas**: 30 sistemas relevados (26 verificables, 4 de baja confianza). Notas de esquema fijo en `discovery/sources/`, fichas detalladas por dimensión en `discovery/research/`, informe de cuatro secciones (tabla comparativa, matriz ponderada, análisis competitivo y recomendación) en `discovery/informe-discovery.md`.
+**Fuentes investigadas**: 30 sistemas relevados (26 verificables, 4 de baja confianza). Notas de esquema fijo en `docs/discovery/sources/`, fichas detalladas por dimensión en `docs/discovery/research/`, informe de cuatro secciones (tabla comparativa, matriz ponderada, análisis competitivo y recomendación) en `docs/discovery/informe-discovery.md`.
 
 ## 1. Problema que resuelve
 
@@ -73,7 +73,7 @@ inalterable, exportación completa y segundo factor).
 **Notas**: la evidencia es casi toda afirmación comercial de los proveedores;
 Capterra y G2 bloquearon el acceso a reseñas, y no se accedió a demos. Hoy el
 usuario objetivo resuelve esto con planilla, papel y WhatsApp, que son la
-competencia real a desplazar. Detalle completo en `discovery/informe-discovery.md`.
+competencia real a desplazar. Detalle completo en `docs/discovery/informe-discovery.md`.
 
 ## 5. Funcionalidades necesarias
 

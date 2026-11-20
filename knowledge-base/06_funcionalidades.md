@@ -247,7 +247,7 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 
 ## Backlog post-v1 (no implementar)
 
-Los imprescindibles del informe que la v1 no cubre están en [D.3 Etapas posteriores, primera etapa posterior a la v1](../discovery/informe-discovery.md) (orden sugerido: WhatsApp, HC/odontograma, presupuestos, caja/MP, obras sociales, multiprofesional/sillón y roles); el mercado los considera estándar (SU-02).
+Los imprescindibles del informe que la v1 no cubre están en [D.3 Etapas posteriores, primera etapa posterior a la v1](../docs/discovery/informe-discovery.md) (orden sugerido: WhatsApp, HC/odontograma, presupuestos, caja/MP, obras sociales, multiprofesional/sillón y roles); el mercado los considera estándar (SU-02).
 
 Odontograma y presupuestos (primer incremento), WhatsApp (incluido el botón de compartir el link por WhatsApp, DD-18), 2FA del odontólogo (PA-13, DD-18), caja/Mercado Pago, obras sociales, ARCA,
 lista de espera/recall, multi-profesional/roles, periodontograma, Google Calendar. Ver
