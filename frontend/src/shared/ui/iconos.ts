@@ -1,0 +1,44 @@
+/**
+ * Íconos del app-shell (trazos tomados del mockup aprobado de C-06). Siempre decorativos:
+ * se ocultan a lectores de pantalla porque acompañan un texto visible o un aria-label.
+ */
+const L = 'fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+
+const TRAZOS = {
+  diente: `<path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" ${L}/>`,
+  calendario: `<rect x="3.5" y="5" width="17" height="15.5" rx="3" ${L}/><path d="M3.5 10h17M8 3v4M16 3v4" ${L}/>`,
+  'calendario-relleno': `<path d="M6.5 5h11a3 3 0 013 3v2h-17V8a3 3 0 013-3z" fill="currentColor"/><rect x="3.5" y="5" width="17" height="15.5" rx="3" ${L}/><path d="M8 3v4M16 3v4" ${L}/><rect x="7" y="13" width="4" height="3.5" rx="1" fill="currentColor"/>`,
+  candado: `<rect x="5" y="10.5" width="14" height="10" rx="2.5" ${L}/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" ${L}/>`,
+  'candado-relleno': `<rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" ${L}/>`,
+  engranaje: `<circle cx="12" cy="12" r="3" ${L}/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" ${L}/>`,
+  'engranaje-relleno': `<circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+  'mas-opciones': '<circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/>',
+  historial: `<path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" ${L}/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" ${L}/>`,
+  'historial-relleno': '<circle cx="12" cy="12" r="7.5" fill="currentColor"/><path d="M12 8v4l2.8 1.8" fill="none" stroke="var(--color-surface)" stroke-width="2" stroke-linecap="round"/>',
+  descargar: `<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" ${L}/>`,
+  salir: `<path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" ${L}/>`,
+  mas: '<path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  izquierda: '<path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  derecha: '<path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  'sin-conexion': `<path d="M3 4l18 16M8.5 16.5a5 5 0 017 0M5 12.8a10 10 0 015.2-2.6M14.6 10.3A10 10 0 0119 12.8M2 9.3a14.5 14.5 0 014.2-2.6M11 5.6a14.5 14.5 0 0111 3.7" ${L}/><circle cx="12" cy="19.5" r="1.2" fill="currentColor"/>`,
+  alerta: `<circle cx="12" cy="12" r="9" ${L}/><path d="M12 7.5v5.5M12 16.2v.1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+  reintentar: `<path d="M19.5 12a7.5 7.5 0 11-2.2-5.3L19.5 9M19.5 4.5V9H15" ${L}/>`,
+  buscar: `<circle cx="11" cy="11" r="6.5" ${L}/><path d="M16 16l4 4" ${L}/>`,
+  reloj: `<circle cx="12" cy="12" r="8" ${L}/><path d="M12 8v4l2.5 1.5" ${L}/>`,
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+  cruz: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+} as const satisfies Record<string, string>;
+
+export type NombreIcono = keyof typeof TRAZOS;
+
+/** SVG decorativo; el tamaño lo define la clase (por defecto, el token de ícono). */
+export function icono(nombre: NombreIcono, clase = 'w-icono h-icono flex-none'): SVGSVGElement {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  svg.setAttribute('class', clase);
+  // Contenido estático y propio (constante de este módulo), nunca datos de usuario.
+  svg.innerHTML = TRAZOS[nombre];
+  return svg;
+}

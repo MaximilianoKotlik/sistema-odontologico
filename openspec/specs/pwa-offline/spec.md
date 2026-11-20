@@ -1,10 +1,9 @@
-# Spec Delta
+# pwa-offline Specification
 
 ## Purpose
-
 Permite instalar la app del odontólogo como PWA y define qué guarda el Service Worker para leer la última agenda sin conexión, y qué no guarda nunca por privacidad y seguridad.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: App instalable
 La app SHALL publicar un manifiesto con el nombre del producto, íconos de 192 y 512 px, `display: standalone` y `start_url: /app/agenda`.
@@ -49,9 +48,18 @@ La app MUST NOT encolar ni reintentar más tarde cambios hechos sin conexión.
 - **WHEN** el dispositivo está sin conexión
 - **THEN** las acciones que modifican datos están deshabilitadas y no se guarda ningún pedido pendiente
 
-### Requirement: Caché borrada al cerrar sesión
-Al cerrar sesión, la app SHALL borrar la caché de la agenda del Service Worker.
+### Requirement: Caché borrada al terminar o empezar una sesión
+La app SHALL borrar la caché de la agenda del Service Worker cuando el odontólogo cierra sesión, cuando la sesión vence o se revoca, y antes de guardar el token de una sesión nueva. Si borrarla falla, el flujo de sesión MUST continuar.
 
 #### Scenario: Cierre de sesión en un equipo compartido
 - **WHEN** el odontólogo cierra sesión y otra persona abre la app sin conexión
 - **THEN** no se muestra ningún turno guardado
+
+#### Scenario: Sesión vencida
+- **WHEN** el refresh falla y la app lleva al login
+- **THEN** la caché de la agenda ya no tiene turnos guardados
+
+#### Scenario: Otro consultorio en el mismo navegador
+- **GIVEN** la agenda del consultorio A quedó en caché y su sesión no se cerró
+- **WHEN** el odontólogo del consultorio B inicia sesión en ese navegador y se queda sin conexión
+- **THEN** no ve la agenda del consultorio A
