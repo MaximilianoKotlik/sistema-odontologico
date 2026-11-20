@@ -24,7 +24,7 @@
 ## 3. Recuperación de contraseña
 
 - [ ] 3.1 Test de integración de la migración `token_recuperacion`: FK compuesta cruzada falla, `token_hash` único y el rol de la aplicación sin `DELETE` ni `TRUNCATE`; crear `V{n}__token_recuperacion.sql` con los permisos sobre `"${app-user}"`; verificar en verde
-- [ ] 3.2 Tests unitarios de `TokenDeRecuperacion` (vigente, usado, revocado y vencido a los 30 min con `Clock` fijo); implementar; verificar en verde
+- [x] 3.2 Tests unitarios de `TokenDeRecuperacion` (vigente, usado, revocado y vencido a los 30 min con `Clock` fijo); implementar; verificar en verde
 - [ ] 3.3 Tests de integración de "Email registrado", "Email no registrado" (mismo cuerpo 202, sin envío), "Token guardado como hash" y "Nueva solicitud invalida la anterior", con un `EnviadorDeEmails` fake; implementar `SolicitarRecuperacion`, el listener `AFTER_COMMIT` asíncrono y el endpoint; verificar en verde
 - [ ] 3.4 Test de "Falla el servidor de correo" (202 igual y log sin token ni email en claro, con el conversor de C-03); verificar en verde
 - [ ] 3.5 Tests unitarios de `Usuario.establecerContrasena` (sube versión, fija `password_cambiado_at`, limpia el bloqueo); implementar; verificar en verde
@@ -40,7 +40,7 @@
 
 ## 5. Rate limiting
 
-- [ ] 5.1 Tests unitarios del `LimitadorBucket4j` (consume, agota, informa `Retry-After`, se recupera con el tiempo); implementar con Caffeine; verificar en verde
+- [x] 5.1 Tests unitarios del `LimitadorBucket4j` (consume, agota, informa `Retry-After`, se recupera con el tiempo); implementar con Caffeine; verificar en verde
 - [ ] 5.2 Tests de integración de "Ráfaga de logins desde una IP" (429 que no suma intento fallido), "Recuperación del límite" y "Rutas fuera de autenticación"; implementar `LimiteDeSolicitudesFilter` con los límites por IP de D8; verificar en verde
 - [ ] 5.3 Tests de integración de "Recuperación repetida para un mismo email" (desde IPs distintas, y también para un email sin cuenta) y "Cambio de contraseña repetido"; conectar `LimitadorDeSolicitudes` a los casos de uso; verificar en verde
 - [ ] 5.4 Documentar en `backend/README.md` los límites, `app.rate-limit.*` y la configuración de `server.forward-headers-strategy` detrás de un proxy; verificar que lo documentado coincide con `application.yml`
