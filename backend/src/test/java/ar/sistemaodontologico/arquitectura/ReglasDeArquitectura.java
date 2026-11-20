@@ -28,6 +28,70 @@ public final class ReglasDeArquitectura {
                 .allowEmptyShould(true);
     }
 
+    private static final java.util.List<String> PREFIJOS_DE_CONSULTA =
+            java.util.List.of("buscar", "listar", "existe", "contar", "eliminar");
+    private static final String CONSULTORIO_ID = "ar.sistemaodontologico.compartido.domain.ConsultorioId";
+
+    /**
+     * Todo repositorio de negocio filtra por consultorio (C-02, design D9; regla dura 6): en las clases
+     * {@code *Repositorio*}, cada método público {@code buscar*}, {@code listar*}, {@code existe*},
+     * {@code contar*} o {@code eliminar*} recibe un {@code ConsultorioId}. Las excepciones se listan por
+     * nombre simple de la clase y cada una cita la decisión que la justifica.
+     */
+    public static ArchRule repositoriosSiempreConTenant(java.util.Set<String> exceptuados) {
+        return classes()
+                .that().haveSimpleNameContaining("Repositorio")
+                .should(consultarSiempreConConsultorio(exceptuados))
+                .as("los repositorios de negocio reciben ConsultorioId en todo método de consulta")
+                .allowEmptyShould(true);
+    }
+
+    private static ArchCondition<JavaClass> consultarSiempreConConsultorio(java.util.Set<String> exceptuados) {
+        return new ArchCondition<>("recibir ConsultorioId en todo método de consulta") {
+            @Override
+            public void check(JavaClass clase, ConditionEvents eventos) {
+                if (exceptuados.contains(clase.getSimpleName())) {
+                    return;
+                }
+                clase.getMethods().stream()
+                        .filter(metodo -> metodo.getModifiers().contains(com.tngtech.archunit.core.domain.JavaModifier.PUBLIC))
+                        .filter(metodo -> PREFIJOS_DE_CONSULTA.stream().anyMatch(metodo.getName()::startsWith))
+                        .filter(metodo -> metodo.getRawParameterTypes().stream()
+                                .noneMatch(tipo -> tipo.getFullName().equals(CONSULTORIO_ID)))
+                        .forEach(metodo -> eventos.add(SimpleConditionEvent.violated(metodo,
+                                clase.getSimpleName() + "." + metodo.getName() + " no recibe ConsultorioId")));
+            }
+        };
+    }
+
+    /**
+     * Las interfaces de Spring Data se usan solo dentro de {@code infrastructure}: si llegan a
+     * {@code application}, exponen {@code findById} y {@code findAll} sin tenant (C-02, design D9).
+     */
+    public static ArchRule springDataSoloEnInfraestructura() {
+        return noClasses()
+                .that().resideOutsideOfPackage("..infrastructure..")
+                .should().dependOnClassesThat().areAssignableTo("org.springframework.data.repository.Repository")
+                .as("Spring Data se usa solo en la capa infrastructure")
+                .allowEmptyShould(true);
+    }
+
+    /**
+     * La hora sale solo del {@link java.time.Clock} inyectado (C-02, design D2): nadie llama a los
+     * {@code now()} sin argumentos de java.time, que usan el reloj del sistema y no se pueden fijar en tests.
+     */
+    public static ArchRule horaSoloDesdeElClock() {
+        return noClasses()
+                .should().callMethod(java.time.Instant.class, "now")
+                .orShould().callMethod(java.time.LocalDate.class, "now")
+                .orShould().callMethod(java.time.LocalDateTime.class, "now")
+                .orShould().callMethod(java.time.LocalTime.class, "now")
+                .orShould().callMethod(java.time.ZonedDateTime.class, "now")
+                .orShould().callMethod(java.time.OffsetDateTime.class, "now")
+                .as("la hora se toma solo del Clock inyectado, nunca con now() sin argumentos")
+                .allowEmptyShould(true);
+    }
+
     /** Ningún módulo usa clases de la capa {@code infrastructure} de otro módulo. */
     public static ArchRule infraestructuraPrivadaDelModulo(String paqueteRaiz) {
         return classes()

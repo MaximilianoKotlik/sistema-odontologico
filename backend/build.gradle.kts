@@ -1,5 +1,7 @@
 plugins {
     java
+    // Cobertura de tests (objetivo orientativo 80 % en domain y application, knowledge-base/08)
+    jacoco
     id("org.springframework.boot") version "3.5.16"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -19,6 +21,8 @@ repositories {
 
 val springdocVersion = "2.8.17"
 val archunitVersion = "1.4.2"
+val libphonenumberVersion = "8.13.55"
+val uuidGeneratorVersion = "5.1.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -28,6 +32,10 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
+    // Normalización de teléfonos a E.164 (C-02, design D5)
+    implementation("com.googlecode.libphonenumber:libphonenumber:$libphonenumberVersion")
+    // Identificadores UUIDv7 generados en la aplicación (C-02, design D3)
+    implementation("com.fasterxml.uuid:java-uuid-generator:$uuidGeneratorVersion")
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -43,8 +51,18 @@ tasks.withType<JavaCompile> {
     options.compilerArgs.add("-parameters")
 }
 
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required = true
+        csv.required = true
+        html.required = true
+    }
+}
+
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
     // El test del contrato escribe aquí el OpenAPI que consume el frontend (design D7)
     systemProperty("openapi.output", layout.buildDirectory.file("openapi/openapi.json").get().asFile.absolutePath)
 }
