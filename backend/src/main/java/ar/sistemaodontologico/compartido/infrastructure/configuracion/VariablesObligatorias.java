@@ -17,7 +17,8 @@ import org.springframework.util.StringUtils;
 public class VariablesObligatorias implements BeanFactoryPostProcessor, EnvironmentAware {
 
     static final List<String> OBLIGATORIAS =
-            List.of("DB_URL", "DB_APP_USER", "DB_APP_PASSWORD", "DB_OWNER_USER", "DB_OWNER_PASSWORD");
+            List.of("DB_URL", "DB_APP_USER", "DB_APP_PASSWORD", "DB_OWNER_USER", "DB_OWNER_PASSWORD",
+                    "JWT_SECRET", "APP_FRONTEND_ORIGIN");
 
     private Environment entorno;
 
