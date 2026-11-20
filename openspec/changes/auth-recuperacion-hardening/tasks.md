@@ -25,11 +25,11 @@
 
 - [x] 3.1 Test de integración de la migración `token_recuperacion`: FK compuesta cruzada falla, `token_hash` único y el rol de la aplicación sin `DELETE` ni `TRUNCATE`; crear `V{n}__token_recuperacion.sql` con los permisos sobre `"${app-user}"`; verificar en verde
 - [x] 3.2 Tests unitarios de `TokenDeRecuperacion` (vigente, usado, revocado y vencido a los 30 min con `Clock` fijo); implementar; verificar en verde
-- [ ] 3.3 Tests de integración de "Email registrado", "Email no registrado" (mismo cuerpo 202, sin envío), "Token guardado como hash" y "Nueva solicitud invalida la anterior", con un `EnviadorDeEmails` fake; implementar `SolicitarRecuperacion`, el listener `AFTER_COMMIT` asíncrono y el endpoint; verificar en verde
-- [ ] 3.4 Test de "Falla el servidor de correo" (202 igual y log sin token ni email en claro, con el conversor de C-03); verificar en verde
-- [ ] 3.5 Tests unitarios de `Usuario.establecerContrasena` (sube versión, fija `password_cambiado_at`, limpia el bloqueo); implementar; verificar en verde
-- [ ] 3.6 Tests de integración de "Restablecimiento exitoso", "Restablecer desbloquea la cuenta", los tres de token inválido y "Contraseña nueva de 9 caracteres" (no consume el token); implementar `ConfirmarRecuperacion` y el endpoint; verificar en verde
-- [ ] 3.7 Test de integración del evento `PASSWORD_RECUPERADA` sin secretos; verificar en verde
+- [x] 3.3 Tests de integración de "Email registrado", "Email no registrado" (mismo cuerpo 202, sin envío), "Token guardado como hash" y "Nueva solicitud invalida la anterior", con un `EnviadorDeEmails` fake; implementar `SolicitarRecuperacion`, el listener `AFTER_COMMIT` asíncrono y el endpoint; verificar en verde
+- [x] 3.4 Test de "Falla el servidor de correo" (202 igual y log sin token ni email en claro, con el conversor de C-03); verificar en verde
+- [x] 3.5 Tests unitarios de `Usuario.establecerContrasena` (sube versión, fija `password_cambiado_at`, limpia el bloqueo); implementar; verificar en verde
+- [x] 3.6 Tests de integración de "Restablecimiento exitoso", "Restablecer desbloquea la cuenta", los tres de token inválido y "Contraseña nueva de 9 caracteres" (no consume el token); implementar `ConfirmarRecuperacion` y el endpoint; verificar en verde
+- [x] 3.7 Test de integración del evento `PASSWORD_RECUPERADA` sin secretos; verificar en verde
 - [x] 3.8 Test del adaptador `EnviadorDeEmailsSmtp` contra un contenedor de Mailpit: llega un email de `MAIL_FROM`, asunto en voseo y link `/recuperar#token=…`; implementar; verificar en verde
 
 ## 4. Cambio de contraseña

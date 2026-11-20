@@ -30,7 +30,9 @@ class ConfiguracionDeSeguridad {
 
     /** Endpoints de sesión: se autentican con credenciales o con la cookie de refresh, no con el access token. */
     static final String[] RUTAS_DE_SESION = {
-        "/api/v1/auth/registro", "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/logout"
+        "/api/v1/auth/registro", "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/logout",
+        // Recuperación de contraseña (C-05): quien la usa no tiene sesión.
+        "/api/v1/auth/recuperacion", "/api/v1/auth/recuperacion/confirmar"
     };
 
     private static final long UN_ANIO_EN_SEGUNDOS = 31_536_000L;
