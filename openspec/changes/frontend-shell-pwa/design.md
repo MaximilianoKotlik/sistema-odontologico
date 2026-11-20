@@ -2,7 +2,7 @@
 
 ## Context
 
-Ver `proposal.md` (Why). El frontend es TypeScript strict sin framework (DD-02), Vite 5 + Tailwind 3.4 + Vitest/jsdom, con la estructura de `knowledge-base/08_arquitectura_propuesta.md` §Estructura de directorios. El esqueleto `frontend/` lo crea C-01; este change trabaja sobre él. La API de auth (C-04/C-05) y la de agenda (C-12) todavía no existen: el contrato está descrito en la KB (`07_flujos_principales.md` §Login, `03_actores_y_roles.md` §Rutas). Reglas duras que condicionan el diseño: sin `any`, sin valores visuales sueltos (solo tokens), voseo, accesibilidad AA.
+Ver `proposal.md` (Why). El frontend es TypeScript strict sin framework (DD-02), con las versiones que fijó C-01: Vite 7.3, Vitest 4.1 (jsdom), TypeScript 5.9 y Tailwind 3.4.19; este change suma `vite-plugin-pwa` 2.0 (compatible con Vite 7). `src/shared/api-types.ts` y el script `npm run api:types` ya existen desde C-01 y no se recrean, con la estructura de `knowledge-base/08_arquitectura_propuesta.md` §Estructura de directorios. El esqueleto `frontend/` lo crea C-01; este change trabaja sobre él. La API de auth (C-04/C-05) y la de agenda (C-12) todavía no existen: el contrato está descrito en la KB (`07_flujos_principales.md` §Login, `03_actores_y_roles.md` §Rutas). Reglas duras que condicionan el diseño: sin `any`, sin valores visuales sueltos (solo tokens), voseo, accesibilidad AA.
 
 ## Goals / Non-Goals
 
@@ -34,7 +34,7 @@ Tabla `{ patron, cargar }` con parámetros (`/app/turnos/:id`), interceptación 
 *Alternativas*: Web Components (Shadow DOM complica Tailwind y los tests en jsdom).
 
 ### D5 — Tailwind leyendo tokens
-`tailwind.config.ts` define `colors`, `spacing`, `borderRadius`, `boxShadow`, `fontFamily` como `var(--…)`; `tokens.css` se importa desde `design-system/` en el CSS global (sin copiarlo) para que un cambio de revisión impacte en un solo lugar. Se desactiva la paleta por defecto de Tailwind para que un color suelto falle en revisión.
+`tailwind.config.ts` define `colors`, `spacing`, `borderRadius`, `boxShadow`, `fontFamily` como `var(--…)`; `tokens.css` se importa desde `design-system/` en el CSS global (sin copiarlo) para que un cambio de revisión impacte en un solo lugar. Se desactiva la paleta por defecto de Tailwind para que un color suelto falle en revisión. Como `frontend/` importa `../design-system/`, la imagen Docker del frontend se construye con contexto en la raíz del repo (`docker-compose.yml`: `context: .`, `dockerfile: frontend/Dockerfile`) y `frontend/Dockerfile.dockerignore` deja entrar solo `frontend/` y `design-system/` (revisión de Maxi en el PR #3).
 
 ### D6 — Workbox vía `vite-plugin-pwa` en modo `generateSW`
 `globPatterns` del shell; `runtimeCaching` con `NetworkFirst` solo para `GET` a `/api/v1/agenda` (caché `agenda-v1`, `networkTimeoutSeconds: 4`, máx. 30 entradas, 7 días); `navigateFallback: /index.html` con `navigateFallbackDenylist` para `/api/`, `/c/`, `/t/`. Nada más se cachea en runtime. Al cerrar sesión se ejecuta `caches.delete('agenda-v1')`. La hora de "última sincronización" se toma del encabezado `Date` de la respuesta cacheada.
@@ -53,7 +53,8 @@ Destinos principales (Agenda, Bloqueos, Configuración) + "Más" en mobile; en d
 - Mockups: `openspec/changes/frontend-shell-pwa/mockups/` (`app-shell.html`, brief en `mockups/README.md`)
 - Approval: approved (2026-11-20, by user)
 - Preview: rendered (2026-11-20, `mockups/previews/` a 390×844, 360×780 y 1440×900)
-- Visual verify: pending
+- Visual verify: passed (2026-11-20, `mockups/verify/`) — shell comparado con el mockup a 390×844, 360×780 y 1440×900: barra superior, navegación inferior (destinos de 88×64 px, sin scroll horizontal), barra lateral de 248 px, hoja "Más", aviso sin conexión y página no encontrada coinciden; consola sin errores. Diferencias esperadas, no de C-06: el contenido de la agenda y "Nuevo turno" (C-13/C-14) y la línea de la cuenta en la barra lateral (C-07). Corregido durante la verificación: ancho de la barra lateral (240 → 248 px) y alto de la barra superior en desktop (56 → 68 px).
+- Ajuste encontrado al verificar offline: `navigator.onLine` puede decir `true` sin red; el cliente HTTP también marca "sin conexión" cuando un pedido falla por red (`alFallarRed`).
 
 ## Risks / Trade-offs
 
