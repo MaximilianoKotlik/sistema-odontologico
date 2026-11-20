@@ -1,0 +1,23 @@
+# Memoria local de engram (no se versiona)
+.engram/
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Configuración local de Claude Code
+.claude/settings.local.json
+
+# Dependencias y builds (cuando exista código)
+node_modules/
+dist/
+build/
+.gradle/
+target/
+*.log
+.env
+.env.*
+!.env.example

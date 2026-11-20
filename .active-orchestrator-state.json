@@ -1,0 +1,260 @@
+{
+  "version": 5,
+  "step": "visual-design",
+  "owner": "active-orchestrator",
+  "discovery": {
+    "created_by": "discovery-research",
+    "sources": [
+      "https://dentalsoft.com.ar/",
+      "https://agendapro.com/ar/dental/software-odontologico",
+      "https://www.clinia.com.ar/odontologia",
+      "https://bilog.com.ar/",
+      "https://www.softwaredentalink.com/",
+      "https://turnito.app",
+      "https://medicai.com.ar",
+      "https://yo-facturo.com/clinicas/",
+      "https://odontograma.com.ar/",
+      "https://klinicos.app",
+      "https://clinicorp.com",
+      "https://dentidesk.com",
+      "https://simplesdental.com",
+      "https://doctocliq.com",
+      "https://clinic-cloud.com",
+      "https://opendental.com",
+      "https://dentrixascend.com",
+      "https://curvedental.com",
+      "https://planetdds.com/denticon",
+      "https://carestack.com",
+      "https://tab32.com",
+      "https://oryxdental.com",
+      "https://dentally.com/en-gb",
+      "https://nexhealth.com",
+      "https://getweave.com",
+      "https://adit.com"
+    ],
+    "competitors": [
+      {
+        "name": "DentalSoft (AR)",
+        "notes_file": "discovery/sources/dentalsoft-argentina.md",
+        "priority": "demo"
+      },
+      {
+        "name": "AgendaPro Argentina",
+        "notes_file": "discovery/sources/agendapro-argentina.md",
+        "priority": "demo"
+      },
+      {
+        "name": "ClinIA / OdontoClinIA (AR)",
+        "notes_file": "discovery/sources/clinia-odontologia.md",
+        "priority": "demo"
+      },
+      {
+        "name": "Bilog (AR)",
+        "notes_file": "discovery/sources/bilog.md",
+        "priority": "demo"
+      },
+      {
+        "name": "Dentalink (CL)",
+        "notes_file": "discovery/sources/dentalink.md",
+        "priority": "demo"
+      },
+      {
+        "name": "Turnito (AR)",
+        "notes_file": "discovery/sources/turnito.md",
+        "priority": "ux-reference"
+      },
+      {
+        "name": "MedicAI (AR)",
+        "notes_file": "discovery/sources/medicai.md",
+        "priority": "ux-reference"
+      },
+      {
+        "name": "YoFacturo Clínicas (AR)",
+        "notes_file": "discovery/sources/yofacturo-clinicas.md"
+      },
+      {
+        "name": "OdontoGRAMA (AR)",
+        "notes_file": "discovery/sources/odontograma-solsoftware.md"
+      },
+      {
+        "name": "Klinicos (UY)",
+        "notes_file": "discovery/sources/klinicos.md"
+      },
+      {
+        "name": "Clinicorp (BR)",
+        "notes_file": "discovery/sources/clinicorp.md"
+      },
+      {
+        "name": "Dentidesk (CL)",
+        "notes_file": "discovery/sources/dentidesk.md"
+      },
+      {
+        "name": "Simples Dental (BR)",
+        "notes_file": "discovery/sources/simples-dental.md"
+      },
+      {
+        "name": "Doctocliq (PE)",
+        "notes_file": "discovery/sources/doctocliq.md"
+      },
+      {
+        "name": "Clinic Cloud (ES)",
+        "notes_file": "discovery/sources/clinic-cloud.md"
+      },
+      {
+        "name": "Open Dental (US)",
+        "notes_file": "discovery/sources/open-dental.md"
+      },
+      {
+        "name": "Dentrix Ascend (US)",
+        "notes_file": "discovery/sources/dentrix-ascend.md"
+      },
+      {
+        "name": "Curve Dental (US)",
+        "notes_file": "discovery/sources/curve-dental.md"
+      },
+      {
+        "name": "Denticon (US)",
+        "notes_file": "discovery/sources/denticon-planet-dds.md"
+      },
+      {
+        "name": "CareStack (US)",
+        "notes_file": "discovery/sources/carestack.md"
+      },
+      {
+        "name": "tab32 (US)",
+        "notes_file": "discovery/sources/tab32.md"
+      },
+      {
+        "name": "Oryx (US/CA)",
+        "notes_file": "discovery/sources/oryx-dental.md"
+      },
+      {
+        "name": "Dentally (UK)",
+        "notes_file": "discovery/sources/dentally.md"
+      },
+      {
+        "name": "NexHealth (US)",
+        "notes_file": "discovery/sources/nexhealth.md"
+      },
+      {
+        "name": "Weave (US)",
+        "notes_file": "discovery/sources/weave.md"
+      },
+      {
+        "name": "Adit",
+        "notes_file": "discovery/sources/adit.md"
+      },
+      {
+        "name": "DentalCore (AR, baja confianza)",
+        "notes_file": "discovery/sources/dentalcore.md",
+        "confidence": "low"
+      },
+      {
+        "name": "ZYRA (AR, baja confianza)",
+        "notes_file": "discovery/sources/zyra.md",
+        "confidence": "low"
+      },
+      {
+        "name": "XIAgenda (AR, baja confianza)",
+        "notes_file": "discovery/sources/xiagenda.md",
+        "confidence": "low"
+      },
+      {
+        "name": "Doctoralia (baja confianza)",
+        "notes_file": "discovery/sources/doctoralia.md",
+        "confidence": "low"
+      }
+    ],
+    "report_file": "discovery/informe-discovery.md",
+    "sources_fetched_at": "2026-11-16",
+    "problema": "Los consultorios odontológicos chicos de Argentina gestionan turnos, historia clínica y cobros con planillas, papel, WhatsApp y sistemas sueltos. El proyecto apunta a la gestión integral del consultorio, empezando por la agenda de un odontólogo independiente con reserva de turnos por link sin cuenta. Diferenciador v1: transparencia (precios públicos en ARS, exportación completa de datos, auditoría, cumplimiento declarado con honestidad).",
+    "usuarios": [
+      "Odontólogo independiente: dueño y único usuario; administra su agenda, bloquea horarios, agrega sobreturnos, exporta sus datos. Una cuenta por consultorio. Sin recepción, roles ni permisos en v1.",
+      "Paciente: reserva, reprograma o cancela un turno desde un link público sin crear cuenta."
+    ],
+    "casos_de_uso": [
+      "Como odontólogo, quiero ver mi agenda del día y de la semana para saber cuántos pacientes tengo y a qué hora.",
+      "Como odontólogo, quiero bloquear horarios y agregar sobreturnos marcados para que mi agenda refleje mi disponibilidad real.",
+      "Como paciente, quiero reservar un turno desde un link sin crear cuenta para no tener que llamar ni escribir por WhatsApp.",
+      "Como paciente, quiero reprogramar o cancelar mi turno con anticipación para liberar el horario.",
+      "Como odontólogo, quiero exportar todos mis datos en un formato abierto para no quedar atado al sistema.",
+      "Post-v1: como odontólogo, quiero registrar la atención en el odontograma y emitir un presupuesto o plan de tratamiento."
+    ],
+    "funcionalidades_necesarias": [
+      "Agenda diaria y semanal de un único profesional",
+      "Bloqueos de horario y sobreturnos marcados explícitamente",
+      "Duración configurable por tipo de prestación y prevención de solapamientos",
+      "Página pública de reserva por link sin cuenta: reservar, reprogramar, cancelar",
+      "Registro de auditoría de cambios sobre turnos (quién, qué, cuándo)",
+      "Exportación completa de datos en formato abierto",
+      "Precios públicos en ARS con prueba gratuita"
+    ],
+    "funcionalidades_opcionales": [
+      "Historia clínica con anamnesis, odontograma FDI versionado, presupuestos y plan de tratamiento (primer incremento)",
+      "Recordatorios, confirmación y recuperación de ausentes por WhatsApp",
+      "Caja, cuenta corriente del paciente, señas y cobro con Mercado Pago",
+      "Obras sociales y prepagas: coberturas, prestaciones y liquidación",
+      "Facturación electrónica ARCA desde el cobro",
+      "Lista de espera automática y recall de controles periódicos",
+      "Multi-profesional, múltiples sillones, recepción, roles y permisos",
+      "Periodontograma e imágenes/radiografías",
+      "Sincronización con Google Calendar"
+    ],
+    "reglas_de_negocio": [
+      "Un turno no puede solaparse con otro del mismo profesional salvo que se marque explícitamente como sobreturno",
+      "El paciente solo puede cancelar o reprogramar por link con una anticipación mínima configurable por el odontólogo (p. ej. 24 h)",
+      "Todo cambio sobre un turno queda registrado con autor, fecha y valor anterior",
+      "Documentada para v2: evoluciones y odontograma se versionan con autor y fecha, nunca se borran ni editan en el lugar (Ley 26.529)"
+    ],
+    "integraciones": [],
+    "integraciones_diferidas": [
+      "WhatsApp Business API (Meta Cloud API)",
+      "Mercado Pago",
+      "ARCA (ex AFIP) facturación electrónica",
+      "Google Calendar"
+    ],
+    "restricciones": [
+      "Equipo chico y presupuesto acotado: simplicidad y servicios gratuitos o baratos",
+      "Mobile-first obligatorio: paciente y odontólogo usan el teléfono",
+      "Datos de salud tratados conforme a la Ley 25.326; hosting y tratamiento acordes; registro ante la AAIP si corresponde"
+    ],
+    "riesgos": [
+      "Supuesto sin probar (principal): que el paciente argentino prefiera reservar por link antes que llamar o escribir por WhatsApp",
+      "Supuesto sin probar: que la agenda sola aporte valor sin recordatorios; el ausentismo puede no bajar en v1",
+      "Supuesto sin probar: que la transparencia sea motivo de compra frente a DentalSoft o AgendaPro",
+      "Riesgo legal: interpretar Leyes 25.326 y 26.529 sin asesoría y prometer un cumplimiento que no es tal",
+      "Riesgo de evidencia: el análisis competitivo se basa en afirmaciones comerciales; las demos pueden cambiar el mapa"
+    ],
+    "preguntas_abiertas": [
+      "Cómo identificar al paciente sin cuenta para evitar duplicados: nombre y teléfono, DNI o verificación por código",
+      "Modelo de precios (plan fijo, por profesional o por sillón) y si existe plan gratuito (decidir más adelante)",
+      "Validar con usuarios si la reserva por link reemplaza o complementa el WhatsApp del consultorio"
+    ]
+  },
+  "kb": {
+    "created_by": "kb-creator",
+    "source": "interactive",
+    "discovery": {
+      "problem": "Los odontólogos independientes de Argentina gestionan sus turnos con planillas, papel y WhatsApp, sin una agenda propia donde sus pacientes puedan reservar, reprogramar o cancelar por link sin crear cuenta.",
+      "system_type": "web_app_saas_multi_tenant_pwa",
+      "domain": "salud_odontologia_gestion_turnos",
+      "scale": "multi_tenant (un usuario por tenant, consultorios chicos)",
+      "stack": "Java 21 + Spring Boot + Gradle + OpenAPI + PostgreSQL + Flyway | TypeScript vanilla + Vite + Tailwind (PWA) | Docker Compose local",
+      "needs_infra": true
+    },
+    "files": [
+      "knowledge-base/README.md",
+      "knowledge-base/01_vision_y_objetivos.md",
+      "knowledge-base/02_descripcion_general.md",
+      "knowledge-base/03_actores_y_roles.md",
+      "knowledge-base/04_modelo_de_datos.md",
+      "knowledge-base/05_reglas_de_negocio.md",
+      "knowledge-base/06_funcionalidades.md",
+      "knowledge-base/07_flujos_principales.md",
+      "knowledge-base/08_arquitectura_propuesta.md",
+      "knowledge-base/09_decisiones_y_supuestos.md",
+      "knowledge-base/10_preguntas_abiertas.md",
+      "knowledge-base/11_marco_legal_argentino.md"
+    ]
+  }
+}
