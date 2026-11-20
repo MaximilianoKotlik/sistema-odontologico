@@ -140,7 +140,7 @@ erDiagram
 - El token en claro (256 bits, base64url) se devuelve **una sola vez** al reservar ([RN-RP-06](05_reglas_de_negocio.md)).
 
 ### EventoAuditoria (append-only)
-- `id UUID`, `consultorio_id`, `ocurrido_at TIMESTAMPTZ DEFAULT now()`, `actor_tipo VARCHAR(12) CHECK IN ('ODONTOLOGO','PACIENTE','SISTEMA')`, `actor_id UUID NULL` (usuario o paciente), `entidad VARCHAR(30)`, `entidad_id UUID`, `accion VARCHAR(40)` (p. ej. `TURNO_CREADO`, `TURNO_REPROGRAMADO`, `TURNO_ESTADO_CAMBIADO`, `BLOQUEO_CREADO`, `EXPORTACION_GENERADA`, `LOGIN_FALLIDO`), `valor_anterior JSONB NULL`, `valor_nuevo JSONB NULL`, `ip INET NULL`.
+- `id UUID`, `consultorio_id`, `ocurrido_at TIMESTAMPTZ DEFAULT now()`, `actor_tipo VARCHAR(12) CHECK IN ('ODONTOLOGO','PACIENTE','SISTEMA')`, `actor_id UUID NULL` (usuario o paciente), `entidad VARCHAR(30)`, `entidad_id UUID`, `accion VARCHAR(40)` (p. ej. `TURNO_CREADO`, `TURNO_REPROGRAMADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_DURACION_CAMBIADA`, `TURNO_NOTA_CAMBIADA`, `BLOQUEO_CREADO`, `BLOQUEO_ELIMINADO`, `PACIENTE_REVISADO`, `EXPORTACION_GENERADA`, `LOGIN_FALLIDO`, `PASSWORD_CAMBIADA`), `valor_anterior JSONB NULL`, `valor_nuevo JSONB NULL`, `ip INET NULL`.
 - Inmutabilidad: trigger `BEFORE UPDATE OR DELETE` que lanza excepción, y el rol de base de la aplicación solo tiene `INSERT, SELECT` sobre la tabla ([RN-AD-02](05_reglas_de_negocio.md)).
 - Índices: `(consultorio_id, ocurrido_at DESC)`, `(consultorio_id, entidad, entidad_id)`.
 

@@ -113,7 +113,7 @@
 
 ### DD-18 — Revisión del roadmap contra D.3 (2026-11-20) (confirmada por el usuario)
 **Estado**: **Confirmada por el usuario (2026-11-20)**, tras revisar la v1 contra D.3 (MVP sugerido) del [informe](../discovery/informe-discovery.md). No modifica DD-16: la v1 sigue siendo solo la agenda de un profesional + link público.
-**Agregado a v1**: (1) página pública `/seguridad` de seguridad y cumplimiento, honesta (RN-PL-05/06, US-062, dentro de C-17); (2) PDF legible en la exportación, además de JSON y CSV (RN-EX-05, US-050, C-16); (3) prueba gratuita **sin tarjeta** explícita (RN-PL-02, C-17).
+**Agregado a v1**: (1) página pública `/seguridad` de seguridad y cumplimiento, honesta (RN-PL-05/06, US-062, change C-22 `pagina-seguridad`); (2) PDF legible en la exportación, además de JSON y CSV (RN-EX-05, US-050, C-19 `exportacion-datos`); (3) prueba gratuita **sin tarjeta** explícita (RN-PL-02, C-21 `pagina-precios`). *(IDs de change actualizados tras la renumeración de `CHANGES.md` del 2026-11-20.)*
 **Dejado fuera de v1 por decisión del usuario**: (a) botón de compartir el link de reserva por WhatsApp (`wa.me` / compartir nativo); (b) 2FA del odontólogo (sigue en v2, [PA-13](10_preguntas_abiertas.md)). Ninguno se implementa en v1; ambos quedan en el backlog post-v1.
 **Justificación**: sumar los diferenciadores de transparencia de D.3 que cuestan poco y no requieren integraciones; (a) queda fuera por decisión del usuario, en línea con cero integraciones ([DD-07](#dd-07--sin-integraciones-externas-en-v1-confirmada)); (b) porque aún no hay historia clínica en v1 ([PA-13](10_preguntas_abiertas.md)).
 **Trade-offs aceptados**: `/seguridad` debe declarar que no hay 2FA ni revisión legal profesional aún; el link se comparte copiándolo.

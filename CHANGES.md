@@ -16,8 +16,8 @@
 
 Reglas del equipo:
 - **Governance**: CRITICO = solo análisis hasta aprobación humana explícita; ALTO = proponer y esperar revisión antes de escribir; MEDIO = implementar con checkpoints; BAJO = autonomía si los tests pasan.
-- **Mockups**: el sistema de diseño está en modo `system-and-mockups` (rev. 1, aprobado). Todo change de frontend (C-05, C-06, C-08, C-11, C-12, C-14, C-15 y las pantallas de C-16/C-17) exige un mockup revisado y aprobado **antes** de implementar la pantalla; el mockup se adjunta al PR.
-- Conservá los IDs de las fichas al editar o reordenar. Si el proyecto usa ClickUp, este roadmap conserva el alcance y las dependencias; el responsable y el estado operativo se consultan en ClickUp (último dato en `.active-stack/roadmap-state.json`).
+- **Mockups**: el sistema de diseño está en modo `system-and-mockups` (rev. 1, aprobado). Todo change con pantallas (C-06, C-07, C-09, C-13, C-14, C-16, C-17, C-18, C-19, C-20, C-21, C-22) exige un mockup revisado y aprobado **antes** de implementar la pantalla; el mockup se adjunta al PR.
+- Conservá los IDs de las fichas al editar o reordenar. (Única excepción: la renumeración completa de la revisión del 2026-11-20, decidida por el usuario; el mapa de IDs anteriores está al final.) Si el proyecto usa ClickUp, este roadmap conserva el alcance y las dependencias; el responsable y el estado operativo se consultan en ClickUp (último dato en `.active-stack/roadmap-state.json`).
 - Fuera de alcance v1 (no crear changes): WhatsApp, historia clínica/odontograma/presupuestos, Mercado Pago/cobros, obras sociales, ARCA, multi-profesional/multi-sillón, roles y recepción. Ver nota post-v1 al final.
 
 ---
@@ -26,95 +26,110 @@ Reglas del equipo:
 
 ```
 C-01 foundation-setup
-  ├── C-02 core-compartido-tenant                  ← núcleo: tenant, errores, reloj, puerto de auditoría
-  │     ├── C-03 auditoria-base                    ← paralelo con C-04
-  │     └── C-04 auth-backend
-  │           ├── C-06 frontend-auth               ← + C-05
-  │           └── C-07 consultorio-config-backend  ← + C-03
-  │                 ├── C-08 frontend-configuracion ← + C-06
-  │                 └── C-09 agenda-dominio-y-esquema
-  │                       ├── C-10 agenda-api-odontologo
-  │                       │     ├── C-11 frontend-agenda        ← + C-06
-  │                       │     │     ├── C-12 frontend-turnos-bloqueos
-  │                       │     │     └── C-15 historial-auditoria  ← + C-10
-  │                       └── C-13 reserva-publica-backend       ← paralelo con C-10
-  │                             ├── C-14 frontend-reserva-publica ← + C-05
-  │                             └── C-16 exportacion-datos        ← + C-08
-  │                                   └── C-17 plan-precios-y-seguridad ← + C-08, C-10 (describe la exportación y la auditoría)
-  └── C-05 frontend-shell-pwa                       ← paralelo con C-02
+  ├── C-02 core-compartido-tenant                       ← núcleo: tenant, errores, reloj, puerto de auditoría
+  │     ├── C-03 auditoria-base                         ← paralelo con C-04
+  │     ├── C-04 auth-sesion-tokens
+  │     │     ├── C-05 auth-recuperacion-hardening      ← + C-03
+  │     │     │     └── C-07 frontend-auth              ← + C-06
+  │     │     │           └── C-09 frontend-configuracion ← + C-08
+  │     │     │                 └── C-17 pacientes-revision ← + C-11
+  │     │     └── C-08 consultorio-config-backend       ← + C-03
+  │     │           └── C-10 agenda-esquema-dominio
+  │     │                 └── C-11 agenda-casos-de-uso
+  │     │                       ├── C-12 agenda-api-odontologo
+  │     │                       │     └── C-13 frontend-agenda              ← + C-07
+  │     │                       │           ├── C-14 frontend-turnos-bloqueos
+  │     │                       │           └── C-18 historial-auditoria    ← + C-12
+  │     │                       └── C-15 reserva-publica-backend           ← + C-08; paralelo con C-12
+  │     │                             ├── C-16 frontend-reserva-publica    ← + C-06 (nada más)
+  │     │                             ├── C-19 exportacion-datos           ← + C-09
+  │     │                             │     └── C-22 pagina-seguridad      ← + C-03, C-06
+  │     │                             └── C-20 plan-ciclo-de-vida          ← + C-09, C-12
+  │     └── C-21 pagina-precios                         ← + C-06 (arranca temprano)
+  └── C-06 frontend-shell-pwa                            ← paralelo con C-02
 
-C-18 e2e-hardening-release  ← depende de C-12, C-14, C-15, C-16, C-17
+C-23 e2e-hardening-release  ← depende de C-14, C-16, C-17, C-18, C-19, C-20, C-21, C-22
 ```
 
 ### Paralelismo por fase
 
-> Cada gate es un punto de sincronización. Los changes dentro de un gate pueden ejecutarse en paralelo (un PR por change).
+> Cada gate es un punto de sincronización. Los changes dentro de un gate pueden ejecutarse en paralelo (un PR por change). Un change arranca apenas sus dependencias reales están `[x]`; no espera al resto del gate.
 
 ```
 GATE 0: ninguna
   → C-01 foundation-setup                         [Agente A]
+  (mockup del app-shell de C-06 en revisión        [Agente C])
 
 GATE 1: C-01 ✓
   → C-02 core-compartido-tenant                   [Agente A]
-  → C-05 frontend-shell-pwa                       [Agente C]
+  → C-06 frontend-shell-pwa                       [Agente C]
 
 GATE 2: C-02 ✓                                    ← FORK
-  → C-04 auth-backend                             [Agente A]
+  → C-04 auth-sesion-tokens                       [Agente A]
   → C-03 auditoria-base                           [Agente B]
-  (C-05 sigue en curso por [Agente C] si no terminó)
+  → C-21 pagina-precios                           [Agente C — si C-06 ✓]
 
-GATE 3: C-04 ✓ + C-05 ✓
-  → C-06 frontend-auth                            [Agente C]
-  → C-07 consultorio-config-backend               [Agente A — si C-03 ✓]
+GATE 3: C-03 ✓ + C-04 ✓
+  → C-08 consultorio-config-backend               [Agente A]
+  → C-05 auth-recuperacion-hardening              [Agente B]
 
-GATE 4: C-07 ✓
-  → C-09 agenda-dominio-y-esquema                 [Agente A]
-  → C-08 frontend-configuracion                   [Agente C — si C-06 ✓]
+GATE 4: C-05 ✓ + C-06 ✓ / C-08 ✓
+  → C-07 frontend-auth                            [Agente C — requiere C-05 ✓ y C-06 ✓]
+  → C-10 agenda-esquema-dominio                   [Agente A — requiere C-08 ✓]
 
-GATE 5: C-09 ✓                                    ← FORK
-  → C-10 agenda-api-odontologo                    [Agente A]
-  → C-13 reserva-publica-backend                  [Agente B]
-  (C-08 sigue en curso por [Agente C] si no terminó)
+GATE 5: C-07 ✓ + C-10 ✓
+  → C-09 frontend-configuracion                   [Agente C — si C-08 ✓]
+  → C-11 agenda-casos-de-uso                      [Agente A]
 
-GATE 6: C-10 ✓ + C-13 ✓ + C-08 ✓                  ← FORK
-  → C-11 frontend-agenda                          [Agente C — si C-06 ✓]
-  → C-16 exportacion-datos                        [Agente A]
-  → C-14 frontend-reserva-publica                 [Agente B — si C-05 ✓]
+GATE 6: C-11 ✓                                    ← FORK
+  → C-12 agenda-api-odontologo                    [Agente A]
+  → C-15 reserva-publica-backend                  [Agente B]
+  → C-17 pacientes-revision                       [Agente C — si C-09 ✓]
 
-GATE 7: C-11 ✓ + C-16 ✓                           ← FORK
-  → C-12 frontend-turnos-bloqueos                 [Agente C]
-  → C-15 historial-auditoria                      [Agente A]
-  → C-17 plan-precios-y-seguridad                 [Agente B — requiere C-16 ✓ y C-10 ✓]
+GATE 7: C-15 ✓                                    ← FORK
+  → C-16 frontend-reserva-publica                 [Agente B — solo requiere C-06 ✓ y C-15 ✓]
+  → C-19 exportacion-datos                        [Agente A — si C-09 ✓]
+  → C-20 plan-ciclo-de-vida                       [Agente A — si C-09 ✓ y C-12 ✓]
 
-GATE 8: C-12, C-14, C-15, C-16, C-17 ✓
-  → C-18 e2e-hardening-release                    [Agente A; B y C revisan y corrigen hallazgos]
+GATE 8: C-12 ✓
+  → C-13 frontend-agenda                          [Agente C — si C-07 ✓]
+
+GATE 9: C-13 ✓ / C-19 ✓                           ← FORK
+  → C-14 frontend-turnos-bloqueos                 [Agente C — requiere C-13 ✓]
+  → C-18 historial-auditoria                      [Agente A — requiere C-12 ✓ y C-13 ✓]
+  → C-22 pagina-seguridad                         [Agente B — requiere C-19 ✓ (y C-03, C-06 ✓)]
+
+GATE 10: C-14, C-16, C-17, C-18, C-19, C-20, C-21, C-22 ✓
+  → C-23 e2e-hardening-release                    [Agente A; B y C revisan y corrigen hallazgos]
 ```
 
-### Camino crítico (9 changes — mínimo irreducible)
+### Camino crítico (10 changes — mínimo irreducible)
 
 ```
-C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* → C-18
+C-01 → C-02 → C-04 → C-08 → C-10 → C-11 → C-12 → C-13 → C-14* / C-18* → C-23
 ```
 
-`*` C-12 y C-15 son ambos "penúltimos" (se pueden hacer en paralelo). Quedan fuera del camino crítico: C-03 (paralelo con C-04), C-05/C-06/C-08 (frontend de base, absorbidos por la holgura del backend), C-13/C-14/C-16/C-17 (C-17 espera a C-16 pero cae en el paso 8, en paralelo con C-12/C-15, sin alargar el camino).
+`*` C-14 y C-18 son ambos "penúltimos" (se pueden hacer en paralelo); C-22 también puede cerrar en ese mismo nivel (C-11 → C-15 → C-19 → C-22). Quedan fuera del camino crítico: C-03 y C-05 (paralelos a C-04/C-08), C-06/C-07/C-09 (frontend de base, absorbidos por la holgura del backend), C-21 (arranca en el GATE 2), C-15/C-16/C-17/C-19/C-20/C-22 (ramas paralelas a C-12 → C-13). Con 3 agentes el plan cierra en 11 pasos: el paso 10 absorbe por capacidad el último change de la rama de plan (C-20), no por dependencia.
 
 ### Plan óptimo con 3 agentes
 
 | Paso | Agente A (Backend core) | Agente B (Backend aux) | Agente C (Frontend) |
 |------|-------------------------|------------------------|---------------------|
-| 1 | C-01 | — | — |
-| 2 | C-02 | — | C-05 |
-| 3 | C-04 | C-03 | mockups de C-06 (revisión) |
-| 4 | C-07 | — | C-06 |
-| 5 | C-09 | — | C-08 |
-| 6 | C-10 | C-13 | mockups de C-11/C-14/C-16/C-17 (revisión) |
-| 7 | C-16 | C-14 | C-11 |
-| 8 | C-15 | C-17 | C-12 |
-| 9 | C-18 | apoyo de revisión | apoyo de revisión |
+| 1 | C-01 | — | mockup del app-shell de C-06 (revisión) |
+| 2 | C-02 | mockups de C-07 y C-21 (revisión) | C-06 |
+| 3 | C-04 | C-03 | C-21 |
+| 4 | C-08 | C-05 | mockups de C-09/C-13/C-14 (revisión) |
+| 5 | C-10 | mockups de C-16/C-17 (revisión) | C-07 |
+| 6 | C-11 | mockups de C-18/C-19/C-20/C-22 (revisión) | C-09 |
+| 7 | C-12 | C-15 | C-17 |
+| 8 | C-19 | C-16 | C-13 |
+| 9 | C-18 | C-22 | C-14 |
+| 10 | C-20 | apoyo de revisión (C-20) | aviso de prueba de C-20 junto con A |
+| 11 | C-23 | apoyo de revisión | apoyo de revisión |
 
 ---
 
-## FASE 1 — Fundación y núcleo
+## FASE 1 — Fundación, núcleo y autenticación
 
 ### [C-01] `foundation-setup`
 - **Estado**: `[ ]` pendiente
@@ -153,7 +168,7 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
   - Migración: `evento_auditoria` append-only (actor_tipo, entidad, acción, `valor_anterior/nuevo` JSONB, ip) con trigger `BEFORE UPDATE OR DELETE` que falla y rol `app_rw` solo con `INSERT, SELECT`.
   - Listener `@TransactionalEventListener(BEFORE_COMMIT)` que persiste en la misma transacción los eventos del puerto de C-02; enmascarado de PII en logs.
   - Tests de integración (Testcontainers): `UPDATE`/`DELETE` fallan aun con el rol de la app; el evento se revierte junto con la transacción; aislamiento por tenant.
-  - La consulta (endpoint e UI) queda en C-15.
+  - La consulta (endpoint e UI, con filtros) queda en C-18.
 - **Dependencias**: `C-02`
 - **Governance**: CRITICO
 - **Leer antes**:
@@ -162,25 +177,43 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
   - `knowledge-base/08_arquitectura_propuesta.md` §Persistencia y migraciones, §Patrones aplicados
   - `knowledge-base/11_marco_legal_argentino.md`
 
-### [C-04] `auth-backend`
+### [C-04] `auth-sesion-tokens`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Migración: `usuario`, `refresh_token`, `token_recuperacion`.
-  - `POST /api/v1/auth/registro` (crea usuario + consultorio en `PRUEBA`, `prueba_hasta = hoy + 30 d`, slug sugerido, consentimiento de términos; 409 `EMAIL_EN_USO`, 400 `PASSWORD_DEBIL`), `login`, `refresh` (rotación con detección de reuso que revoca todos), `logout`, `recuperacion` (202 idéntica) y `confirmar-recuperacion` (token 30 min, un solo uso).
-  - Spring Security stateless: JWT HS256 15 min (`sub`, `cid`, `iat`, `exp`, `ver`), refresh en cookie `HttpOnly; Secure; SameSite=Strict; Path=/api/v1/auth`, BCrypt costo 12, bloqueo tras 5 fallos (423 `CUENTA_BLOQUEADA` 15 min), rate limiting Bucket4j; filtro que resuelve `TenantContext` desde `cid`.
+  - Migración: `usuario`, `refresh_token`.
+  - `POST /api/v1/auth/registro` (crea usuario + consultorio en `PRUEBA`, `prueba_hasta = hoy + 30 d`, slug sugerido, consentimiento de términos; 409 `EMAIL_EN_USO`, 400 `PASSWORD_DEBIL`), `login`, `refresh` (rotación con detección de reuso que revoca toda la familia), `logout`.
+  - Spring Security stateless: JWT HS256 15 min (`sub`, `cid`, `iat`, `exp`, `ver`), refresh opaco de 14 días en cookie `HttpOnly; Secure; SameSite=Strict; Path=/api/v1/auth`, BCrypt costo 12; filtro que resuelve `TenantContext` desde `cid`.
   - Cabeceras: CSP estricta, HSTS fuera de local, `X-Content-Type-Options`, `Referrer-Policy: no-referrer`; CORS solo `APP_FRONTEND_ORIGIN`.
-  - Email de recuperación por SMTP (Mailpit en local); eventos de auditoría vía el puerto de C-02 (`LOGIN_FALLIDO`, etc.).
-  - Tests: cada Given/When/Then de US-001, US-002, US-003, 401/403 por tenant, cookies, rate limit.
+  - Fuera de este change (van en C-05): recuperación, cambio de contraseña, bloqueo por fallos, rate limiting y eventos de auditoría de auth.
+  - Tests: US-001; US-002 (login con access + cookie, reuso de refresh revoca todo); 401 sin token, 404 ante recurso de otro tenant; atributos de cookie; cabeceras de seguridad.
 - **Dependencias**: `C-02`
 - **Governance**: CRITICO
 - **Leer antes**:
-  - `knowledge-base/05_reglas_de_negocio.md` §Autenticación (RN-AU)
-  - `knowledge-base/06_funcionalidades.md` §Épica 1 (US-001 a US-003)
+  - `knowledge-base/05_reglas_de_negocio.md` §Autenticación (RN-AU-01, RN-AU-02, RN-AU-06), RN-TE-02
+  - `knowledge-base/06_funcionalidades.md` §US-001, US-002
   - `knowledge-base/07_flujos_principales.md` §FL-01
   - `knowledge-base/08_arquitectura_propuesta.md` §Seguridad
-  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-06, DD-15 (y `10_preguntas_abiertas.md` §IN-01, PA-09)
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-06, DD-15
 
-### [C-05] `frontend-shell-pwa`
+### [C-05] `auth-recuperacion-hardening`
+- **Estado**: `[ ]` pendiente
+- **Scope**:
+  - Migración: `token_recuperacion` (hash, 30 min, un solo uso).
+  - `POST /api/v1/auth/recuperacion` (202 idéntica exista o no el email) y `confirmar-recuperacion` (400 `TOKEN_INVALIDO` si está usado o vencido; revoca todos los refresh tokens); email por SMTP (Mailpit en local).
+  - Cambio de contraseña con sesión iniciada (US-005, RN-AU-05): `POST /api/v1/auth/cambiar-password` con la contraseña actual; valida RN-AU-01; revoca **todos** los refresh tokens e incrementa `ver` (invalida los access tokens emitidos); 400 `PASSWORD_ACTUAL_INVALIDA` / `PASSWORD_DEBIL`.
+  - Bloqueo de cuenta tras 5 fallos consecutivos (423 `CUENTA_BLOQUEADA` 15 min, mensaje genérico) y rate limiting Bucket4j sobre `/api/v1/auth/**`.
+  - Eventos de auditoría de auth vía el puerto de C-02 (RN-AD-04): `CUENTA_CREADA`, `LOGIN_EXITOSO`, `LOGIN_FALLIDO`, `PASSWORD_CAMBIADA`, `PASSWORD_RECUPERADA`; nunca contraseñas, hashes ni tokens (RN-AD-05).
+  - Tests: US-002 (bloqueo tras 5 fallos), US-003, US-005, rate limit, eventos persistidos en la misma transacción y sin secretos.
+- **Dependencias**: `C-03`, `C-04`
+- **Governance**: CRITICO
+- **Leer antes**:
+  - `knowledge-base/05_reglas_de_negocio.md` §Autenticación (RN-AU-03 a RN-AU-06), RN-AD-04, RN-AD-05
+  - `knowledge-base/06_funcionalidades.md` §US-002, US-003, US-005
+  - `knowledge-base/07_flujos_principales.md` §FL-01
+  - `knowledge-base/08_arquitectura_propuesta.md` §Seguridad, §Variables de entorno
+  - `knowledge-base/10_preguntas_abiertas.md` §IN-01, PA-09
+
+### [C-06] `frontend-shell-pwa`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - `tokens.css` del sistema de diseño importado y mapeado en `tailwind.config.ts`; `BRAND_NAME` desde `design-system/brand.js`.
@@ -195,18 +228,19 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
   - `knowledge-base/08_arquitectura_propuesta.md` §PWA y frontend mobile-first, §Estructura de directorios (frontend)
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-02, DD-11
 
-### [C-06] `frontend-auth`
+### [C-07] `frontend-auth`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Pantallas: registro (con aceptación de términos), login, recuperación y confirmación de recuperación, cierre de sesión; manejo de `CUENTA_BLOQUEADA`, `EMAIL_EN_USO`, `PASSWORD_DEBIL`, `TOKEN_INVALIDO`.
+  - Pantallas: registro (con aceptación de términos), login, recuperación y confirmación de recuperación, cambio de contraseña con sesión iniciada (US-005; al terminar fuerza nuevo login), cierre de sesión; manejo de `CUENTA_BLOQUEADA`, `EMAIL_EN_USO`, `PASSWORD_DEBIL`, `PASSWORD_ACTUAL_INVALIDA`, `TOKEN_INVALIDO`.
   - Guardas de ruta y restauración de sesión vía `/auth/refresh` al recargar.
   - Mockup revisado de todas las pantallas antes de implementar.
-  - Tests Vitest de validaciones de formularios y flujo de refresh; revisión de que el access token nunca toca el storage.
-- **Dependencias**: `C-04`, `C-05`
-- **Governance**: ALTO
+  - Tests Vitest de validaciones de formularios, flujo de refresh y cambio de contraseña; revisión de que el access token nunca toca el storage.
+- **Dependencias**: `C-05`, `C-06`
+- **Governance**: CRITICO (RN-AU-06: todo cambio en el dominio `auth`, incluido su frontend, requiere aprobación humana explícita)
 - **Leer antes**:
   - `design-system/README.md`, `design-system/components.html`
-  - `knowledge-base/06_funcionalidades.md` §US-001 a US-003
+  - `knowledge-base/06_funcionalidades.md` §US-001 a US-003, US-005
+  - `knowledge-base/05_reglas_de_negocio.md` §Autenticación (RN-AU)
   - `knowledge-base/07_flujos_principales.md` §FL-01
   - `knowledge-base/08_arquitectura_propuesta.md` §PWA y frontend mobile-first, §Seguridad
 
@@ -214,7 +248,7 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
 
 ## FASE 2 — Configuración del consultorio
 
-### [C-07] `consultorio-config-backend`
+### [C-08] `consultorio-config-backend`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - Migración: `tipo_prestacion` (duración múltiplo de 5, `activa`, `visible_publica`, único por nombre) y `disponibilidad` (franjas semanales con exclusión GiST para no solaparse).
@@ -230,13 +264,13 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
   - `knowledge-base/06_funcionalidades.md` §US-004, US-010, US-011
   - `knowledge-base/07_flujos_principales.md` §FL-02
 
-### [C-08] `frontend-configuracion`
+### [C-09] `frontend-configuracion`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - Feature `configuracion/`: datos del consultorio y slug (con link público copiable `/c/{slug}`), prestaciones con duración, disponibilidad semanal, anticipaciones; onboarding guiado FL-02 tras el registro.
   - Mockup revisado de las pantallas y del onboarding antes de implementar.
   - Tests Vitest: validaciones (múltiplo de 5, franjas solapadas, slug).
-- **Dependencias**: `C-06`, `C-07`
+- **Dependencias**: `C-07`, `C-08`
 - **Governance**: MEDIO
 - **Leer antes**:
   - `design-system/README.md`, `design-system/components.html`
@@ -248,45 +282,59 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
 
 ## FASE 3 — Agenda del odontólogo
 
-### [C-09] `agenda-dominio-y-esquema`
+### [C-10] `agenda-esquema-dominio`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Migración: `paciente` (único `(consultorio_id, telefono_e164)`, consentimiento, `requiere_revision`), `turno` (`es_sobreturno`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
-  - Dominio puro (sin Spring/JPA): `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento` (intervalos semiabiertos), `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), reglas de bloqueo (rechazo con lista de conflictos), múltiplos de 5 min.
-  - Casos de uso de aplicación: crear turno (manual, sobreturno, desde reserva pública), cambiar estado, reprogramar, crear bloqueo; deduplicación de paciente por teléfono; optimistic locking; eventos de auditoría (`TURNO_CREADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_REPROGRAMADO`, `BLOQUEO_CREADO`).
-  - Tests: la mayoría unitarios de dominio con `Clock` inyectado + integración de la exclusión GiST y de concurrencia; ArchUnit.
-- **Dependencias**: `C-07`
+  - Migración: `paciente` (único `(consultorio_id, telefono_e164)`, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
+  - Dominio puro (sin Spring/JPA): entidades y value objects (`Intervalo` semiabierto, `Duracion` múltiplo de 5), `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento`, `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), derivación `fin = inicio + duracion_min` (RN-AG-12), reglas de bloqueo (rechazo con lista de conflictos), invariantes de sobreturno.
+  - Tests: unitarios de dominio con `Clock` inyectado (la mayoría) + integración de la exclusión GiST (la base rechaza el solapamiento aun salteando el servicio); ArchUnit "dominio sin Spring/JPA".
+- **Dependencias**: `C-08`
 - **Governance**: ALTO
 - **Leer antes**:
   - `knowledge-base/04_modelo_de_datos.md` §Paciente, §Turno, §Bloqueo
-  - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG-01 a RN-AG-13), RN-RP-03
+  - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG-01 a RN-AG-13)
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-10, DD-12, DD-17
   - `knowledge-base/08_arquitectura_propuesta.md` §Patrones aplicados, §Estrategia de tests
-  - `knowledge-base/07_flujos_principales.md` §FL-03
 
-### [C-10] `agenda-api-odontologo`
+### [C-11] `agenda-casos-de-uso`
+- **Estado**: `[ ]` pendiente
+- **Scope**:
+  - Casos de uso de aplicación sobre el dominio de C-10: crear turno (manual, sobreturno y desde reserva pública, como puerto que consume C-15), cambiar estado, reprogramar (RN-AG-11), **ajustar duración** (RN-AG-12: recalcula `fin`, revalida RN-AG-01/03/04, múltiplos de 5), **editar nota interna** (`nota_interna`, máx. 500), crear y **eliminar** bloqueo.
+  - Deduplicación de paciente por teléfono E.164 (RN-RP-03): reutiliza sin sobrescribir y marca `requiere_revision` si nombre/apellido difieren.
+  - Optimistic locking (409 `CONFLICTO_CONCURRENCIA`, RN-GL-02).
+  - Eventos de auditoría en la misma transacción, con valor anterior y nuevo: `TURNO_CREADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_REPROGRAMADO`, `TURNO_DURACION_CAMBIADA`, `TURNO_NOTA_CAMBIADA`, `BLOQUEO_CREADO`, `BLOQUEO_ELIMINADO` (RN-AD-01, RN-AD-04).
+  - Tests de aplicación (Testcontainers): US-012, US-021 a US-025 a nivel caso de uso, dedupe con `requiere_revision`, concurrencia, rollback del cambio si falla la auditoría.
+- **Dependencias**: `C-10`
+- **Governance**: ALTO (concentra las invariantes de solapamiento y la auditoría de turnos que consumen la API, la reserva pública y la exportación)
+- **Leer antes**:
+  - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG), RN-RP-03, §Auditoría (RN-AD-01, RN-AD-04, RN-AD-05), RN-GL-02
+  - `knowledge-base/06_funcionalidades.md` §US-012, US-021 a US-025
+  - `knowledge-base/07_flujos_principales.md` §FL-03
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-17
+
+### [C-12] `agenda-api-odontologo`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - `GET /api/v1/agenda?desde&hasta` (turnos, sobreturnos marcados, bloqueos, cancelados filtrables; indicador de "nuevos" por reservas/cambios de pacientes).
-  - `POST /api/v1/turnos` (manual y `esSobreturno`), `PATCH /api/v1/turnos/{id}/estado`, `POST /api/v1/turnos/{id}/reprogramar` (sin anticipación mínima para el odontólogo; conserva el token de gestión), `POST/DELETE /api/v1/bloqueos`.
-  - Errores con código estable: 409 `TURNO_SOLAPADO`, `HORARIO_BLOQUEADO`, `BLOQUEO_CON_TURNOS` (con lista), `TRANSICION_INVALIDA`.
+  - `POST /api/v1/turnos` (manual y `esSobreturno`), `PATCH /api/v1/turnos/{id}/estado`, `POST /api/v1/turnos/{id}/reprogramar` (sin anticipación mínima para el odontólogo; conserva el token de gestión), `PATCH /api/v1/turnos/{id}/duracion` (RN-AG-12), `PATCH /api/v1/turnos/{id}/nota` (RN-AD-01), `POST/DELETE /api/v1/bloqueos` (el `DELETE` audita `BLOQUEO_ELIMINADO`).
+  - Errores con código estable: 409 `TURNO_SOLAPADO`, `HORARIO_BLOQUEADO`, `FUERA_DE_DISPONIBILIDAD`, `BLOQUEO_CON_TURNOS` (con lista), `TRANSICION_INVALIDA`, `CONFLICTO_CONCURRENCIA`; 400 por duración no múltiplo de 5 o nota > 500.
   - OpenAPI actualizado y `api-types.ts` regenerado.
-  - Tests API/seguridad (MockMvc + Testcontainers) de US-012, US-021, US-022, US-023 y aislamiento por tenant.
-- **Dependencias**: `C-09`
+  - Tests API/seguridad (MockMvc + Testcontainers) de US-012, US-021 a US-025 y aislamiento por tenant.
+- **Dependencias**: `C-11`
 - **Governance**: MEDIO
 - **Leer antes**:
-  - `knowledge-base/06_funcionalidades.md` §Épica 3 (US-020 a US-023), US-012
-  - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG)
+  - `knowledge-base/06_funcionalidades.md` §Épica 3 (US-020 a US-025), US-012
+  - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG), RN-AD-01, RN-AD-04
   - `knowledge-base/07_flujos_principales.md` §FL-03
   - `knowledge-base/08_arquitectura_propuesta.md` §OpenAPI
 
-### [C-11] `frontend-agenda`
+### [C-13] `frontend-agenda`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - Feature `agenda/`: vista diaria por defecto en mobile y semanal desde `md`; tarjetas de turno con color + ícono + texto, sobreturno con borde punteado, bloqueo rayado, cancelados atenuados y ocultables; lectura sin scroll horizontal a 360 px; indicador de "nuevos"; caché offline de la última agenda (solo lectura).
   - Mockup revisado de vista diaria, semanal y detalle de turno antes de implementar.
   - Tests Vitest de render de componentes de agenda y fechas/TZ.
-- **Dependencias**: `C-06`, `C-10`
+- **Dependencias**: `C-07`, `C-12`
 - **Governance**: MEDIO
 - **Leer antes**:
   - `design-system/README.md`, `design-system/tokens.css`, `design-system/components.html`
@@ -294,17 +342,17 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
   - `knowledge-base/08_arquitectura_propuesta.md` §PWA y frontend mobile-first
   - `knowledge-base/07_flujos_principales.md` §FL-03
 
-### [C-12] `frontend-turnos-bloqueos`
+### [C-14] `frontend-turnos-bloqueos`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Features `turnos/` y `bloqueos/`: crear turno manual (prestación, hueco, paciente por teléfono), agregar sobreturno, confirmar/cancelar/marcar ausente, reprogramar, crear y eliminar bloqueos; manejo de errores 409 con mensajes y lista de conflictos de bloqueo.
+  - Features `turnos/` y `bloqueos/`: crear turno manual (prestación, hueco, paciente por teléfono), agregar sobreturno, confirmar/cancelar/marcar ausente, reprogramar, **ajustar la duración** (selector en pasos de 5 min, muestra el nuevo fin), **agregar/editar la nota interna** (contador de 500), crear y eliminar bloqueos; manejo de errores 409 con mensajes y lista de conflictos de bloqueo.
   - Mockup revisado de formularios y diálogos antes de implementar.
   - Tests Vitest de validaciones y mapeo de errores.
-- **Dependencias**: `C-11`
+- **Dependencias**: `C-13`
 - **Governance**: MEDIO
 - **Leer antes**:
   - `design-system/README.md`, `design-system/components.html`
-  - `knowledge-base/06_funcionalidades.md` §US-012, US-021 a US-023
+  - `knowledge-base/06_funcionalidades.md` §US-012, US-021 a US-025
   - `knowledge-base/07_flujos_principales.md` §FL-03
   - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG)
 
@@ -312,17 +360,18 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
 
 ## FASE 4 — Reserva pública
 
-> C-13 se ejecuta en paralelo con C-10 apenas termina C-09.
+> C-15 se ejecuta en paralelo con C-12 apenas termina C-11. C-16 arranca apenas terminan C-06 y C-15; no espera a la agenda del odontólogo.
 
-### [C-13] `reserva-publica-backend`
+### [C-15] `reserva-publica-backend`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - Migración: `token_gestion_turno` (hash SHA-256, `expira_at = fin`, `revocado_at`).
-  - Endpoints públicos sin cuenta: `GET /api/v1/public/consultorios/{slug}` (nombre, dirección, teléfono, prestaciones visibles), `GET .../huecos`, `POST .../turnos` (crea turno `origen = LINK`, devuelve el token una sola vez; consentimiento de privacidad; 409 `HUECO_NO_DISPONIBLE`, `LIMITE_TURNOS`), `GET/POST /api/v1/public/turnos/{token}` para ver, reprogramar y cancelar (409 `FUERA_DE_PLAZO` con teléfono del consultorio; 404 uniforme ante token inválido).
-  - Token de 256 bits (`SecureRandom`, base64url), reserva concurrente (exactamente una prospera), reserva desactivada si `reserva_publica_activa = false` o plan `VENCIDO`, dedupe por teléfono, límite 2 turnos futuros activos, body máx. 64 KB, rate limiting por IP/token, `.ics` descargable (P1).
+  - Endpoints públicos sin cuenta: `GET /api/v1/public/consultorios/{slug}` (nombre, dirección, teléfono, prestaciones visibles), `GET .../huecos`, `POST .../turnos` (crea turno `origen = LINK` vía el caso de uso de C-11, devuelve el token una sola vez; consentimiento de privacidad; 409 `HUECO_NO_DISPONIBLE`, `LIMITE_TURNOS`), `GET/POST /api/v1/public/turnos/{token}` para ver, reprogramar y cancelar (409 `FUERA_DE_PLAZO` con teléfono del consultorio; 404 uniforme ante token inválido). La vista por token nunca expone `nota_interna`.
+  - Token de 256 bits (`SecureRandom`, base64url), reserva concurrente (exactamente una prospera), dedupe por teléfono (con `requiere_revision`), límite 2 turnos futuros activos, body máx. 64 KB, rate limiting por IP/token, `.ics` descargable (P1).
+  - Reserva desactivada si `reserva_publica_activa = false` o plan `VENCIDO`: la página informa que no toma turnos online y muestra el teléfono. **Criterio de aceptación explícito (RN-RP-11)**: en ese estado, los links de gestión existentes siguen permitiendo **cancelar** (dentro de RN-RP-04), pero no reservar ni reprogramar.
   - Auditoría con `actor_tipo = PACIENTE`.
-  - Tests: US-030, US-031, US-032, concurrencia, enumeración de tokens, aislamiento por tenant.
-- **Dependencias**: `C-07`, `C-09`
+  - Tests: US-030, US-031, US-032, RN-RP-11 (cancelar sí / reservar y reprogramar no, con reserva desactivada), concurrencia, enumeración de tokens, aislamiento por tenant.
+- **Dependencias**: `C-08`, `C-11`
 - **Governance**: ALTO
 - **Leer antes**:
   - `knowledge-base/05_reglas_de_negocio.md` §Reserva pública (RN-RP)
@@ -331,14 +380,14 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
   - `knowledge-base/08_arquitectura_propuesta.md` §Seguridad (tokens del paciente, rate limiting)
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-13 y `11_marco_legal_argentino.md`
 
-### [C-14] `frontend-reserva-publica`
+### [C-16] `frontend-reserva-publica`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Features `reserva-publica/` (`/c/{slug}`: elegir prestación, hueco, datos, consentimiento, confirmación con link `/t/{token}` para guardar) y `gestion-turno/` (`/t/{token}`: ver, reprogramar, cancelar; mensaje con teléfono si está fuera de plazo).
+  - Features `reserva-publica/` (`/c/{slug}`: elegir prestación, hueco, datos, consentimiento, confirmación con link `/t/{token}` para guardar; estado "no toma turnos online" con teléfono) y `gestion-turno/` (`/t/{token}`: ver, reprogramar, cancelar; mensaje con teléfono si está fuera de plazo; con reserva desactivada solo ofrece cancelar).
   - Mobile-first a 360 px, áreas táctiles >= 44 px, selector de horarios del sistema de diseño; sin cachear respuestas públicas en el Service Worker; objetivo de reserva < 90 s.
   - Mockup revisado de todo el flujo del paciente antes de implementar.
   - Tests Vitest de validaciones, estados de error y manejo de zona horaria.
-- **Dependencias**: `C-05`, `C-13`
+- **Dependencias**: `C-06`, `C-15`
 - **Governance**: MEDIO
 - **Leer antes**:
   - `design-system/README.md`, `design-system/components.html`
@@ -348,15 +397,32 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
 
 ---
 
-## FASE 5 — Auditoría, exportación y plan
+## FASE 5 — Pacientes, auditoría, exportación y plan
 
-### [C-15] `historial-auditoria`
+> C-21 no depende de la agenda: puede arrancar en el GATE 2 (solo requiere C-02 y C-06).
+
+### [C-17] `pacientes-revision`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - `GET /api/v1/turnos/{id}/historial` y listado paginado de eventos del consultorio (actor, fecha, valor anterior y nuevo, orden cronológico); aislamiento por tenant.
-  - Feature `auditoria/` en el detalle del turno; mockup revisado antes de implementar.
-  - Tests: US-040 (turno reservado por link y luego reprogramado muestra 2 eventos en orden).
-- **Dependencias**: `C-10`, `C-11`
+  - Backend: `GET /api/v1/pacientes?requiereRevision=true` (paginado, por tenant), `PATCH /api/v1/pacientes/{id}` (corrige nombre, apellido y email; el teléfono E.164 no se edita en v1) y `POST /api/v1/pacientes/{id}/confirmar-revision`; ambas acciones ponen `requiere_revision = false` y auditan `PACIENTE_REVISADO` con solo los campos modificados (RN-AD-05); 404 ante paciente de otro consultorio (RN-TE-04); PII enmascarada en logs (RN-GL-01).
+  - Frontend: feature `pacientes/` con listado, filtro "requiere revisión" (con contador visible desde la agenda) y acción de confirmar o corregir; mockup revisado antes de implementar.
+  - Tests: US-070, auditoría, aislamiento por tenant; Vitest del filtro y del formulario.
+- **Dependencias**: `C-09`, `C-11`
+- **Governance**: MEDIO
+- **Leer antes**:
+  - `design-system/README.md`, `design-system/components.html`
+  - `knowledge-base/05_reglas_de_negocio.md` RN-RP-03, RN-AD-05, RN-TE-04, RN-GL-01
+  - `knowledge-base/06_funcionalidades.md` §US-070
+  - `knowledge-base/04_modelo_de_datos.md` §Paciente
+  - `knowledge-base/10_preguntas_abiertas.md` §PA-01
+
+### [C-18] `historial-auditoria`
+- **Estado**: `[ ]` pendiente
+- **Scope**:
+  - `GET /api/v1/turnos/{id}/historial` y `GET /api/v1/auditoria` paginado con **filtros por turno, rango de fechas y tipo de acción** (RN-AD-06): actor, fecha, valor anterior y nuevo, orden cronológico; aislamiento por tenant.
+  - Feature `auditoria/`: historial en el detalle del turno y listado del consultorio con los tres filtros; mockup revisado antes de implementar.
+  - Tests: US-040 (turno reservado por link y luego reprogramado muestra 2 eventos en orden; filtros por turno, rango y acción, combinados y vacíos).
+- **Dependencias**: `C-12`, `C-13`
 - **Governance**: MEDIO
 - **Leer antes**:
   - `knowledge-base/06_funcionalidades.md` §US-040
@@ -364,13 +430,13 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
   - `knowledge-base/04_modelo_de_datos.md` §EventoAuditoria
   - `design-system/README.md`
 
-### [C-16] `exportacion-datos`
+### [C-19] `exportacion-datos`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - `POST /api/v1/exportacion`: ZIP por streaming con JSON y CSV por entidad, un PDF legible (`resumen.pdf`: consultorio, prestaciones, pacientes, listado de turnos y resumen de auditoría; lo genera el backend, librería a decidir al proponer, p. ej. OpenPDF) y `manifest.json` (cantidades que coinciden con la base); sin hashes ni tokens; 429 si hubo otra hace < 5 min; funciona en plan `VENCIDO`; evento `EXPORTACION_GENERADA`.
   - Botón y pantalla de exportación en `configuracion/` (feature `exportacion/`); mockup revisado antes de implementar.
   - Tests: US-050, contenido del ZIP (incluido el PDF: se genera, tiene las secciones mínimas y no contiene hashes ni tokens), rate limit, aislamiento por tenant.
-- **Dependencias**: `C-08`, `C-13`
+- **Dependencias**: `C-09`, `C-15`
 - **Governance**: ALTO
 - **Leer antes**:
   - `knowledge-base/05_reglas_de_negocio.md` §Exportación (RN-EX)
@@ -379,21 +445,52 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-14
   - `knowledge-base/11_marco_legal_argentino.md`
 
-### [C-17] `plan-precios-y-seguridad`
+### [C-20] `plan-ciclo-de-vida`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Lógica de `plan` (`PRUEBA`/`ACTIVO`/`VENCIDO`); tarea diaria programada que pasa a `VENCIDO` al vencer `prueba_hasta`; en `VENCIDO` la agenda queda en solo lectura (escrituras rechazadas), la reserva pública deja de tomar reservas y la exportación sigue habilitada; pase a `ACTIVO` manual con evento `actor_tipo = SISTEMA`.
-  - Planes públicos: `GET /api/v1/public/planes` y página `/precios` en ARS con impuestos incluidos y fecha de actualización visible (sin cobro integrado); la prueba gratuita **no pide tarjeta ni medio de pago** y la página lo dice explícitamente; aviso en la app con los días de prueba restantes.
-  - Página pública estática `/seguridad` (sin auth, US-062): tratamiento de datos, auditoría inmutable, exportación completa, hosting/tratamiento y lo que aún no está (sin 2FA en v1, sin revisión legal profesional todavía, PA-06); sin declarar cumplimiento no respaldado; fecha de última actualización visible; contenido en una fuente editable versionada (no hardcodeado en componentes).
-  - Mockups revisados de `/precios`, `/seguridad` y del aviso antes de implementar.
-  - Tests: US-060, US-061 con `Clock` inyectado; US-062 (página pública, muestra fecha y la sección "lo que aún no está", contenido coincide con la fuente editable).
-- **Dependencias**: `C-08`, `C-10`, `C-13`, `C-16`
+  - Lógica de `plan` (`PRUEBA`/`ACTIVO`/`VENCIDO`); tarea diaria programada (FL-07, idempotente) que pasa a `VENCIDO` al vencer `prueba_hasta` y audita `PLAN_VENCIDO` con `actor_tipo = SISTEMA`; pase a `ACTIVO` manual como operación interna auditada (`SISTEMA`).
+  - Bloqueo de escrituras en `VENCIDO`: guarda transversal en backend (RN-GL-04) que rechaza con 403 `PLAN_VENCIDO` toda escritura privada (agenda, bloqueos, pacientes, configuración) salvo una lista explícita de permitidas (lectura, exportación, login/logout/cambio de contraseña); como es genérica, alcanza también a los endpoints que se agreguen después. La reserva pública deja de tomar reservas.
+  - **Criterio de aceptación explícito (RN-RP-11)**: con plan `VENCIDO`, los links de gestión `/t/{token}` existentes siguen permitiendo **cancelar** (dentro de RN-RP-04), pero no reprogramar ni reservar.
+  - Aviso en la app con los días de prueba restantes (US-061) y estado `VENCIDO` en solo lectura; mockup revisado antes de implementar.
+  - Tests con `Clock` inyectado: US-061, idempotencia de la tarea, matriz de endpoints permitidos/bloqueados en `VENCIDO`, exportación habilitada, RN-RP-11.
+- **Dependencias**: `C-09`, `C-12`, `C-15`
+- **Governance**: CRITICO (equivale a Billing: bloquea escrituras en toda la agenda)
+- **Leer antes**:
+  - `knowledge-base/05_reglas_de_negocio.md` §Plan y precios (RN-PL-02 a RN-PL-04), RN-RP-11, RN-EX-03, RN-GL-04
+  - `knowledge-base/06_funcionalidades.md` §US-061
+  - `knowledge-base/07_flujos_principales.md` §FL-07
+  - `knowledge-base/10_preguntas_abiertas.md` §PA-03
+  - `design-system/README.md`
+
+### [C-21] `pagina-precios`
+- **Estado**: `[ ]` pendiente
+- **Scope**:
+  - `GET /api/v1/public/planes`: planes en ARS con impuestos incluidos y fecha de actualización, desde una fuente de configuración versionada (sin cobro integrado, RN-PL-04).
+  - Página pública `/precios` (sin auth): planes, qué incluye cada uno y la prueba gratuita de 30 días que **no pide tarjeta ni medio de pago**, dicho explícitamente (RN-PL-02); fecha de actualización visible.
+  - Mockup revisado de `/precios` antes de implementar.
+  - Tests: US-060 (endpoint público sin auth, contenido en ARS, fecha visible, leyenda "sin tarjeta"); Vitest de render.
+- **Dependencias**: `C-02`, `C-06`
 - **Governance**: MEDIO
 - **Leer antes**:
-  - `knowledge-base/05_reglas_de_negocio.md` §Plan y precios (RN-PL-01..06), RN-RP-11, RN-AD-02, RN-EX
-  - `knowledge-base/06_funcionalidades.md` §US-060, US-061, US-062
-  - `knowledge-base/07_flujos_principales.md` §FL-07
-  - `knowledge-base/10_preguntas_abiertas.md` §PA-03, PA-06, PA-13, IN-03
+  - `design-system/README.md`, `design-system/components.html`
+  - `knowledge-base/05_reglas_de_negocio.md` §Plan y precios (RN-PL-01, RN-PL-02, RN-PL-04)
+  - `knowledge-base/06_funcionalidades.md` §US-060
+  - `knowledge-base/10_preguntas_abiertas.md` §PA-03
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-18
+
+### [C-22] `pagina-seguridad`
+- **Estado**: `[ ]` pendiente
+- **Scope**:
+  - Página pública estática `/seguridad` (sin auth, US-062): tratamiento de datos, auditoría inmutable, exportación completa, hosting/tratamiento y lo que aún no está (sin 2FA en v1, sin revisión legal profesional todavía, PA-06); sin declarar cumplimiento no respaldado; fecha de última actualización visible; contenido en una fuente editable versionada (no hardcodeado en componentes).
+  - Cada afirmación se contrasta con la capacidad implementada (RN-PL-06): auditoría append-only (C-03), exportación (C-19), aislamiento por tenant (C-02).
+  - Mockup revisado de `/seguridad` antes de implementar.
+  - Tests: US-062 (página pública, muestra fecha y la sección "lo que aún no está", contenido coincide con la fuente editable).
+- **Dependencias**: `C-03`, `C-06`, `C-19`
+- **Governance**: ALTO (riesgo legal: afirmaciones públicas sobre tratamiento de datos de salud)
+- **Leer antes**:
+  - `knowledge-base/05_reglas_de_negocio.md` §Plan y precios (RN-PL-05, RN-PL-06), RN-AD-02, RN-EX-01
+  - `knowledge-base/06_funcionalidades.md` §US-062
+  - `knowledge-base/10_preguntas_abiertas.md` §PA-06, PA-13
   - `knowledge-base/11_marco_legal_argentino.md`
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-18
   - `design-system/README.md`
@@ -402,14 +499,15 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
 
 ## FASE 6 — Cierre de v1
 
-### [C-18] `e2e-hardening-release`
+### [C-23] `e2e-hardening-release`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - Playwright en viewport mobile: reserva por link de punta a punta y login -> crear turno; integrado al CI como humo previo a cada release.
-  - Revisión de seguridad: CSP/cabeceras, rate limits, enmascarado de PII en logs, ausencia de tokens en `Referer`/caché, secretos solo por entorno; aislamiento entre tenants en toda la API.
+  - Revisión de seguridad: CSP/cabeceras, rate limits, enmascarado de PII en logs, ausencia de tokens en `Referer`/caché, secretos solo por entorno; aislamiento entre tenants en toda la API; matriz completa de escrituras bloqueadas en plan `VENCIDO` (incluidos los endpoints de C-17).
+  - Revisión de `/seguridad` contra el código (RN-PL-06) antes del release.
   - Seed local completo para demo; README de arranque (`docker compose up --build`); textos de privacidad y términos como borrador marcado "pendiente de revisión legal" (PA-06), sin declarar cumplimiento no verificado.
   - Checklist previo al piloto (PA-02 hosting, PA-06 asesoría legal, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
-- **Dependencias**: `C-12`, `C-14`, `C-15`, `C-16`, `C-17`
+- **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
 - **Leer antes**:
   - `knowledge-base/08_arquitectura_propuesta.md` §Seguridad, §Estrategia de tests
@@ -426,22 +524,29 @@ C-01 → C-02 → C-04 → C-07 → C-09 → C-10 → C-11 → C-12* / C-15* →
 | C-01 | foundation-setup | 1 | — | BAJO |
 | C-02 | core-compartido-tenant | 1 | C-01 | CRITICO |
 | C-03 | auditoria-base | 1 | C-02 | CRITICO |
-| C-04 | auth-backend | 1 | C-02 | CRITICO |
-| C-05 | frontend-shell-pwa | 1 | C-01 | BAJO |
-| C-06 | frontend-auth | 1 | C-04, C-05 | ALTO |
-| C-07 | consultorio-config-backend | 2 | C-03, C-04 | MEDIO |
-| C-08 | frontend-configuracion | 2 | C-06, C-07 | MEDIO |
-| C-09 | agenda-dominio-y-esquema | 3 | C-07 | ALTO |
-| C-10 | agenda-api-odontologo | 3 | C-09 | MEDIO |
-| C-11 | frontend-agenda | 3 | C-06, C-10 | MEDIO |
-| C-12 | frontend-turnos-bloqueos | 3 | C-11 | MEDIO |
-| C-13 | reserva-publica-backend | 4 | C-07, C-09 | ALTO |
-| C-14 | frontend-reserva-publica | 4 | C-05, C-13 | MEDIO |
-| C-15 | historial-auditoria | 5 | C-10, C-11 | MEDIO |
-| C-16 | exportacion-datos | 5 | C-08, C-13 | ALTO |
-| C-17 | plan-precios-y-seguridad | 5 | C-08, C-10, C-13, C-16 | MEDIO |
-| C-18 | e2e-hardening-release | 6 | C-12, C-14, C-15, C-16, C-17 | MEDIO |
+| C-04 | auth-sesion-tokens | 1 | C-02 | CRITICO |
+| C-05 | auth-recuperacion-hardening | 1 | C-03, C-04 | CRITICO |
+| C-06 | frontend-shell-pwa | 1 | C-01 | BAJO |
+| C-07 | frontend-auth | 1 | C-05, C-06 | CRITICO |
+| C-08 | consultorio-config-backend | 2 | C-03, C-04 | MEDIO |
+| C-09 | frontend-configuracion | 2 | C-07, C-08 | MEDIO |
+| C-10 | agenda-esquema-dominio | 3 | C-08 | ALTO |
+| C-11 | agenda-casos-de-uso | 3 | C-10 | ALTO |
+| C-12 | agenda-api-odontologo | 3 | C-11 | MEDIO |
+| C-13 | frontend-agenda | 3 | C-07, C-12 | MEDIO |
+| C-14 | frontend-turnos-bloqueos | 3 | C-13 | MEDIO |
+| C-15 | reserva-publica-backend | 4 | C-08, C-11 | ALTO |
+| C-16 | frontend-reserva-publica | 4 | C-06, C-15 | MEDIO |
+| C-17 | pacientes-revision | 5 | C-09, C-11 | MEDIO |
+| C-18 | historial-auditoria | 5 | C-12, C-13 | MEDIO |
+| C-19 | exportacion-datos | 5 | C-09, C-15 | ALTO |
+| C-20 | plan-ciclo-de-vida | 5 | C-09, C-12, C-15 | CRITICO |
+| C-21 | pagina-precios | 5 | C-02, C-06 | MEDIO |
+| C-22 | pagina-seguridad | 5 | C-03, C-06, C-19 | ALTO |
+| C-23 | e2e-hardening-release | 6 | C-14, C-16, C-17, C-18, C-19, C-20, C-21, C-22 | MEDIO |
 
 **Primer item elegible**: `C-01` (`foundation-setup`).
+
+> Renumeración (revisión del 2026-11-20, decisión del usuario). IDs anteriores → actuales: C-01 → C-01; C-02 → C-02; C-03 → C-03; C-04 `auth-backend` → C-04 `auth-sesion-tokens` + C-05 `auth-recuperacion-hardening`; C-05 → C-06; C-06 → C-07; C-07 → C-08; C-08 → C-09; C-09 `agenda-dominio-y-esquema` → C-10 `agenda-esquema-dominio` + C-11 `agenda-casos-de-uso`; C-10 → C-12; C-11 → C-13; C-12 → C-14; C-13 → C-15; C-14 → C-16; C-15 → C-18; C-16 → C-19; C-17 `plan-precios-y-seguridad` → C-20 `plan-ciclo-de-vida` + C-21 `pagina-precios` + C-22 `pagina-seguridad`; C-18 → C-23. Nuevo: C-17 `pacientes-revision`.
 
 > Nota post-v1 (no son changes de este roadmap): el backlog diferido (recordatorios/WhatsApp, incluido el botón de compartir el link de reserva por WhatsApp; 2FA del odontólogo (PA-13), ambos fuera de v1 por decisión del usuario, DD-18; historia clínica y odontograma, cobros, obras sociales, ARCA, multi-profesional/multi-sillón y roles) está en `knowledge-base/06_funcionalidades.md` §Backlog post-v1 y en `discovery/informe-discovery.md` D.3, "Etapas posteriores", primera etapa posterior a la v1 (orden sugerido: WhatsApp recordatorios/confirmación, HC/odontograma, presupuestos, caja/MP, obras sociales base, multiprofesional/sillón y roles), y se planifica tras el piloto (PA-05).

@@ -1,6 +1,6 @@
 {
   "version": 5,
-  "step": "roadmap",
+  "step": "registry",
   "owner": "active-orchestrator",
   "discovery": {
     "created_by": "discovery-research",
@@ -302,7 +302,98 @@
       "C-15",
       "C-16",
       "C-17",
-      "C-18"
+      "C-18",
+      "C-19",
+      "C-20",
+      "C-21",
+      "C-22",
+      "C-23"
     ]
+  },
+  "skills": {
+    "created_by": "find-skill",
+    "recommended": [
+      {
+        "name": "springboot-patterns",
+        "repo": "affaan-m/ecc",
+        "install_cmd": "npx skills add affaan-m/ecc --skill springboot-patterns -g",
+        "installs": "15.2K",
+        "why": "Patrones de arquitectura Spring Boot para el backend Java 21."
+      },
+      {
+        "name": "springboot-tdd",
+        "repo": "affaan-m/ecc",
+        "install_cmd": "npx skills add affaan-m/ecc --skill springboot-tdd -g",
+        "installs": "13.1K",
+        "why": "TDD en Spring Boot (JUnit, Testcontainers), alineado con el modo Strict TDD."
+      },
+      {
+        "name": "springboot-security",
+        "repo": "affaan-m/ecc",
+        "install_cmd": "npx skills add affaan-m/ecc --skill springboot-security -g",
+        "installs": "13.9K",
+        "why": "Seguridad Spring Boot para datos de salud y aislamiento multi-tenant."
+      },
+      {
+        "name": "tdd",
+        "repo": "mattpocock/skills",
+        "install_cmd": "npx skills add mattpocock/skills --skill tdd -g",
+        "installs": "1.3M",
+        "why": "Flujo TDD red-green-refactor general, util para frontend TS y Vitest."
+      },
+      {
+        "name": "security-and-hardening",
+        "repo": "addyosmani/agent-skills",
+        "install_cmd": "npx skills add addyosmani/agent-skills --skill security-and-hardening -g",
+        "installs": "88.9K",
+        "why": "Hardening y OWASP para datos sensibles de pacientes y pagina publica."
+      },
+      {
+        "name": "accessibility",
+        "repo": "addyosmani/web-quality-skills",
+        "install_cmd": "npx skills add addyosmani/web-quality-skills --skill accessibility -g",
+        "installs": "72.3K",
+        "why": "Accesibilidad WCAG para PWA mobile-first y pagina de reserva publica."
+      },
+      {
+        "name": "supabase-postgres-best-practices",
+        "repo": "supabase/agent-skills",
+        "install_cmd": "npx skills add supabase/agent-skills --skill supabase-postgres-best-practices -g",
+        "installs": "492.1K",
+        "why": "Buenas practicas PostgreSQL: esquema, indices y RLS para multi-tenant."
+      },
+      {
+        "name": "docker-patterns",
+        "repo": "affaan-m/ecc",
+        "install_cmd": "npx skills add affaan-m/ecc --skill docker-patterns -g",
+        "installs": "16.4K",
+        "why": "Patrones Docker y Compose para el entorno local."
+      },
+      {
+        "name": "openapi-spec-generation",
+        "repo": "wshobson/agents",
+        "install_cmd": "npx skills add wshobson/agents --skill openapi-spec-generation -g",
+        "installs": "17.3K",
+        "why": "Diseno y generacion de contratos OpenAPI (API contract-first)."
+      },
+      {
+        "name": "pwa-development",
+        "repo": "alinaqi/maggy",
+        "install_cmd": "npx skills add alinaqi/maggy --skill pwa-development -g",
+        "installs": "4.6K",
+        "why": "Service worker, manifest y offline para la PWA."
+      }
+    ],
+    "installed": [
+      "springboot-tdd",
+      "springboot-patterns",
+      "springboot-security",
+      "tdd",
+      "supabase-postgres-best-practices"
+    ]
+  },
+  "registry": {
+    "created_by": "skill-registry",
+    "file": ".atl/skill-registry.md"
   }
 }

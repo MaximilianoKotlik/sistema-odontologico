@@ -43,6 +43,16 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 
 **Reglas**: RN-TE-03, RN-RP-04, RN-AD-04
 
+### US-005 — Cambiar mi contraseña con la sesión iniciada (P0)
+**Como** odontólogo **quiero** cambiar mi contraseña desde la app **para** proteger mi cuenta si sospecho que alguien la conoce.
+
+- [ ] **Dado** que estoy logueado y envío mi contraseña actual correcta y una nueva válida, **cuando** la cambio, **entonces** se guarda con BCrypt, se revocan todos mis refresh tokens (también el de esta sesión), los access tokens emitidos dejan de valer y debo volver a iniciar sesión.
+- [ ] **Dado** una contraseña actual incorrecta, **cuando** intento cambiarla, **entonces** recibo 400 `PASSWORD_ACTUAL_INVALIDA` y nada cambia.
+- [ ] **Dado** una contraseña nueva de 9 caracteres o igual a mi email, **entonces** recibo 400 `PASSWORD_DEBIL`.
+- [ ] **Dado** un cambio exitoso, **entonces** queda un evento `PASSWORD_CAMBIADA` sin la contraseña ni su hash.
+
+**Reglas**: RN-AU-01, RN-AU-05, RN-AU-06, RN-AD-04, RN-AD-05
+
 ## Épica 2: Disponibilidad y prestaciones
 
 ### US-010 — Definir tipos de prestación con duración (P0)
@@ -108,6 +118,25 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 
 **Reglas**: RN-AG-06, RN-AG-07, RN-AG-11, RN-AD-01
 
+### US-024 — Ajustar la duración de un turno (P0)
+**Como** odontólogo **quiero** alargar o acortar un turno ya cargado **para** que la agenda refleje el tiempo real de la atención.
+
+- [ ] **Dado** un turno 10:00–10:30 y libre hasta las 11:00, **cuando** ajusto la duración a 45 min, **entonces** `fin` pasa a 10:45 (se deriva de `inicio + duracion_min`) y se registra `TURNO_DURACION_CAMBIADA` con valor anterior y nuevo.
+- [ ] **Dado** una duración de 47 min, **entonces** recibo 400 (múltiplo de 5).
+- [ ] **Dado** otro turno activo 10:30–11:00, **cuando** ajusto a 45 min un turno que no es sobreturno, **entonces** recibo 409 `TURNO_SOLAPADO` y la duración no cambia.
+- [ ] **Dado** un bloqueo desde las 10:40, **cuando** ajusto a 45 min, **entonces** recibo 409 `HORARIO_BLOQUEADO`.
+
+**Reglas**: RN-AG-01, RN-AG-02, RN-AG-03, RN-AG-04, RN-AG-08, RN-AG-12, RN-AD-01
+
+### US-025 — Agregar o editar la nota interna de un turno (P1)
+**Como** odontólogo **quiero** anotar algo breve en un turno (p. ej. "trae radiografía") **para** tenerlo a mano al atender.
+
+- [ ] **Dado** un turno, **cuando** guardo una nota de hasta 500 caracteres, **entonces** queda en `nota_interna` y se registra `TURNO_NOTA_CAMBIADA` con valor anterior y nuevo.
+- [ ] **Dado** una nota de 501 caracteres, **entonces** recibo 400 y la nota no cambia.
+- [ ] **Dado** un paciente que abre su turno por `/t/{token}`, **entonces** no ve la nota interna.
+
+**Reglas**: RN-AD-01, RN-AD-05, RN-GL-02
+
 ## Épica 4: Reserva pública
 
 ### US-030 — Reservar un turno por link sin cuenta (P0)
@@ -144,6 +173,7 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 
 - [ ] **Dado** un turno reservado por link y luego reprogramado por mí, **cuando** abro su historial, **entonces** veo 2 eventos en orden con actor, fecha, valor anterior y nuevo.
 - [ ] **Dado** cualquier evento, **cuando** se intenta un `UPDATE` o `DELETE` sobre él en la base, **entonces** la operación falla.
+- [ ] **Dado** eventos de distintos turnos, fechas y acciones, **cuando** filtro el registro por turno, por rango de fechas y por tipo de acción (solos o combinados), **entonces** solo veo los eventos que cumplen todos los filtros, en orden cronológico.
 
 **Reglas**: RN-AD-01, RN-AD-02, RN-AD-06
 
@@ -185,6 +215,17 @@ Prioridad: **P0** imprescindible para lanzar v1, **P1** deseable en v1.
 - [ ] **Dado** cada afirmación de la página, **entonces** corresponde a una capacidad implementada (RN-PL-06) y el contenido sale de una fuente editable.
 
 **Reglas**: RN-PL-05, RN-PL-06, RN-AD-02, RN-EX-01
+
+## Épica 8: Pacientes
+
+### US-070 — Revisar pacientes marcados por la deduplicación (P1)
+**Como** odontólogo **quiero** ver los pacientes cuyos datos no coincidieron al reservar **para** confirmarlos o corregirlos.
+
+- [ ] **Dado** un teléfono ya registrado como "Ana Pérez", **cuando** reserva por link "Ana Peres" con ese teléfono, **entonces** se reutiliza el paciente sin sobrescribir sus datos, queda con `requiere_revision = true` y aparece al filtrar "requiere revisión".
+- [ ] **Dado** un paciente marcado, **cuando** confirmo sus datos o corrijo nombre, apellido o email, **entonces** `requiere_revision` pasa a `false` y se registra `PACIENTE_REVISADO` solo con los campos modificados.
+- [ ] **Dado** un paciente de otro consultorio, **cuando** intento revisarlo, **entonces** recibo 404.
+
+**Reglas**: RN-RP-03, RN-AD-05, RN-TE-04, RN-GL-01
 
 ## Trazabilidad con el Discovery y el mercado
 
