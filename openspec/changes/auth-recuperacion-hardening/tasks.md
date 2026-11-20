@@ -11,11 +11,11 @@
 
 ## 1. Bloqueo por fallos y auditoría del login
 
-- [ ] 1.1 Tests unitarios de `Usuario`: 5 fallos bloquean 15 min, intentos durante el bloqueo no lo extienden, el éxito reinicia el contador y el bloqueo termina con el `Clock`; implementar las reglas en `auth.domain`; verificar en verde
-- [ ] 1.2 Test de integración del escenario "Sexto intento con la contraseña correcta" (423 `CUENTA_BLOQUEADA` con minutos restantes, sin token ni cookie); cambiar `IniciarSesion` para devolver `ResultadoLogin` con `SELECT … FOR UPDATE` y mapearlo en `auth.web`; verificar en verde
-- [ ] 1.3 Tests de integración de "Fin del bloqueo", "Intentos durante el bloqueo no lo extienden" y "Fallos no consecutivos"; verificar en verde
-- [ ] 1.4 Tests de integración de la auditoría de logins: `LOGIN_FALLIDO` persistido aunque la respuesta sea 401/423, `LOGIN_EXITOSO` sin tokens y ningún evento con email inexistente; publicar los eventos desde `IniciarSesion`; verificar en verde
-- [ ] 1.5 Test de concurrencia: 5 logins fallidos simultáneos dejan la cuenta bloqueada (no se pierden incrementos); verificar en verde
+- [x] 1.1 Tests unitarios de `Usuario`: 5 fallos bloquean 15 min, intentos durante el bloqueo no lo extienden, el éxito reinicia el contador y el bloqueo termina con el `Clock`; implementar las reglas en `auth.domain`; verificar en verde
+- [x] 1.2 Test de integración del escenario "Sexto intento con la contraseña correcta" (423 `CUENTA_BLOQUEADA` con minutos restantes, sin token ni cookie); cambiar `IniciarSesion` para devolver `ResultadoLogin` con `SELECT … FOR UPDATE` y mapearlo en `auth.web`; verificar en verde
+- [x] 1.3 Tests de integración de "Fin del bloqueo", "Intentos durante el bloqueo no lo extienden" y "Fallos no consecutivos"; verificar en verde
+- [x] 1.4 Tests de integración de la auditoría de logins: `LOGIN_FALLIDO` persistido aunque la respuesta sea 401/423, `LOGIN_EXITOSO` sin tokens y ningún evento con email inexistente; publicar los eventos desde `IniciarSesion`; verificar en verde
+- [x] 1.5 Test de concurrencia: 5 logins fallidos simultáneos dejan la cuenta bloqueada (no se pierden incrementos); verificar en verde
 
 ## 2. Auditoría del registro
 

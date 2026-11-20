@@ -1,15 +1,21 @@
 package ar.sistemaodontologico.auth.web;
 
 import ar.sistemaodontologico.auth.application.GestionDeSesion;
+import ar.sistemaodontologico.auth.application.GestionDeSesion.Bloqueada;
+import ar.sistemaodontologico.auth.application.GestionDeSesion.CredencialesInvalidas;
+import ar.sistemaodontologico.auth.application.GestionDeSesion.Exitoso;
 import ar.sistemaodontologico.auth.application.GestionDeSesion.Renovada;
 import ar.sistemaodontologico.auth.application.GestionDeSesion.Renovacion;
+import ar.sistemaodontologico.auth.application.GestionDeSesion.ResultadoLogin;
 import ar.sistemaodontologico.auth.application.GestionDeSesion.Sesion;
+import ar.sistemaodontologico.compartido.domain.error.AutenticacionRechazada;
 import ar.sistemaodontologico.compartido.web.ManejadorGlobalDeErrores;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -48,8 +54,22 @@ class ControladorDeSesion {
     }
 
     @PostMapping("/login")
-    ResponseEntity<SesionResponse> login(@RequestBody LoginRequest pedido) {
-        return conSesion(sesiones.iniciar(pedido.email(), pedido.password()));
+    ResponseEntity<?> login(@RequestBody LoginRequest pedido, HttpServletRequest peticion) {
+        ResultadoLogin resultado = sesiones.iniciar(pedido.email(), pedido.password(), peticion.getRemoteAddr());
+        return switch (resultado) {
+            case Exitoso exitoso -> conSesion(exitoso.sesion());
+            case CredencialesInvalidas invalidas ->
+                    throw new AutenticacionRechazada("CREDENCIALES_INVALIDAS", "Email o contraseña incorrectos");
+            case Bloqueada bloqueada -> cuentaBloqueada(bloqueada.minutosRestantes(), peticion);
+        };
+    }
+
+    /** 423 con un mensaje genérico y los minutos que faltan (RN-AU-03, FL-01; C-05, design D1). */
+    private static ResponseEntity<ProblemDetail> cuentaBloqueada(long minutos, HttpServletRequest peticion) {
+        ProblemDetail problema = ManejadorGlobalDeErrores.problemaPara(HttpStatus.LOCKED, "CUENTA_BLOQUEADA",
+                "La cuenta está bloqueada temporalmente por intentos fallidos", peticion.getRequestURI());
+        problema.setProperty("minutosRestantes", minutos);
+        return ResponseEntity.status(HttpStatus.LOCKED).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(problema);
     }
 
     @PostMapping("/refresh")
