@@ -39,12 +39,14 @@ Diferencia menor dentro de C-02: la propuesta nombra el evento `EventoAuditoriaP
 - La consulta del registro, el endpoint, los filtros, la UI y el test de aislamiento 404: van en C-18.
 - Emitir los eventos de cada dominio (auth en C-05, configuración en C-08, agenda en C-11/C-12).
 - Auditar lecturas (`11`, para la v2 con historia clínica). Retención tras la baja (PA-07).
+- Auditar operaciones que **fallan**, como `LOGIN_FALLIDO` (RN-AD-04). Queda para C-05; ver Risks.
 
 ## Decisions
 
 ### D-1 Inmutabilidad en dos capas: trigger y permisos
 - Función `evento_auditoria_inmutable()` que hace `RAISE EXCEPTION` con un `SQLSTATE` propio, enganchada en `BEFORE UPDATE OR DELETE ... FOR EACH ROW` y en `BEFORE TRUNCATE ... FOR EACH STATEMENT`.
-- En la misma migración: `REVOKE UPDATE, DELETE, TRUNCATE ON evento_auditoria FROM app_rw` (obligatorio por los privilegios por defecto de C-01) y `GRANT INSERT, SELECT`.
+- En la misma migración: `REVOKE UPDATE, DELETE, TRUNCATE ON evento_auditoria FROM "${app-user}"` (obligatorio por los privilegios por defecto de C-01) y `GRANT INSERT, SELECT ... TO "${app-user}"`.
+- **El rol no va fijo en el SQL**: es configurable con `DB_APP_USER` (`01-roles.sh`, `application.yml`). La migración usa el placeholder de Flyway `${app-user}`, definido en `application.yml` como `spring.flyway.placeholders.app-user: ${DB_APP_USER}`. Con el nombre fijo, en un entorno donde el rol se llame distinto la migración fallaría o no protegería nada. La convención vale para todas las migraciones con `GRANT`/`REVOKE`; se le avisa a Fran (C-02 D7 y C-04 D12 también nombran `app_rw`).
 - *Por qué las dos capas*: el permiso protege al rol de la aplicación. El trigger protege también contra un rol con permisos de más, como un `GRANT` equivocado en el futuro. `TRUNCATE` no dispara triggers de fila; por eso lleva el suyo.
 - *Alternativa descartada*: solo permisos. Un error de configuración lo rompería sin que lo note ningún test.
 - *Límite aceptado*: `app_owner` puede deshabilitar el trigger, pero es el rol de las migraciones y la aplicación no lo usa en ejecución.
@@ -56,6 +58,7 @@ Diferencia menor dentro de C-02: la propuesta nombra el evento `EventoAuditoriaP
 
 ### D-3 Listener `BEFORE_COMMIT`
 - `@TransactionalEventListener(phase = BEFORE_COMMIT)` en `auditoria.application`: mapea el evento e inserta. Si lanza una excepción, se aborta el commit y el cambio auditado se revierte (RN-AD-03).
+- **Flush antes de insertar**: Spring invoca los listeners `BEFORE_COMMIT` en `triggerBeforeCommit`, antes de `doCommit`, que es cuando Hibernate hace el flush de los cambios pendientes. Un `INSERT` por JDBC en ese momento no ve las filas que el caso de uso todavía tiene solo en el contexto de persistencia. Si el evento referencia una de ellas, la FK falla (por ejemplo, el registro de C-04 crea el consultorio con JPA y publica `CUENTA_CREADA` en la misma transacción). Por eso el listener llama a `EntityManager.flush()` antes de insertar. El flush no cambia la semántica: esas sentencias se iban a ejecutar igual en el commit.
 - No hace falta `fallbackExecution`: C-02 ya impide publicar fuera de una transacción (K-1).
 - *Alternativa descartada*: que cada caso de uso llame directo al repositorio de auditoría. Acopla todos los módulos a `auditoria` y ArchUnit lo prohíbe.
 
@@ -67,12 +70,14 @@ Diferencia menor dentro de C-02: la propuesta nombra el evento `EventoAuditoriaP
 - Columnas de `04` §EventoAuditoria, con `consultorio_id NOT NULL REFERENCES consultorio(id)`, `UNIQUE (consultorio_id, id)` y `ck_evento_auditoria_actor_tipo`.
 - Índices `(consultorio_id, ocurrido_at DESC)` y `(consultorio_id, entidad, entidad_id)`.
 - No hay FK hacia la entidad auditada, porque `entidad`/`entidad_id` es polimórfico.
+- La FK a `consultorio` va **sin `ON DELETE CASCADE`**. Con cascada, borrar un consultorio intentaría borrar sus eventos, el trigger lo rechazaría y fallaría el borrado entero. La baja de consultorios no está en v1; cómo se retienen o anonimizan los eventos tras una baja se decide con PA-07.
 
 ### D-6 Enmascarado de PII en logs
 - Un conversor de Logback (`MessageConverter` propio) se registra en un `logback-spring.xml` nuevo (C-01 no lo tiene) y aplica expresiones regulares sobre el mensaje formateado:
   - emails → `a***@example.com`;
   - teléfonos E.164 o con separadores → se conservan los últimos 2 dígitos;
   - cadenas base64url de 43 o más caracteres (tokens de 256 bits).
+- **También las excepciones**: el conversor de `%msg` no toca el stack trace, y las excepciones de Postgres llevan valores en el detalle (por ejemplo `Key (email)=(...) already exists`). Un `ThrowableProxyConverter` propio aplica las mismas expresiones regulares a la salida de `%ex`, y el patrón de `logback-spring.xml` usa ese conversor en lugar del de por defecto.
 - Al fallar, el listener loguea solo `accion`, `entidad` y `entidadId`.
 - *Ubicación*: `compartido.infrastructure.logging`, porque aplica a toda la aplicación. C-02 deja explícitamente este mecanismo para C-03 (Non-Goals de su design).
 - *Alternativa descartada*: confiar en que nadie loguee PII. No escala con un equipo de 5 personas.
@@ -85,6 +90,7 @@ Diferencia menor dentro de C-02: la propuesta nombra el evento `EventoAuditoriaP
   - trigger activo aunque un rol de prueba tenga el permiso;
   - rollback del caso de uso que no deja evento;
   - fallo de auditoría que revierte un cambio hecho en una tabla de prueba (creada con `JdbcTemplate` desde el test, como D8 de C-02);
+  - cambio auditado hecho **con JPA** y referenciado por el evento: un consultorio nuevo, persistido con la entidad JPA de C-02 (o, si C-02 no la tiene, con una entidad JPA mínima en `src/test` mapeada a `consultorio`), y el evento de ese consultorio en la misma transacción. Sin el flush de D-3, este test falla por la FK;
   - consultorio inexistente que falla;
   - eventos de A y B aislados.
 - **ArchUnit**: ningún módulo fuera de `auditoria` depende de `auditoria..`.
@@ -96,6 +102,11 @@ Diferencia menor dentro de C-02: la propuesta nombra el evento `EventoAuditoriaP
 - [Choque de número de migración: C-04 también propone `V2` provisorio] → Se numera al hacer rebase, con el siguiente libre, justo antes de marcar el PR como listo.
 - [La lista de claves prohibidas de C-02 no cubre `contrasena` ni `secret`] → Queda fuera de este change. Se le sugiere a Fran en la revisión de C-02.
 - [El enmascarado por regex deja pasar formatos raros o enmascara de más] → Se cubre con tests de casos conocidos; preferimos enmascarar de más.
+- [Los eventos de operaciones que fallan se pierden con el rollback] → Un evento `BEFORE_COMMIT` existe solo si la transacción confirma. Un login fallido que termina en excepción revierte la transacción y se lleva el `LOGIN_FALLIDO`. Además, si el email no existe no hay `consultorio_id` (`NOT NULL` con FK). C-03 no lo resuelve, pero deja la dirección para C-05:
+  - **Que la operación fallida confirme su transacción**: el caso de uso devuelve un resultado (éxito o tipo de fallo) en lugar de lanzar una excepción, y la capa web lo traduce a 401/423. Así el evento y el contador de intentos persisten juntos. Es la opción que toma la propuesta de C-05.
+  - **Alternativa**: publicar ese evento en una transacción propia (`REQUIRES_NEW`). Sirve cuando la operación no puede evitar el rollback, a costa de que el evento y el cambio queden en transacciones distintas.
+  - **Sin consultorio** (email inexistente): no se registra evento. Queda en el log con el email enmascarado (D-6) y lo acota el rate limit de C-05. Registrarlo exigiría `consultorio_id` nullable, que rompe la regla de que todo evento pertenece a un consultorio.
+- [Migraciones de C-02 y C-04 con `app_rw` fijo] → Se coordina con Fran que usen el mismo placeholder `${app-user}` (D-1).
 
 ## Migration Plan
 

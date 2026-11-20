@@ -15,9 +15,9 @@ La transparencia es el diferenciador del producto, y el registro de auditoría i
   - Índices `(consultorio_id, ocurrido_at DESC)` y `(consultorio_id, entidad, entidad_id)`.
 - Inmutabilidad garantizada en la base (RN-AD-02), en dos capas:
   - Triggers `BEFORE UPDATE OR DELETE` (por fila) y `BEFORE TRUNCATE` (por sentencia) que lanzan una excepción.
-  - Permisos: `REVOKE UPDATE, DELETE, TRUNCATE` explícito a `app_rw`. Es necesario porque los privilegios por defecto de C-01 le dan `UPDATE` y `DELETE` sobre toda tabla nueva.
-- Módulo `auditoria`: un listener `@TransactionalEventListener(phase = BEFORE_COMMIT)` que inserta en la misma transacción cada `EventoDeAuditoria` que publica el puerto de C-02. Si la inserción falla, se revierte el cambio auditado (RN-AD-03).
-- Enmascarado de PII en los logs: emails, teléfonos y tokens se enmascaran con un conversor de Logback. El listener nunca loguea `valor_anterior` ni `valor_nuevo`.
+  - Permisos: `REVOKE UPDATE, DELETE, TRUNCATE` explícito al rol de la aplicación. Es necesario porque los privilegios por defecto de C-01 le dan `UPDATE` y `DELETE` sobre toda tabla nueva. El rol no va fijo en el SQL: sale de `DB_APP_USER` mediante un placeholder de Flyway.
+- Módulo `auditoria`: un listener `@TransactionalEventListener(phase = BEFORE_COMMIT)` que inserta en la misma transacción cada `EventoDeAuditoria` que publica el puerto de C-02. Si la inserción falla, se revierte el cambio auditado (RN-AD-03). Antes de insertar hace flush de Hibernate, para que el evento pueda referenciar filas que el caso de uso creó con JPA en la misma transacción.
+- Enmascarado de PII en los logs: emails, teléfonos y tokens se enmascaran con conversores de Logback, tanto en el mensaje como en el stack trace de las excepciones. El listener nunca loguea `valor_anterior` ni `valor_nuevo`.
 - Tests de integración sobre `IntegracionPostgresTest` (de C-01), con la aplicación conectada como `app_rw`:
   - `UPDATE`, `DELETE` y `TRUNCATE` fallan.
   - El evento se revierte junto con la transacción.
@@ -28,6 +28,7 @@ La transparencia es el diferenciador del producto, y el registro de auditoría i
   - La consulta del registro (endpoint, filtros, UI y test de 404 entre consultorios) va en C-18.
   - Los eventos de cada dominio los emite cada change: auth en C-05, configuración en C-08, agenda en C-11/C-12.
   - Retención y borrado tras la baja: PA-07.
+  - Auditar operaciones que fallan, como `LOGIN_FALLIDO`: lo resuelve C-05. `design.md` §Risks deja la dirección.
 
 ## Capabilities
 

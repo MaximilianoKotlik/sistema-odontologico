@@ -20,6 +20,10 @@ El evento SHALL persistirse en la misma transacción que el cambio que lo origin
 - **WHEN** un caso de uso publica un evento y luego su transacción se revierte
 - **THEN** el registro no contiene ese evento
 
+#### Scenario: Evento que referencia una fila creada en la misma transacción
+- **WHEN** un caso de uso crea un consultorio nuevo y publica un evento de ese consultorio en la misma transacción
+- **THEN** al confirmar quedan persistidos el consultorio y el evento
+
 #### Scenario: Fallo de auditoría revierte el cambio
 - **WHEN** un caso de uso modifica datos y publica un evento cuya persistencia falla
 - **THEN** la transacción se revierte y la modificación de datos no queda guardada
@@ -60,6 +64,10 @@ Los logs de la aplicación MUST NOT exponer emails, teléfonos ni tokens en clar
 #### Scenario: Email y teléfono en un mensaje de log
 - **WHEN** la aplicación registra un mensaje que contiene `paciente@example.com` y `+54 9 11 0000-0001`
 - **THEN** la salida del log muestra ambos datos enmascarados
+
+#### Scenario: Excepción con datos personales en el detalle
+- **WHEN** la aplicación registra una excepción de la base cuyo detalle contiene `odontologa@example.com`
+- **THEN** ni el mensaje ni el stack trace del log muestran ese email en claro
 
 #### Scenario: Fallo al persistir un evento
 - **WHEN** la persistencia de un evento falla y se registra el error
