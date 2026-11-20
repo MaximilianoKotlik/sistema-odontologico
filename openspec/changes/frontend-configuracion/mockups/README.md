@@ -1,6 +1,6 @@
 # Mockups de C-09 · `frontend-configuracion`
 
-`Approval: pending`
+`Approval: approved (2026-11-20, by Maxi)`, versión `743ec3a` (#23)
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20). Capturas a 390×844 y 1440×900, de página completa salvo en los estados con diálogo, que se capturan con la ventana del tamaño indicado. Sin desborde horizontal en 360, 390 y 1440 px, y sin errores de consola.

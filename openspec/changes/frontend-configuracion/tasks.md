@@ -8,7 +8,7 @@
 
 - [x] 0.1 Mockups de Bienvenida, Consultorio, Prestaciones y Horarios con sus estados, sobre el sistema de diseño rev. 1
 - [x] 0.2 Capturas a 390×844 y 1440×900 en `mockups/previews/`
-- [ ] 0.3 Aprobación de Maxi registrada en `design.md` y `mockups/README.md`
+- [x] 0.3 Aprobación de Maxi registrada en `design.md` y `mockups/README.md` (2026-11-20, #23)
 
 ## 1. Base
 

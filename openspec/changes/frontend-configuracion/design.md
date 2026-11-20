@@ -122,6 +122,6 @@
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: `openspec/changes/frontend-configuracion/mockups/` (`bienvenida.html`, `consultorio.html`, `prestaciones.html`, `horarios.html`, más `config.css` y `mockup.js`)
-- Approval: pending
+- Approval: approved (2026-11-20, by Maxi), versión `743ec3a` (#23)
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
