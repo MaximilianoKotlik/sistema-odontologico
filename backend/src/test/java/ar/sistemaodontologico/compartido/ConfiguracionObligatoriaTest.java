@@ -29,6 +29,18 @@ class ConfiguracionObligatoriaTest {
     }
 
     @Test
+    void sinElSecretoJwtElArranqueFallaNombrandoLaVariable() {
+        SpringApplicationBuilder aplicacion = aplicacionCon("DB_URL=jdbc:postgresql://localhost/agenda",
+                "DB_APP_USER=app_rw", "DB_APP_PASSWORD=x", "DB_OWNER_USER=app_owner", "DB_OWNER_PASSWORD=x",
+                "JWT_SECRET=", "APP_FRONTEND_ORIGIN=http://localhost:5173");
+
+        assertThatThrownBy(() -> aplicacion.run().close())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("JWT_SECRET")
+                .hasMessageNotContaining("DB_URL");
+    }
+
+    @Test
     void nombraTodasLasVariablesQueFaltan() {
         SpringApplicationBuilder aplicacion = aplicacionCon("DB_URL=jdbc:postgresql://localhost/agenda", "DB_APP_USER=app_rw");
 

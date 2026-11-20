@@ -26,15 +26,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ar.sistemaodontologico.compartido.application.TenantContext;
 import pruebas.aislamiento.ControladorDeRecursosDePrueba;
-import pruebas.aislamiento.FiltroDeTenantDePrueba;
 import pruebas.aislamiento.RepositorioDeRecursosDePrueba;
+import pruebas.seguridad.CuentasDePrueba;
+import pruebas.seguridad.CuentasDePrueba.Cuenta;
+import pruebas.seguridad.TokensDePrueba;
 
 /**
  * Aislamiento entre dos consultorios (C-02, tareas 4.2 a 4.4; spec aislamiento-tenant). Las tablas
  * {@code recurso_prueba} y {@code recurso_prueba_hijo} siguen db/migration/CONVENCIONES.md y se crean
  * solo para este test, con el rol propietario. Es el modelo del test de aislamiento de cada endpoint.
+ *
+ * <p>Desde C-04 el consultorio activo sale de un access token real (claim {@code cid}): el aislamiento se prueba
+ * de punta a punta con la autenticación.
  */
 @Import({ControladorDeRecursosDePrueba.class, CompartidoAislamientoTest.Configuracion.class})
 class CompartidoAislamientoTest extends IntegracionPostgresTest {
@@ -45,11 +49,6 @@ class CompartidoAislamientoTest extends IntegracionPostgresTest {
         @Bean
         RepositorioDeRecursosDePrueba repositorioDeRecursosDePrueba(JdbcTemplate jdbc) {
             return new RepositorioDeRecursosDePrueba(jdbc);
-        }
-
-        @Bean
-        FiltroDeTenantDePrueba filtroDeTenantDePrueba(TenantContext tenant) {
-            return new FiltroDeTenantDePrueba(tenant);
         }
     }
 
@@ -62,6 +61,8 @@ class CompartidoAislamientoTest extends IntegracionPostgresTest {
     @Autowired
     private ObjectMapper json;
 
+    private Cuenta cuentaA;
+    private Cuenta cuentaB;
     private UUID consultorioA;
     private UUID consultorioB;
 
@@ -100,8 +101,10 @@ class CompartidoAislamientoTest extends IntegracionPostgresTest {
 
     @BeforeEach
     void crearDosConsultorios() {
-        consultorioA = insertarConsultorio();
-        consultorioB = insertarConsultorio();
+        cuentaA = CuentasDePrueba.crear(jdbc);
+        cuentaB = CuentasDePrueba.crear(jdbc);
+        consultorioA = cuentaA.consultorio();
+        consultorioB = cuentaB.consultorio();
     }
 
     // Requirement: Las relaciones entre datos de negocio no cruzan consultorios
@@ -194,14 +197,16 @@ class CompartidoAislamientoTest extends IntegracionPostgresTest {
         assertThat(json.readTree(respuesta.getBody())).isEmpty();
     }
 
+    // Sin sesión no hay consultorio activo: la seguridad corta antes de llegar al caso de uso (C-04). El 500 por
+    // TenantNoResueltoException sigue cubierto en ManejadorGlobalDeErroresTest.
     @Test
-    void sinConsultorioActivoNoAccedeADatos() throws Exception {
+    void sinSesionNoAccedeADatos() throws Exception {
         insertarRecurso(consultorioA, "de A");
 
         ResponseEntity<String> respuesta = http.getForEntity("/api/v1/pruebas/recursos", String.class);
 
-        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-        assertThat(json.readTree(respuesta.getBody()).path("codigo").asText()).isEqualTo("ERROR_INTERNO");
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(json.readTree(respuesta.getBody()).path("codigo").asText()).isEqualTo("NO_AUTENTICADO");
         assertThat(respuesta.getBody()).doesNotContain("de A");
     }
 
@@ -209,7 +214,7 @@ class CompartidoAislamientoTest extends IntegracionPostgresTest {
     @Test
     void unSlugRepetidoRespondeSlugEnUso() throws Exception {
         String slug = "repetido-" + UUID.randomUUID().toString().substring(0, 8);
-        HttpHeaders cabeceras = new HttpHeaders();
+        HttpHeaders cabeceras = cabeceras(consultorioA);
         cabeceras.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> alta = new HttpEntity<>("{\"slug\": \"" + slug + "\"}", cabeceras);
 
@@ -225,9 +230,11 @@ class CompartidoAislamientoTest extends IntegracionPostgresTest {
         return http.exchange(ruta, HttpMethod.GET, new HttpEntity<>(cabeceras(consultorioActivo)), String.class);
     }
 
-    private static HttpHeaders cabeceras(UUID consultorioActivo) {
+    private HttpHeaders cabeceras(UUID consultorioActivo) {
+        Cuenta cuenta = consultorioActivo.equals(cuentaA.consultorio()) ? cuentaA : cuentaB;
         HttpHeaders cabeceras = new HttpHeaders();
-        cabeceras.set(FiltroDeTenantDePrueba.CABECERA, consultorioActivo.toString());
+        cabeceras.setBearerAuth(
+                TokensDePrueba.valido(SECRETO_JWT_DE_PRUEBA, cuenta.usuario(), cuenta.consultorio(), 1));
         return cabeceras;
     }
 
@@ -237,12 +244,6 @@ class CompartidoAislamientoTest extends IntegracionPostgresTest {
         return nodo;
     }
 
-    private UUID insertarConsultorio() {
-        UUID id = UUID.randomUUID();
-        jdbc.update("INSERT INTO consultorio (id, nombre, slug, plan) VALUES (?, 'Consultorio Demo', ?, 'PRUEBA')",
-                id, "aislamiento-" + id.toString().substring(0, 8));
-        return id;
-    }
 
     private UUID insertarRecurso(UUID consultorio, String nombre) {
         UUID id = UUID.randomUUID();
