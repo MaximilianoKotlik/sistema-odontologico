@@ -11,7 +11,7 @@
 <script src="mockup.js" defer></script>
 </head>
 <!-- Se llega desde el email: /recuperar#token=… (el token va en el fragmento, C-05 D5) -->
-<body data-estados="normal:Contraseña nueva|no-coinciden:No coinciden|password-debil:Contraseña débil (400)|enviando:Guardando|token-invalido:Link vencido o usado (400)">
+<body data-estados="normal:Contraseña nueva|no-coinciden:No coinciden|password-debil:Contraseña débil (400)|muy-larga:Más de 72 caracteres|enviando:Guardando|token-invalido:Link vencido o usado (400)">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
@@ -27,7 +27,7 @@
 <div class="auth">
   <main class="auth-main" id="contenido" tabindex="-1" style="justify-content:flex-start">
     <div class="auth-top">
-      <a class="brand" href="#" style="visibility:visible"><span class="brand-mark" aria-hidden="true"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></a>
+      <a class="brand" href="#" style="visibility:visible"><span class="brand-mark" aria-hidden="true"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
       <span class="prov">Borrador C-07 · pendiente de aprobación</span>
     </div>
 
@@ -41,29 +41,30 @@
       </div>
       <div class="notice danger" role="alert" data-solo="password-debil">
         <svg aria-hidden="true"><use href="#i-alert"/></svg>
-        <div><strong>Esa contraseña no se puede usar.</strong><p>Tiene que tener al menos 10 caracteres y no puede ser igual a tu email.</p></div>
+        <div><strong>Esa contraseña no se puede usar.</strong><p>Tiene que tener entre 10 y 72 caracteres y no puede ser igual a tu email.</p></div>
       </div>
 
       <form novalidate>
         <div class="field">
           <label for="password">Contraseña nueva</label>
           <div class="pw">
-            <input class="input" id="password" type="password" autocomplete="new-password" aria-describedby="pw-reqs" data-invalido="password-debil"
-              data-valor="*=|no-coinciden=ficticia-segura-02|password-debil=ficticia-segura-02|enviando=ficticia-segura-02">
+            <input class="input" id="password" type="password" autocomplete="new-password" aria-describedby="pw-reqs" data-invalido="password-debil muy-larga"
+              data-valor="*=|no-coinciden=ficticia-segura-02|password-debil=ficticia-segura-02|enviando=ficticia-segura-02|muy-larga=contraseña-ficticia-del-mockup-larguísima-que-pasa-el-máximo-permitido-por-el-sistema">
             <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
           </div>
           <!-- Acá no se conoce el email: "distinta de tu email" lo valida el backend (PASSWORD_DEBIL) -->
           <ul class="reqs" id="pw-reqs" aria-label="Requisitos de la contraseña">
             <li data-solo="normal"><svg aria-hidden="true"><use href="#i-dot"/></svg>Al menos 10 caracteres</li>
-            <li class="ok" data-solo="no-coinciden password-debil enviando"><svg aria-hidden="true"><use href="#i-check"/></svg>Al menos 10 caracteres <span class="sr">(cumplido)</span></li>
+            <li class="ok" data-solo="no-coinciden password-debil enviando muy-larga"><svg aria-hidden="true"><use href="#i-check"/></svg>Al menos 10 caracteres <span class="sr">(cumplido)</span></li>
             <li><svg aria-hidden="true"><use href="#i-dot"/></svg>Distinta del email de tu cuenta</li>
+            <li class="no" data-solo="muy-larga"><svg aria-hidden="true"><use href="#i-x"/></svg>Hasta 72 caracteres (las letras con tilde y la ñ cuentan doble) <span class="sr">(falta)</span></li>
           </ul>
         </div>
         <div class="field">
           <label for="password2">Repetí la contraseña nueva</label>
           <div class="pw">
             <input class="input" id="password2" type="password" autocomplete="new-password" aria-describedby="pw2-err" data-invalido="no-coinciden"
-              data-valor="*=|no-coinciden=ficticia-segura-20|password-debil=ficticia-segura-02|enviando=ficticia-segura-02">
+              data-valor="*=|no-coinciden=ficticia-segura-20|password-debil=ficticia-segura-02|enviando=ficticia-segura-02|muy-larga=contraseña-ficticia-del-mockup-larguísima-que-pasa-el-máximo-permitido-por-el-sistema">
             <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña repetida"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
           </div>
           <p class="error-msg" id="pw2-err" data-solo="no-coinciden"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Las dos contraseñas no coinciden.</span></p>

@@ -64,7 +64,7 @@
 }
 </style>
 </head>
-<body data-estados="normal:Formulario|actual-invalida:Contraseña actual incorrecta (400)|password-debil:Contraseña nueva débil (400)|enviando:Cambiando|limite:Demasiados intentos (429)|mas:Menú Más (mobile)">
+<body data-estados="normal:Formulario|actual-invalida:Contraseña actual incorrecta (400)|password-debil:Contraseña nueva débil (400)|muy-larga:Contraseña nueva de más de 72 caracteres|enviando:Cambiando|limite:Demasiados intentos (429)|mas:Menú Más (mobile)">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
@@ -88,7 +88,7 @@
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <div class="shell">
   <nav class="sidebar" aria-label="Secciones">
-    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Turnos Odonto (TBD)</span></a>
+    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
     <span class="prov" title="Pendiente de aprobación">Borrador C-07</span>
     <ul>
       <li><a class="sidelink" href="#"><svg><use href="#i-cal"/></svg>Agenda</a></li>
@@ -130,7 +130,7 @@
             <label for="actual">Contraseña actual</label>
             <div class="pw">
               <input class="input" id="actual" type="password" autocomplete="current-password" aria-describedby="actual-err" data-invalido="actual-invalida"
-                data-valor="*=|password-debil=contraseña-actual-ficticia|enviando=contraseña-actual-ficticia|limite=contraseña-actual-ficticia">
+                data-valor="*=|password-debil=contraseña-actual-ficticia|enviando=contraseña-actual-ficticia|limite=contraseña-actual-ficticia|muy-larga=contraseña-actual-ficticia">
               <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña actual"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
             </div>
             <p class="error-msg" id="actual-err" data-solo="actual-invalida"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>La contraseña actual no es correcta.</span></p>
@@ -138,15 +138,16 @@
           <div class="field">
             <label for="nueva">Contraseña nueva</label>
             <div class="pw">
-              <input class="input" id="nueva" type="password" autocomplete="new-password" aria-describedby="pw-reqs" data-invalido="password-debil"
-                data-valor="*=|actual-invalida=ficticia-segura-03|password-debil=odontologa@example.com|enviando=ficticia-segura-03|limite=ficticia-segura-03">
+              <input class="input" id="nueva" type="password" autocomplete="new-password" aria-describedby="pw-reqs" data-invalido="password-debil muy-larga"
+                data-valor="*=|actual-invalida=ficticia-segura-03|password-debil=odontologa@example.com|enviando=ficticia-segura-03|limite=ficticia-segura-03|muy-larga=contraseña-ficticia-del-mockup-larguísima-que-pasa-el-máximo-permitido-por-el-sistema">
               <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña nueva"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
             </div>
             <ul class="reqs" id="pw-reqs" aria-label="Requisitos de la contraseña">
               <li data-solo="normal mas"><svg aria-hidden="true"><use href="#i-dot"/></svg>Al menos 10 caracteres</li>
               <li data-solo="normal mas"><svg aria-hidden="true"><use href="#i-dot"/></svg>Distinta de tu email</li>
-              <li class="ok" data-solo="actual-invalida password-debil enviando limite"><svg aria-hidden="true"><use href="#i-check"/></svg>Al menos 10 caracteres <span class="sr">(cumplido)</span></li>
-              <li class="ok" data-solo="actual-invalida enviando limite"><svg aria-hidden="true"><use href="#i-check"/></svg>Distinta de tu email <span class="sr">(cumplido)</span></li>
+              <li class="ok" data-solo="actual-invalida password-debil enviando limite muy-larga"><svg aria-hidden="true"><use href="#i-check"/></svg>Al menos 10 caracteres <span class="sr">(cumplido)</span></li>
+              <li class="ok" data-solo="actual-invalida enviando limite muy-larga"><svg aria-hidden="true"><use href="#i-check"/></svg>Distinta de tu email <span class="sr">(cumplido)</span></li>
+              <li class="no" data-solo="muy-larga"><svg aria-hidden="true"><use href="#i-x"/></svg>Hasta 72 caracteres (las letras con tilde y la ñ cuentan doble) <span class="sr">(falta)</span></li>
               <li class="no" data-solo="password-debil"><svg aria-hidden="true"><use href="#i-x"/></svg>Distinta de tu email <span class="sr">(falta)</span></li>
             </ul>
           </div>
@@ -154,7 +155,7 @@
             <label for="nueva2">Repetí la contraseña nueva</label>
             <div class="pw">
               <input class="input" id="nueva2" type="password" autocomplete="new-password"
-                data-valor="*=|actual-invalida=ficticia-segura-03|password-debil=odontologa@example.com|enviando=ficticia-segura-03|limite=ficticia-segura-03">
+                data-valor="*=|actual-invalida=ficticia-segura-03|password-debil=odontologa@example.com|enviando=ficticia-segura-03|limite=ficticia-segura-03|muy-larga=contraseña-ficticia-del-mockup-larguísima-que-pasa-el-máximo-permitido-por-el-sistema">
               <button class="toggle" type="button" aria-pressed="false" aria-label="Mostrar contraseña repetida"><svg aria-hidden="true"><use href="#i-eye"/></svg></button>
             </div>
           </div>

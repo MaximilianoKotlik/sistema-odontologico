@@ -22,10 +22,10 @@ Cada archivo elige el estado con `?estado=…`. Al pie de cada pantalla hay una 
 | Pantalla | Archivo | Estados (`?estado=`) |
 |---|---|---|
 | Login (`/login`) | `login.html` | `normal`, `enviando`, `credenciales` (401 genérico), `bloqueada` (423 con minutos restantes), `limite` (429), `sin-conexion`, `registro-sin-login` (fallback si falla el login automático), `sesion-cerrada`, `sesion-vencida` (refresh fallido), `contrasena-cambiada`, `restaurando` (refresh al recargar) |
-| Crear cuenta (`/registro`) | `registro.html` | `normal`, `escribiendo` (requisitos en vivo), `validacion` (resumen de errores + campos), `email-en-uso` (409), `enviando`, `entrando` (login automático después del 201), `limite` (429) |
+| Crear cuenta (`/registro`) | `registro.html` | `normal`, `escribiendo` (requisitos en vivo), `validacion` (resumen de errores + campos), `email-en-uso` (409), `muy-larga` (más de 72 bytes), `enviando`, `entrando` (login automático después del 201), `limite` (429) |
 | Pedir recuperación (`/recuperar`) | `recuperar.html` | `normal`, `enviando`, `enviado` (202, mismo mensaje exista o no la cuenta), `limite` (429) |
-| Contraseña nueva (`/recuperar#token=…`) | `recuperar-confirmar.html` | `normal`, `no-coinciden`, `password-debil` (400), `enviando`, `token-invalido` (400, un solo mensaje para vencido, usado o revocado) |
-| Cambiar contraseña (dentro de la app) | `cambiar-contrasena.html` | `normal`, `actual-invalida` (400), `password-debil` (400), `enviando`, `limite` (429), `mas` (hoja "Más" en mobile) |
+| Contraseña nueva (`/recuperar#token=…`) | `recuperar-confirmar.html` | `normal`, `no-coinciden`, `password-debil` (400), `muy-larga` (más de 72 bytes), `enviando`, `token-invalido` (400, un solo mensaje para vencido, usado o revocado) |
+| Cambiar contraseña (dentro de la app) | `cambiar-contrasena.html` | `normal`, `actual-invalida` (400), `password-debil` (400), `muy-larga` (más de 72 bytes), `enviando`, `limite` (429), `mas` (hoja "Más" en mobile) |
 
 **Cerrar sesión** no tiene pantalla propia: es el botón que ya está en el app-shell de C-06. Llama a `POST /auth/logout` y lleva a `/login` (`login.html?estado=sesion-cerrada`). No pide confirmación porque no se pierde nada y se vuelve a entrar en un paso.
 
@@ -46,6 +46,7 @@ Cada archivo elige el estado con `?estado=…`. Al pie de cada pantalla hay una 
    | `SESION_EXPIRADA` | 401 | Login | Aviso "Tu sesión venció"; después del login vuelve a la ruta donde estaba. |
 
 2. **Requisitos de contraseña en vivo** (RN-AU-01): ícono + texto (círculo pendiente, ✓ cumplido, ✕ falta) y texto oculto para lectores de pantalla; nunca solo color. En "contraseña nueva" desde el link de recuperación no se conoce el email, así que "Distinta del email de tu cuenta" queda como indicación fija y la valida el backend.
+   **Tope de 72 bytes** (pedido por Maxi en la segunda revisión): C-04 rechaza con `PASSWORD_DEBIL` las contraseñas de más de 72 bytes en UTF-8, porque BCrypt no admite más. Para no sumar ruido, el tercer requisito, "Hasta 72 caracteres (las letras con tilde y la ñ cuentan doble)", aparece **solo cuando se pasa**, en rojo con ✕ y el campo inválido (estado `muy-larga`). El frontend lo calcula con `new TextEncoder().encode(valor).length > 72`.
 3. **Después del registro se entra directo** (decidido por Maxi, 2026-11-20). El backend no cambia: apenas recibe el 201 de `POST /auth/registro`, el frontend llama a `POST /auth/login` con las mismas credenciales (estado `entrando` del registro) y entra a la app; como es el primer ingreso sin prestaciones, FL-01 lo lleva al onboarding de C-09. Si ese login falla, va a `/login` con el email cargado y el aviso del estado `registro-sin-login`.
 4. **Cambiar contraseña en la navegación** (confirmado por Maxi, 2026-11-20): **"Cambiar contraseña"** va en el bloque de cuenta, arriba de "Cerrar sesión", en la barra lateral (desktop) y en la hoja "Más" (mobile). Toca el app-shell de C-06: se le avisó a Nacho en el PR.
 5. **Al cambiar o restablecer la contraseña** se avisa antes de enviar que se cierra la sesión en todos los dispositivos, también en este (RN-AU-05, US-005). Al terminar, se lleva a `/login` (`login.html?estado=contrasena-cambiada`).
@@ -54,8 +55,8 @@ Cada archivo elige el estado con `?estado=…`. Al pie de cada pantalla hay una 
 
 ## (TBD) y datos ficticios
 
-- Nombre y logo provisorios: `BRAND_NAME` de `design-system/brand.js` (hoy "Turnos Odonto (TBD)") y el isotipo de diente de C-06.
-- Los links a **términos y condiciones** y **política de privacidad** apuntan a páginas que todavía no existen. Según DD-28, el equipo escribe un borrador marcado "pendiente de revisión legal" y después lo revisa un abogado. El registro no se publica con datos reales sin esa revisión (C-04 guarda la versión aceptada).
+- Nombre: `BRAND_NAME` de `design-system/brand.js` ("Muelas Felices", DD-34). Logo provisorio: el isotipo de diente de C-06.
+- Los links a **términos y condiciones** y **política de privacidad** apuntan a `/terminos` y `/privacidad`. El texto sale del borrador de `docs/legal/` (#24), marcado "pendiente de revisión legal"; según DD-28, después lo revisa un abogado. El registro no se publica con datos reales sin esa revisión (C-04 guarda la versión aceptada).
 - Datos ficticios: "Ana Ejemplo", `odontologa@example.com`, "Consultorio Demo Sur", "Dra. Ejemplo · Consultorio Demo". Las contraseñas de ejemplo son cadenas sin uso real.
 - Los minutos de espera (12, 1, 45, 40 y 15) son ejemplos; en producción salen de la respuesta del backend.
 
@@ -71,7 +72,7 @@ Después navegá a `http://127.0.0.1:8765/openspec/changes/frontend-auth/mockups
 
 ## Capturas
 
-`previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png` (página completa, 65 capturas; el estado `mas` existe solo en mobile). Verificado con Playwright en cada estado:
+`previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png` (página completa, 71 capturas; el estado `mas` existe solo en mobile). Verificado con Playwright en cada estado:
 
 - Sin scroll horizontal a 390 ni a 1440 px.
 - Sin errores de consola ni recursos fallidos.
@@ -84,6 +85,8 @@ Después navegá a `http://127.0.0.1:8765/openspec/changes/frontend-auth/mockups
 - [ ] Tabla de mensajes por código de error (decisión 1).
 - [ ] Login automático después del registro y fallback (decisión 3).
 - [ ] Ruta `/login` en textos, links y README.
+- [ ] Requisito "Hasta 72 caracteres" solo cuando se pasa (estado `muy-larga`).
+- [ ] Capturas con el nombre Muelas Felices.
 - [ ] Solo tokens del sistema de diseño rev. 1; foco visible; objetivos ≥ 44 px; estados con ícono + texto, no solo color; `prefers-reduced-motion` (el spinner queda quieto).
 - [ ] `autocomplete` correcto: `username`, `current-password`, `new-password`.
 - [ ] Sin datos reales ni afirmaciones de 2FA, certificaciones o cumplimiento legal.

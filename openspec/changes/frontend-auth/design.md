@@ -18,15 +18,20 @@ Las decisiones de UI que salen de los mockups están en `mockups/README.md` §De
 - **La ruta del login es `/login`**, igual que en el shell de C-06.
 - **"Cambiar contraseña" va en el menú del shell**, arriba de "Cerrar sesión", en la barra lateral y en la hoja "Más". Toca el shell de C-06 (Nacho).
 
+En la segunda revisión (PR #14, 2026-11-20) Maxi pidió además:
+
+- **Tercer requisito de contraseña, solo cuando se pasa**: "Hasta 72 caracteres (las letras con tilde y la ñ cuentan doble)". C-04 (#16) rechaza con `PASSWORD_DEBIL` las contraseñas de más de 72 bytes en UTF-8, porque BCrypt no admite más. Estado `muy-larga` en registro, contraseña nueva y cambiar contraseña.
+- **Nombre Muelas Felices** (DD-34) en todas las capturas, y links de términos y privacidad a `/terminos` y `/privacidad`.
+
 ## Open Questions
 
-- Textos y versión de términos y condiciones y política de privacidad: según DD-28, el equipo escribe un borrador marcado "pendiente de revisión legal" y lo revisa un abogado. El registro no se publica con datos reales sin esa revisión.
+- Términos y condiciones y política de privacidad: ya hay borrador en `docs/legal/` (#24), marcado "pendiente de revisión legal" según DD-28. El registro no se publica con datos reales hasta que lo revise un abogado.
 
 ## UI Mockups
 
 - Design system revision: 1
 - Decision: yes (2026-11-20)
-- Mockups: openspec/changes/frontend-auth/mockups/ (`ingresar.html`, `registro.html`, `recuperar.html`, `recuperar-confirmar.html`, `cambiar-contrasena.html`, más `auth.css` y `mockup.js`)
+- Mockups: openspec/changes/frontend-auth/mockups/ (`login.html`, `registro.html`, `recuperar.html`, `recuperar-confirmar.html`, `cambiar-contrasena.html`, más `auth.css` y `mockup.js`)
 - Approval: pending
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
