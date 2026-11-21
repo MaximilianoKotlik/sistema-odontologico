@@ -1,29 +1,32 @@
 # Tasks
 
-> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que se cumplan tres condiciones:
+> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que se cumplan dos condiciones:
 > - C-08 está `[x]`.
 > - Maxi aprobó esta propuesta (ALTO).
-> - PA-01 está resuelta como `DD-NN`.
+>
+> PA-01 ya está resuelta por DD-24 (paciente por DNI).
 >
 > Verificación base de cada grupo: `./gradlew test` en verde. Los tests de integración extienden `IntegracionPostgresTest`, escriben con `JdbcClient` (design D1) y usan solo datos ficticios (regla dura 17).
 
 ## 1. Preparación
 
-- [ ] 1.1 Rebasar sobre `main` con C-03, C-04, C-05 y C-08 mergeados. Fijar el número de la migración y verificar que existan `uk_tipo_prestacion_consultorio_id` y `ErrorDeNegocio.propiedades()`; si falta `propiedades()`, agregarla con su test en `ManejadorGlobalDeErroresTest` (verificación: la suite existente en verde después del rebase)
-- [ ] 1.2 Confirmar que PA-01 está registrada como `DD-NN` en `knowledge-base/09`. Si la decisión no es "teléfono E.164 único por consultorio", actualizar el spec `pacientes`, design D8 y esta lista antes de seguir (verificación: link a la DD en el PR)
+- [ ] 1.1 Rebasar sobre `main` con C-03, C-04, C-05 y C-08 mergeados. Fijar el número de la migración (`V6` si C-08 entra con `V5`) y verificar que existan `uk_tipo_prestacion_consultorio_id` y `ErrorDeNegocio.propiedades()`; si falta `propiedades()`, agregarla con su test en `ManejadorGlobalDeErroresTest` (verificación: la suite existente en verde después del rebase)
+- [x] 1.2 PA-01 registrada como [DD-24](../../../knowledge-base/09_decisiones_y_supuestos.md) (paciente por DNI). El spec `pacientes`, design D3, D8 y D9 y esta lista ya están actualizados (verificación: revisión de Maxi en #18)
 - [ ] 1.3 Regla ArchUnit `agenda.domain` no depende de `..consultorio..`, con un fixture que la viole (verificación: `ReglasDeArquitecturaTest` detecta el fixture y `ArchitectureTest` pasa)
 
 ## 2. Migración
 
 - [ ] 2.1 Test de integración de `paciente`:
-  - teléfono repetido en el mismo consultorio falla y en otro consultorio pasa;
+  - DNI repetido en el mismo consultorio falla y en otro consultorio pasa;
+  - DNI con letras o con un largo distinto de 7 u 8 falla por `ck_paciente_dni`;
+  - teléfono repetido en el mismo consultorio con otro DNI pasa;
   - origen `LINK` sin consentimiento falla;
   - email sin distinguir mayúsculas;
   - `app_rw` sin `DELETE`.
 
-  Después, crear la tabla en `V{n}__agenda_paciente_turno_bloqueo.sql` (verificación: escenarios "Teléfono único por consultorio" y "Los pacientes no se borran")
+  Después, crear la tabla en `V{n}__agenda_paciente_turno_bloqueo.sql` (verificación: escenarios "DNI único por consultorio" y "Los pacientes no se borran")
 - [ ] 2.2 Test de integración de `turno`:
-  - CHECKs de duración, fin (`ck_turno_fin`), grilla de 5 minutos, estado, origen, sobreturno `MANUAL` y coherencia de la cancelación;
+  - CHECKs de duración, fin (`ck_turno_fin`), grilla de 5 minutos (incluido un inicio con fracción de segundo, como 09:00:00.6, que falla), estado, origen, sobreturno `MANUAL` y coherencia de la cancelación;
   - FKs compuestas a `paciente` y `tipo_prestacion` de otro consultorio fallan;
   - `app_rw` sin `DELETE`.
 
@@ -52,7 +55,8 @@
 
   (verificación: escenarios del spec `turnos` sobre duración, estados, sobreturno y datos acotados)
 - [ ] 3.4 `Bloqueo`: rango válido, varios días, grilla de 5 minutos y motivo de hasta 120 caracteres (verificación: escenarios de "Bloqueo con inicio y fin explícitos")
-- [ ] 3.5 `Paciente`: recorte y largo de nombre y apellido, teléfono por `NormalizadorDeTelefono`, email opcional, consentimiento obligatorio con origen `LINK`, marcar para revisión y `toString()` sin PII (verificación: escenarios del spec `pacientes`)
+- [ ] 3.5 Value object `Dni`: quita puntos y espacios, exige 7 u 8 dígitos y rechaza con `DNI_INVALIDO`; `toString()` sin el número (verificación: escenarios de "DNI normalizado")
+- [ ] 3.6 `Paciente`: recorte y largo de nombre y apellido, `Dni`, teléfono obligatorio por `NormalizadorDeTelefono`, email opcional, consentimiento obligatorio con origen `LINK`, `datosDifierenDe` para un DNI existente, marcar para revisión y `toString()` sin PII (verificación: escenarios del spec `pacientes`)
 
 ## 4. Validadores
 
@@ -82,9 +86,8 @@
 
 - [ ] 7.1 `./gradlew test` completo en verde, `ArchitectureTest` en verde y cobertura ≥ 80 % en `agenda.domain` (verificación: CI del PR)
 - [ ] 7.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Turno con el nombre `ex_turno_sin_solapamiento` y los CHECKs agregados, y dejar en el "Leer antes" de C-11 en `CHANGES.md` el requisito de serializar las escrituras de agenda por consultorio (design, Risks) (verificación: diff de 04 y de CHANGES.md en el PR)
-- [ ] 7.3 PR listo con la evidencia y la revisión de Maxi. Avisar a Mati, que usa la `CalculadoraDeHuecos` y la clave de `paciente` en C-15 (verificación: PR con revisor asignado)
+- [ ] 7.3 PR listo con la evidencia y la revisión de Maxi. Avisar a Mati, que en C-15 usa la `CalculadoraDeHuecos`, la clave de `paciente` por DNI y `datosDifierenDe` (verificación: PR con revisor asignado)
 
 ## Workflow follow-up
 
-- Maxi marca `[x]` en `CHANGES.md` al mergear.
-- Archivar el change con `/opsx:archive` después del merge.
+- Con el PR aprobado, el autor suma el commit de cierre en el mismo PR: `[x]` en `CHANGES.md` (PR #N, fecha) y `openspec archive agenda-esquema-dominio`. Maxi vuelve a aprobar ese commit y mergea.

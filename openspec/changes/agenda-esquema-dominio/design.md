@@ -57,7 +57,9 @@
 - **`Bloqueo`**: tiene un `Intervalo` alineado a 5 minutos y un `motivo` opcional de hasta 120 caracteres.
 - **`Paciente`**:
   - Nombre y apellido recortados, de 1 a 80 caracteres.
-  - Teléfono por `NormalizadorDeTelefono`.
+  - DNI por el value object `Dni`: quita puntos y espacios, exige 7 u 8 dígitos y si no lanza `ValidacionDeNegocio` `DNI_INVALIDO`. Es la identidad del paciente dentro del consultorio (DD-24).
+  - Teléfono por `NormalizadorDeTelefono`, obligatorio (DD-32) y sin unicidad.
+  - `datosDifierenDe(nombre, apellido)`: compara sin distinguir mayúsculas ni espacios en los extremos. C-15 lo usa para reutilizar el paciente de un DNI existente sin sobrescribirlo y marcarlo con `requiere_revision` si los datos no coinciden.
   - Email opcional, con validación sintáctica simple y guardado en minúsculas.
   - `origen`, `requiereRevision` y `Consentimiento(Instant, String version)`, obligatorio si el origen es `LINK`.
   - `toString()` no expone PII: usa `EnmascaradorDePii` o solo el id.
@@ -78,7 +80,8 @@
 ### D5 — Franjas contiguas como una franja continua
 - Al materializar la disponibilidad de una fecha, las franjas del mismo día que se tocan (`fin == inicio`) se fusionan. Así, un turno de 12:30 a 13:30 entra en `09:00–13:00 + 13:00–17:00`, y el paso de los huecos sigue corriendo desde las 09:00.
 - C-08 permite franjas contiguas, y partirlas no tiene un significado de negocio.
-- *Alternativa*: la lectura literal de RN-AG-03 ("dentro de una franja") → rechazaría un turno que cabe en un horario continuo de atención. **Se marca para la revisión de Maxi**: si se prefiere la lectura literal, cambian dos escenarios (`turnos` y `huecos-disponibles`) y se borra la fusión.
+- *Alternativa*: la lectura literal de RN-AG-03 ("dentro de una franja") → rechazaría un turno que cabe en un horario continuo de atención.
+- **Aprobada por Maxi en #18 (2026-11-20)**: las franjas contiguas se toman como un horario continuo.
 
 ### D6 — El ámbito del solapamiento lo decide quien llama (punto de extensión de RN-AG-13)
 - Los validadores y la calculadora reciben la colección de turnos y bloqueos del ámbito ya filtrada. No saben qué es un consultorio, un profesional ni un sillón.
@@ -97,21 +100,23 @@
 ### D8 — Migración `V{n}__agenda_paciente_turno_bloqueo.sql`
 - Sigue `CONVENCIONES.md`: `consultorio_id` con FK, `UNIQUE (consultorio_id, id)` en `paciente`, `turno` y `bloqueo`, FKs compuestas, índices que empiezan por `consultorio_id` y constraints con nombre.
 - **`paciente`**:
-  - `uk_paciente_telefono UNIQUE (consultorio_id, telefono_e164)` y `ck_paciente_origen`.
+  - `dni VARCHAR(8) NOT NULL` con `ck_paciente_dni CHECK (dni ~ '^[0-9]{7,8}$')` y `uk_paciente_dni UNIQUE (consultorio_id, dni)` (DD-24). Sirve también de índice para buscar por DNI.
+  - `telefono_e164 VARCHAR(16) NOT NULL`, sin unicidad: los familiares pueden compartir el número.
+  - `ck_paciente_origen`.
   - `ck_paciente_consentimiento`: `origen <> 'LINK' OR (consentimiento_at IS NOT NULL AND consentimiento_version IS NOT NULL)`.
   - `email CITEXT`, `updated_at` y `REVOKE DELETE`.
 - **`turno`**:
   - FKs compuestas `fk_turno_paciente` y `fk_turno_tipo_prestacion`.
   - `ck_turno_duracion`: de 5 a 480 y `% 5 = 0`.
   - `ck_turno_fin`: `extract(epoch FROM fin) - extract(epoch FROM inicio) = duracion_min * 60`.
-  - `ck_turno_grilla`: `extract(epoch FROM inicio)::bigint % 300 = 0`.
+  - `ck_turno_grilla`: `extract(epoch FROM inicio) % 300 = 0`, en `numeric` (en PG16 `extract` devuelve `numeric`). Sin el cast a `bigint`, que redondea: un inicio de 09:00:00.6 pasaría (revisión de Maxi en #18).
   - `ck_turno_estado`, `ck_turno_origen` y `ck_turno_sobreturno_manual` (`NOT es_sobreturno OR origen = 'MANUAL'`).
   - `ck_turno_cancelacion`: `(estado = 'CANCELADO') = (cancelado_por IS NOT NULL)`, con `cancelado_por IN ('ODONTOLOGO','PACIENTE')` y `motivo_cancelacion` solo si está cancelado.
   - `nota_interna VARCHAR(500)`, `motivo_cancelacion VARCHAR(200)`, `version BIGINT NOT NULL DEFAULT 0` y `REVOKE DELETE`.
   - **`ex_turno_sin_solapamiento`**: `EXCLUDE USING gist (consultorio_id WITH =, tstzrange(inicio, fin, '[)') WITH &&) WHERE (NOT es_sobreturno AND estado IN ('RESERVADO','CONFIRMADO'))`. Es la restricción `turno_sin_solapamiento` de 04, con el prefijo de la convención (como `ex_disponibilidad_sin_solape` de C-08). Al cerrar el change se actualiza el nombre en 04.
   - Índices `ix_turno_consultorio_inicio (consultorio_id, inicio)` e `ix_turno_consultorio_paciente_inicio (consultorio_id, paciente_id, inicio)`.
 - **`bloqueo`**:
-  - `ck_bloqueo_rango (fin > inicio)` y `ck_bloqueo_grilla` sobre `inicio` y `fin`.
+  - `ck_bloqueo_rango (fin > inicio)` y `ck_bloqueo_grilla`: `extract(epoch FROM inicio) % 300 = 0 AND extract(epoch FROM fin) % 300 = 0`, también en `numeric`.
   - `motivo VARCHAR(120)`.
   - `ix_bloqueo_rango USING gist (consultorio_id, tstzrange(inicio, fin, '[)'))`.
   - Conserva `DELETE`, porque C-11 elimina bloqueos con evento `BLOQUEO_ELIMINADO`. Sin exclusión entre bloqueos (D10).
@@ -123,7 +128,7 @@
 
 ### D9 — Seed local
 - Se extiende `db/seed-local/R__demo.sql` (de C-08) con lo que 04 §Seed pide:
-  - 5 pacientes ficticios (`Paciente Uno Prueba` … `Paciente Cinco Prueba`, teléfonos `+5491100000001` a `+5491100000005`, emails `@example.com`);
+  - 5 pacientes ficticios (`Paciente Uno Prueba` … `Paciente Cinco Prueba`, DNI `90000001` a `90000005`, teléfonos `+5491100000001` a `+5491100000005`, emails `@example.com`);
   - 10 turnos de la semana en curso dentro de la disponibilidad demo, con 1 sobreturno solapado;
   - 1 bloqueo sin turnos activos.
 - **Fechas**: relativas a `date_trunc('week', now() AT TIME ZONE 'America/Argentina/Buenos_Aires')` en el momento de la carga. Como Flyway reaplica `R__` solo cuando cambia su checksum, las fechas quedan fijas hasta recrear el volumen (`docker compose down -v`). Se documenta en el README local.
@@ -131,14 +136,15 @@
 
 ### D10 — Bloqueos que se superponen
 - La KB no lo prohíbe y no hay un riesgo de negocio: un horario bloqueado dos veces sigue bloqueado. Por eso no se agrega una exclusión entre bloqueos.
-- *Alternativa*: rechazarlos → obliga a la UI de C-14 a resolver un conflicto sin valor para el usuario. **Se marca para la revisión de Maxi.**
+- *Alternativa*: rechazarlos → obliga a la UI de C-14 a resolver un conflicto sin valor para el usuario.
+- **Aprobada por Maxi en #18 (2026-11-20)**: se permiten bloqueos superpuestos, sin exclusión. Se mantiene que ningún turno, tampoco un sobreturno, cae dentro de un bloqueo (RN-AG-03/04), y que no se crea un bloqueo sobre turnos activos (RN-AG-05).
 
 ## Risks / Trade-offs
 
-- **[PA-01 sigue abierta (Alta)]** → la clave única de `paciente` sigue el default DD-09. La regla dura 16 bloquea el apply hasta que el Product Owner la confirme como `DD-NN`. Si se elige otra identidad (DNI, verificación), cambian `uk_paciente_telefono`, el spec `pacientes` y C-15. Es la tarea 1.2.
+- **[El DNI no se verifica]** → DD-24 acepta que alguien reserve con un DNI ajeno o con un error de tipeo. La marca `requiere_revision` deja visibles las diferencias de nombre para que el odontólogo las revise. Juntar el DNI se aparta de la minimización y se declara en la política de privacidad (DD-28).
 - **[La base no puede impedir un turno dentro de un bloqueo ni un bloqueo sobre un turno]** → la exclusión GiST no cruza tablas. Dos operaciones concurrentes (crear un turno y crear un bloqueo) podrían pasar las dos validaciones. C-11 tiene que serializar las escrituras de agenda por consultorio (por ejemplo, `pg_advisory_xact_lock` sobre el `consultorio_id`). Queda como requisito explícito para C-11 en su "Leer antes".
-- **[C-08 todavía no está mergeado]** → la FK a `tipo_prestacion`, `propiedades()` y el seed dependen de él. El número de migración es provisorio y la tarea 1.1 rebasa y verifica.
-- **[Fusión de franjas contiguas (D5) y bloqueos superpuestos (D10)]** → son decisiones que la KB no fija. Quedan visibles para la revisión, y revertirlas es local.
+- **[C-08 todavía no está mergeado]** → la FK a `tipo_prestacion`, `propiedades()` y el seed dependen de él. C-08 trae `V5`, así que esta migración sería `V6`; el número se confirma en la tarea 1.1.
+- **[Fusión de franjas contiguas (D5) y bloqueos superpuestos (D10)]** → la KB no las fijaba; Maxi las aprobó en #18.
 - **[Fechas del seed congeladas en la primera carga]** → es aceptable en desarrollo y está documentado. *Alternativa*: un `ApplicationRunner` del perfil `local` → agrega código de producción solo para la demo.
 - **[CHECKs con `extract(epoch …)`, que es `STABLE`]** → Postgres lo admite en un CHECK y el valor no depende de la sesión. El test de integración lo cubre con dos `TimeZone` de sesión distintas.
 

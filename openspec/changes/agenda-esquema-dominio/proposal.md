@@ -2,10 +2,11 @@
 
 > Change **C-10** de [CHANGES.md](../../../CHANGES.md) · Governance **ALTO** · Depende de `C-08` (`consultorio-config-backend`) · Responsable: Fran · Aprobación: Maxi.
 >
-> Este change usa C-02 (mergeado) y las propuestas de C-03, C-04 y C-08 (PR #15, en borrador). El código no se escribe hasta que se cumplan tres condiciones:
+> Este change usa C-02, C-03, C-04 y C-05 (mergeados) y C-08 (#15, aprobado, sin mergear todavía). El código no se escribe hasta que se cumplan dos condiciones:
 > - C-08 está `[x]`.
 > - Maxi aprobó esta propuesta (ALTO: se propone y se espera la revisión).
-> - **PA-01 está resuelta** (ver Impact).
+>
+> PA-01 ya está resuelta: el paciente se identifica por DNI ([DD-24](../../../knowledge-base/09_decisiones_y_supuestos.md)).
 
 ## Why
 
@@ -18,7 +19,7 @@ Está en el camino crítico: C-11, C-12, C-13, C-14, C-15 y C-18 se apoyan en es
 ## What Changes
 
 - **Migración** `V{n}__agenda_paciente_turno_bloqueo.sql`, según 04 y `CONVENCIONES.md`:
-  - `paciente`: único `(consultorio_id, telefono_e164)`, datos mínimos, `origen`, `requiere_revision` y consentimiento (fecha y versión). Sin `DELETE` para `app_rw` (RN-AG-07).
+  - `paciente`: único `(consultorio_id, dni)` (DD-24), teléfono obligatorio sin unicidad, datos mínimos, `origen`, `requiere_revision` y consentimiento (fecha y versión). Sin `DELETE` para `app_rw` (RN-AG-07).
   - `turno`: `duracion_min`, `fin` consistente con `inicio + duracion_min` (CHECK), `es_sobreturno`, cuatro estados, `origen`, `cancelado_por` y `motivo_cancelacion` coherentes con el estado, `nota_interna VARCHAR(500)` y `version`. Lleva FKs compuestas a `paciente` y `tipo_prestacion` y la restricción **`EXCLUDE USING gist`** sobre los turnos activos no sobreturno. Sin `DELETE` para `app_rw`.
   - `bloqueo`: `inicio`, `fin` y `motivo`, con índice GiST `(consultorio_id, tstzrange(inicio, fin))`.
   - Instantes alineados a múltiplos de 5 minutos en la base (RN-AG-08).
@@ -55,7 +56,7 @@ Está en el camino crítico: C-11, C-12, C-13, C-14, C-15 y C-18 se apoyan en es
 
 - `turnos`: modelo del turno, con duración y fin derivado, estados y sus transiciones, marca de sobreturno y prevención de solapamientos en dominio y base.
 - `bloqueos`: períodos en los que el consultorio no atiende, y su interacción con los turnos activos.
-- `pacientes`: datos mínimos del paciente por consultorio, identidad por teléfono E.164 y marca de revisión.
+- `pacientes`: datos mínimos del paciente por consultorio, identidad por DNI (value object `Dni`), teléfono de contacto obligatorio y marca de revisión.
 - `huecos-disponibles`: cálculo de los horarios en que cabe un turno de cierta duración, a partir de la disponibilidad, los bloqueos y los turnos.
 
 ### Modified Capabilities
@@ -72,7 +73,8 @@ Ninguna. `aislamiento-tenant` ya exige FKs compuestas y filtro por consultorio, 
 - **API**: ninguna. El contrato OpenAPI no cambia.
 - **Dependencias**: ninguna nueva. `btree_gist` ya está desde la V1.
 - **Preguntas abiertas**:
-  - **PA-01 (Alta, abierta)**: la identidad del paciente decide la clave única de `paciente`. El modelo sigue el default DD-09: teléfono E.164 único por consultorio. Por la regla dura 16, **el apply necesita que el Product Owner confirme PA-01** (pasa a `DD-NN`) o que se registre otra decisión. Si cambia la clave, cambian esta migración y C-15.
-  - PA-10 (Media): teléfono obligatorio también en la carga manual. Se sigue el default (`NOT NULL`).
+  - **PA-01: resuelta por [DD-24](../../../knowledge-base/09_decisiones_y_supuestos.md)**. El paciente se identifica por DNI, único por consultorio; el teléfono sigue obligatorio pero no es clave. Reemplaza a DD-09.
+  - PA-10: resuelta por DD-32. El teléfono es obligatorio también en la carga manual (`NOT NULL`).
+  - PA-15: resuelta por DD-37. Un paciente sin DNI argentino no reserva por el link, sino llamando al consultorio. En v1 el DNI es obligatorio.
   - PA-14 (Media): no bloquea; ver la granularidad más arriba.
 - **Changes desbloqueados**: C-11 y, a través de él, C-12 y C-15.
