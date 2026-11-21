@@ -4,6 +4,7 @@ import ar.sistemaodontologico.agenda.domain.Bloqueo;
 import ar.sistemaodontologico.agenda.domain.BloqueoId;
 import ar.sistemaodontologico.agenda.domain.Intervalo;
 import ar.sistemaodontologico.compartido.domain.ConsultorioId;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,9 @@ public interface BloqueoRepositorio {
 
     /** Los bloqueos del consultorio que se solapan con el intervalo. */
     List<Bloqueo> listarQueIntersectan(ConsultorioId consultorio, Intervalo intervalo);
+
+    /** Los bloqueos del consultorio que terminan después de {@code desde}, ordenados por inicio (C-12 D8). */
+    List<Bloqueo> listarVigentesDesde(ConsultorioId consultorio, Instant desde);
 
     void insertar(ConsultorioId consultorio, Bloqueo bloqueo);
 

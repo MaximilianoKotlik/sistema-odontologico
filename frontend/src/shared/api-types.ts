@@ -51,6 +51,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/turnos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["crear"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turnos/{id}/visto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["visto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turnos/{id}/reprogramar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reprogramar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/public/turnos/{token}/reprogramacion": {
         parameters: {
             query?: never;
@@ -61,7 +109,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Mover el turno a otro hueco */
-        post: operations["reprogramar"];
+        post: operations["reprogramar_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -111,7 +159,7 @@ export interface paths {
         };
         get: operations["listar"];
         put?: never;
-        post: operations["crear"];
+        post: operations["crear_1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -144,6 +192,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["activar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/bloqueos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listar_1"];
+        put?: never;
+        post: operations["crear_2"];
         delete?: never;
         options?: never;
         head?: never;
@@ -262,6 +326,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/turnos/{id}/nota": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["nota"];
+        trace?: never;
+    };
+    "/api/v1/turnos/{id}/estado": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["cambiarEstado"];
+        trace?: never;
+    };
+    "/api/v1/turnos/{id}/duracion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["duracion"];
+        trace?: never;
+    };
+    "/api/v1/turnos/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["detalle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/turnos/fuera-de-disponibilidad": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["fueraDeDisponibilidad"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/public/turnos/{token}": {
         parameters: {
             query?: never;
@@ -346,6 +490,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/pacientes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["buscar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agenda": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["agenda"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/bloqueos/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["eliminar"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -422,6 +614,89 @@ export interface components {
             /** Format: date */
             pruebaHasta?: string;
         };
+        CrearTurnoRequest: {
+            /** Format: uuid */
+            pacienteId?: string;
+            pacienteNuevo?: components["schemas"]["PacienteNuevoRequest"];
+            /** Format: uuid */
+            prestacionId: string;
+            /** Format: date-time */
+            inicio: string;
+            /** Format: int32 */
+            duracionMin?: number;
+            esSobreturno?: boolean;
+        };
+        PacienteNuevoRequest: {
+            nombre: string;
+            apellido: string;
+            dni: string;
+            telefono: string;
+            email?: string;
+        };
+        DetalleResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            inicio?: string;
+            /** Format: date-time */
+            fin?: string;
+            /** Format: int32 */
+            duracionMin?: number;
+            /** @enum {string} */
+            estado?: "RESERVADO" | "CONFIRMADO" | "CANCELADO" | "AUSENTE";
+            esSobreturno?: boolean;
+            /** @enum {string} */
+            origen?: "LINK" | "MANUAL";
+            prestacion?: components["schemas"]["PrestacionResumen"];
+            paciente?: components["schemas"]["PacienteDelDetalle"];
+            tieneNota?: boolean;
+            notaInterna?: string;
+            /** @enum {string} */
+            canceladoPor?: "ODONTOLOGO" | "PACIENTE";
+            motivoCancelacion?: string;
+            /** @enum {string} */
+            cambioPaciente?: "RESERVO" | "REPROGRAMO" | "CANCELO";
+            /** Format: date-time */
+            novedadPacienteAt?: string;
+            horarioAnterior?: components["schemas"]["Horario"];
+            /** Format: int64 */
+            version?: number;
+        };
+        Horario: {
+            /** Format: date-time */
+            inicio?: string;
+            /** Format: date-time */
+            fin?: string;
+        };
+        PacienteDelDetalle: {
+            /** Format: uuid */
+            id?: string;
+            nombre?: string;
+            apellido?: string;
+            dni?: string;
+            telefono?: string;
+            email?: string;
+            requiereRevision?: boolean;
+        };
+        PrestacionResumen: {
+            /** Format: uuid */
+            id?: string;
+            nombre?: string;
+        };
+        TurnoCreadoResponse: {
+            turno?: components["schemas"]["DetalleResponse"];
+            pacienteReutilizado?: boolean;
+        };
+        VistoRequest: {
+            /** Format: date-time */
+            novedadAt: string;
+        };
+        ReprogramarRequest: {
+            /** Format: date-time */
+            inicio: string;
+            /** Format: int64 */
+            version: number;
+        };
         PedidoDeReprogramacion: {
             /** Format: date-time */
             nuevoInicio: string;
@@ -480,6 +755,22 @@ export interface components {
             prestacion?: string;
             estado?: string;
         };
+        CrearBloqueoRequest: {
+            /** Format: date-time */
+            inicio: string;
+            /** Format: date-time */
+            fin: string;
+            motivo?: string;
+        };
+        BloqueoResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            inicio?: string;
+            /** Format: date-time */
+            fin?: string;
+            motivo?: string;
+        };
         RegistroRequest: {
             nombre: string;
             apellido: string;
@@ -515,6 +806,56 @@ export interface components {
         CambioRequest: {
             passwordActual?: string;
             passwordNueva?: string;
+        };
+        NotaRequest: {
+            nota?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        CambiarEstadoRequest: {
+            /** @enum {string} */
+            accion: "CONFIRMAR" | "CANCELAR" | "MARCAR_AUSENTE";
+            motivo?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        DuracionRequest: {
+            /** Format: int32 */
+            duracionMin: number;
+            /** Format: int64 */
+            version: number;
+        };
+        PacienteResumen: {
+            /** Format: uuid */
+            id?: string;
+            nombre?: string;
+            apellido?: string;
+        };
+        TurnoResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            inicio?: string;
+            /** Format: date-time */
+            fin?: string;
+            /** Format: int32 */
+            duracionMin?: number;
+            /** @enum {string} */
+            estado?: "RESERVADO" | "CONFIRMADO" | "CANCELADO" | "AUSENTE";
+            esSobreturno?: boolean;
+            /** @enum {string} */
+            origen?: "LINK" | "MANUAL";
+            prestacion?: components["schemas"]["PrestacionResumen"];
+            paciente?: components["schemas"]["PacienteResumen"];
+            tieneNota?: boolean;
+            /** @enum {string} */
+            canceladoPor?: "ODONTOLOGO" | "PACIENTE";
+            /** @enum {string} */
+            cambioPaciente?: "RESERVO" | "REPROGRAMO" | "CANCELO";
+            /** Format: date-time */
+            novedadPacienteAt?: string;
+            /** Format: int64 */
+            version?: number;
         };
         Dia: {
             /** Format: date */
@@ -562,6 +903,19 @@ export interface components {
             nombre?: string;
             /** Format: int32 */
             duracionMin?: number;
+        };
+        PacienteResponse: {
+            /** Format: uuid */
+            id?: string;
+            nombre?: string;
+            apellido?: string;
+            dni?: string;
+            telefono?: string;
+            requiereRevision?: boolean;
+        };
+        AgendaResponse: {
+            turnos?: components["schemas"]["TurnoResponse"][];
+            bloqueos?: components["schemas"]["BloqueoResponse"][];
         };
     };
     responses: never;
@@ -708,7 +1062,81 @@ export interface operations {
             };
         };
     };
+    crear: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CrearTurnoRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TurnoCreadoResponse"];
+                };
+            };
+        };
+    };
+    visto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VistoRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     reprogramar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReprogramarRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DetalleResponse"];
+                };
+            };
+        };
+    };
+    reprogramar_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -921,7 +1349,7 @@ export interface operations {
             };
         };
     };
-    crear: {
+    crear_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -985,6 +1413,52 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PrestacionResponse"];
+                };
+            };
+        };
+    };
+    listar_1: {
+        parameters: {
+            query?: {
+                desde?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["BloqueoResponse"][];
+                };
+            };
+        };
+    };
+    crear_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CrearBloqueoRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["BloqueoResponse"];
                 };
             };
         };
@@ -1142,6 +1616,126 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    nota: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotaRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DetalleResponse"];
+                };
+            };
+        };
+    };
+    cambiarEstado: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CambiarEstadoRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DetalleResponse"];
+                };
+            };
+        };
+    };
+    duracion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DuracionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DetalleResponse"];
+                };
+            };
+        };
+    };
+    detalle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["DetalleResponse"];
+                };
+            };
+        };
+    };
+    fueraDeDisponibilidad: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["TurnoResponse"][];
+                };
             };
         };
     };
@@ -1365,6 +1959,71 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["HuecosPublicos"];
                 };
+            };
+        };
+    };
+    buscar: {
+        parameters: {
+            query?: {
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PacienteResponse"][];
+                };
+            };
+        };
+    };
+    agenda: {
+        parameters: {
+            query: {
+                desde: string;
+                hasta: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["AgendaResponse"];
+                };
+            };
+        };
+    };
+    eliminar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

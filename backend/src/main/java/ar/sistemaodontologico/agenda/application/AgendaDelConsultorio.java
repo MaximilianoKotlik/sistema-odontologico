@@ -6,9 +6,13 @@ import ar.sistemaodontologico.agenda.domain.TurnoId;
 import ar.sistemaodontologico.agenda.domain.ValidadorDeBloqueo;
 import ar.sistemaodontologico.agenda.domain.ValidadorDeSolapamiento;
 import ar.sistemaodontologico.compartido.domain.ConsultorioId;
+import ar.sistemaodontologico.compartido.domain.error.ConflictoDeNegocio;
 import ar.sistemaodontologico.compartido.domain.error.RecursoNoEncontrado;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
@@ -19,6 +23,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 class AgendaDelConsultorio {
+
+    static final String PROPIEDAD_TURNO_EN_CONFLICTO = "turnoEnConflicto";
 
     private final TurnoRepositorio turnos;
     private final BloqueoRepositorio bloqueos;
@@ -42,10 +48,34 @@ class AgendaDelConsultorio {
         return guardado.turno();
     }
 
-    /** Bloqueo → disponibilidad → solapamiento, con los turnos y bloqueos que tocan su horario (design D5). */
+    /**
+     * Bloqueo → disponibilidad → solapamiento, con los turnos y bloqueos que tocan su horario (design D5). Un
+     * {@code TURNO_SOLAPADO} suma {@code turnoEnConflicto} con el id, el inicio y el fin del primero por inicio, sin
+     * datos del paciente (C-12 D6): C-14 lo resuelve con la agenda que ya tiene cargada.
+     */
     void validarTurno(ConsultorioId consultorio, Turno turno) {
-        ValidadorDeSolapamiento.validar(turno, turnos.listarActivosQueIntersectan(consultorio, turno.intervalo()),
-                bloqueos.listarQueIntersectan(consultorio, turno.intervalo()), disponibilidad.de(consultorio));
+        List<Turno> activos = turnos.listarActivosQueIntersectan(consultorio, turno.intervalo());
+        try {
+            ValidadorDeSolapamiento.validar(turno, activos, bloqueos.listarQueIntersectan(consultorio,
+                    turno.intervalo()), disponibilidad.de(consultorio));
+        } catch (ConflictoDeNegocio error) {
+            if (!ValidadorDeSolapamiento.CODIGO_SOLAPADO.equals(error.getCodigo())) {
+                throw error;
+            }
+            throw conTurnoEnConflicto(error, activos);
+        }
+    }
+
+    private static ConflictoDeNegocio conTurnoEnConflicto(ConflictoDeNegocio error, List<Turno> activos) {
+        Collection<?> ids = (Collection<?>) error.getPropiedades().get(ValidadorDeSolapamiento.PROPIEDAD_TURNOS);
+        Turno primero = activos.stream()
+                .filter(otro -> ids.contains(otro.id().valor().toString()))
+                .min(Comparator.comparing(Turno::inicio))
+                .orElseThrow();
+        Map<String, Object> propiedades = new LinkedHashMap<>(error.getPropiedades());
+        propiedades.put(PROPIEDAD_TURNO_EN_CONFLICTO, campos("id", primero.id().valor().toString(),
+                "inicio", primero.inicio(), "fin", primero.fin()));
+        return new ConflictoDeNegocio(error.getCodigo(), error.getMessage(), propiedades);
     }
 
     /** Un bloqueo no pisa turnos activos, sobreturnos incluidos (RN-AG-05). */

@@ -26,6 +26,13 @@ public interface TurnoRepositorio {
      */
     long actualizar(Turno turno, long versionEsperada);
 
+    /**
+     * Quita la marca de novedad del paciente solo si es la que se vio o una anterior, comparando en milisegundos: un
+     * cliente que pasó el valor por {@code Date} lo manda truncado (C-12, design D5; nota de Maxi en #39). No toca la
+     * versión ni otra columna (DD-39).
+     */
+    void limpiarNovedad(ConsultorioId consultorio, TurnoId id, Instant novedadVista);
+
     /** Los turnos activos del paciente, reservados por link, que todavía no empezaron (RN-RP-08). */
     long contarFuturosActivosPorLink(ConsultorioId consultorio, PacienteId paciente, Instant ahora);
 
