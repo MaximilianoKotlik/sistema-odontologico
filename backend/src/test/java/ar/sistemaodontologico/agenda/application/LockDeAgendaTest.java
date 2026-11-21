@@ -8,6 +8,8 @@ import ar.sistemaodontologico.compartido.domain.ConsultorioId;
 import ar.sistemaodontologico.consultorio.application.DisponibilidadRepositorio;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,11 @@ import pruebas.agenda.AgendaDePrueba;
  * C-08, así las escrituras de agenda y los cambios de disponibilidad de un consultorio quedan en una sola cola.
  */
 class LockDeAgendaTest extends IntegracionPostgresTest {
+
+    /** Si en este tiempo no terminó, estaba esperando el lock: retenido, no termina nunca. */
+    private static final long ESPERA = 500;
+    /** Margen amplio para un runner de CI lento: el que no espera termina en milisegundos. */
+    private static final long NO_ESPERA = 10_000;
 
     @Autowired
     private LockDeAgenda lock;
@@ -39,14 +46,14 @@ class LockDeAgendaTest extends IntegracionPostgresTest {
     void elLockDeAgendaHaceEsperarAlReemplazoDeLaGrilla() throws Exception {
         ConsultorioId consultorio = new ConsultorioId(AgendaDePrueba.nueva(jdbc).consultorio());
 
-        assertThat(segundoEspera(consultorio, lock::tomar, disponibilidad::bloquear)).isTrue();
+        assertThat(segundoEspera(consultorio, lock::tomar, disponibilidad::bloquear, ESPERA)).isTrue();
     }
 
     @Test
     void elReemplazoDeLaGrillaHaceEsperarAlLockDeAgenda() throws Exception {
         ConsultorioId consultorio = new ConsultorioId(AgendaDePrueba.nueva(jdbc).consultorio());
 
-        assertThat(segundoEspera(consultorio, disponibilidad::bloquear, lock::tomar)).isTrue();
+        assertThat(segundoEspera(consultorio, disponibilidad::bloquear, lock::tomar, ESPERA)).isTrue();
     }
 
     @Test
@@ -54,7 +61,7 @@ class LockDeAgendaTest extends IntegracionPostgresTest {
         ConsultorioId uno = new ConsultorioId(AgendaDePrueba.nueva(jdbc).consultorio());
         ConsultorioId otro = new ConsultorioId(AgendaDePrueba.nueva(jdbc).consultorio());
 
-        assertThat(segundoEspera(uno, lock::tomar, ignorado -> lock.tomar(otro))).isFalse();
+        assertThat(segundoEspera(uno, lock::tomar, ignorado -> lock.tomar(otro), NO_ESPERA)).isFalse();
     }
 
     @Test
@@ -68,11 +75,22 @@ class LockDeAgendaTest extends IntegracionPostgresTest {
     }
 
     /**
-     * El primero toma su lock y lo retiene; el segundo intenta el suyo. Devuelve si el segundo tuvo que esperar a que
-     * el primero confirmara.
+     * El primero toma su lock y lo retiene; el segundo intenta el suyo. Devuelve si el segundo no terminó en
+     * {@code limite} milisegundos, o sea, si tuvo que esperar a que el primero confirmara. Cada uno en su propio hilo,
+     * sin depender del tamaño del pool común.
      */
     private boolean segundoEspera(ConsultorioId consultorio, Consumer<ConsultorioId> primero,
-            Consumer<ConsultorioId> segundo) throws Exception {
+            Consumer<ConsultorioId> segundo, long limite) throws Exception {
+        ExecutorService hilos = Executors.newFixedThreadPool(2);
+        try {
+            return segundoEspera(consultorio, primero, segundo, limite, hilos);
+        } finally {
+            hilos.shutdownNow();
+        }
+    }
+
+    private boolean segundoEspera(ConsultorioId consultorio, Consumer<ConsultorioId> primero,
+            Consumer<ConsultorioId> segundo, long limite, ExecutorService hilos) throws Exception {
         TransactionTemplate transaccion = new TransactionTemplate(transacciones);
         CountDownLatch primeroTomo = new CountDownLatch(1);
         CountDownLatch soltar = new CountDownLatch(1);
@@ -81,14 +99,14 @@ class LockDeAgendaTest extends IntegracionPostgresTest {
             primero.accept(consultorio);
             primeroTomo.countDown();
             esperar(soltar);
-        }));
+        }), hilos);
         esperar(primeroTomo);
         CompletableFuture<Void> intenta = CompletableFuture.runAsync(
-                () -> transaccion.executeWithoutResult(estado -> segundo.accept(consultorio)));
+                () -> transaccion.executeWithoutResult(estado -> segundo.accept(consultorio)), hilos);
 
         boolean espero;
         try {
-            intenta.get(500, TimeUnit.MILLISECONDS);
+            intenta.get(limite, TimeUnit.MILLISECONDS);
             espero = false;
         } catch (java.util.concurrent.TimeoutException e) {
             espero = true;

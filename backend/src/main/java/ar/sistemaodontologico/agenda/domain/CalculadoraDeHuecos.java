@@ -27,6 +27,8 @@ public final class CalculadoraDeHuecos {
     }
 
     /**
+     * Los inicios libres entre {@code desde} y {@code hasta}, en orden cronológico.
+     *
      * <p><strong>Qué ocupa según quién pide</strong> (revisión de Maxi en #18, lo decide C-12): para la reserva pública
      * los sobreturnos ocupan (RN-RP-01) y se pasa {@link #ocupados}. El odontólogo, en cambio, puede crear un turno
      * normal encima de un sobreturno ({@code ValidadorDeSolapamiento} los ignora), así que para él hay que pasar los
