@@ -132,6 +132,7 @@ erDiagram
 - `estado VARCHAR(12) CHECK IN ('RESERVADO','CONFIRMADO','CANCELADO','AUSENTE')`.
 - `es_sobreturno BOOLEAN NOT NULL DEFAULT false` — el "sobreturno" del Discovery se modela como **marca**, no como estado, porque un sobreturno también se confirma, se cancela o queda ausente ([DD-10](09_decisiones_y_supuestos.md)).
 - `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `cancelado_por VARCHAR(12) NULL` (`ODONTOLOGO`/`PACIENTE`), `motivo_cancelacion VARCHAR(200)`, `nota_interna VARCHAR(500)`, `version BIGINT` (optimistic locking), `created_at`, `updated_at`.
+- `novedad_paciente_at TIMESTAMPTZ NULL` (`V7__token_gestion_turno`, C-15): cambio del paciente por el link que el odontólogo todavía no vio ([DD-30](09_decisiones_y_supuestos.md)). La escribe C-15 al reservar, reprogramar o cancelar por el link, y `POST /api/v1/turnos/{id}/visto` la limpia sin evento de auditoría ([DD-39](09_decisiones_y_supuestos.md)). No cambia la `version`.
 - Constraint clave ([RN-AG-01](05_reglas_de_negocio.md)):
   ```sql
   CREATE EXTENSION IF NOT EXISTS btree_gist;

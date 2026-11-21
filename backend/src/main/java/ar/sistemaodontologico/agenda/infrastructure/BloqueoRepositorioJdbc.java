@@ -8,6 +8,7 @@ import ar.sistemaodontologico.compartido.domain.ConsultorioId;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +46,19 @@ class BloqueoRepositorioJdbc implements BloqueoRepositorio {
                 .param("consultorio", consultorio.valor())
                 .param("inicio", Timestamp.from(intervalo.inicio()))
                 .param("fin", Timestamp.from(intervalo.fin()))
+                .query((fila, numero) -> bloqueo(fila))
+                .list();
+    }
+
+    @Override
+    public List<Bloqueo> listarVigentesDesde(ConsultorioId consultorio, Instant desde) {
+        return jdbc.sql("""
+                SELECT id, inicio, fin, motivo
+                  FROM bloqueo
+                 WHERE consultorio_id = :consultorio AND fin > :desde
+                 ORDER BY inicio, id""")
+                .param("consultorio", consultorio.valor())
+                .param("desde", Timestamp.from(desde))
                 .query((fila, numero) -> bloqueo(fila))
                 .list();
     }
