@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -120,6 +121,8 @@ class ConfiguracionDeSeguridad {
         cors.setAllowedOrigins(List.of(propiedades.frontendOrigin()));
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         cors.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        // C-19: nombre del archivo y espera del 429 de la exportación (aprobado por Maxi en el PR #54).
+        cors.setExposedHeaders(List.of(HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.RETRY_AFTER));
         cors.setAllowCredentials(true);
         cors.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource fuente = new UrlBasedCorsConfigurationSource();
