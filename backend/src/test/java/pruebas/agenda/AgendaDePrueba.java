@@ -89,6 +89,34 @@ public final class AgendaDePrueba {
         return id;
     }
 
+    /** Un paciente con todos sus datos de contacto, para el detalle y la búsqueda (C-12). */
+    public UUID paciente(String nombre, String apellido, String dni, String telefono, String email) {
+        UUID id = UUID.randomUUID();
+        jdbc.update("""
+                INSERT INTO paciente (id, consultorio_id, nombre, apellido, dni, telefono_e164, email, origen)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'MANUAL')""", id, consultorio, nombre, apellido, dni, telefono, email);
+        return id;
+    }
+
+    public void nota(UUID turno, String nota) {
+        jdbc.update("UPDATE turno SET nota_interna = ? WHERE id = ?", nota, turno);
+    }
+
+    /** La marca de un cambio del paciente sin ver, como la escribe C-15 (D14). */
+    public void novedad(UUID turno, Instant instante) {
+        jdbc.update("UPDATE turno SET novedad_paciente_at = ? WHERE id = ?", java.sql.Timestamp.from(instante), turno);
+    }
+
+    /** Un evento de auditoría del turno hecho por el paciente desde el link, como lo deja C-15. */
+    public void eventoDelPaciente(UUID turno, String accion, String anteriorJson, String nuevoJson, Instant ocurrido) {
+        jdbc.update("""
+                INSERT INTO evento_auditoria (id, consultorio_id, ocurrido_at, actor_tipo, actor_id, entidad, entidad_id,
+                                              accion, valor_anterior, valor_nuevo)
+                VALUES (?, ?, ?, 'PACIENTE', NULL, 'turno', ?, ?, CAST(? AS jsonb), CAST(? AS jsonb))""",
+                UUID.randomUUID(), consultorio, java.sql.Timestamp.from(ocurrido), turno, accion, anteriorJson,
+                nuevoJson);
+    }
+
     public UUID bloqueo(Instant inicio, Instant fin, String motivo) {
         UUID id = UUID.randomUUID();
         jdbc.update("INSERT INTO bloqueo (id, consultorio_id, inicio, fin, motivo) VALUES (?, ?, ?, ?, ?)", id,

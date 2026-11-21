@@ -4,6 +4,7 @@ import ar.sistemaodontologico.agenda.domain.Intervalo;
 import ar.sistemaodontologico.agenda.domain.Turno;
 import ar.sistemaodontologico.agenda.domain.TurnoId;
 import ar.sistemaodontologico.compartido.domain.ConsultorioId;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +24,11 @@ public interface TurnoRepositorio {
      * {@code OptimisticLockingFailureException} (409 {@code CONFLICTO_CONCURRENCIA}, RN-GL-02) sin escribir.
      */
     long actualizar(Turno turno, long versionEsperada);
+
+    /**
+     * Quita la marca de novedad del paciente solo si es la que se vio o una anterior, comparando en milisegundos: un
+     * cliente que pasó el valor por {@code Date} lo manda truncado (C-12, design D5; nota de Maxi en #39). No toca la
+     * versión ni otra columna (DD-39).
+     */
+    void limpiarNovedad(ConsultorioId consultorio, TurnoId id, Instant novedadVista);
 }

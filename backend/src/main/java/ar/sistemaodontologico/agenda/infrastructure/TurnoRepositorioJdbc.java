@@ -111,6 +111,18 @@ class TurnoRepositorioJdbc implements TurnoRepositorio {
         return versionEsperada + 1;
     }
 
+    @Override
+    public void limpiarNovedad(ConsultorioId consultorio, TurnoId id, Instant novedadVista) {
+        jdbc.sql("""
+                UPDATE turno SET novedad_paciente_at = NULL
+                 WHERE consultorio_id = :consultorio AND id = :id
+                   AND date_trunc('milliseconds', novedad_paciente_at) <= :novedad""")
+                .param("consultorio", consultorio.valor())
+                .param("id", id.valor())
+                .param("novedad", Timestamp.from(novedadVista))
+                .update();
+    }
+
     private static Turno turno(ResultSet fila) throws SQLException {
         String canceladoPor = fila.getString("cancelado_por");
         return Turno.restaurar(
