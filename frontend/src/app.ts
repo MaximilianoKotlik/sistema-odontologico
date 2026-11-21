@@ -57,6 +57,7 @@ const RUTAS: readonly DefinicionRuta<Destino>[] = [
   privada('/app/bloqueos', async () => (await import('./pages/bloqueos')).pagina),
   privada('/app/configuracion', async () => (await import('./pages/configuracion')).pagina),
   privada('/app/configuracion/prestaciones', async () => (await import('./pages/configuracion-prestaciones')).pagina),
+  privada('/app/configuracion/horarios', async () => (await import('./pages/configuracion-horarios')).pagina),
   privada('/app/auditoria', async () => (await import('./pages/auditoria')).pagina),
   privada('/app/exportar', async () => (await import('./pages/exportar')).pagina),
   privada('/app/cuenta/contrasena', async () => (await import('./pages/cambiar-contrasena')).pagina),
