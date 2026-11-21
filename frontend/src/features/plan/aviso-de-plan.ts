@@ -29,7 +29,8 @@ const CLASE_TONO: Record<Tono, string> = {
   peligro: 'bg-peligro-fondo border-cancelado-bd text-cancelado-fg',
 };
 const CLASE_AVISO = 'flex gap-3 items-start px-4 py-3 rounded-md border text-sm';
-const CLASE_ENLACE = 'font-semibold underline underline-offset-2 text-current min-h-touch inline-flex items-center';
+/** Link dentro del texto: sin alto mínimo, como permite la excepción inline de WCAG 2.5.8. */
+const CLASE_ENLACE = 'font-semibold underline underline-offset-2 text-current';
 
 export interface OpcionesAvisoDePlan {
   readonly estado: EstadoDelPlan;

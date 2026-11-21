@@ -39,8 +39,8 @@
 
 ## 6. Cierre del change
 
-- [ ] 6.1 Verificación visual contra el mockup aprobado, a 390×844 y 1440×900, con capturas en `mockups/verify/` (verificación: `Visual verify` en `design.md`)
-- [ ] 6.2 `./gradlew test` completo, `ArchitectureTest` en verde y cobertura ≥ 80 % en el código nuevo de `consultorio` (verificación: CI del PR)
+- [x] 6.1 Verificación visual contra el mockup aprobado, a 390×844 y 1440×900, con capturas en `mockups/verify/` (verificación: `Visual verify` en `design.md`)
+- [x] 6.2 `./gradlew test` completo, `ArchitectureTest` en verde y cobertura ≥ 80 % en el código nuevo de `consultorio` (verificación: CI del PR)
 - [ ] 6.3 PR listo con la evidencia y la revisión de Maxi. Avisar a Nacho que las pantallas de C-13 y C-14 lean `soloLectura()` para deshabilitar sus acciones, y a Mati que `POST /api/v1/exportacion` está en la lista permitida (verificación: PR con revisor asignado)
 
 ## Workflow follow-up
