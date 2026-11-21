@@ -36,6 +36,14 @@
 - [ ] 5.1 `ExportarDatos(PedidoDeExportacion, OutputStream)` con `TransactionTemplate` de solo lectura y `REPEATABLE READ`, abierto en el hilo del streaming (design D2): arma el ZIP completo con el manifest al final y filtra por `pedido.consultorio()` (verificación: escenarios "Archivos presentes", "Entidad vacía", "Datos que no son del presente", "Cantidades que coinciden" e "Integridad de los archivos")
 - [ ] 5.2 Consistencia con escrituras concurrentes: un turno creado durante la exportación queda igual en el manifest, el JSON y el CSV (verificación: escenario "Turno creado durante la exportación", con un latch en el exportador de turnos)
 - [ ] 5.3 Límite de design D7 en el hilo de la petición: `GuardiaDeExportaciones`, último evento y `Retry-After`, más `pg_try_advisory_xact_lock` como segunda defensa en el streaming. La guardia se libera siempre, también ante errores (verificación: escenarios "Otra exportación a los 2 minutos", "Pasados 5 minutos", "Dos pedidos simultáneos" y "Otro consultorio no comparte el límite", con `Clock` fijo)
+- [ ] 5.3b Liberación de la guardia (pedido de Maxi en el PR #32). Después de cada uno de estos casos, una exportación nueva del mismo consultorio no recibe 429 por la guardia:
+  - el streaming termina bien;
+  - el streaming falla a mitad de camino (excepción en un exportador);
+  - el cliente corta la descarga;
+  - el 429 por exportación reciente se decide en la petición, antes de empezar el streaming;
+  - otro error en la petición antes de devolver el `StreamingResponseBody`.
+
+  (verificación: test por caso que consulta `GuardiaDeExportaciones` vacía para el consultorio y repite el pedido; el de la falla también verifica que no se registró `EXPORTACION_GENERADA`)
 - [ ] 5.4 Evento `EXPORTACION_GENERADA` al final, en `REQUIRES_NEW`, con el actor y la IP del pedido, y nada si falla el streaming (verificación: escenarios "Evento registrado", "Actor e IP del evento" y "Falla durante la generación")
 - [ ] 5.5 Plan `VENCIDO` (verificación: escenario "Plan vencido")
 
