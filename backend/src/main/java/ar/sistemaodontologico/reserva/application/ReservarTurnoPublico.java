@@ -118,12 +118,4 @@ public class ReservarTurnoPublico {
         }
         return error;
     }
-
-    /** Señal interna para revertir la transacción antes de armar el 409 con los huecos actualizados. */
-    private static final class HuecoTomado extends RuntimeException {
-
-        HuecoTomado() {
-            super(null, null, false, false);
-        }
-    }
 }
