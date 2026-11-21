@@ -13,7 +13,7 @@
 ## 1. Base
 
 - [x] 1.1 Rebasar sobre `main` con C-07 y C-08; regenerar `api-types.ts` y verificar los 9 endpoints y los códigos de error de C-08 (incluido el de anticipación de reserva ≥ horizonte, para completar D8)
-- [ ] 1.2 Guarda de navegación en el router de C-06 si no existe (D9), con test
+- [x] 1.2 Guarda de navegación en el router de C-06 si no existe (D9), con test
 - [x] 1.3 `features/configuracion/api.ts` tipado con `api-types.ts`, con tests sobre dobles de `fetch`
 
 ## 2. Lógica pura

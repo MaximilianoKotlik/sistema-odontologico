@@ -101,7 +101,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
       sinRedAlRestaurar = false;
       void olvidarAgendaGuardada();
       avisoPendiente = { tipo: 'sesion-vencida' };
-      void routerCreado.navegar(rutaDeLogin(routerCreado.rutaActual()));
+      void routerCreado.navegar(rutaDeLogin(routerCreado.rutaActual()), { forzar: true });
     },
     alResponder: (ruta, respuesta) => registrarSincronizacion(conectividad, ruta, respuesta),
     alFallarRed: () => conectividad.set({ online: false }),
@@ -128,7 +128,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
     await olvidarAgendaGuardada();
     canal.publicar(motivo);
     avisoPendiente = AVISO_POR_MOTIVO[motivo];
-    await routerCreado.navegar('/login');
+    await routerCreado.navegar('/login', { forzar: true });
   }
 
   async function cerrarSesion(): Promise<void> {
@@ -144,7 +144,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
     void olvidarAgendaGuardada();
     if (!esRutaPrivada(location.pathname)) return;
     avisoPendiente = AVISO_POR_MOTIVO[motivo];
-    void routerCreado.navegar('/login');
+    void routerCreado.navegar('/login', { forzar: true });
   });
 
   function desmontarShell(): void {
@@ -173,6 +173,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
       http,
       zonaHoraria: sesion.get().zonaHoraria,
       cuenta: { terminarPorCambioDeContrasena: () => terminarSesion('contrasena-cambiada') },
+      navegacion: routerCreado,
     });
     shell.sincronizarConexion();
   }
