@@ -47,4 +47,4 @@ Con el 201 del registro, la app SHALL mostrar "¡Listo! Entrando a tu consultori
 
 #### Scenario: Falla el login automático
 - **WHEN** el registro responde 201 y el login falla
-- **THEN** la app abre `/login` con el email cargado y "¡Tu consultorio está listo! Ingresá con tu contraseña"
+- **THEN** la app abre `/login` con el email cargado y "¡Tu consultorio está listo!" y "No pudimos abrir tu sesión automáticamente. Ingresá con el email y la contraseña que acabás de crear."

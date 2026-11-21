@@ -4,6 +4,7 @@ import { crearCanalSesion, crearCoordinadorRefresh, type FabricaDeCanal, type Lo
 import { montarLayoutAuth, montarSplash } from './features/auth/layout';
 import { decidirAcceso, esRutaPrivada } from './features/auth/sesion';
 import { sanearVolver } from './features/auth/volver';
+import { RUTA_PLANES_PUBLICOS } from './features/precios/catalogo';
 import type { Pagina } from './pages/pagina';
 import { borrarCacheAgenda, crearConectividad, registrarSincronizacion, type EstadoConectividad } from './shared/conectividad';
 import { ApiError, crearClienteHttp, type ClienteHttp } from './shared/http';
@@ -179,7 +180,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
   function mostrarAuth(pagina: PaginaAuth): void {
     limpiarAuth();
     desmontarShell();
-    const { tarjeta } = montarLayoutAuth(anfitrion as HTMLElement, marca, pagina.conPanel === true);
+    const { tarjeta } = montarLayoutAuth(anfitrion as HTMLElement, marca, pagina.conPanel === true, () => http.get<unknown>(RUTA_PLANES_PUBLICOS));
     documento.title = `${pagina.titulo} · ${marca}`;
     const contexto: ContextoAuth = {
       contenedor: tarjeta,

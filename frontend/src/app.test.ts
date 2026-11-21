@@ -183,7 +183,7 @@ describe('montarAplicacion', () => {
       history.replaceState(null, '', '/login');
       const fetch = crearFetch();
       await montar({ fetch });
-      expect(fetch).not.toHaveBeenCalled();
+      expect(fetch.mock.calls.map(([url]) => String(url))).not.toContain('/api/v1/auth/refresh');
       expect(document.querySelector('form')).not.toBeNull();
     });
 

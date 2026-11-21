@@ -1,5 +1,6 @@
 import { el } from '../../shared/dom';
 import { icono } from '../../shared/ui/iconos';
+import { esCatalogoPublico, formatearImporteArs } from '../precios/catalogo';
 import { spinner } from './ui';
 
 /**
@@ -28,7 +29,30 @@ function marcaVisual(marca: string, enPanel: boolean): HTMLAnchorElement {
   );
 }
 
-function panel(marca: string): HTMLElement {
+/**
+ * Línea de precio del panel, tomada del mismo catálogo público que /precios (C-21; revisión de Maxi en #57). Hasta
+ * que llega, o si no cumple el contrato, solo queda "Ver precios": nunca un importe escrito a mano o inventado.
+ */
+function lineaDePrecio(cargarCatalogo: () => Promise<unknown>): HTMLParagraphElement {
+  const linea = el(
+    'p',
+    { 'data-precio-panel': true, class: 'm-0 text-sm opacity-90' },
+    el('a', { href: '/precios', class: 'text-current underline underline-offset-2' }, 'Ver precios'),
+  );
+  cargarCatalogo()
+    .then((datos) => {
+      if (!esCatalogoPublico(datos)) return;
+      const [plan, ...otros] = datos.planes;
+      if (plan === undefined) return;
+      const importe = formatearImporteArs(plan.importeARS);
+      const texto = otros.length === 0 ? `Plan único: ${importe} por mes con IVA incluido. ` : `Desde ${importe} por mes con IVA incluido. `;
+      linea.prepend(texto);
+    })
+    .catch(() => undefined);
+  return linea;
+}
+
+function panel(marca: string, cargarCatalogo: () => Promise<unknown>): HTMLElement {
   return el(
     'aside',
     {
@@ -46,12 +70,7 @@ function panel(marca: string): HTMLElement {
         ...PUNTOS_DEL_PANEL.map((texto) => el('li', { class: 'flex gap-3 items-start text-lg' }, icono('check', 'w-icono h-icono flex-none mt-1'), texto)),
       ),
     ),
-    el(
-      'p',
-      { class: 'm-0 text-sm opacity-90' },
-      'Plan único: ARS 14.900 por mes con IVA incluido. ',
-      el('a', { href: '/precios', class: 'text-current underline underline-offset-2' }, 'Ver precios'),
-    ),
+    lineaDePrecio(cargarCatalogo),
   );
 }
 
@@ -60,7 +79,8 @@ export interface LayoutAuth {
   readonly tarjeta: HTMLElement;
 }
 
-export function montarLayoutAuth(anfitrion: HTMLElement, marca: string, conPanel: boolean): LayoutAuth {
+/** `cargarCatalogo` trae `GET /api/v1/public/planes`; solo se llama si la pantalla muestra el panel. */
+export function montarLayoutAuth(anfitrion: HTMLElement, marca: string, conPanel: boolean, cargarCatalogo: () => Promise<unknown>): LayoutAuth {
   const tarjeta = el('div', { class: 'w-full max-w-md' });
   const principal = el(
     'main',
@@ -91,7 +111,7 @@ export function montarLayoutAuth(anfitrion: HTMLElement, marca: string, conPanel
   );
   anfitrion.replaceChildren(
     saltar,
-    el('div', { 'data-auth-root': true, class: 'min-h-screen flex flex-col min-[900px]:flex-row bg-fondo font-sans' }, conPanel ? panel(marca) : null, principal),
+    el('div', { 'data-auth-root': true, class: 'min-h-screen flex flex-col min-[900px]:flex-row bg-fondo font-sans' }, conPanel ? panel(marca, cargarCatalogo) : null, principal),
   );
   return { tarjeta };
 }

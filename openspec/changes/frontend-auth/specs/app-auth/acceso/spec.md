@@ -57,7 +57,7 @@ Ante 401 `CREDENCIALES_INVALIDAS`, el login SHALL mostrar "Email o contraseña i
 
 #### Scenario: Cuenta bloqueada
 - **WHEN** el login responde 423 con 12 minutos restantes
-- **THEN** se ve "Pausamos el ingreso por seguridad" con "12 minutos" y el link "Restablecé tu contraseña"
+- **THEN** se ve "Pausamos el ingreso por seguridad" con "12 minutos" y el link "restablecela"
 
 ### Requirement: Límite de intentos
 Ante 429 `DEMASIADAS_SOLICITUDES` en cualquier pantalla de auth, la app SHALL mostrar cuánto esperar, calculado desde `Retry-After`, y MUST deshabilitar el envío hasta entonces.
@@ -123,7 +123,7 @@ Cada pestaña que recibe el aviso `sesion-cerrada` SHALL borrar su token de memo
 #### Scenario: Cambiar la contraseña con dos pestañas abiertas
 - **GIVEN** la agenda abierta en una pestaña y `/app/cuenta/contrasena` en otra
 - **WHEN** el cambio de contraseña responde 204
-- **THEN** las dos pestañas llegan a `/login` con "Cambiamos tu contraseña"
+- **THEN** las dos pestañas llegan a `/login` con "Cambiaste tu contraseña."
 
 #### Scenario: Mensaje con otro formato
 - **WHEN** llega por `muelas-auth` un mensaje que no es `{ tipo: 'sesion-cerrada', motivo }` con un motivo conocido

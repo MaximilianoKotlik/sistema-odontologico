@@ -73,7 +73,7 @@ Las decisiones técnicas de C-07:
 - Al cargar una ruta privada sin token en memoria, se muestra el splash "Abriendo tu agenda…" (`aria-busy`) y se llama una vez a `renovarSesion()` de C-06.
   - Con éxito: se monta el shell en la ruta pedida.
   - Con 401: va a `/login?volver=…` sin aviso. Es el caso normal de alguien que no tiene sesión, no un error.
-  - **Sin red** (nota de implementación, para revisar en el PR): si el refresh no llega al servidor, se monta el shell sin token y con el aviso "Sin conexión", para conservar la lectura de la última agenda guardada (pwa-offline de C-06). Esa caché solo existe mientras hubo una sesión: se borra al cerrar, al vencer y al iniciar otra. Al volver la red, el primer pedido privado renueva la sesión o la vence y lleva al login.
+  - **Sin red** (aprobada por Maxi en #57): si el refresh no llega al servidor, se monta el shell sin token y con el aviso "Sin conexión", para conservar la lectura de la última agenda guardada (pwa-offline de C-06). Esa caché solo existe mientras hubo una sesión: se borra al cerrar, al vencer y al iniciar otra. Al volver la red, el primer pedido privado renueva la sesión o la vence y lleva al login.
 - En una ruta pública **no se intenta el refresh**, ni siquiera en `/login` o `/registro`:
   - Si la pestaña ya tiene token en memoria (se llegó navegando dentro de la app), `/login` y `/registro` llevan a `/app` (spec "Usuario con sesión en rutas de ingreso").
   - Si se abren con una carga completa (link, marcador o recarga), no hay token en memoria y se muestra el formulario. No se sabe si hay cookie de refresh y no se pregunta al backend.
