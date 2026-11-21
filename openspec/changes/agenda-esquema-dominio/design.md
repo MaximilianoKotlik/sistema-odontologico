@@ -95,9 +95,10 @@
 - **Algoritmo**: para cada fecha del rango toma las franjas de su `DayOfWeek` y fusiona las contiguas (D5). Desde el inicio de cada franja avanza de a `paso` mientras `t + duracion ≤ fin`, convierte con `ZonedDateTime.of(fecha, t, zona).toInstant()` y descarta los candidatos que intersectan algo ocupado o quedan fuera de los límites.
   - Los ocupados van ordenados por inicio, y la búsqueda avanza con un puntero. Con 60 días y pocas decenas de turnos por día es lineal y suficiente.
 - **Límites**: se excluyen los huecos con `inicio < ahora + anticipacion` y los que tienen `inicio > ahora + horizonteDias × 24 h`. El horizonte se mide como duración desde `ahora`, como dice RN-RP-01.
-- **Horario de verano**: hoy Argentina no tiene. Si una zona lo tuviera, `ZonedDateTime.of` corre las horas inexistentes y elige el offset anterior en las repetidas. Se documenta con un test con una zona con DST, para que el comportamiento quede fijado.
+- **Horario de verano**: hoy Argentina no tiene. En la implementación, una hora local que no existe **se saltea** en lugar de correrla a la siguiente, porque correrla repetía el hueco de la hora siguiente. En una hora repetida se usa el primer offset (`ZonedDateTime.of`). Queda fijado por un test con `Europe/Madrid`.
+- **Paso**: el dominio acepta cualquier paso positivo y múltiplo de 5 (el escenario "Bloqueo de toda la tarde" usa 60). Los valores que admite cada consultorio (5, 10, 15, 20 y 30) los valida su configuración en C-08.
 
-### D8 — Migración `V{n}__agenda_paciente_turno_bloqueo.sql`
+### D8 — Migración `V6__agenda_paciente_turno_bloqueo.sql`
 - Sigue `CONVENCIONES.md`: `consultorio_id` con FK, `UNIQUE (consultorio_id, id)` en `paciente`, `turno` y `bloqueo`, FKs compuestas, índices que empiezan por `consultorio_id` y constraints con nombre.
 - **`paciente`**:
   - `dni VARCHAR(8) NOT NULL` con `ck_paciente_dni CHECK (dni ~ '^[0-9]{7,8}$')` y `uk_paciente_dni UNIQUE (consultorio_id, dni)` (DD-24). Sirve también de índice para buscar por DNI.
@@ -105,6 +106,8 @@
   - `ck_paciente_origen`.
   - `ck_paciente_consentimiento`: `origen <> 'LINK' OR (consentimiento_at IS NOT NULL AND consentimiento_version IS NOT NULL)`.
   - `email CITEXT`, `updated_at` y `REVOKE DELETE`.
+  - `consentimiento_version VARCHAR(40)`, no 10 como decía 04: la versión vigente (`2026-11-borrador`, DD-23) tiene 16 caracteres. Se corrige 04.
+  - `ix_paciente_consultorio_apellido (consultorio_id, lower(apellido), lower(nombre))` para la búsqueda de C-17.
 - **`turno`**:
   - FKs compuestas `fk_turno_paciente` y `fk_turno_tipo_prestacion`.
   - `ck_turno_duracion`: de 5 a 480 y `% 5 = 0`.
@@ -142,8 +145,8 @@
 ## Risks / Trade-offs
 
 - **[El DNI no se verifica]** → DD-24 acepta que alguien reserve con un DNI ajeno o con un error de tipeo. La marca `requiere_revision` deja visibles las diferencias de nombre para que el odontólogo las revise. Juntar el DNI se aparta de la minimización y se declara en la política de privacidad (DD-28).
-- **[La base no puede impedir un turno dentro de un bloqueo ni un bloqueo sobre un turno]** → la exclusión GiST no cruza tablas. Dos operaciones concurrentes (crear un turno y crear un bloqueo) podrían pasar las dos validaciones. C-11 tiene que serializar las escrituras de agenda por consultorio (por ejemplo, `pg_advisory_xact_lock` sobre el `consultorio_id`). Queda como requisito explícito para C-11 en su "Leer antes".
-- **[C-08 todavía no está mergeado]** → la FK a `tipo_prestacion`, `propiedades()` y el seed dependen de él. C-08 trae `V5`, así que esta migración sería `V6`; el número se confirma en la tarea 1.1.
+- **[La base no puede impedir un turno dentro de un bloqueo ni un bloqueo sobre un turno]** → la exclusión GiST no cruza tablas. Dos operaciones concurrentes (crear un turno y crear un bloqueo) podrían pasar las dos validaciones. C-11 tiene que serializar las escrituras de agenda por consultorio con **el mismo mecanismo que C-08 usa en la grilla**: `SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE` (revisión de Maxi en #18, por la observación de Mati en #15). Un lock consultivo aparte dejaría dos colas, y una reserva podría validar un hueco contra la grilla vieja mientras alguien la reemplaza. Queda en el "Leer antes" de C-11.
+- **[Número de migración]** → C-08 (#15) entró con `V5`, así que esta es `V6__agenda_paciente_turno_bloqueo.sql`.
 - **[Fusión de franjas contiguas (D5) y bloqueos superpuestos (D10)]** → la KB no las fijaba; Maxi las aprobó en #18.
 - **[Fechas del seed congeladas en la primera carga]** → es aceptable en desarrollo y está documentado. *Alternativa*: un `ApplicationRunner` del perfil `local` → agrega código de producción solo para la demo.
 - **[CHECKs con `extract(epoch …)`, que es `STABLE`]** → Postgres lo admite en un CHECK y el valor no depende de la sesión. El test de integración lo cubre con dos `TimeZone` de sesión distintas.
