@@ -87,7 +87,7 @@
     </section>
 
     <!-- ===== REPROGRAMAR ===== -->
-    <section data-solo="reprogramar reprogramar-confirmar hueco-ocupado" aria-labelledby="r-t">
+    <section class="con-cta" data-solo="reprogramar reprogramar-confirmar hueco-ocupado" aria-labelledby="r-t">
       <a class="btn btn-ghost" href="?estado=ver" style="margin:0 0 var(--space-3) calc(var(--space-4) * -1)"><svg aria-hidden="true"><use href="#i-left"/></svg>Volver a mi turno</a>
       <h1 class="title" id="r-t">Cambiá el día u horario</h1>
       <div class="notice danger" role="alert" data-solo="hueco-ocupado">
@@ -98,11 +98,13 @@
 
       <h2 class="step">Elegí el día nuevo</h2>
       <p class="month">noviembre 2026</p>
-      <div class="days" role="group" aria-label="Días con horarios">
+      <div class="days" role="group" aria-label="Días">
         <button class="day" type="button" aria-pressed="false"><small>mar</small>24</button>
         <button class="day" type="button" aria-pressed="false"><small>mié</small>25</button>
         <button class="day" type="button" aria-pressed="true"><small>jue</small>26</button>
         <button class="day" type="button" aria-pressed="false"><small>vie</small>27</button>
+        <button class="day" type="button" aria-pressed="false"><small>sáb</small>28</button>
+        <button class="day sin" type="button" disabled aria-label="domingo 29, sin turnos"><small>dom</small>29<span class="none">sin turnos</span></button>
         <button class="day" type="button" aria-pressed="false"><small>lun</small>30</button>
       </div>
       <h2 class="step">Elegí el horario nuevo</h2>
@@ -115,7 +117,7 @@
         <button class="time" type="button" aria-pressed="false">17:30</button>
         <button class="time" type="button" aria-pressed="false">18:15</button>
       </div>
-      <p class="tz"><svg aria-hidden="true"><use href="#i-clock"/></svg>Horarios en hora de Buenos Aires.</p>
+      <p class="tz"><svg aria-hidden="true"><use href="#i-clock"/></svg><span>Horarios en hora de <b>Buenos Aires</b>, la del consultorio.</span></p>
       <div class="cta-bar">
         <button class="btn btn-primary btn-block" type="button" data-no="hueco-ocupado">Mover al jueves 26, 15:00</button>
         <button class="btn btn-primary btn-block" type="button" disabled data-solo="hueco-ocupado">Elegí un horario</button>

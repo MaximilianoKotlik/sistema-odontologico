@@ -17,13 +17,19 @@
 
 ## Decisions
 
-Las decisiones de UI que salen de los mockups están en `mockups/README.md` §Decisiones para revisar.
+Las decisiones de UI que salen de los mockups están en `mockups/README.md` §Decisiones para revisar. En la revisión de #25 (2026-11-20) Maxi resolvió:
+
+- **Dominio del link**: queda `agenda.example` hasta que se defina el dominio (DD-34, pendiente).
+- **Nombre del paciente en `/t/{token}`**: se muestra completo, para que la persona confirme que es su turno. Nunca DNI, teléfono ni la nota interna.
+- **Mensaje de `LIMITE_TURNOS` (aceptado con su trade-off)**: queda "Ya tenés 2 turnos próximos en este consultorio…". **Trade-off**: el límite se cuenta por DNI (RN-RP-08, DD-24), así que quien escriba el DNI de otra persona puede deducir que esa persona tiene turnos en el consultorio. Maxi lo acepta porque un mensaje genérico confundiría a quien de verdad llegó al límite. **Para C-15 (Mati)**: el 409 `LIMITE_TURNOS` no tiene que devolver fechas, horarios ni datos de esos turnos, solo el código; y conviene que el rate limit del endpoint de reserva haga caro probar DNI en serie.
+- **Días según la disponibilidad**: la tira muestra todos los días del horizonte de reserva; los que tienen franjas se pueden elegir (también los sábados) y los que no, se ven como "sin turnos".
+- **Zona horaria del consultorio**: "Horarios en hora de …" sale de `zona_horaria` del consultorio (C-09), no queda fija en Buenos Aires.
+- **Campos de C-15**: se ajustan cuando se apruebe la propuesta de Mati (#30).
 
 ## Open Questions
 
-- Dominio del link público (el mockup usa `agenda.example`).
-- Nombres finales de los campos de C-15 (`puedeModificar` y el cuerpo del 409 con los huecos actualizados).
-- ¿Se muestra el nombre del paciente en `/t/{token}`?
+- Nombres finales de los campos de C-15 (`puedeModificar` y el cuerpo del 409 con los huecos actualizados): se ajustan con la propuesta de Mati (#30).
+- Dominio definitivo del link público (DD-34).
 
 ## UI Mockups
 
@@ -31,5 +37,5 @@ Las decisiones de UI que salen de los mockups están en `mockups/README.md` §De
 - Decision: yes (2026-11-20)
 - Mockups: openspec/changes/frontend-reserva-publica/mockups/ (`reserva.html`, `gestion.html`, más `publica.css` y `mockup.js`)
 - Approval: pending
-- Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
+- Preview: rendered (2026-11-20, segunda versión con la revisión de #25); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending

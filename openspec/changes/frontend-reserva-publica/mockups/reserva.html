@@ -11,7 +11,7 @@
 <script src="mockup.js" defer></script>
 </head>
 <!-- /c/{slug}: página pública del consultorio, sin cuenta (FL-04) -->
-<body data-estados="inicio:Elegir prestación|horarios:Elegir día y horario|dia-sin-horarios:Día sin horarios|datos:Tus datos|datos-errores:Datos con errores|enviando:Reservando|hueco-ocupado:Horario recién ocupado (409)|limite-turnos:Límite de turnos (409)|confirmado:Turno reservado|no-toma-turnos:No toma turnos online|limite:Demasiadas consultas (429)|no-encontrado:Consultorio inexistente (404)">
+<body data-estados="inicio:Elegir prestación|horarios:Elegir día y horario|otra-zona:Horarios de un consultorio en Córdoba|dia-sin-horarios:Día sin horarios|datos:Tus datos|datos-errores:Datos con errores|enviando:Reservando|hueco-ocupado:Horario recién ocupado (409)|limite-turnos:Límite de turnos (409)|confirmado:Turno reservado|no-toma-turnos:No toma turnos online|limite:Demasiadas consultas (429)|no-encontrado:Consultorio inexistente (404)">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5h2.6l1.4 4.1-1.9 1.3a11 11 0 006.4 6.4l1.3-1.9 4.1 1.4v2.6a2.1 2.1 0 01-2.2 2.1A16.5 16.5 0 014.5 5.7a2.1 2.1 0 012.1-2.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
@@ -36,8 +36,8 @@
   <!-- Encabezado del consultorio (DD-33): nombre, dirección y teléfono -->
   <header class="cons" data-no="no-encontrado">
     <div class="wrap">
-      <p class="name" data-no="inicio horarios dia-sin-horarios hueco-ocupado no-toma-turnos limite">Consultorio Demo Sur</p>
-      <h1 data-solo="inicio horarios dia-sin-horarios hueco-ocupado no-toma-turnos limite">Consultorio Demo Sur</h1>
+      <p class="name" data-no="inicio horarios dia-sin-horarios hueco-ocupado no-toma-turnos limite otra-zona">Consultorio Demo Sur</p>
+      <h1 data-solo="inicio horarios dia-sin-horarios hueco-ocupado no-toma-turnos limite otra-zona">Consultorio Demo Sur</h1>
       <div class="meta">
         <span><svg aria-hidden="true"><use href="#i-pin"/></svg>Av. Ejemplo 1234, CABA</span>
         <a href="tel:+5491100000001"><svg aria-hidden="true"><use href="#i-phone"/></svg>11 0000-0001</a>
@@ -70,7 +70,7 @@
     </section>
 
     <!-- ===== PASO 1-3: PRESTACIÓN, DÍA Y HORARIO ===== -->
-    <section data-solo="inicio horarios dia-sin-horarios hueco-ocupado limite" aria-label="Elegí tu turno">
+    <section class="con-cta" data-solo="inicio horarios dia-sin-horarios hueco-ocupado limite otra-zona" aria-label="Elegí tu turno">
       <div class="notice danger" role="alert" data-solo="hueco-ocupado">
         <svg aria-hidden="true"><use href="#i-alert"/></svg>
         <div><strong>Alguien reservó las 10:30 hace un instante.</strong><p>Actualizamos los horarios: elegí otro.</p></div>
@@ -78,7 +78,7 @@
 
       <h2 class="step">1. ¿Qué necesitás?</h2>
       <div class="stack" role="group" aria-label="Prestaciones">
-        <button class="presta" type="button" data-pressed="horarios dia-sin-horarios hueco-ocupado limite"><span>Limpieza dental</span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>45 min<span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></span></button>
+        <button class="presta" type="button" data-pressed="horarios dia-sin-horarios hueco-ocupado limite otra-zona"><span>Limpieza dental</span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>45 min<span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></span></button>
         <button class="presta" type="button" aria-pressed="false"><span>Consulta y control</span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>30 min<span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></span></button>
         <button class="presta" type="button" aria-pressed="false"><span>Arreglo de caries</span><span class="dur"><svg aria-hidden="true"><use href="#i-clock"/></svg>60 min<span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span></span></button>
       </div>
@@ -86,13 +86,17 @@
       <div data-no="inicio" style="margin-top:var(--space-5)">
         <h2 class="step">2. Elegí el día</h2>
         <p class="month">noviembre 2026</p>
-        <div class="days" role="group" aria-label="Días con horarios">
-          <button class="day sin" type="button" disabled><small>vie</small>20<span class="none">sin turnos</span></button>
+        <div class="days" role="group" aria-label="Días">
+          <button class="day sin" type="button" disabled aria-label="viernes 20, sin turnos"><small>vie</small>20<span class="none">sin turnos</span></button>
+          <button class="day" type="button" aria-pressed="false"><small>sáb</small>21</button>
+          <button class="day sin" type="button" disabled aria-label="domingo 22, sin turnos"><small>dom</small>22<span class="none">sin turnos</span></button>
           <button class="day" type="button" data-pressed="dia-sin-horarios"><small>lun</small>23</button>
-          <button class="day" type="button" data-pressed="horarios hueco-ocupado limite"><small>mar</small>24</button>
+          <button class="day" type="button" data-pressed="horarios hueco-ocupado limite otra-zona"><small>mar</small>24</button>
           <button class="day" type="button" aria-pressed="false"><small>mié</small>25</button>
           <button class="day" type="button" aria-pressed="false"><small>jue</small>26</button>
           <button class="day" type="button" aria-pressed="false"><small>vie</small>27</button>
+          <button class="day" type="button" aria-pressed="false"><small>sáb</small>28</button>
+          <button class="day sin" type="button" disabled aria-label="domingo 29, sin turnos"><small>dom</small>29<span class="none">sin turnos</span></button>
           <button class="day" type="button" aria-pressed="false"><small>lun</small>30</button>
         </div>
 
@@ -103,7 +107,7 @@
             <button class="time" type="button" aria-pressed="false">9:00</button>
             <button class="time" type="button" aria-pressed="false">9:15</button>
             <button class="time" type="button" aria-pressed="false">9:30</button>
-            <button class="time" type="button" data-pressed="horarios limite" data-no="hueco-ocupado">10:30</button>
+            <button class="time" type="button" data-pressed="horarios limite otra-zona" data-no="hueco-ocupado">10:30</button>
             <button class="time gone" type="button" disabled data-solo="hueco-ocupado" aria-label="10:30, ya no está disponible">10:30</button>
             <button class="time" type="button" aria-pressed="false">10:45</button>
             <button class="time" type="button" aria-pressed="false">11:00</button>
@@ -126,13 +130,13 @@
           <p>No quedan horarios para <b>Limpieza dental</b> el lunes 23.</p>
           <button class="btn btn-secondary" type="button">Ver el martes 24</button>
         </div>
-        <p class="tz"><svg aria-hidden="true"><use href="#i-clock"/></svg>Horarios en hora de Buenos Aires.</p>
+        <p class="tz"><svg aria-hidden="true"><use href="#i-clock"/></svg><span>Horarios en hora de <b data-no="otra-zona">Buenos Aires</b><b data-solo="otra-zona">Córdoba</b>, la del consultorio.</span></p>
       </div>
 
       <div class="cta-bar">
         <button class="btn btn-primary btn-block" type="button" disabled data-solo="inicio">Elegí qué necesitás</button>
         <button class="btn btn-primary btn-block" type="button" disabled data-solo="dia-sin-horarios hueco-ocupado">Elegí un horario</button>
-        <button class="btn btn-primary btn-block" type="button" data-solo="horarios limite">Continuar con martes 24, 10:30</button>
+        <button class="btn btn-primary btn-block" type="button" data-solo="horarios limite otra-zona">Continuar con martes 24, 10:30</button>
       </div>
     </section>
 

@@ -21,7 +21,7 @@ Mockups de revisión de todo el flujo del paciente: la reserva por link y la ges
   - DD-33: la página muestra solo nombre, dirección y teléfono.
   - DD-34: la marca es "Muelas Felices".
   - DD-37: sin DNI argentino, se reserva llamando.
-- **Responsive**: una columna de 560 px como máximo, mobile-first a 360 px. En mobile, la acción principal ("Continuar con…", "Mover al…") queda pegada abajo. En desktop es la misma columna centrada, sin barra fija.
+- **Responsive**: una columna de 560 px como máximo, mobile-first a 360 px. En mobile, la acción principal ("Continuar con…", "Mover al…") queda fija abajo, y la sección reserva el alto de la barra como margen inferior: al llegar al final, el último horario se ve y se toca. En desktop es la misma columna centrada, con la acción en el flujo y sin barra fija.
 - **Tokens y assets**: importan `design-system/tokens.css` y `design-system/brand.js`. Los estilos están en `publica.css`, que solo usa variables del sistema de diseño rev. 1. El selector de prestación, día y horario sigue el patrón "Reserva del paciente" de `design-system/components.html`.
 
 ## Pantallas y estados
@@ -30,7 +30,7 @@ Cada archivo elige el estado con `?estado=…`. Al pie hay una franja "Estados d
 
 | Pantalla | Archivo | Estados (`?estado=`) |
 |---|---|---|
-| Reserva (`/c/{slug}`) | `reserva.html` | `inicio`, `horarios`, `dia-sin-horarios`, `datos`, `datos-errores`, `enviando`, `hueco-ocupado` (409), `limite-turnos` (409), `confirmado`, `no-toma-turnos` (RN-RP-11), `limite` (429), `no-encontrado` (404) |
+| Reserva (`/c/{slug}`) | `reserva.html` | `inicio`, `horarios`, `otra-zona` (consultorio con zona de Córdoba), `dia-sin-horarios`, `datos`, `datos-errores`, `enviando`, `hueco-ocupado` (409), `limite-turnos` (409), `confirmado`, `no-toma-turnos` (RN-RP-11), `limite` (429), `no-encontrado` (404) |
 | Gestión del turno (`/t/{token}`) | `gestion.html` | `ver`, `reprogramar`, `reprogramar-confirmar`, `reprogramado`, `hueco-ocupado` (409), `cancelar`, `cancelado`, `fuera-de-plazo` (409), `solo-cancelar` (reserva desactivada), `invalido` (404 uniforme) |
 
 ## Decisiones para revisar
@@ -51,8 +51,8 @@ Cada archivo elige el estado con `?estado=…`. Al pie hay una franja "Estados d
    | Token inválido, vencido o revocado | 404 | Gestión | Un solo mensaje para todos los casos, sin datos del consultorio: "Este link no funciona". |
 
 2. **Sin precio en las prestaciones**: el modelo (`tipo_prestacion`) no tiene precio. Se muestran nombre y duración.
-3. **Días**: aparecen los días hábiles próximos. Un día sin horarios se muestra con borde punteado, deshabilitado y con el texto "sin turnos" (no solo color). Si el paciente elige un día que se quedó sin horarios, se le ofrece ir al próximo día con horarios.
-4. **Horarios agrupados en mañana y tarde**, en pasos de `paso_huecos_min` (15 min por defecto). Siempre se aclara "Horarios en hora de Buenos Aires".
+3. **Días según la disponibilidad** (revisión de #25): aparecen todos los días del horizonte de reserva. Los que tienen franjas se pueden elegir, también los sábados; los que no tienen horarios (domingo, o un día ya completo) se muestran con borde punteado, deshabilitados y con el texto "sin turnos" (no solo color). Si el paciente elige un día que se quedó sin horarios, se le ofrece ir al próximo día con horarios.
+4. **Horarios agrupados en mañana y tarde**, en pasos de `paso_huecos_min` (15 min por defecto). Siempre se aclara la zona: "Horarios en hora de Buenos Aires, la del consultorio". El nombre sale de `zona_horaria` del consultorio (C-09), no queda fijo; el estado `otra-zona` muestra un consultorio en Córdoba.
 5. **Datos**:
    - Nombre, apellido, DNI, celular y email opcional (RN-RP-02). No se piden datos de salud.
    - El texto de ayuda del DNI ofrece llamar al consultorio a quien no tiene DNI argentino (DD-37).
@@ -69,11 +69,12 @@ Cada archivo elige el estado con `?estado=…`. Al pie hay una franja "Estados d
 8. **Reserva desactivada**: en la gestión solo se ofrece cancelar, más el botón para llamar (RN-RP-11).
 9. **Marca**: la página es del consultorio (DD-33). "Muelas Felices" aparece solo en el pie ("Turnos online con…"), tomado de `BRAND_NAME`.
 
-## Preguntas abiertas para Maxi
+## Decidido por Maxi en la revisión de #25 (2026-11-20)
 
-- **Dominio del link**: el mockup usa `agenda.example` como marcador; el dominio no está definido (DD-34).
-- **C-15 todavía no tiene propuesta OpenSpec**: los nombres de los campos (`puedeModificar`, el cuerpo del 409 con los huecos actualizados) salen de `CHANGES.md` y FL-05. Si cambian en la propuesta de Mati, se ajustan los textos.
-- **¿Mostrar el nombre del paciente en `/t/{token}`?** El mockup lo muestra para que la persona confirme que es su turno. La vista nunca muestra DNI, teléfono ni la nota interna.
+- **Dominio del link**: queda `agenda.example` hasta que se defina (DD-34).
+- **Nombre del paciente en `/t/{token}`**: se muestra completo. Nunca DNI, teléfono ni la nota interna.
+- **`LIMITE_TURNOS`**: el mensaje queda como está, con el trade-off anotado en `design.md` (quien escriba un DNI ajeno puede deducir que esa persona tiene turnos).
+- **Campos de C-15**: se ajustan cuando se apruebe la propuesta de Mati (#30).
 
 ## Datos ficticios
 
@@ -85,9 +86,10 @@ Abrí `reserva.html` o `gestion.html` directo en el navegador: funcionan con `fi
 
 ## Capturas
 
-`previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png`, 44 en total.
+`previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png`, 47 en total.
 
-- Las pantallas son capturas de página completa.
+- Las pantallas son capturas de página completa. En mobile la barra fija aparece al pie de la página, como se ve al llegar al final.
+- `reserva-horarios-final-mobile-390x844.png` es el viewport al final de la lista: 18:15 se ve arriba de la barra.
 - Los diálogos de confirmar el cambio y cancelar son capturas del viewport.
 
 Verificado con Playwright en cada estado a 360, 390 y 1440 px:
@@ -96,6 +98,7 @@ Verificado con Playwright en cada estado a 360, 390 y 1440 px:
 - Sin errores de consola ni recursos fallidos.
 - Todos los botones y campos con al menos 44 px de alto.
 - Un solo `h1` visible.
+- En mobile, al llegar al final, el último horario no queda tapado por la barra.
 
 ## Checklist de revisión para Maxi
 
@@ -103,6 +106,6 @@ Verificado con Playwright en cada estado a 360, 390 y 1440 px:
 - [ ] Tabla de mensajes por código de error (decisión 1).
 - [ ] Texto del consentimiento igual al borrador legal y sin marcar por defecto.
 - [ ] Link de gestión destacado, avisando que se muestra una sola vez.
-- [ ] Preguntas abiertas: dominio, campos de C-15 y nombre del paciente en `/t/{token}`.
+- [ ] Cambios de la revisión de #25: días según la disponibilidad, zona del consultorio, margen bajo la barra y trade-off de `LIMITE_TURNOS` en `design.md`.
 - [ ] Textos en es-AR con voseo; solo tokens rev. 1; foco visible; objetivos ≥ 44 px; estados con ícono + texto; `prefers-reduced-motion`.
 - [ ] Sin datos reales.
