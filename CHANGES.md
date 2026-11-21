@@ -534,13 +534,20 @@ Reglas de coordinación del paralelismo:
   - Revisión de seguridad: CSP/cabeceras, rate limits, enmascarado de PII en logs, ausencia de tokens en `Referer`/caché, secretos solo por entorno; aislamiento entre tenants en toda la API; matriz completa de escrituras bloqueadas en plan `VENCIDO` (incluidos los endpoints de C-17).
   - Revisión de `/seguridad` contra el código (RN-PL-06) antes del release.
   - Seed local completo para demo; README de arranque (`docker compose up --build`); textos de privacidad y términos como borrador marcado "pendiente de revisión legal" (PA-06), sin declarar cumplimiento no verificado.
-  - Checklist previo al lanzamiento (PA-02 país del VPS y backups, revisión legal de DD-28, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
+  - Checklist previo al lanzamiento documentado, sin resolverlo en código: revisión legal de DD-28 y validación de valores por defecto con odontólogos.
+  - **Criterio de salida de la v1 (DD-40)**: no se cargan pacientes reales ni se publica `/seguridad` hasta cumplir:
+    - VPS contratado con los datos en Argentina;
+    - backup diario cifrado de Postgres en Argentina, retención de 30 días y una restauración de prueba hecha;
+    - TLS activo en el dominio de producción;
+    - proveedor SMTP elegido y declarado en la política de privacidad;
+    - email de seguridad de `/seguridad` definido.
   - Checklist de despliegue, IP real detrás del reverse proxy (viene de C-05): el rate limit por IP usa `getRemoteAddr()`, y detrás del proxy del VPS todos los consultorios compartirían un mismo cupo (10 logins por minuto y 5 registros por hora). Configurar `server.forward-headers-strategy` (`native` o `framework`, según el proxy) y un proxy que **reemplace** `X-Forwarded-For` en vez de concatenarlo, y verificar con un test de humo que dos IPs distintas tengan cupos separados. Detalle en `backend/README.md`.
 - **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
 - **Leer antes**:
   - `knowledge-base/08_arquitectura_propuesta.md` §Seguridad, §Estrategia de tests
-  - `knowledge-base/10_preguntas_abiertas.md` §PA-02, PA-05, PA-06
+  - `knowledge-base/10_preguntas_abiertas.md` §PA-05, PA-06
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-40 (requisitos de infraestructura antes del lanzamiento)
   - `knowledge-base/11_marco_legal_argentino.md`
   - `knowledge-base/01_vision_y_objetivos.md` (métricas del piloto)
 

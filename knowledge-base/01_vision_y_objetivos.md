@@ -84,7 +84,7 @@ Explícitamente **no** forma parte de la v1 (orden tentativo de llegada según e
 9. Sincronización con Google Calendar.
 
 Tampoco entran: app nativa (iOS/Android), cuenta del paciente, notificaciones por SMS o WhatsApp,
-hosting cloud productivo (ver [PA-02](10_preguntas_abiertas.md)), Supabase u otro BaaS.
+hosting cloud productivo (el VPS en Argentina se contrata antes del lanzamiento, [DD-40](09_decisiones_y_supuestos.md)), Supabase u otro BaaS.
 
 ## Métricas de éxito
 

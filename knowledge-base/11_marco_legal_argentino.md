@@ -118,5 +118,5 @@ El proveedor, como encargado, debe asistir al odontólogo para responder en plaz
 | LG-06 | Portabilidad y devolución de datos al terminar el servicio | Exportación completa ([RN-EX-*](05_reglas_de_negocio.md)) |
 | LG-07 | Medidas de seguridad acordes a datos sensibles | [08 §Seguridad](08_arquitectura_propuesta.md#seguridad) |
 | LG-08 | Retención y destrucción definidas | Decisión del usuario ([DD-29](09_decisiones_y_supuestos.md)): tras la baja la cuenta queda desactivada y los datos se conservan; **la revisión legal (DD-28) debe validar o fijar un plazo** |
-| LG-09 | Residencia de datos / transferencia internacional evaluada antes de hostear | [PA-02](10_preguntas_abiertas.md) |
+| LG-09 | Residencia de datos / transferencia internacional evaluada antes de hostear | [DD-40](09_decisiones_y_supuestos.md): VPS y backups en Argentina; el SMTP se declara si está fuera del país |
 | LG-10 | No declarar certificaciones ni "cumplimiento total" sin revisión profesional | Landing, precios y privacidad |
