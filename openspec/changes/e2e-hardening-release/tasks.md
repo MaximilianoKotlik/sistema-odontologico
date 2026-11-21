@@ -6,7 +6,7 @@
 
 ## 0. Propuesta (trabajo anticipado)
 
-- [ ] 0.1 Aprobación de Maxi de esta propuesta, registrada en `design.md` con la fecha y el PR
+- [x] 0.1 Aprobación de Maxi de esta propuesta, registrada en `design.md` con la fecha y el PR (2026-11-21, #65)
 
 ## 1. IP real detrás del proxy (D5)
 

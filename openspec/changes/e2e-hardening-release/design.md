@@ -2,6 +2,7 @@
 
 ## Context
 
+- **Aprobación**: Maxi aprobó la propuesta el 2026-11-21 en #65, con las decisiones D1 a D10, y decidió que no se implementa nada hasta que C-13, C-14, C-16, C-17, C-18 y C-22 estén `[x]`.
 - Ver `proposal.md` §Why. Governance **MEDIO**: se implementa con puntos de control y las decisiones se le muestran a Maxi. C-23 no tiene pantallas propias: `Decision: no (no UI)` en §UI Mockups.
 - **Lo que ya existe en `main`**:
   - **CI** (`.github/workflows/ci.yml`): jobs `backend` (`./gradlew build` con Testcontainers), `frontend` (typecheck, lint, Vitest, build y chequeo de `api-types.ts`) y `docker` (`docker compose build` con `.env.example`). No hay Playwright.
