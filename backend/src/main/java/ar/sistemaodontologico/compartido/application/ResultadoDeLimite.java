@@ -1,4 +1,4 @@
-package ar.sistemaodontologico.auth.application;
+package ar.sistemaodontologico.compartido.application;
 
 /** Resultado de consumir un cupo. Si se rechaza, cuántos segundos esperar (valor de {@code Retry-After}). */
 public record ResultadoDeLimite(boolean permitido, long segundosParaReintentar) {

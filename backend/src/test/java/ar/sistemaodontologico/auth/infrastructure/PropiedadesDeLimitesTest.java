@@ -3,7 +3,7 @@ package ar.sistemaodontologico.auth.infrastructure;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import ar.sistemaodontologico.auth.application.LimiteDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.LimiteDeSolicitudes;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;

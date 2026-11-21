@@ -2,8 +2,9 @@ package ar.sistemaodontologico.auth.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ar.sistemaodontologico.auth.application.LimitadorDeSolicitudes;
 import ar.sistemaodontologico.compartido.IntegracionPostgresTest;
+import ar.sistemaodontologico.compartido.application.LimitadorDeSolicitudes;
+import ar.sistemaodontologico.compartido.infrastructure.LimitadorBucket4j;
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

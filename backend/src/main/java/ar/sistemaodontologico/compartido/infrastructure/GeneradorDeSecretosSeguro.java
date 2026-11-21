@@ -1,6 +1,6 @@
-package ar.sistemaodontologico.auth.infrastructure;
+package ar.sistemaodontologico.compartido.infrastructure;
 
-import ar.sistemaodontologico.auth.application.GeneradorDeSecretos;
+import ar.sistemaodontologico.compartido.application.GeneradorDeSecretos;
 import java.security.SecureRandom;
 import java.util.Base64;
 import org.springframework.stereotype.Component;

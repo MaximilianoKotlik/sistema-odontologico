@@ -1,7 +1,7 @@
 package ar.sistemaodontologico.auth.infrastructure.seguridad;
 
-import ar.sistemaodontologico.auth.application.LimitadorDeSolicitudes;
 import ar.sistemaodontologico.auth.infrastructure.PropiedadesDeLimites;
+import ar.sistemaodontologico.compartido.application.LimitadorDeSolicitudes;
 import ar.sistemaodontologico.compartido.application.TenantContext;
 import java.util.List;
 import org.springframework.context.annotation.Bean;

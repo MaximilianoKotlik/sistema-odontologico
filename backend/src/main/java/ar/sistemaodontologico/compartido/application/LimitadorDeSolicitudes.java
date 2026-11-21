@@ -1,4 +1,4 @@
-package ar.sistemaodontologico.auth.application;
+package ar.sistemaodontologico.compartido.application;
 
 /**
  * Puerto de rate limiting por clave (IP, email normalizado o usuario). Lo usan el filtro de {@code /auth/**} y los

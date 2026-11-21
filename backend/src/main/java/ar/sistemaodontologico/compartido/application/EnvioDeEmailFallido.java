@@ -1,4 +1,4 @@
-package ar.sistemaodontologico.auth.application;
+package ar.sistemaodontologico.compartido.application;
 
 /**
  * El servidor de correo no aceptó un email. El mensaje nunca incluye el destinatario ni el token (RN-AD-05): solo

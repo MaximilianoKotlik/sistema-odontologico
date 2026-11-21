@@ -1,9 +1,9 @@
-package ar.sistemaodontologico.auth.infrastructure;
+package ar.sistemaodontologico.compartido.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ar.sistemaodontologico.auth.application.LimiteDeSolicitudes;
-import ar.sistemaodontologico.auth.application.ResultadoDeLimite;
+import ar.sistemaodontologico.compartido.application.LimiteDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.ResultadoDeLimite;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;

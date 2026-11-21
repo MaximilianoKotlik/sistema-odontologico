@@ -1,8 +1,9 @@
-package ar.sistemaodontologico.auth.infrastructure;
+package ar.sistemaodontologico.compartido.infrastructure;
 
-import ar.sistemaodontologico.auth.application.EnviadorDeEmails;
-import ar.sistemaodontologico.auth.application.EnvioDeEmailFallido;
 import ar.sistemaodontologico.auth.domain.TokenDeRecuperacion;
+import ar.sistemaodontologico.compartido.application.EnviadorDeEmails;
+import ar.sistemaodontologico.compartido.application.EnvioDeEmailFallido;
+import ar.sistemaodontologico.compartido.application.PropiedadesDeMail;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;

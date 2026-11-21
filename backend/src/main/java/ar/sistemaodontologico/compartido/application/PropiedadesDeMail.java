@@ -1,4 +1,4 @@
-package ar.sistemaodontologico.auth.infrastructure;
+package ar.sistemaodontologico.compartido.application;
 
 import java.util.Objects;
 

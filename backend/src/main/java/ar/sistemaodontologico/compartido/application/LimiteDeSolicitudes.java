@@ -1,4 +1,4 @@
-package ar.sistemaodontologico.auth.application;
+package ar.sistemaodontologico.compartido.application;
 
 import java.time.Duration;
 import java.util.Objects;

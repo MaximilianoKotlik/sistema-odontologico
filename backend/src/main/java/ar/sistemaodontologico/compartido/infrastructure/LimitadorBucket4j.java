@@ -1,8 +1,8 @@
-package ar.sistemaodontologico.auth.infrastructure;
+package ar.sistemaodontologico.compartido.infrastructure;
 
-import ar.sistemaodontologico.auth.application.LimitadorDeSolicitudes;
-import ar.sistemaodontologico.auth.application.LimiteDeSolicitudes;
-import ar.sistemaodontologico.auth.application.ResultadoDeLimite;
+import ar.sistemaodontologico.compartido.application.LimitadorDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.LimiteDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.ResultadoDeLimite;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.github.bucket4j.Bucket;

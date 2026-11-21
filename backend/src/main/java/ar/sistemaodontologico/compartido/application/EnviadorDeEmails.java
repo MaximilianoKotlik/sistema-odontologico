@@ -1,4 +1,4 @@
-package ar.sistemaodontologico.auth.application;
+package ar.sistemaodontologico.compartido.application;
 
 /**
  * Puerto de envío de emails de autenticación (design D4/D5). Lo usa el listener que corre después del commit de la

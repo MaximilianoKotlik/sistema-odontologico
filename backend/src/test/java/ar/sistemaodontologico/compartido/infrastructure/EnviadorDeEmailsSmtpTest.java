@@ -1,9 +1,10 @@
-package ar.sistemaodontologico.auth.infrastructure;
+package ar.sistemaodontologico.compartido.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import ar.sistemaodontologico.auth.application.EnvioDeEmailFallido;
+import ar.sistemaodontologico.compartido.application.EnvioDeEmailFallido;
+import ar.sistemaodontologico.compartido.application.PropiedadesDeMail;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
