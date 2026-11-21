@@ -71,7 +71,7 @@ describe('crearCoordinadorRefresh', () => {
   });
 
   it('sin Web Locks corre la tarea directamente', async () => {
-    const coordinar = crearCoordinadorRefresh(undefined);
+    const coordinar = crearCoordinadorRefresh(null);
 
     await expect(coordinar(async () => 'hecho')).resolves.toBe('hecho');
   });
@@ -169,7 +169,7 @@ describe('crearCanalSesion', () => {
   });
 
   it('sin BroadcastChannel no falla nada', () => {
-    const canal = crearCanalSesion(undefined);
+    const canal = crearCanalSesion(null);
 
     expect(() => canal.publicar('logout')).not.toThrow();
     expect(() => canal.alRecibir(() => undefined)()).not.toThrow();

@@ -155,3 +155,73 @@ describe('rutaDeLogin', () => {
 beforeEach(() => {
   document.body.innerHTML = '';
 });
+
+describe('router: guarda de acceso (C-07)', () => {
+  let router: Router | undefined;
+  afterEach(() => router?.detener());
+
+  function conGuarda(rutaInicial: string, guarda: (ruta: { pathname: string; ruta: string }) => string | null | Promise<string | null>) {
+    history.replaceState(null, '', rutaInicial);
+    const mostrar = vi.fn<(r: Resolucion<string>) => void>();
+    const r = crearRouter<string>({
+      rutas: [
+        { patron: '/app/agenda', cargar: () => 'agenda' },
+        { patron: '/login', cargar: () => 'login' },
+      ],
+      redirecciones: { '/app': '/app/agenda' },
+      guarda,
+      noEncontrada: () => 'no-encontrada',
+      mostrar,
+    });
+    return { router: r, mostrar };
+  }
+
+  it('la guarda puede redirigir antes de cargar, reemplazando la entrada del historial', async () => {
+    const largo = history.length;
+    const p = conGuarda('/app/agenda', ({ pathname }) => (pathname === '/app/agenda' ? '/login?volver=/app/agenda' : null));
+    router = p.router;
+
+    await router.iniciar();
+
+    expect(`${location.pathname}${location.search}`).toBe('/login?volver=/app/agenda');
+    expect(p.mostrar).toHaveBeenCalledTimes(1);
+    expect(p.mostrar.mock.calls[0]?.[0].pagina).toBe('login');
+    expect(history.length).toBe(largo);
+  });
+
+  it('la guarda corre después de las redirecciones fijas y recibe la ruta con su query', async () => {
+    const vistas: { pathname: string; ruta: string }[] = [];
+    const p = conGuarda('/app?x=1', (ruta) => {
+      vistas.push(ruta);
+      return null;
+    });
+    router = p.router;
+
+    await router.iniciar();
+
+    expect(vistas).toEqual([{ pathname: '/app/agenda', ruta: '/app/agenda' }]);
+  });
+
+  it('una guarda asíncrona no muestra nada hasta resolver, y si se navega en el medio gana la última', async () => {
+    let liberar: (valor: string | null) => void = () => undefined;
+    const p = conGuarda('/app/agenda', ({ pathname }) => (pathname === '/app/agenda' ? new Promise((r) => (liberar = r)) : null));
+    router = p.router;
+
+    const inicio = router.iniciar();
+    await esperar();
+    expect(p.mostrar).not.toHaveBeenCalled();
+    await router.navegar('/login');
+    liberar(null);
+    await inicio;
+
+    expect(p.mostrar).toHaveBeenCalledTimes(1);
+    expect(p.mostrar.mock.calls[0]?.[0].pagina).toBe('login');
+  });
+
+  it('corta un ciclo de redirecciones de la guarda', async () => {
+    const p = conGuarda('/app/agenda', ({ pathname }) => (pathname === '/app/agenda' ? '/login' : '/app/agenda'));
+    router = p.router;
+
+    await expect(router.iniciar()).rejects.toThrow('ciclo');
+  });
+});

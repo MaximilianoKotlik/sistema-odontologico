@@ -17,16 +17,18 @@ export interface AvisoSesionCerrada {
 
 type LocksMinimos = { request<T>(nombre: string, tarea: () => Promise<T>): Promise<T> };
 
-function locksDelNavegador(): LocksMinimos | undefined {
-  if (typeof navigator === 'undefined' || !('locks' in navigator)) return undefined;
+function locksDelNavegador(): LocksMinimos | null {
+  if (typeof navigator === 'undefined' || !('locks' in navigator)) return null;
   const locks = navigator.locks;
   // `LockManager.request` tipa el resultado como Promise<Awaited<T>>; con una tarea async es lo mismo que Promise<T>.
   return { request: <T,>(nombre: string, tarea: () => Promise<T>) => locks.request(nombre, tarea) as Promise<T> };
 }
 
-/** Devuelve una función que corre la tarea bajo el lock exclusivo del refresh; sin Web Locks, la corre directo. */
-export function crearCoordinadorRefresh(locks: LocksMinimos | undefined = locksDelNavegador()): <T>(tarea: () => Promise<T>) => Promise<T> {
-  if (locks === undefined) return (tarea) => tarea();
+export type { LocksMinimos };
+
+/** Corre la tarea bajo el lock exclusivo del refresh; con `null` (navegador sin Web Locks), la corre directo. */
+export function crearCoordinadorRefresh(locks: LocksMinimos | null = locksDelNavegador()): <T>(tarea: () => Promise<T>) => Promise<T> {
+  if (locks === null) return (tarea) => tarea();
   return (tarea) => locks.request(NOMBRE_LOCK, tarea);
 }
 
@@ -51,13 +53,15 @@ export interface CanalSesion {
   cerrar(): void;
 }
 
-function fabricaDelNavegador(): ((nombre: string) => CanalMinimo) | undefined {
-  return typeof BroadcastChannel === 'undefined' ? undefined : (nombre) => new BroadcastChannel(nombre);
+export type FabricaDeCanal = (nombre: string) => CanalMinimo;
+
+function fabricaDelNavegador(): FabricaDeCanal | null {
+  return typeof BroadcastChannel === 'undefined' ? null : (nombre) => new BroadcastChannel(nombre);
 }
 
-/** Canal del aviso de sesión cerrada. Sin `BroadcastChannel` no hace nada y no falla (D11). */
-export function crearCanalSesion(fabrica: ((nombre: string) => CanalMinimo) | undefined = fabricaDelNavegador()): CanalSesion {
-  const canal = fabrica?.(NOMBRE_CANAL);
+/** Canal del aviso de sesión cerrada. Con `null` (sin `BroadcastChannel`) no hace nada y no falla (D11). */
+export function crearCanalSesion(fabrica: FabricaDeCanal | null = fabricaDelNavegador()): CanalSesion {
+  const canal = fabrica === null ? undefined : fabrica(NOMBRE_CANAL);
   return {
     publicar(motivo) {
       const aviso: AvisoSesionCerrada = { tipo: 'sesion-cerrada', motivo };

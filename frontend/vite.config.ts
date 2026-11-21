@@ -10,6 +10,8 @@ const destinoApi = process.env['VITE_PROXY_TARGET'] ?? 'http://localhost:8080';
 
 // design-system/ vive fuera de frontend/: se importa sin copiarlo (C-06, design D5).
 const designSystem = fileURLToPath(new URL('../design-system', import.meta.url));
+// docs/legal/ también vive fuera de frontend/: /terminos y /privacidad importan el borrador en el build (C-07, design D9).
+const docsLegales = fileURLToPath(new URL('../docs/legal', import.meta.url));
 const nombreDeMarca = leerNombreDeMarca(readFileSync(`${designSystem}/brand.js`, 'utf8'));
 
 export default defineConfig({
@@ -17,7 +19,7 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    fs: { allow: [searchForWorkspaceRoot(process.cwd()), designSystem] },
+    fs: { allow: [searchForWorkspaceRoot(process.cwd()), designSystem, docsLegales] },
     proxy: {
       '/api': { target: destinoApi, changeOrigin: true },
     },

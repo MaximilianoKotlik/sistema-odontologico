@@ -27,6 +27,14 @@ const TRAZOS = {
   reloj: `<circle cx="12" cy="12" r="8" ${L}/><path d="M12 8v4l2.5 1.5" ${L}/>`,
   check: '<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
   cruz: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  // Trazos del mockup aprobado de C-07 (#14).
+  ojo: `<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" ${L}/><circle cx="12" cy="12" r="3" ${L}/>`,
+  llave: `<circle cx="8" cy="15" r="4" ${L}/><path d="M11 12l8-8M16 7l2.5 2.5M14 9l2 2" ${L}/>`,
+  punto: `<circle cx="12" cy="12" r="7" ${L}/>`,
+  info: `<circle cx="12" cy="12" r="9" ${L}/><path d="M12 11v5.5M12 7.8v.1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+  'check-circulo': `<circle cx="12" cy="12" r="9" ${L}/><path d="M8 12.3l2.7 2.7L16 9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  sobre: `<rect x="3" y="5.5" width="18" height="13" rx="2.5" ${L}/><path d="M3.8 7l8.2 6 8.2-6" ${L}/>`,
+  'link-roto': `<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1M4 4l16 16" ${L}/>`,
 } as const satisfies Record<string, string>;
 
 export type NombreIcono = keyof typeof TRAZOS;

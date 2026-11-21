@@ -23,6 +23,12 @@ export interface OpcionesRouter<P> {
   readonly rutas: readonly DefinicionRuta<P>[];
   /** Redirecciones exactas por path; reemplazan la entrada del historial. */
   readonly redirecciones?: Readonly<Record<string, string>>;
+  /**
+   * Guarda de acceso (C-07): corre después de las redirecciones fijas y antes de cargar la página. Devuelve otra
+   * ruta para redirigir (reemplaza la entrada del historial) o null para seguir. Puede ser asíncrona (restaurar
+   * la sesión): mientras tanto no se muestra nada de la ruta pedida.
+   */
+  readonly guarda?: (ruta: { readonly pathname: string; readonly ruta: string }) => string | null | Promise<string | null>;
   readonly noEncontrada: () => P | Promise<P>;
   readonly mostrar: (resolucion: Resolucion<P>) => void;
 }
@@ -65,12 +71,23 @@ export function crearRouter<P>(opciones: OpcionesRouter<P>): Router {
   const compiladas = opciones.rutas.map(compilar);
   let generacion = 0;
 
+  const MAXIMO_DE_REDIRECCIONES = 5;
+
   async function resolver(): Promise<void> {
-    const destino = opciones.redirecciones?.[location.pathname];
-    if (destino !== undefined) history.replaceState(null, '', destino);
+    const actual = ++generacion;
+
+    for (let saltos = 0; ; saltos += 1) {
+      if (saltos > MAXIMO_DE_REDIRECCIONES) throw new Error(`La guarda generó un ciclo de redirecciones en ${location.pathname}`);
+      const destino = opciones.redirecciones?.[location.pathname];
+      if (destino !== undefined) history.replaceState(null, '', destino);
+      if (opciones.guarda === undefined) break;
+      const redireccion = await opciones.guarda({ pathname: location.pathname, ruta: rutaDelNavegador() });
+      if (actual !== generacion) return; // se navegó a otra ruta mientras la guarda decidía
+      if (redireccion === null) break;
+      history.replaceState(null, '', redireccion);
+    }
 
     const ruta = rutaDelNavegador();
-    const actual = ++generacion;
 
     let patron: string | null = null;
     let params: Record<string, string> = {};

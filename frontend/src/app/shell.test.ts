@@ -133,7 +133,7 @@ describe('shell: marca', () => {
 });
 
 describe('shell: menú "Más" (mobile)', () => {
-  it('abre una hoja modal con Registro de cambios, Exportar y Cerrar sesión', () => {
+  it('abre una hoja modal con Registro de cambios, Exportar, Cambiar contraseña y Cerrar sesión', () => {
     preparar();
     const mas = [...(navInferior()?.querySelectorAll('button') ?? [])].find((b) => nombre(b) === 'Más');
     expect(mas?.getAttribute('aria-haspopup')).toBe('dialog');
@@ -144,7 +144,17 @@ describe('shell: menú "Más" (mobile)', () => {
     const hoja = document.querySelector('[role="dialog"]');
     expect(hoja?.getAttribute('aria-modal')).toBe('true');
     expect(mas?.getAttribute('aria-expanded')).toBe('true');
-    expect([...(hoja?.querySelectorAll('a, button') ?? [])].map(nombre)).toEqual(['Registro de cambios', 'Exportar mis datos', 'Cerrar sesión']);
+    expect([...(hoja?.querySelectorAll('a, button') ?? [])].map(nombre)).toEqual(['Registro de cambios', 'Exportar mis datos', 'Cambiar contraseña', 'Cerrar sesión']);
+  });
+
+  it('"Cambiar contraseña" de la hoja lleva a /app/cuenta/contrasena y la cierra (C-07)', () => {
+    preparar();
+    [...(navInferior()?.querySelectorAll('button') ?? [])].find((b) => nombre(b) === 'Más')?.click();
+    const enlace = [...document.querySelectorAll<HTMLAnchorElement>('[role="dialog"] a')].find((a) => nombre(a) === 'Cambiar contraseña');
+
+    expect(enlace?.getAttribute('href')).toBe('/app/cuenta/contrasena');
+    enlace?.click();
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
   });
 
   it('elegir un destino de la hoja la cierra', () => {
