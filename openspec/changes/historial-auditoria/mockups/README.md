@@ -1,6 +1,6 @@
 # Mockups de C-18 · `historial-auditoria`
 
-`Approval: pending` (2026-11-21) para el caso "Reserva con este DNI" (#51). El resto sigue `approved (2026-11-20, by Maxi)`, versión `9cb3635` (#35).
+`Approval: approved (2026-11-21, by Maxi)`, versión `5ef5bb1` (#51).
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20).

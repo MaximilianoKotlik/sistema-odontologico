@@ -19,7 +19,7 @@
 
 - [ ] 3.1 `LecturaDeAuditoriaJdbc` con la consulta de design D3, filtros y keyset (verificación: escenarios "Registro sin filtros", "Filtro por turno", "Filtro por acción" y "Filtros combinados sin coincidencias" en integración, con eventos insertados por SQL)
 - [ ] 3.2 Actor y contexto con joins que repiten el consultorio (verificación: escenarios "Evento de un paciente" y "Evento del sistema", más un caso con un `actor_id` que apunta a un usuario de otro consultorio y no trae nombre)
-- [ ] 3.2b Marca `actor.identidadEnRevision` en la consulta de design D3, sin el nombre del actor cuando es `true` (verificación: escenarios "Revisión pendiente", "Revisión resuelta" y "Otro turno del mismo paciente" de `consulta-auditoria`)
+- [x] 3.2b Marca `actor.identidadEnRevision` en la consulta de design D3, sin el nombre del actor cuando es `true` (verificación: escenarios "Revisión pendiente", "Revisión resuelta" y "Otro turno del mismo paciente" de `consulta-auditoria`)
 - [ ] 3.3 Paginación estable (verificación: escenarios "Dos páginas" y "Evento nuevo entre páginas")
 - [ ] 3.4 Medición con 50 000 eventos y `EXPLAIN` de las tres variantes (sin filtros, por turno y por acción), con la salida en el PR. Si alguna supera 100 ms, se agrega el índice de design D4 (verificación: test etiquetado `@Tag("volumen")`)
 

@@ -147,6 +147,6 @@ Ajustes de mockup pedidos y aplicados: el actor "Sin sesión" para `LOGIN_FALLID
 - Design system revision: 1
 - Decision: yes (2026-11-20). Dos pantallas: `/app/auditoria` y la tarjeta "Historial" del detalle del turno.
 - Mockups: [`mockups/registro.html`](mockups/registro.html) y [`mockups/turno-historial.html`](mockups/turno-historial.html), con su [README](mockups/README.md).
-- Approval: pending (2026-11-21): falta aprobar el caso "Reserva con este DNI" (estados `dni-repetido` e `historial-dni`, #51). El resto sigue aprobado por Maxi en la versión `9cb3635` (#35).
+- Approval: approved (2026-11-21, by Maxi), versión 5ef5bb1 (#51)
 - Preview: rendered (2026-11-20, versión 2 con los ajustes de la revisión del PR #35), 24 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440 de ancho, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola. Caso nuevo: rendered (2026-11-21), 4 capturas más con los mismos tamaños.
 - Visual verify: pendiente (tarea 6.1).
