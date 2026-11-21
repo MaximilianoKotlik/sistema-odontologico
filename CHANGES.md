@@ -476,7 +476,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/11_marco_legal_argentino.md`
 
 ### [C-20] `plan-ciclo-de-vida`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #62, 2026-11-21)
 - **Scope**:
   - Lógica de `plan` (`PRUEBA`/`ACTIVO`/`VENCIDO`); tarea diaria programada (FL-07, idempotente) que pasa a `VENCIDO` al vencer `prueba_hasta` y audita `PLAN_VENCIDO` con `actor_tipo = SISTEMA`; pase a `ACTIVO` manual como operación interna auditada (`SISTEMA`).
   - Bloqueo de escrituras en `VENCIDO`: guarda transversal en backend (RN-GL-04) que rechaza con 403 `PLAN_VENCIDO` toda escritura privada (agenda, bloqueos, pacientes, configuración) salvo una lista explícita de permitidas (lectura, exportación, login/logout/cambio de contraseña); como es genérica, alcanza también a los endpoints que se agreguen después. La reserva pública deja de tomar reservas.
