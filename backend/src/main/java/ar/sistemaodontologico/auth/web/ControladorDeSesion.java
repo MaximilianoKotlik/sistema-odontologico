@@ -15,7 +15,6 @@ import java.time.Duration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -54,22 +53,15 @@ class ControladorDeSesion {
     }
 
     @PostMapping("/login")
-    ResponseEntity<?> login(@RequestBody LoginRequest pedido, HttpServletRequest peticion) {
+    ResponseEntity<SesionResponse> login(@RequestBody LoginRequest pedido, HttpServletRequest peticion) {
         ResultadoLogin resultado = sesiones.iniciar(pedido.email(), pedido.password(), peticion.getRemoteAddr());
+        // Los rechazos se lanzan recién acá, con la transacción del login (contador y evento) ya confirmada.
         return switch (resultado) {
             case Exitoso exitoso -> conSesion(exitoso.sesion());
             case CredencialesInvalidas invalidas ->
                     throw new AutenticacionRechazada("CREDENCIALES_INVALIDAS", "Email o contraseña incorrectos");
-            case Bloqueada bloqueada -> cuentaBloqueada(bloqueada.minutosRestantes(), peticion);
+            case Bloqueada bloqueada -> throw new CuentaBloqueada(bloqueada.minutosRestantes());
         };
-    }
-
-    /** 423 con un mensaje genérico y los minutos que faltan (RN-AU-03, FL-01; C-05, design D1). */
-    private static ResponseEntity<ProblemDetail> cuentaBloqueada(long minutos, HttpServletRequest peticion) {
-        ProblemDetail problema = ManejadorGlobalDeErrores.problemaPara(HttpStatus.LOCKED, "CUENTA_BLOQUEADA",
-                "La cuenta está bloqueada temporalmente por intentos fallidos", peticion.getRequestURI());
-        problema.setProperty("minutosRestantes", minutos);
-        return ResponseEntity.status(HttpStatus.LOCKED).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(problema);
     }
 
     @PostMapping("/refresh")
