@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Restablecer contraseña · {brand} (mockup C-07)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="auth.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="normal:Pedir link|enviando:Enviando|enviado:Link enviado (202)|limite:Demasiados pedidos (429)">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.8 7l8.2 6 8.2-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al formulario</a>
+<div class="auth">
+  <main class="auth-main" id="contenido" tabindex="-1" style="justify-content:flex-start">
+    <div class="auth-top">
+      <a class="brand" href="#" style="visibility:visible"><span class="brand-mark" aria-hidden="true"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
+      <span class="prov">Borrador C-07 · pendiente de aprobación</span>
+    </div>
+
+    <!-- Pedido del link -->
+    <div class="auth-card" data-no="enviado">
+      <a class="btn btn-ghost" href="login.html" style="margin:0 0 var(--space-3) calc(var(--space-4) * -1)"><svg aria-hidden="true"><use href="#i-left"/></svg>Volver a ingresar</a>
+      <h1>Restablecé tu contraseña</h1>
+      <p class="lede">Escribí el email de tu cuenta y te mandamos un link para crear una contraseña nueva.</p>
+
+      <div class="notice warn" role="alert" data-solo="limite">
+        <svg aria-hidden="true"><use href="#i-clock"/></svg>
+        <div><strong>Ya pediste varios links.</strong><p>Usá el último que te llegó o probá de nuevo en <b>40 minutos</b>.</p></div>
+      </div>
+
+      <form novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input class="input" id="email" type="email" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false"
+            data-valor="*=|enviando=odontologa@example.com|limite=odontologa@example.com">
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" data-no="enviando">Enviarme el link</button>
+        <button class="btn btn-primary btn-block" type="button" disabled data-solo="enviando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Enviando…</button>
+      </form>
+    </div>
+
+    <!-- Respuesta idéntica exista o no la cuenta (RN-AU-04): nunca confirma que el email está registrado -->
+    <div class="auth-card result" data-solo="enviado" role="status">
+      <div class="ico info" aria-hidden="true"><svg><use href="#i-mail"/></svg></div>
+      <h1>Revisá tu email</h1>
+      <p>Si hay una cuenta con <b>odontologa@example.com</b>, te llega un link para crear una contraseña nueva. <b>Vence en 30 minutos</b> y sirve una sola vez.</p>
+      <p>¿No llegó en unos minutos? Revisá la carpeta de spam o pedí otro link.</p>
+      <div class="actions">
+        <a class="btn btn-primary btn-block" href="login.html">Volver a ingresar</a>
+        <a class="btn btn-secondary btn-block" href="recuperar.html">Pedir otro link</a>
+      </div>
+    </div>
+
+    <section class="review" aria-labelledby="rev-t">
+      <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+      <ul id="estados"></ul>
+    </section>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Turno · {brand} (mockup C-13)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="agenda.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="confirmado-nota:Confirmado con nota|reservado-nuevo:Reservado por el paciente (nuevo)|reprogramado:Reprogramado por el paciente|sobreturno:Sobreturno|cancelado:Cancelado por el paciente|ausente:Ausente|offline:Sin conexión|cargando:Cargando|no-encontrado:No encontrado (404)">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-userx" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.3 0 2.5.3 3.5 1M16 15l5 5M21 15l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3.5h8.5L19 8v12.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3.5V8.5h5M9 12.5h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 006 6l1.5-2 4 1.5v3a2 2 0 01-2 2A16.5 16.5 0 014.5 5.5a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 11-2.2-5.3L19.5 9M19.5 4.5V9H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 017 0M5 13a10 10 0 015.5-2.8M19 13a10 10 0 00-2.5-1.8M2 9.5a15 15 0 015-3M22 9.5A15 15 0 0012 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5l1-4L15.8 5.2a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8.5 18.5l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="agenda.html" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-13</span>
+    <ul>
+      <li><a class="sidelink" href="agenda.html" aria-current="page"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo Sur</p>
+      <a class="sidelink" href="#"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar"><h1 class="page-title">Turno</h1><span class="grow"></span></header>
+    <main class="content" id="contenido" tabindex="-1">
+      <a class="back" href="agenda.html?estado=dia"><svg aria-hidden="true"><use href="#i-left"/></svg>Volver a la agenda</a>
+      <article class="det" data-solo="confirmado-nota" aria-labelledby="t-confirmado-nota">
+        <div class="stack" style="gap:var(--space-4)">
+          <div class="det-head"><div class="tags"><span class="chip confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></div><h2 id="t-confirmado-nota">Carla Ficticia</h2><p class="when" style="margin:0">Viernes 20 de noviembre · 10:30 a 11:30</p></div>
+          
+          <section class="card" aria-labelledby="pa-confirmado-nota"><div class="card-head"><h2 id="pa-confirmado-nota">Paciente</h2></div><dl class="dl"><dt>DNI</dt><dd>30.000.003</dd><dt>Teléfono</dt><dd><a class="call" href="tel:+5491100000003"><svg aria-hidden="true"><use href="#i-phone"/></svg>+54 9 11 0000-0003</a></dd><dt>Email</dt><dd>carla.ficticia@example.com</dd></dl></section>
+          <section class="card" aria-labelledby="tu-confirmado-nota"><div class="card-head"><h2 id="tu-confirmado-nota">Turno</h2></div><dl class="dl"><dt>Prestación</dt><dd>Extracción · 60 min</dd><dt>Origen</dt><dd>Lo cargaste vos</dd></dl></section>
+        </div>
+        <div class="stack" style="gap:var(--space-4)">
+          <section class="card" aria-labelledby="no-confirmado-nota"><div class="card-head"><div><h2 id="no-confirmado-nota">Nota interna</h2><p class="sub">No la ve el paciente.</p></div></div><p class="nota">Trae radiografía panorámica.
+Preguntar por alergia a la penicilina.</p></section>
+          <section class="card" aria-labelledby="ac-confirmado-nota"><div class="card-head"><div><h2 id="ac-confirmado-nota">Acciones</h2><p class="sub">Los formularios y diálogos son de C-14.</p></div></div><div class="acciones"><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-repeat"/></svg>Reprogramar</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-hourglass"/></svg>Ajustar duración</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Editar nota</button><button class="btn btn-danger" type="button"><svg aria-hidden="true"><use href="#i-x"/></svg>Cancelar turno</button></div><p class="note">“Marcar ausente” aparece cuando el turno ya empezó.</p></section>
+        </div>
+      </article>
+      <article class="det" data-solo="reservado-nuevo" aria-labelledby="t-reservado-nuevo">
+        <div class="stack" style="gap:var(--space-4)">
+          <div class="det-head"><div class="tags"><span class="chip reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span></div><h2 id="t-reservado-nuevo">Federico Ejemplo</h2><p class="when" style="margin:0">Viernes 20 de noviembre · 16:00 a 16:30</p></div>
+          <div class="notice info" role="status" style="margin:0"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Cambio de tu paciente</strong><p>Lo reservó desde tu link hoy a las 10:05. Ya lo marcamos como visto.</p></div></div>
+          <section class="card" aria-labelledby="pa-reservado-nuevo"><div class="card-head"><h2 id="pa-reservado-nuevo">Paciente</h2></div><dl class="dl"><dt>DNI</dt><dd>30.000.006</dd><dt>Teléfono</dt><dd><a class="call" href="tel:+5491100000006"><svg aria-hidden="true"><use href="#i-phone"/></svg>+54 9 11 0000-0006</a></dd><dt>Email</dt><dd class="nota-vacia">No dejó email</dd></dl></section>
+          <section class="card" aria-labelledby="tu-reservado-nuevo"><div class="card-head"><h2 id="tu-reservado-nuevo">Turno</h2></div><dl class="dl"><dt>Prestación</dt><dd>Consulta · 30 min</dd><dt>Origen</dt><dd>Reservó por tu link</dd></dl></section>
+        </div>
+        <div class="stack" style="gap:var(--space-4)">
+          <section class="card" aria-labelledby="no-reservado-nuevo"><div class="card-head"><div><h2 id="no-reservado-nuevo">Nota interna</h2><p class="sub">No la ve el paciente.</p></div></div><p class="nota-vacia">Sin nota. Solo la ves vos.</p></section>
+          <section class="card" aria-labelledby="ac-reservado-nuevo"><div class="card-head"><div><h2 id="ac-reservado-nuevo">Acciones</h2><p class="sub">Los formularios y diálogos son de C-14.</p></div></div><div class="acciones"><button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmar</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-repeat"/></svg>Reprogramar</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-hourglass"/></svg>Ajustar duración</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Editar nota</button><button class="btn btn-danger" type="button"><svg aria-hidden="true"><use href="#i-x"/></svg>Cancelar turno</button></div><p class="note">“Marcar ausente” aparece cuando el turno ya empezó.</p></section>
+        </div>
+      </article>
+      <article class="det" data-solo="reprogramado" aria-labelledby="t-reprogramado">
+        <div class="stack" style="gap:var(--space-4)">
+          <div class="det-head"><div class="tags"><span class="chip reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span></div><h2 id="t-reprogramado">Hernán Muestra</h2><p class="when" style="margin:0">Viernes 20 de noviembre · 18:00 a 18:30</p></div>
+          <div class="notice info" role="status" style="margin:0"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Cambio de tu paciente</strong><p>Lo reprogramó desde tu link ayer a las 21:40. Antes era el jueves 19 a las 16:30. Ya lo marcamos como visto.</p></div></div>
+          <section class="card" aria-labelledby="pa-reprogramado"><div class="card-head"><h2 id="pa-reprogramado">Paciente</h2></div><dl class="dl"><dt>DNI</dt><dd>30.000.008</dd><dt>Teléfono</dt><dd><a class="call" href="tel:+5491100000008"><svg aria-hidden="true"><use href="#i-phone"/></svg>+54 9 11 0000-0008</a></dd><dt>Email</dt><dd>hernan.muestra@example.com</dd></dl></section>
+          <section class="card" aria-labelledby="tu-reprogramado"><div class="card-head"><h2 id="tu-reprogramado">Turno</h2></div><dl class="dl"><dt>Prestación</dt><dd>Consulta · 30 min</dd><dt>Origen</dt><dd>Reservó por tu link</dd></dl></section>
+        </div>
+        <div class="stack" style="gap:var(--space-4)">
+          <section class="card" aria-labelledby="no-reprogramado"><div class="card-head"><div><h2 id="no-reprogramado">Nota interna</h2><p class="sub">No la ve el paciente.</p></div></div><p class="nota-vacia">Sin nota. Solo la ves vos.</p></section>
+          <section class="card" aria-labelledby="ac-reprogramado"><div class="card-head"><div><h2 id="ac-reprogramado">Acciones</h2><p class="sub">Los formularios y diálogos son de C-14.</p></div></div><div class="acciones"><button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmar</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-repeat"/></svg>Reprogramar</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-hourglass"/></svg>Ajustar duración</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Editar nota</button><button class="btn btn-danger" type="button"><svg aria-hidden="true"><use href="#i-x"/></svg>Cancelar turno</button></div><p class="note">“Marcar ausente” aparece cuando el turno ya empezó.</p></section>
+        </div>
+      </article>
+      <article class="det" data-solo="sobreturno" aria-labelledby="t-sobreturno">
+        <div class="stack" style="gap:var(--space-4)">
+          <div class="det-head"><div class="tags"><span class="chip reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span><span class="chip sobreturno"><svg aria-hidden="true"><use href="#i-plus"/></svg>Sobreturno</span></div><h2 id="t-sobreturno">Diego Muestra</h2><p class="when" style="margin:0">Viernes 20 de noviembre · 10:45 a 11:05</p></div>
+          <div class="notice warn" style="margin:0"><svg aria-hidden="true"><use href="#i-plus"/></svg><div><strong>Es un sobreturno</strong><p>Se superpone con el turno de 10:30 de Carla Ficticia.</p></div></div>
+          <section class="card" aria-labelledby="pa-sobreturno"><div class="card-head"><h2 id="pa-sobreturno">Paciente</h2></div><dl class="dl"><dt>DNI</dt><dd>30.000.004</dd><dt>Teléfono</dt><dd><a class="call" href="tel:+5491100000004"><svg aria-hidden="true"><use href="#i-phone"/></svg>+54 9 11 0000-0004</a></dd><dt>Email</dt><dd class="nota-vacia">No dejó email</dd></dl></section>
+          <section class="card" aria-labelledby="tu-sobreturno"><div class="card-head"><h2 id="tu-sobreturno">Turno</h2></div><dl class="dl"><dt>Prestación</dt><dd>Control · 20 min</dd><dt>Origen</dt><dd>Lo cargaste vos</dd></dl></section>
+        </div>
+        <div class="stack" style="gap:var(--space-4)">
+          <section class="card" aria-labelledby="no-sobreturno"><div class="card-head"><div><h2 id="no-sobreturno">Nota interna</h2><p class="sub">No la ve el paciente.</p></div></div><p class="nota-vacia">Sin nota. Solo la ves vos.</p></section>
+          <section class="card" aria-labelledby="ac-sobreturno"><div class="card-head"><div><h2 id="ac-sobreturno">Acciones</h2><p class="sub">Los formularios y diálogos son de C-14.</p></div></div><div class="acciones"><button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmar</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-repeat"/></svg>Reprogramar</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-hourglass"/></svg>Ajustar duración</button><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Editar nota</button><button class="btn btn-danger" type="button"><svg aria-hidden="true"><use href="#i-x"/></svg>Cancelar turno</button></div><p class="note">“Marcar ausente” aparece cuando el turno ya empezó.</p></section>
+        </div>
+      </article>
+      <article class="det" data-solo="cancelado" aria-labelledby="t-cancelado">
+        <div class="stack" style="gap:var(--space-4)">
+          <div class="det-head"><div class="tags"><span class="chip cancelado"><svg aria-hidden="true"><use href="#i-x"/></svg>Cancelado</span></div><h2 id="t-cancelado">Elena Demo</h2><p class="when" style="margin:0">Viernes 20 de noviembre · 11:30 a 12:00</p></div>
+          <div class="notice info" role="status" style="margin:0"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Cambio de tu paciente</strong><p>Lo canceló desde tu link hoy a las 08:12. Ya lo marcamos como visto.</p></div></div>
+          <section class="card" aria-labelledby="pa-cancelado"><div class="card-head"><h2 id="pa-cancelado">Paciente</h2></div><dl class="dl"><dt>DNI</dt><dd>30.000.005</dd><dt>Teléfono</dt><dd><a class="call" href="tel:+5491100000005"><svg aria-hidden="true"><use href="#i-phone"/></svg>+54 9 11 0000-0005</a></dd><dt>Email</dt><dd>elena.demo@example.com</dd></dl></section>
+          <section class="card" aria-labelledby="tu-cancelado"><div class="card-head"><h2 id="tu-cancelado">Turno</h2></div><dl class="dl"><dt>Prestación</dt><dd>Consulta · 30 min</dd><dt>Origen</dt><dd>Reservó por tu link</dd><dt>Cancelación</dt><dd>Cancelado por el paciente<br><span class="hint">“Me surgió un viaje, vuelvo a reservar la semana que viene.”</span></dd></dl></section>
+        </div>
+        <div class="stack" style="gap:var(--space-4)">
+          <section class="card" aria-labelledby="no-cancelado"><div class="card-head"><div><h2 id="no-cancelado">Nota interna</h2><p class="sub">No la ve el paciente.</p></div></div><p class="nota-vacia">Sin nota. Solo la ves vos.</p></section>
+          <section class="card" aria-labelledby="ac-cancelado"><div class="card-head"><div><h2 id="ac-cancelado">Acciones</h2><p class="sub">Los formularios y diálogos son de C-14.</p></div></div><div class="acciones"><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Editar nota</button></div></section>
+        </div>
+      </article>
+      <article class="det" data-solo="ausente" aria-labelledby="t-ausente">
+        <div class="stack" style="gap:var(--space-4)">
+          <div class="det-head"><div class="tags"><span class="chip ausente"><svg aria-hidden="true"><use href="#i-userx"/></svg>Ausente</span></div><h2 id="t-ausente">Ana Ejemplo</h2><p class="when" style="margin:0">Viernes 20 de noviembre · 09:00 a 09:30</p></div>
+          
+          <section class="card" aria-labelledby="pa-ausente"><div class="card-head"><h2 id="pa-ausente">Paciente</h2></div><dl class="dl"><dt>DNI</dt><dd>30.000.001</dd><dt>Teléfono</dt><dd><a class="call" href="tel:+5491100000001"><svg aria-hidden="true"><use href="#i-phone"/></svg>+54 9 11 0000-0001</a></dd><dt>Email</dt><dd class="nota-vacia">No dejó email</dd></dl></section>
+          <section class="card" aria-labelledby="tu-ausente"><div class="card-head"><h2 id="tu-ausente">Turno</h2></div><dl class="dl"><dt>Prestación</dt><dd>Consulta · 30 min</dd><dt>Origen</dt><dd>Lo cargaste vos</dd></dl></section>
+        </div>
+        <div class="stack" style="gap:var(--space-4)">
+          <section class="card" aria-labelledby="no-ausente"><div class="card-head"><div><h2 id="no-ausente">Nota interna</h2><p class="sub">No la ve el paciente.</p></div></div><p class="nota-vacia">Sin nota. Solo la ves vos.</p></section>
+          <section class="card" aria-labelledby="ac-ausente"><div class="card-head"><div><h2 id="ac-ausente">Acciones</h2><p class="sub">Los formularios y diálogos son de C-14.</p></div></div><div class="acciones"><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-pencil"/></svg>Editar nota</button></div></section>
+        </div>
+      </article>
+      <article class="det" data-solo="offline" aria-labelledby="t-offline">
+        <div class="stack" style="gap:var(--space-4)">
+          <div class="det-head"><div class="tags"><span class="chip confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></div><h2 id="t-offline">Carla Ficticia</h2><p class="when" style="margin:0">Viernes 20 de noviembre · 10:30 a 11:30</p></div>
+          <div class="notice warn" role="status" style="margin:0"><svg aria-hidden="true"><use href="#i-wifioff"/></svg><div><strong>Sin conexión</strong><p>Datos de las 10:32. Las acciones vuelven cuando haya conexión.</p></div></div>
+          <section class="card" aria-labelledby="pa-offline"><div class="card-head"><h2 id="pa-offline">Paciente</h2></div><dl class="dl"><dt>DNI</dt><dd>30.000.003</dd><dt>Teléfono</dt><dd><a class="call" href="tel:+5491100000003"><svg aria-hidden="true"><use href="#i-phone"/></svg>+54 9 11 0000-0003</a></dd><dt>Email</dt><dd>carla.ficticia@example.com</dd></dl></section>
+          <section class="card" aria-labelledby="tu-offline"><div class="card-head"><h2 id="tu-offline">Turno</h2></div><dl class="dl"><dt>Prestación</dt><dd>Extracción · 60 min</dd><dt>Origen</dt><dd>Lo cargaste vos</dd></dl></section>
+        </div>
+        <div class="stack" style="gap:var(--space-4)">
+          <section class="card" aria-labelledby="no-offline"><div class="card-head"><div><h2 id="no-offline">Nota interna</h2><p class="sub">No la ve el paciente.</p></div></div><p class="nota">Trae radiografía panorámica.
+Preguntar por alergia a la penicilina.</p></section>
+          <section class="card" aria-labelledby="ac-offline"><div class="card-head"><div><h2 id="ac-offline">Acciones</h2><p class="sub">Los formularios y diálogos son de C-14.</p></div></div><div class="acciones"><button class="btn btn-secondary" type="button" disabled><svg aria-hidden="true"><use href="#i-repeat"/></svg>Reprogramar</button><button class="btn btn-secondary" type="button" disabled><svg aria-hidden="true"><use href="#i-hourglass"/></svg>Ajustar duración</button><button class="btn btn-secondary" type="button" disabled><svg aria-hidden="true"><use href="#i-pencil"/></svg>Editar nota</button><button class="btn btn-danger" type="button" disabled><svg aria-hidden="true"><use href="#i-x"/></svg>Cancelar turno</button></div><p class="note">“Marcar ausente” aparece cuando el turno ya empezó.</p></section>
+        </div>
+      </article>
+      <div data-solo="cargando" aria-busy="true" aria-label="Cargando el turno"><span class="skel w40"></span><span class="skel lg"></span><span class="skel w60"></span><div class="card"><span class="skel"></span><span class="skel"></span><span class="skel w60"></span></div></div>
+      <div class="empty card" data-solo="no-encontrado" role="alert"><div class="ico" aria-hidden="true"><svg aria-hidden="true"><use href="#i-alert"/></svg></div><h2>No encontramos este turno</h2><p>Puede que el link sea viejo o que el turno sea de otro consultorio.</p><a class="btn btn-primary" href="agenda.html">Volver a la agenda</a></div>
+      <section class="review" aria-labelledby="rev-t">
+        <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+        <ul id="estados"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="agenda.html" aria-current="page"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+
+</body>
+</html>
