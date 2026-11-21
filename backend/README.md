@@ -33,7 +33,25 @@ en segundos, y la operación no se ejecuta: un 429 en el login no cuenta como in
 - La clave por email cuenta igual exista o no la cuenta, para que el 429 no revele si el email está registrado.
 - Los contadores viven en memoria de cada instancia (Caffeine, como máximo 100.000 claves, y se descartan tras una
   hora sin uso). Con varias instancias, cada una cuenta por separado: el rate limit distribuido queda fuera de v1.
-- Los límites por IP solo se aplican a esas rutas; el resto de la API no tiene este límite.
+- Estos límites de autenticación solo se aplican a esas rutas. La API pública tiene los suyos (ver abajo).
+
+### Límites de la API pública
+
+`/api/v1/public/**` tiene sus propios cupos (C-15, RN-RP-09), con la misma respuesta `429 DEMASIADAS_SOLICITUDES` y `Retry-After`:
+
+| Operación | Clave | Límite por defecto | Propiedad |
+|---|---|---|---|
+| `POST /api/v1/public/consultorios/{slug}/turnos` | IP | 10 por hora | `app.rate-limit-publico.reserva` |
+| Todos los `GET`, y reprogramar o cancelar | IP | 60 por minuto | `app.rate-limit-publico.consulta` |
+| `POST .../turnos/{token}/reprogramacion` y `/cancelacion` | hash del token | 10 por hora | `app.rate-limit-publico.token` |
+
+- Reprogramar y cancelar gastan los dos cupos: el de la IP evita probar tokens por `POST`, y el del token frena las repeticiones desde IPs distintas.
+- El cuerpo admite hasta 64 KB. Si lo supera, la respuesta es `413 CUERPO_DEMASIADO_GRANDE`.
+- Las respuestas de `/api/v1/public/turnos/**` llevan `Cache-Control: no-store`, y el token se enmascara en logs y Problem Details.
+
+### Política de privacidad vigente
+
+La versión que acepta quien reserva por el link se configura en `app.privacidad.version-vigente` (variable `PRIVACIDAD_VERSION_VIGENTE`, por defecto `2026-11-borrador`, de `docs/legal/politica-de-privacidad.md`). Cuando se publique una versión nueva, hay que actualizar este valor.
 
 ### IP de origen detrás de un proxy
 

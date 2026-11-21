@@ -64,8 +64,8 @@
 
 ## 9. Contrato y documentación
 
-- [ ] 9.1 Anotar los 6 endpoints con springdoc (respuestas 201/200/400/404/409/413/429 y el cuerpo de `HUECO_NO_DISPONIBLE`, `FUERA_DE_PLAZO` y `RESERVA_NO_DISPONIBLE`) y regenerar `frontend/src/shared/api-types.ts` (verificación: el job de CI "api-types" sin diferencias y `ContratoOpenApiTest` en verde)
-- [ ] 9.2 Documentar en `backend/README.md` los cupos públicos y sus propiedades, y la versión vigente de la política de privacidad (verificación: los nombres de propiedades del README coinciden con `application.yml`)
+- [x] 9.1 Anotar los 6 endpoints con springdoc (respuestas 201/200/400/404/409/413/429 y el cuerpo de `HUECO_NO_DISPONIBLE`, `FUERA_DE_PLAZO` y `RESERVA_NO_DISPONIBLE`) y regenerar `frontend/src/shared/api-types.ts` (verificación: el job de CI "api-types" sin diferencias y `ContratoOpenApiTest` en verde)
+- [x] 9.2 Documentar en `backend/README.md` los cupos públicos y sus propiedades, y la versión vigente de la política de privacidad (verificación: los nombres de propiedades del README coinciden con `application.yml`)
 
 ## 10. Verificación integral
 
