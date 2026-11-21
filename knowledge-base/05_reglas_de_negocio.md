@@ -22,6 +22,7 @@ Valores por defecto configurables por consultorio se indican como `(config, defa
 - **RN-TE-03**: El `slug` del link público es único global, de 3 a 40 caracteres `[a-z0-9-]`, sin guiones al inicio/fin ni dobles, y no puede ser una palabra reservada (`app`, `api`, `login`, `registro`, `precios`, `admin`, `c`, `t`, etc.). Se sugiere a partir del nombre del consultorio y es editable; al cambiarlo, el link anterior deja de funcionar.
 - **RN-TE-04**: Pedir un recurso de otro consultorio responde **404**, no 403 — no se revela su existencia.
 - **RN-TE-05**: La zona horaria del consultorio (config, default `America/Argentina/Buenos_Aires`) gobierna la interpretación de la disponibilidad semanal y la visualización; los instantes se persisten en UTC.
+- **RN-TE-06**: Al guardar la configuración del consultorio, el **teléfono de contacto es obligatorio** (se normaliza a E.164; el registro puede crear el consultorio sin él y se carga en el asistente de C-09), el **horizonte de reserva va de 1 a 365 días** y la **anticipación de reserva tiene que ser menor que el horizonte** (`anticipacion_reserva_min < horizonte_reserva_dias × 1440`, error `ANTICIPACION_FUERA_DE_HORIZONTE` en el campo `anticipacionReservaMin`). *(Decisiones de Maxi en la revisión de C-08, #15, 2026-11-20.)*
 
 ## Dominio: Autenticación (RN-AU) — governance **CRITICAL**
 
@@ -45,7 +46,7 @@ Valores por defecto configurables por consultorio se indican como `(config, defa
   - `RESERVADO | CONFIRMADO → AUSENTE` (solo odontólogo y solo cuando `inicio` ya pasó).
   - `CANCELADO` y `AUSENTE` son terminales. Cualquier otra transición responde 409 `TRANSICION_INVALIDA`.
 - **RN-AG-07**: Los turnos nunca se borran físicamente: se cancelan. Lo mismo vale para pacientes y prestaciones (se desactivan).
-- **RN-AG-08**: Los horarios de turnos y bloqueos se expresan en múltiplos de 5 minutos. *(Decisión de diseño, respaldada en [`discovery.md` §7](../docs/discovery/discovery.md).)*
+- **RN-AG-08**: Los horarios de turnos, bloqueos y franjas de disponibilidad se expresan en múltiplos de 5 minutos (las franjas, desde C-08 design D5). *(Decisión de diseño, respaldada en [`discovery.md` §7](../docs/discovery/discovery.md).)*
 - **RN-AG-09**: Un turno cancelado libera su horario de inmediato para nuevas reservas.
 - **RN-AG-10**: Una prestación desactivada deja de ofrecerse, pero sus turnos existentes siguen vigentes y visibles.
 - **RN-AG-11**: La reprogramación hecha por el odontólogo mantiene el mismo turno (mismo `id` y mismo token de gestión), valida RN-AG-01/03/04 sobre el nuevo horario y no está sujeta a anticipación mínima.

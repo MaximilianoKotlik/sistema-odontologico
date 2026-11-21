@@ -88,10 +88,11 @@ erDiagram
 ## Entidades
 
 ### Consultorio (tenant)
-- `id UUID PK`, `nombre VARCHAR(120) NOT NULL`, `slug VARCHAR(40) UNIQUE NOT NULL`, `direccion VARCHAR(200)`, `telefono_contacto VARCHAR(20)` (se muestra al paciente cuando no puede cancelar online).
+- `id UUID PK`, `nombre VARCHAR(120) NOT NULL`, `slug VARCHAR(40) UNIQUE NOT NULL`, `direccion VARCHAR(200)`, `telefono_contacto VARCHAR(20)` (E.164; se muestra al paciente cuando no puede cancelar online). Es nulo en la base porque el registro crea el consultorio sin teléfono, pero guardar la configuración lo exige ([RN-TE-06](05_reglas_de_negocio.md)).
 - `zona_horaria VARCHAR(50) NOT NULL DEFAULT 'America/Argentina/Buenos_Aires'`.
 - `anticipacion_cancelacion_min INT NOT NULL DEFAULT 1440` (24 h) — `CHECK (0..10080)`.
 - `anticipacion_reserva_min INT NOT NULL DEFAULT 120`, `horizonte_reserva_dias INT NOT NULL DEFAULT 60`, `paso_huecos_min INT NOT NULL DEFAULT 15` (`CHECK IN (5,10,15,20,30)`).
+  - La base exige `horizonte_reserva_dias > 0`; la aplicación además lo topea en **365 días** y exige `anticipacion_reserva_min < horizonte_reserva_dias × 1440` ([RN-TE-06](05_reglas_de_negocio.md), C-08).
 - `reserva_publica_activa BOOLEAN NOT NULL DEFAULT true`.
 - `plan VARCHAR(10) NOT NULL CHECK (plan IN ('PRUEBA','ACTIVO','VENCIDO'))`, `prueba_hasta DATE`.
 - Constraint: `slug ~ '^([a-z0-9])(-?[a-z0-9])+$'`, palabras reservadas validadas en aplicación ([RN-TE-03](05_reglas_de_negocio.md)).
@@ -113,7 +114,7 @@ erDiagram
 - Unique: `(consultorio_id, lower(nombre))`. No se borra si tiene turnos: se desactiva.
 
 ### Disponibilidad (franjas semanales)
-- `id`, `consultorio_id`, `dia_semana SMALLINT CHECK (1..7)` (ISO, 1 = lunes), `hora_inicio TIME`, `hora_fin TIME`, `CHECK (hora_fin > hora_inicio)`.
+- `id`, `consultorio_id`, `dia_semana SMALLINT CHECK (1..7)` (ISO, 1 = lunes), `hora_inicio TIME`, `hora_fin TIME`, `CHECK (hora_fin > hora_inicio)`, horas en múltiplos de 5 minutos (`ck_disponibilidad_multiplo_5`, [RN-AG-08](05_reglas_de_negocio.md)).
 - Exclusión: no se solapan dos franjas del mismo día del mismo consultorio (`EXCLUDE USING gist (consultorio_id WITH =, dia_semana WITH =, tsrange(...) WITH &&)` sobre una fecha ancla).
 
 ### Bloqueo

@@ -263,7 +263,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 2 — Configuración del consultorio
 
 ### [C-08] `consultorio-config-backend`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #15, 2026-11-20)
 - **Scope**:
   - Migración: `tipo_prestacion` (duración múltiplo de 5, `activa`, `visible_publica`, único por nombre) y `disponibilidad` (franjas semanales con exclusión GiST para no solaparse).
   - Endpoints: `GET/PUT /api/v1/consultorio` (nombre, slug, teléfono de contacto, anticipaciones, paso de huecos, `reserva_publica_activa`; 400/409 por slug reservado o en uso), CRUD de `/api/v1/prestaciones` (desactivar en vez de borrar), `PUT /api/v1/disponibilidad` (400 `FRANJAS_SOLAPADAS`).
@@ -334,7 +334,12 @@ Reglas de coordinación del paralelismo:
   - `GET /api/v1/agenda?desde&hasta` (turnos, sobreturnos marcados, bloqueos, cancelados filtrables; indicador de "nuevos" por reservas/cambios de pacientes).
   - `POST /api/v1/turnos` (manual y `esSobreturno`), `PATCH /api/v1/turnos/{id}/estado`, `POST /api/v1/turnos/{id}/reprogramar` (sin anticipación mínima para el odontólogo; conserva el token de gestión), `PATCH /api/v1/turnos/{id}/duracion` (RN-AG-12), `PATCH /api/v1/turnos/{id}/nota` (RN-AD-01), `POST/DELETE /api/v1/bloqueos` (el `DELETE` audita `BLOQUEO_ELIMINADO`).
   - `GET /api/v1/turnos/{id}`: detalle completo del turno para la pantalla de C-13 (paciente con DNI, teléfono y email, nota interna, motivo y autor de la cancelación, horario anterior si el paciente lo reprogramó). `GET /agenda` sigue liviano (sin DNI, teléfono, email ni texto de la nota) para no cargar datos personales de más en la caché offline. Decisión de Maxi en la revisión de #27.
-  - `POST /api/v1/turnos/{id}/visto`: marca como visto el cambio hecho por el paciente desde el link (DD-30). Es idempotente. Dónde se guarda la marca y si genera evento de auditoría (regla dura 7) lo define la propuesta de C-12.
+  - `POST /api/v1/turnos/{id}/visto`: marca como visto el cambio hecho por el paciente desde el link (DD-30). Es idempotente. La marca es `turno.novedad_paciente_at TIMESTAMPTZ NULL`: la escribe C-15 y este endpoint la limpia. La crea la migración del primero que se mergee entre C-12 y C-15 (decisión de Maxi en #30). Si genera evento de auditoría (regla dura 7) lo define la propuesta de C-12.
+  - Para los diálogos de C-14 (decisión de Maxi en #31):
+    - `GET /api/v1/pacientes?q=`: busca por nombre, DNI o teléfono, para el buscador del turno manual.
+    - `GET /api/v1/bloqueos?desde=`: lista los bloqueos futuros.
+    - El 409 `TURNO_SOLAPADO` incluye el turno con el que choca.
+  - `GET /api/v1/turnos/fuera-de-disponibilidad`: lista los turnos futuros activos que no sean sobreturnos y queden fuera de la grilla vigente (RN-AG-03). Reemplazar la disponibilidad (C-08) no los mueve ni los cancela; este endpoint alimenta el aviso de C-14 (decisión de Maxi en #15).
   - Errores con código estable: 409 `TURNO_SOLAPADO`, `HORARIO_BLOQUEADO`, `FUERA_DE_DISPONIBILIDAD`, `BLOQUEO_CON_TURNOS` (con lista), `TRANSICION_INVALIDA`, `CONFLICTO_CONCURRENCIA`; 400 por duración no múltiplo de 5 o nota > 500.
   - OpenAPI actualizado y `api-types.ts` regenerado.
   - Tests API/seguridad (MockMvc + Testcontainers) de US-012, US-021 a US-025 y aislamiento por tenant, incluidos el detalle y el visto (turno de otro consultorio = 404).
@@ -363,7 +368,12 @@ Reglas de coordinación del paralelismo:
 ### [C-14] `frontend-turnos-bloqueos`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Features `turnos/` y `bloqueos/`: crear turno manual (prestación, hueco, paciente por teléfono), agregar sobreturno, confirmar/cancelar/marcar ausente, reprogramar, **ajustar la duración** (selector en pasos de 5 min, muestra el nuevo fin), **agregar/editar la nota interna** (contador de 500), crear y eliminar bloqueos; manejo de errores 409 con mensajes y lista de conflictos de bloqueo.
+  - Features `turnos/` y `bloqueos/`: crear turno manual (prestación, hueco, paciente buscado por nombre, DNI o teléfono, con alta rápida por DNI, DD-24), agregar sobreturno, confirmar/cancelar/marcar ausente, reprogramar, **ajustar la duración** (selector en pasos de 5 min, muestra el nuevo fin), **agregar/editar la nota interna** (contador de 500), crear y eliminar bloqueos; manejo de errores 409 con mensajes y lista de conflictos de bloqueo.
+  - **Aviso de turnos fuera de horario** (decisión de Maxi en #15):
+    - Al guardar los horarios de atención en Configuración (pantalla de C-09), si quedan turnos futuros fuera de la grilla nueva, se avisa con la lista y un link a cada turno para reprogramarlo o cancelarlo.
+    - Los datos salen de `GET /api/v1/turnos/fuera-de-disponibilidad` (C-12).
+    - El guardado no se bloquea.
+    - Va en C-14 y no en C-09 porque necesita la API de turnos de C-12. Se suma un estado al mockup de C-14.
   - Mockup revisado de formularios y diálogos antes de implementar.
   - Tests Vitest de validaciones y mapeo de errores.
 - **Dependencias**: `C-13`

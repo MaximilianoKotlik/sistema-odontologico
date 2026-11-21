@@ -53,5 +53,8 @@ public abstract class IntegracionPostgresTest {
         // Solo de test (C-04): 48 bytes fijos en base64; nunca se usa fuera de los tests.
         registro.add("JWT_SECRET", () -> SECRETO_JWT_DE_PRUEBA);
         registro.add("APP_FRONTEND_ORIGIN", () -> ORIGEN_FRONTEND);
+        // C-08: los tests con el perfil local (Swagger, cabeceras) no cargan el seed de demo en la base que comparte
+        // toda la suite; si lo hicieran, el resto de los contextos no validaría la migración repetible.
+        registro.add("spring.flyway.locations", () -> "classpath:db/migration");
     }
 }

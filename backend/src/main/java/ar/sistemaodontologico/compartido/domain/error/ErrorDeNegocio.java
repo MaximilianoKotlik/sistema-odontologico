@@ -1,5 +1,6 @@
 package ar.sistemaodontologico.compartido.domain.error;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -17,8 +18,17 @@ public abstract class ErrorDeNegocio extends RuntimeException {
 
     private final String codigo;
     private final TipoDeError tipo;
+    private final Map<String, Object> propiedades;
 
     protected ErrorDeNegocio(String codigo, TipoDeError tipo, String mensaje) {
+        this(codigo, tipo, mensaje, Map.of());
+    }
+
+    /**
+     * Con propiedades extra para el Problem Details, por ejemplo las {@code sugerencias} de {@code SLUG_EN_USO}
+     * (C-08, design D6). Como el mensaje, se le muestran al cliente: nunca llevan datos personales.
+     */
+    protected ErrorDeNegocio(String codigo, TipoDeError tipo, String mensaje, Map<String, Object> propiedades) {
         super(mensaje, null, false, false);
         Objects.requireNonNull(codigo, "codigo");
         if (!FORMATO_CODIGO.matcher(codigo).matches()) {
@@ -26,6 +36,7 @@ public abstract class ErrorDeNegocio extends RuntimeException {
         }
         this.codigo = codigo;
         this.tipo = Objects.requireNonNull(tipo, "tipo");
+        this.propiedades = Map.copyOf(Objects.requireNonNull(propiedades, "propiedades"));
     }
 
     public String getCodigo() {
@@ -34,5 +45,10 @@ public abstract class ErrorDeNegocio extends RuntimeException {
 
     public TipoDeError getTipo() {
         return tipo;
+    }
+
+    /** Propiedades extra del Problem Details; vacío si no hay. */
+    public Map<String, Object> getPropiedades() {
+        return propiedades;
     }
 }

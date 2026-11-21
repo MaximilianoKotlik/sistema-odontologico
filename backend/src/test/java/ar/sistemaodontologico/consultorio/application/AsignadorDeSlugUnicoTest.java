@@ -79,4 +79,31 @@ class AsignadorDeSlugUnicoTest {
         assertThat(asignador.asignar("Centro Integral de Odontología Avanzada"))
                 .isEqualTo("centro-integral-de-odontologia-avanzad-3");
     }
+
+    // --- C-08 (design D7): cambio de slug con sugerencias ---
+
+    @Test
+    void unSlugTomadoNoEstaLibre() {
+        tomados.add("dra-gomez");
+
+        assertThat(asignador.estaLibre("dra-gomez")).isFalse();
+        assertThat(asignador.estaLibre("dra-gomez-sur")).isTrue();
+    }
+
+    @Test
+    void sugiereLosPrimerosSufijosLibres() {
+        tomados.addAll(Set.of("dra-gomez", "dra-gomez-3"));
+
+        assertThat(asignador.sugerencias("dra-gomez", 3)).containsExactly("dra-gomez-2", "dra-gomez-4", "dra-gomez-5");
+    }
+
+    @Test
+    void lasSugerenciasNoPasanDelLargoMaximo() {
+        String base = "a".repeat(ValidadorDeSlug.LARGO_MAXIMO);
+        tomados.add(base);
+
+        assertThat(asignador.sugerencias(base, 3))
+                .hasSize(3)
+                .allSatisfy(sugerencia -> assertThat(sugerencia).hasSizeLessThanOrEqualTo(ValidadorDeSlug.LARGO_MAXIMO));
+    }
 }
