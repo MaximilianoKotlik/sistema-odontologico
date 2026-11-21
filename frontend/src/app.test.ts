@@ -217,6 +217,8 @@ describe('montarAplicacion', () => {
       const fetch = vi.fn(async (entrada: RequestInfo | URL) => {
         const url = String(entrada);
         if (url === '/api/v1/auth/refresh') return (refrescos += 1) === 1 ? json({ accessToken: 't' }) : problema(401, 'SESION_EXPIRADA');
+        // El arranque consulta las prestaciones para decidir si abre el asistente (C-09, D3).
+        if (url === '/api/v1/prestaciones' && refrescos === 1) return json([{ id: 'p-1', nombre: 'Consulta', duracionMin: 30, activa: true }]);
         return problema(401, 'NO_AUTENTICADO');
       });
       const a = await montar({ fetch });
@@ -288,6 +290,62 @@ describe('montarAplicacion', () => {
       await a.iniciarSesion('token-nuevo');
 
       expect(a.http.tieneToken()).toBe(true);
+    });
+  });
+
+  describe('asistente de primer ingreso (C-09, D3)', () => {
+    const consulta = { id: 'p-1', nombre: 'Consulta', duracionMin: 30, activa: true, visiblePublica: true, orden: 1 };
+    const conPrestaciones = (lista: unknown) =>
+      crearFetch({
+        resto: (url) => {
+          if (url === '/api/v1/prestaciones') return json(lista);
+          if (url === '/api/v1/auth/login') return json({ accessToken: 'token-login' });
+          if (url === '/api/v1/consultorio') return json({ nombre: 'Consultorio Demo Sur', slug: 'consultorio-demo-sur' });
+          return json({});
+        },
+      });
+
+    it('al restaurar la sesión sin prestaciones activas abre el asistente, sin la navegación del shell', async () => {
+      await montar({ fetch: conPrestaciones([]) });
+      await vi.waitFor(() => expect(location.pathname).toBe('/app/bienvenida'));
+      await vi.waitFor(() => expect(document.querySelector('a[href="/app/agenda"]')?.textContent).toBe('Terminar después'));
+      expect(document.querySelector('[data-app-root]')).toBeNull();
+      expect(document.querySelector('[data-nav-inferior]')).toBeNull();
+    });
+
+    it('con prestaciones activas abre la ruta pedida como siempre', async () => {
+      await montar({ fetch: conPrestaciones([consulta]) });
+      expect(location.pathname).toBe('/app/agenda');
+      expect(document.querySelector('[data-app-root]')).not.toBeNull();
+    });
+
+    it('si no se puede saber si hay prestaciones, no se interpone', async () => {
+      await montar({ fetch: conPrestaciones({ error: 'algo' }) });
+      expect(location.pathname).toBe('/app/agenda');
+    });
+
+    it('después del login sin prestaciones activas va al asistente', async () => {
+      history.replaceState(null, '', '/login?volver=/app/configuracion');
+      await montar({ fetch: conPrestaciones([]) });
+      const formulario = document.querySelector('form');
+      const email = document.querySelector<HTMLInputElement>('input[name="email"]');
+      const password = document.querySelector<HTMLInputElement>('input[name="password"]');
+      if (email === null || password === null || formulario === null) throw new Error('falta el formulario');
+      email.value = 'odontologa@example.com';
+      password.value = 'ficticia-segura-01';
+      formulario.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+      await vi.waitFor(() => expect(location.pathname).toBe('/app/bienvenida'));
+    });
+
+    it('"Terminar después" lleva a la agenda y no vuelve a abrir el asistente en esa sesión', async () => {
+      const a = await montar({ fetch: conPrestaciones([]) });
+      await vi.waitFor(() => expect(location.pathname).toBe('/app/bienvenida'));
+
+      await a.router.navegar('/app/agenda');
+
+      expect(location.pathname).toBe('/app/agenda');
+      expect(document.querySelector('[data-app-root]')).not.toBeNull();
     });
   });
 

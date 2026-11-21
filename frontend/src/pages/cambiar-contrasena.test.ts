@@ -26,6 +26,7 @@ function montar(respuestas: (() => Response)[]) {
     http,
     zonaHoraria: 'America/Argentina/Buenos_Aires',
     cuenta: { terminarPorCambioDeContrasena: terminar },
+    navegacion: { navegar: vi.fn(async () => undefined), bloquearSalida: vi.fn(() => () => undefined) },
   };
   pagina.montar(contexto);
   const [actual, nueva, repetida] = contenedor.querySelectorAll<HTMLInputElement>('input[type="password"]');

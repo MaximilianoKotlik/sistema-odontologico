@@ -225,3 +225,103 @@ describe('router: guarda de acceso (C-07)', () => {
     await expect(router.iniciar()).rejects.toThrow('ciclo');
   });
 });
+
+describe('router: cambios sin guardar (C-09, D9)', () => {
+  let router: Router | undefined;
+  afterEach(() => router?.detener());
+
+  it('pregunta antes de navegar y, si se cancela, no cambia de ruta', async () => {
+    const p = preparar('/app/agenda');
+    router = p.router;
+    await router.iniciar();
+    const confirmar = vi.fn(async () => false);
+    router.bloquearSalida(confirmar);
+
+    await router.navegar('/app/bloqueos');
+
+    expect(confirmar).toHaveBeenCalledTimes(1);
+    expect(location.pathname).toBe('/app/agenda');
+    expect(p.mostrar).toHaveBeenCalledTimes(1);
+  });
+
+  it('si se confirma, navega y deja de bloquear', async () => {
+    const p = preparar('/app/agenda');
+    router = p.router;
+    await router.iniciar();
+    const confirmar = vi.fn(async () => true);
+    router.bloquearSalida(confirmar);
+
+    await router.navegar('/app/bloqueos');
+    await router.navegar('/app/agenda');
+
+    expect(location.pathname).toBe('/app/agenda');
+    expect(confirmar).toHaveBeenCalledTimes(1);
+  });
+
+  it('desbloquear deja navegar sin preguntar', async () => {
+    const p = preparar('/app/agenda');
+    router = p.router;
+    await router.iniciar();
+    const confirmar = vi.fn(async () => false);
+    const desbloquear = router.bloquearSalida(confirmar);
+
+    desbloquear();
+    await router.navegar('/app/bloqueos');
+
+    expect(confirmar).not.toHaveBeenCalled();
+    expect(location.pathname).toBe('/app/bloqueos');
+  });
+
+  it('también pregunta al tocar un link interno', async () => {
+    const p = preparar('/app/agenda');
+    router = p.router;
+    await router.iniciar();
+    router.bloquearSalida(async () => false);
+    document.body.innerHTML = '<a href="/app/bloqueos" data-link>Bloqueos</a>';
+
+    document.querySelector('a')?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 }));
+    await esperar();
+
+    expect(location.pathname).toBe('/app/agenda');
+  });
+
+  it('con el botón atrás cancelado, vuelve a dejar la URL donde estaba', async () => {
+    const p = preparar('/app/agenda');
+    router = p.router;
+    await router.iniciar();
+    await router.navegar('/app/bloqueos');
+    router.bloquearSalida(async () => false);
+
+    history.replaceState(null, '', '/app/agenda');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    await esperar();
+
+    expect(location.pathname).toBe('/app/bloqueos');
+    expect(ultima(p.mostrar)?.pagina).toBe('bloqueos');
+  });
+
+  it('una navegación forzada (sesión vencida o cerrada) no pregunta', async () => {
+    const p = preparar('/app/agenda');
+    router = p.router;
+    await router.iniciar();
+    const confirmar = vi.fn(async () => false);
+    router.bloquearSalida(confirmar);
+
+    await router.navegar('/app/bloqueos', { forzar: true });
+
+    expect(confirmar).not.toHaveBeenCalled();
+    expect(location.pathname).toBe('/app/bloqueos');
+  });
+
+  it('navegar a la misma ruta no pregunta', async () => {
+    const p = preparar('/app/agenda');
+    router = p.router;
+    await router.iniciar();
+    const confirmar = vi.fn(async () => false);
+    router.bloquearSalida(confirmar);
+
+    await router.navegar('/app/agenda');
+
+    expect(confirmar).not.toHaveBeenCalled();
+  });
+});

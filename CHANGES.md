@@ -279,7 +279,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/07_flujos_principales.md` §FL-02
 
 ### [C-09] `frontend-configuracion`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #58, 2026-11-21)
 - **Scope**:
   - Feature `configuracion/`: datos del consultorio y slug (con link público copiable `/c/{slug}`), prestaciones con duración, disponibilidad semanal, anticipaciones; onboarding guiado FL-02 tras el registro.
   - Mockup revisado de las pantallas y del onboarding antes de implementar.

@@ -36,9 +36,15 @@ export interface OpcionesRouter<P> {
 export interface Router {
   iniciar(): Promise<void>;
   detener(): void;
-  navegar(ruta: string, opciones?: { reemplazar?: boolean }): Promise<void>;
+  /** `forzar`: navegación de la sesión (vencida, cerrada) que no pregunta por cambios sin guardar. */
+  navegar(ruta: string, opciones?: { reemplazar?: boolean; forzar?: boolean }): Promise<void>;
   recargar(): Promise<void>;
   rutaActual(): string;
+  /**
+   * Cambios sin guardar (C-09, D9): antes de salir de la ruta actual, el router llama a `confirmar`; si devuelve false,
+   * se queda. Cubre `navegar`, los links internos y el botón atrás. Se levanta solo al salir; devuelve cómo levantarlo antes.
+   */
+  bloquearSalida(confirmar: () => Promise<boolean>): () => void;
 }
 
 /** `/login?volver=<ruta>`, conservando las barras de la ruta para que se lea bien. */
@@ -105,7 +111,32 @@ export function crearRouter<P>(opciones: OpcionesRouter<P>): Router {
     opciones.mostrar({ ruta, patron, params, pagina });
   }
 
-  const alPopstate = () => void resolver();
+  let confirmarSalida: (() => Promise<boolean>) | null = null;
+  /** Ruta que se está mostrando; con el botón atrás cancelado, la URL vuelve acá. */
+  let rutaMostrada: string | null = null;
+
+  async function puedeSalir(forzar: boolean): Promise<boolean> {
+    if (forzar || confirmarSalida === null) return true;
+    if (!(await confirmarSalida())) return false;
+    confirmarSalida = null;
+    return true;
+  }
+
+  async function resolverYRecordar(): Promise<void> {
+    if (rutaMostrada !== rutaDelNavegador()) confirmarSalida = null;
+    await resolver();
+    rutaMostrada = rutaDelNavegador();
+  }
+
+  async function alPopstate(): Promise<void> {
+    if (confirmarSalida !== null && rutaMostrada !== null && rutaMostrada !== rutaDelNavegador()) {
+      if (!(await puedeSalir(false))) {
+        history.pushState(null, '', rutaMostrada);
+        return;
+      }
+    }
+    await resolverYRecordar();
+  }
 
   function alClic(evento: MouseEvent): void {
     if (evento.defaultPrevented || evento.button !== 0) return;
@@ -118,24 +149,35 @@ export function crearRouter<P>(opciones: OpcionesRouter<P>): Router {
     void navegar(`${url.pathname}${url.search}`);
   }
 
-  async function navegar(ruta: string, { reemplazar = false } = {}): Promise<void> {
+  async function navegar(ruta: string, { reemplazar = false, forzar = false } = {}): Promise<void> {
+    // Sin bloqueo no se espera nada: así dos navegaciones seguidas conservan su orden.
+    if (ruta !== rutaDelNavegador() && !forzar && confirmarSalida !== null && !(await puedeSalir(false))) return;
+    if (forzar) confirmarSalida = null;
     if (reemplazar) history.replaceState(null, '', ruta);
     else if (ruta !== rutaDelNavegador()) history.pushState(null, '', ruta);
-    await resolver();
+    await resolverYRecordar();
   }
+
+  const escucharPopstate = () => void alPopstate();
 
   return {
     async iniciar() {
-      window.addEventListener('popstate', alPopstate);
+      window.addEventListener('popstate', escucharPopstate);
       document.addEventListener('click', alClic);
-      await resolver();
+      await resolverYRecordar();
     },
     detener() {
-      window.removeEventListener('popstate', alPopstate);
+      window.removeEventListener('popstate', escucharPopstate);
       document.removeEventListener('click', alClic);
     },
     navegar,
-    recargar: resolver,
+    recargar: resolverYRecordar,
     rutaActual: rutaDelNavegador,
+    bloquearSalida(confirmar) {
+      confirmarSalida = confirmar;
+      return () => {
+        if (confirmarSalida === confirmar) confirmarSalida = null;
+      };
+    },
   };
 }
