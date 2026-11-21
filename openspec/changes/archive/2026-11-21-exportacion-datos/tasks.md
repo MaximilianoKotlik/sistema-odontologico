@@ -11,7 +11,7 @@
 
 ## 1. Preparación
 
-- [ ] 1.1 Rebasar sobre `main` con C-09 y C-15 (y con ellos C-08, C-10 y C-11) mergeados. Verificar los nombres reales de las tablas y columnas que se exportan contra las migraciones, y ajustar las listas blancas de design D3 si difieren (verificación: suite existente en verde y la lista de columnas por entidad en el PR)
+- [x] 1.1 Rebasar sobre `main` con C-09 y C-15 (y con ellos C-08, C-10 y C-11) mergeados. Verificar los nombres reales de las tablas y columnas que se exportan contra las migraciones, y ajustar las listas blancas de design D3 si difieren (verificación: suite existente en verde y la lista de columnas por entidad en el PR)
 - [x] 1.2 Volcar al design las respuestas de Maxi a §Open Questions, ajustando specs y tareas si cambian (verificación: `openspec validate exportacion-datos --strict` en verde)
 - [x] 1.3 Agregar `openpdf` (versión fijada), `pdfbox` solo para tests y la fuente Noto Sans con su licencia OFL en `resources/fonts/` (verificación: `./gradlew dependencies` muestra las versiones fijadas y un test carga la fuente)
 
@@ -61,14 +61,14 @@
 
 ## 8. Frontend (requiere mockup aprobado)
 
-- [ ] 8.1 `descargar()` en `shared/http.ts` con autorización, refresh único, Problem Details, `Content-Disposition` y `Retry-After` (verificación: escenarios del spec `cliente-api` en `http.test.ts`)
-- [ ] 8.2 Feature `exportacion/` y `pages/exportar.ts` según el mockup aprobado ([`mockups/exportar.html`](mockups/exportar.html) y sus capturas en `mockups/previews/`, criterio de aceptación): contenido, progreso, éxito, 429 con minutos restantes, sin conexión y corte de descarga, con un solo pedido en vuelo (verificación: escenarios del spec `pantalla-exportacion` en Vitest + jsdom)
-- [ ] 8.3 Accesibilidad AA: foco, 44 px, `aria-live` y reduced motion (verificación: escenario "Navegación con teclado" y revisión con el checklist de `accessibility`)
-- [ ] 8.4 Corregir el comentario de `pages/seccion-pendiente.ts` (C-18 y C-19 cruzados) y quitar `exportar` de las secciones pendientes (verificación: `shell.test.ts` en verde)
+- [x] 8.1 `descargar()` en `shared/http.ts` con autorización, refresh único, Problem Details, `Content-Disposition` y `Retry-After` (verificación: escenarios del spec `cliente-api` en `http.test.ts`)
+- [x] 8.2 Feature `exportacion/` y `pages/exportar.ts` según el mockup aprobado ([`mockups/exportar.html`](mockups/exportar.html) y sus capturas en `mockups/previews/`, criterio de aceptación): contenido, progreso, éxito, 429 con minutos restantes, sin conexión y corte de descarga, con un solo pedido en vuelo (verificación: escenarios del spec `pantalla-exportacion` en Vitest + jsdom)
+- [x] 8.3 Accesibilidad AA: foco, 44 px, `aria-live` y reduced motion (verificación: escenario "Navegación con teclado" y revisión con el checklist de `accessibility`)
+- [x] 8.4 Corregir el comentario de `pages/seccion-pendiente.ts` (C-18 y C-19 cruzados) y quitar `exportar` de las secciones pendientes (verificación: `shell.test.ts` en verde)
 
 ## 9. Verificación integral
 
-- [ ] 9.1 Con `docker compose up` y el seed `demo`: exportar desde `/app/exportar`, abrir el ZIP, revisar el PDF y el CSV en una planilla y pedir otra antes de 5 minutos. Comparar con el mockup en 390x844 y 1440x900 (verificación: capturas en `mockups/verify/` y nota de visual verify en `design.md`)
+- [x] 9.1 Con `docker compose up` y el seed `demo`: exportar desde `/app/exportar`, abrir el ZIP, revisar el PDF y el CSV en una planilla y pedir otra antes de 5 minutos. Comparar con el mockup en 390x844 y 1440x900 (verificación: capturas en `mockups/verify/` y nota de visual verify en `design.md`)
 
 ## Workflow follow-up
 
