@@ -46,6 +46,27 @@ class ManejadorGlobalDeErroresTest {
     }
 
     @Test
+    void errorDeNegocioConPropiedadesExtra() throws Exception {
+        // C-08 (design D6): FRANJAS_SOLAPADAS lleva los días y SLUG_EN_USO las sugerencias.
+        mvc.perform(get("/api/v1/pruebas/con-propiedades"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.codigo").value("FRANJAS_SOLAPADAS"))
+                .andExpect(jsonPath("$.dias[0]").value(1))
+                .andExpect(jsonPath("$.dias[1]").value(3));
+    }
+
+    @Test
+    void carrerasDeConfiguracionFrenadasPorLaBase() throws Exception {
+        // C-08 (tareas 4.2 y 5.3): la exclusión de franjas y el índice único de prestaciones.
+        mvc.perform(get("/api/v1/pruebas/franjas-solapadas-en-la-base"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.codigo").value("FRANJAS_SOLAPADAS"));
+        mvc.perform(get("/api/v1/pruebas/prestacion-duplicada-en-la-base"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.codigo").value("PRESTACION_DUPLICADA"));
+    }
+
+    @Test
     void validacionConUnErrorPorCampo() throws Exception {
         mvc.perform(post("/api/v1/pruebas/alta")
                         .contentType(MediaType.APPLICATION_JSON)
