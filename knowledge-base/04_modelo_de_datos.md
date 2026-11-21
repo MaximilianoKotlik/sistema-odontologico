@@ -123,6 +123,7 @@ erDiagram
 
 ### Paciente (datos mínimos)
 - `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(10) NULL`, `created_at`, `updated_at`.
+- Datos informados en la reserva que disparó la revisión ([DD-38](09_decisiones_y_supuestos.md)): `nombre_informado VARCHAR(80) NULL`, `apellido_informado VARCHAR(80) NULL`, `email_informado CITEXT NULL`, `informado_at TIMESTAMPTZ NULL` y `informado_turno_id UUID NULL` (FK compuesta `(consultorio_id, informado_turno_id)` → `turno`). Solo tienen valor mientras `requiere_revision = true`: los llena la deduplicación (queda la última reserva) y vuelven a `NULL` al revisar. `CHECK (requiere_revision OR informado_at IS NULL)`.
 - Unique: `(consultorio_id, dni)` — clave de deduplicación ([DD-24](09_decisiones_y_supuestos.md)). El teléfono es contacto obligatorio, no único.
 - Sin datos clínicos en v1 (minimización, [11](11_marco_legal_argentino.md)).
 
