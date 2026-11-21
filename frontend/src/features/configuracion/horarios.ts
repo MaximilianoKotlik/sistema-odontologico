@@ -72,9 +72,20 @@ export interface OpcionesHorarios {
   readonly alGuardar?: (franjas: readonly Franja[]) => void;
   /** Texto del botón de guardar (el asistente usa "Guardar y seguir"). */
   readonly textoGuardar?: string;
+  /** Asistente (spec onboarding): sin franjas no se guarda ni se avanza, en vez de confirmar una semana vacía. */
+  readonly exigirFranjas?: boolean;
+  /** Asistente: el guardado lo dispara su "Siguiente", así que no se muestra la barra de cambios. */
+  readonly sinBarra?: boolean;
+  /** Texto del atajo de lunes a viernes. */
+  readonly textoAtajo?: string;
 }
 
-export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegacion' | 'zonaHoraria'>, destino: HTMLElement, opciones: OpcionesHorarios = {}): void {
+export interface ControlHorarios {
+  /** Valida y guarda; sin cambios y con franjas, solo avisa `alGuardar` sin volver a enviar (D3). */
+  guardar(): Promise<void>;
+}
+
+export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegacion' | 'zonaHoraria'>, destino: HTMLElement, opciones: OpcionesHorarios = {}): ControlHorarios {
   const anuncios = regionAnuncios();
   const vigia = vigilarCambios(contexto.navegacion, window);
   let guardadas: FranjaEditable[] = [];
@@ -88,7 +99,7 @@ export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegaci
     zonaDeAvisos.replaceChildren();
     dibujarDias();
   });
-  const formulario = el('form', { novalidate: true, class: 'pb-7' }, zonaDeAvisos, dias, barra.elemento);
+  const formulario = el('form', { novalidate: true, class: opciones.sinBarra === true ? '' : 'pb-7' }, zonaDeAvisos, dias, opciones.sinBarra === true ? null : barra.elemento);
 
   async function cargar(): Promise<void> {
     destino.replaceChildren(esqueleto({ etiqueta: 'Cargando tus horarios…' }), anuncios.elemento);
@@ -216,7 +227,7 @@ export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegaci
     if (vacia && zonaDeAvisos.querySelector('[data-semana-vacia]') === null) {
       const aviso = avisoAuth({ tono: 'advertencia', icono: 'info', rol: null, titulo: 'Todavía no cargaste horarios', cuerpo: ['Sin horarios, tus pacientes no pueden reservar desde tu link.'] });
       aviso.dataset['semanaVacia'] = '';
-      aviso.lastElementChild?.append(el('div', { class: 'mt-2' }, boton({ texto: 'Cargar lunes a viernes, 9 a 13 y 15 a 19', variante: 'secundario', alHacerClic: () => cambiar([...SEMANA_TIPICA]) })));
+      aviso.lastElementChild?.append(el('div', { class: 'mt-2' }, boton({ texto: opciones.textoAtajo ?? 'Cargar lunes a viernes, 9 a 13 y 15 a 19', variante: 'secundario', alHacerClic: () => cambiar([...SEMANA_TIPICA]) })));
       zonaDeAvisos.replaceChildren(aviso);
     } else if (!vacia) {
       zonaDeAvisos.querySelector('[data-semana-vacia]')?.remove();
@@ -244,6 +255,17 @@ export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegaci
       const solapadas = errores.some((e) => e.mensaje.includes('se superponen'));
       return mostrarErrores(errores, solapadas ? 'No guardamos: hay franjas superpuestas' : 'No guardamos: revisá los horarios marcados');
     }
+    if (franjas.length === 0 && opciones.exigirFranjas === true) {
+      zonaDeAvisos.querySelector('[data-falta-franja]')?.remove();
+      const aviso = avisoAuth({ tono: 'peligro', icono: 'alerta', titulo: 'Cargá al menos una franja para seguir.', cuerpo: ['Podés usar el atajo de lunes a viernes y después ajustarlo.'] });
+      aviso.dataset['faltaFranja'] = '';
+      zonaDeAvisos.prepend(aviso);
+      return;
+    }
+    if (!conCambios() && franjas.length > 0) {
+      opciones.alGuardar?.(ordenarSemana(franjas));
+      return;
+    }
     if (franjas.length === 0 && !(await confirmar('¿Guardar la semana sin horarios?', 'Tus pacientes no van a poder reservar desde tu link hasta que cargues horarios. Los turnos que ya tenés no cambian.', 'Guardar sin horarios'))) {
       return;
     }
@@ -268,4 +290,5 @@ export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegaci
   }
 
   void cargar();
+  return { guardar };
 }

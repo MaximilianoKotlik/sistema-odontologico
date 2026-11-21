@@ -33,13 +33,13 @@
 
 ## 4. Asistente de primer ingreso
 
-- [ ] 4.1 Redirección a `/app/bienvenida` sin prestaciones activas, después del login y al restaurar la sesión (D3)
-- [ ] 4.2 Pasos 1 a 3 reutilizando los formularios de la sección 3, con guardado por paso y atajos (D6, D7)
-- [ ] 4.3 Paso 4: copiar link y Compartir solo con Web Share API
-- [ ] 4.4 "Terminar después" y retomar
+- [x] 4.1 Redirección a `/app/bienvenida` sin prestaciones activas, después del login y al restaurar la sesión (D3)
+- [x] 4.2 Pasos 1 a 3 reutilizando los formularios de la sección 3, con guardado por paso y atajos (D6, D7)
+- [x] 4.3 Paso 4: copiar link y Compartir solo con Web Share API
+- [x] 4.4 "Terminar después" y retomar
 
 ## 5. Verificación
 
-- [ ] 5.1 `npm run typecheck`, `lint`, `test` y `build` en verde
+- [x] 5.1 `npm run typecheck`, `lint`, `test` y `build` en verde
 - [ ] 5.2 Verificación visual contra los mockups aprobados a 390×844 y 1440×900 (capturas en `mockups/verify/`), consola sin errores y accesibilidad (foco, contraste AA, objetivos ≥ 44 px, `prefers-reduced-motion`)
 - [ ] 5.3 Flujo FL-02 completo contra el backend local de C-08 con el seed `demo`

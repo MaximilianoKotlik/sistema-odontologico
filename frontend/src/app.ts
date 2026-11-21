@@ -8,6 +8,7 @@ import { RUTA_PLANES_PUBLICOS } from './features/precios/catalogo';
 import type { Pagina } from './pages/pagina';
 import { borrarCacheAgenda, crearConectividad, registrarSincronizacion, type EstadoConectividad } from './shared/conectividad';
 import { ApiError, crearClienteHttp, type ClienteHttp } from './shared/http';
+import { el } from './shared/dom';
 import { nombreDeMarca } from './shared/marca';
 import { crearRouter, rutaDeLogin, type DefinicionRuta, type Router } from './shared/router';
 import { crearStore, type Store } from './shared/store';
@@ -51,6 +52,8 @@ const publica = (patron: string, cargar: () => Promise<PaginaAuth>): DefinicionR
   cargar: async () => ({ tipo: 'auth', pagina: await cargar() }),
 });
 
+const RUTA_ASISTENTE = '/app/bienvenida';
+
 /** Cada ruta se carga con import() para dividir el bundle (C-06, design D1). */
 const RUTAS: readonly DefinicionRuta<Destino>[] = [
   privada('/app/agenda', async () => (await import('./pages/agenda')).pagina),
@@ -60,6 +63,7 @@ const RUTAS: readonly DefinicionRuta<Destino>[] = [
   privada('/app/configuracion/horarios', async () => (await import('./pages/configuracion-horarios')).pagina),
   privada('/app/auditoria', async () => (await import('./pages/auditoria')).pagina),
   privada('/app/exportar', async () => (await import('./pages/exportar')).pagina),
+  privada(RUTA_ASISTENTE, async () => (await import('./pages/bienvenida')).pagina),
   privada('/app/cuenta/contrasena', async () => (await import('./pages/cambiar-contrasena')).pagina),
   publica('/login', async () => (await import('./pages/login')).pagina),
   publica('/registro', async () => (await import('./pages/registro')).pagina),
@@ -159,8 +163,29 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
     limpiarPaginaAuth = null;
   }
 
+  function contextoPrivado(contenedor: HTMLElement, acciones: HTMLElement, params: Readonly<Record<string, string>>) {
+    return {
+      contenedor,
+      acciones,
+      params,
+      http,
+      zonaHoraria: sesion.get().zonaHoraria,
+      cuenta: { terminarPorCambioDeContrasena: () => terminarSesion('contrasena-cambiada') },
+      navegacion: routerCreado,
+    };
+  }
+
   function mostrarPrivada(pagina: Pagina, params: Readonly<Record<string, string>>, enfocar: boolean): void {
     limpiarAuth();
+    if (pagina.sinShell === true) {
+      // C-09, D2: el asistente ocupa la pantalla, sin la navegación del shell.
+      desmontarShell();
+      const contenedor = el('div', { 'data-sin-shell': true });
+      (anfitrion as HTMLElement).replaceChildren(contenedor);
+      documento.title = `${pagina.titulo} · ${marca}`;
+      pagina.montar(contextoPrivado(contenedor, el('div', {}), params));
+      return;
+    }
     shell ??= montarShell(anfitrion as HTMLElement, {
       marca,
       conectividad,
@@ -168,15 +193,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
       alCerrarSesion: () => void cerrarSesion(),
     });
     shell.mostrar(pagina, { enfocar });
-    pagina.montar({
-      contenedor: shell.contenido,
-      acciones: shell.acciones,
-      params,
-      http,
-      zonaHoraria: sesion.get().zonaHoraria,
-      cuenta: { terminarPorCambioDeContrasena: () => terminarSesion('contrasena-cambiada') },
-      navegacion: routerCreado,
-    });
+    pagina.montar(contextoPrivado(shell.contenido, shell.acciones, params));
     shell.sincronizarConexion();
   }
 
@@ -194,7 +211,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
       navegar: (ruta, opciones) => routerCreado.navegar(ruta, opciones),
       entrar: async (token, volver) => {
         await iniciarSesion(token);
-        await routerCreado.navegar(sanearVolver(volver), { reemplazar: true });
+        await routerCreado.navegar((await necesitaAsistente()) ? RUTA_ASISTENTE : sanearVolver(volver), { reemplazar: true });
       },
       tomarAviso: () => {
         const aviso = avisoPendiente;
@@ -208,6 +225,20 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
     limpiarPaginaAuth = pagina.montar(contexto);
   }
 
+  /**
+   * C-09, D3: después del login y al restaurar la sesión, sin prestaciones activas se abre el asistente. No se guarda
+   * una marca de "onboarding terminado": el criterio es el mismo dato que hace falta para dar turnos. Si la respuesta
+   * no se puede interpretar o falla, no se interpone.
+   */
+  async function necesitaAsistente(): Promise<boolean> {
+    try {
+      const lista = await http.get<unknown>('/api/v1/prestaciones');
+      return Array.isArray(lista) && !lista.some((p: unknown) => typeof p === 'object' && p !== null && (p as Record<string, unknown>)['activa'] !== false);
+    } catch {
+      return false;
+    }
+  }
+
   async function guarda({ pathname, ruta }: { readonly pathname: string; readonly ruta: string }): Promise<string | null> {
     const decision = decidirAcceso(pathname, http.tieneToken());
     if (decision.tipo === 'redirigir') return decision.a;
@@ -216,7 +247,8 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
     // D3: ruta privada sin token en memoria → restaurar con el refresh, sin aviso si no hay sesión.
     if (shell === null) montarSplash(anfitrion as HTMLElement);
     try {
-      return (await http.renovarSesion({ avisarSiVence: false })) ? null : rutaDeLogin(ruta);
+      if (!(await http.renovarSesion({ avisarSiVence: false }))) return rutaDeLogin(ruta);
+      return pathname !== RUTA_ASISTENTE && (await necesitaAsistente()) ? RUTA_ASISTENTE : null;
     } catch (error) {
       if (error instanceof ApiError && error.codigo === 'SIN_CONEXION') {
         sinRedAlRestaurar = true;

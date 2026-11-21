@@ -23,5 +23,7 @@ export interface ContextoPagina {
 }
 
 export interface Pagina extends EncabezadoPagina {
+  /** Página privada que ocupa toda la pantalla, sin la navegación del shell (asistente de C-09, D2). */
+  readonly sinShell?: boolean;
   montar(contexto: ContextoPagina): void;
 }
