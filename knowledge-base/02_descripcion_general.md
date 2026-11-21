@@ -65,15 +65,15 @@ Justificación de alto nivel:
   para mobile. Se compensa con una capa `shared/` propia (router, cliente HTTP, store mínimo).
 - **PostgreSQL como guardián de invariantes**: el no-solapamiento se garantiza con una restricción de
   exclusión además de la validación en servicio ([RN-AG-01](05_reglas_de_negocio.md)).
-- **Local-first**: todo levanta con `docker compose up`. El hosting cloud queda abierto
-  ([PA-02](10_preguntas_abiertas.md)).
+- **Local-first**: todo levanta con `docker compose up`. En producción, un VPS en Argentina que se
+  contrata cuando la v1 esté estable ([DD-40](09_decisiones_y_supuestos.md)).
 
 ## Integraciones externas
 
 | Servicio | Propósito | Tipo | Estado v1 |
 |----------|-----------|------|-----------|
 | — | — | — | **Ninguna integración externa en v1** (decisión explícita, [DD-07](09_decisiones_y_supuestos.md)) |
-| Servidor SMTP | Email de recuperación de contraseña del odontólogo | SMTP | En local, **Mailpit** dentro de Compose (no sale a Internet). Proveedor real: abierto ([PA-02](10_preguntas_abiertas.md)); SMTP como infraestructura según [DD-19](09_decisiones_y_supuestos.md) (resuelve IN-01) |
+| Servidor SMTP | Email de recuperación de contraseña del odontólogo | SMTP | En local, **Mailpit** dentro de Compose (no sale a Internet). Proveedor real: se elige antes del lanzamiento y se declara si está fuera de Argentina ([DD-40](09_decisiones_y_supuestos.md)); SMTP como infraestructura según [DD-19](09_decisiones_y_supuestos.md) (resuelve IN-01) |
 | WhatsApp Business API | Recordatorios | REST | Diferido |
 | Mercado Pago | Señas y cobro de suscripción | REST + webhook | Diferido |
 | ARCA (ex AFIP) | Facturación electrónica | SOAP WS | Diferido |

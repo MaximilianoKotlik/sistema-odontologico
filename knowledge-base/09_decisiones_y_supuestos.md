@@ -260,6 +260,28 @@
 **Alternativas consideradas**: mostrar solo la ficha, el aviso y el turno de origen (el odontólogo no sabe qué difiere); guardar todas las variantes (más datos personales sin necesidad); sobrescribir la ficha con lo último (contradice RN-RP-03).
 **Trade-offs aceptados**: cinco columnas más en `paciente`, casi siempre en `NULL`; si dos reservas distintas llegan antes de revisar, la primera variante se pierde.
 
+### DD-40 — Datos en Argentina y requisitos de infraestructura antes del lanzamiento (resuelve PA-02) (confirmada por el usuario, 2026-11-20)
+**Estado**: **Confirmada por el usuario (2026-11-20)**; cierra [PA-02](10_preguntas_abiertas.md#preguntas-abiertas-priorizadas) y completa [DD-25](#dd-25--hosting-postgres-en-el-mismo-docker-compose-local-y-después-un-vps-resuelve-en-parte-pa-02-confirmada-por-el-usuario-2026-11-20).
+**Decisión**:
+- **País**: el VPS de producción va a estar **en Argentina**. Los backups también se guardan en Argentina. Así no hay transferencia internacional de los datos de la base ([LG-09](11_marco_legal_argentino.md)).
+- **Cuándo**: el VPS no se contrata ahora. Se contrata cuando la v1 esté estable y versionada. Hasta entonces todo corre en local con Docker Compose (DD-25).
+- **Política mínima de backups**, fijada hoy y aplicada desde el primer dato real:
+  - un backup completo de Postgres por día, cifrado y guardado fuera del VPS, también en Argentina;
+  - retención de 30 días;
+  - una restauración de prueba antes del lanzamiento y otra por mes.
+- **Requisitos que bloquean el lanzamiento**. Hasta cumplirlos no se cargan pacientes reales ni se publica `/seguridad` (C-22):
+  1. proveedor del VPS elegido, con los datos en Argentina;
+  2. backups funcionando según la política de arriba, con una restauración probada;
+  3. TLS activo en el dominio de producción;
+  4. proveedor de email (SMTP) elegido y declarado en la política de privacidad. Si está fuera de Argentina, el email del paciente que deja su dirección (DD-26) sí es una transferencia internacional, y se documenta según LG-09.
+
+  Junto con el email de seguridad de `/seguridad` (#40, ligado al dominio de DD-34), forman el criterio de salida de C-23.
+
+**Contexto**: PA-02 pedía el país y los backups antes de cargar pacientes reales. El hosting ya estaba decidido (DD-25), pero el VPS se paga recién cuando el producto esté listo.
+**Alternativas consideradas**: dejar PA-02 abierta hasta contratar el VPS (sin una regla clara para el lanzamiento); un VPS fuera de Argentina (exige verificar la adecuación del país o firmar cláusulas modelo, [11](11_marco_legal_argentino.md)).
+**Justificación**: el país es lo que define la obligación legal y ya se puede decidir. Proveedor, backups y TLS se resuelven cuando haya un servidor, pero quedan como condiciones explícitas y no como una pregunta abierta.
+**Trade-offs aceptados**: el proveedor y el costo del VPS siguen sin definirse. Las opciones de proveedores con datacenter en Argentina son menos y pueden costar más.
+
 ## Supuestos inferidos
 
 ### SU-01 — El paciente argentino acepta reservar por link
