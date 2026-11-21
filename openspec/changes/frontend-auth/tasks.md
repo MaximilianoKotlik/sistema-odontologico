@@ -17,7 +17,7 @@
 
 ## 2. Sesión y cliente
 
-- [ ] 2.1 `api.ts` de auth tipado, con tests sobre dobles de `fetch` (credenciales `include` solo en `/api/v1/auth/**`)
+- [x] 2.1 `api.ts` de auth tipado, con tests sobre dobles de `fetch` (credenciales `include` solo en `/api/v1/auth/**`)
 - [ ] 2.2 `coordinacion.ts`, con tests de dos clientes simulando dos pestañas:
   - refresh serializado con Web Locks y respaldo sin Web Locks; el refresh no usa `AbortController` y el lock se libera recién cuando terminó la respuesta (D6);
   - cierre de sesión entre pestañas con `BroadcastChannel('muelas-auth')` (D11): logout o cambio de contraseña en una pestaña → la otra borra su token, desmonta el shell, borra `agenda-v1` y va a `/login` con el aviso del motivo; un espía verifica que el mensaje no lleva el token; un mensaje con otro formato se ignora; sin `BroadcastChannel` no falla nada
