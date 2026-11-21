@@ -461,7 +461,7 @@ Reglas de coordinación del paralelismo:
   - `design-system/README.md`
 
 ### [C-19] `exportacion-datos`
-- **Estado**: `[x]` completado (PR #54, 2026-11-21)
+- **Estado**: `[x]` completado (PR #61, 2026-11-21)
 - **Scope**:
   - `POST /api/v1/exportacion`: ZIP por streaming con JSON y CSV por entidad, un PDF legible (`resumen.pdf`: consultorio, prestaciones, pacientes, listado de turnos y resumen de auditoría; lo genera el backend, librería a decidir al proponer, p. ej. OpenPDF) y `manifest.json` (cantidades que coinciden con la base); sin hashes ni tokens; 429 si hubo otra hace < 5 min; funciona en plan `VENCIDO`; evento `EXPORTACION_GENERADA`.
   - Botón y pantalla de exportación en `/app/exportar` (feature `exportacion/`); mockup revisado antes de implementar.
