@@ -1,7 +1,6 @@
 package ar.sistemaodontologico.agenda.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static pruebas.agenda.AgendaDePrueba.lunesA;
 import static pruebas.agenda.Errores.assertCodigo;
 
@@ -89,6 +88,18 @@ class ModificarTurnoTest extends CasoDeUsoDeAgendaTest {
 
         reloj.avanzar(Duration.ofHours(1));
         assertThat(estados.marcarAusente(diez, 0, odontologo).turno().estado()).isEqualTo(EstadoTurno.AUSENTE);
+    }
+
+    @Test
+    void elPacienteNoConfirmaNiMarcaAusente() {
+        // RN-AG-06: confirmar y marcar ausente son solo del odontólogo; el paciente solo cancela o reprograma.
+        reloj.avanzar(Duration.between(reloj.instant(), lunesA("11:00")));
+        Autor paciente = Autor.paciente(ana, Optional.empty());
+
+        assertCodigo(() -> estados.confirmar(diez, 0, paciente), "ACCION_NO_PERMITIDA");
+        assertCodigo(() -> estados.marcarAusente(diez, 0, paciente), "ACCION_NO_PERMITIDA");
+        assertThat(turnos.buscar(consultorio, diez).orElseThrow().turno().estado()).isEqualTo(EstadoTurno.RESERVADO);
+        assertThat(acciones()).isEmpty();
     }
 
     @Test
@@ -233,7 +244,6 @@ class ModificarTurnoTest extends CasoDeUsoDeAgendaTest {
         assertCodigo(() -> reprogramar.reprogramar(ajeno, 0, lunesA("11:00"), odontologo), "RECURSO_NO_ENCONTRADO");
         assertCodigo(() -> duracion.ajustar(ajeno, 0, 45, odontologo), "RECURSO_NO_ENCONTRADO");
         assertCodigo(() -> nota.editar(ajeno, 0, "Nota", odontologo), "RECURSO_NO_ENCONTRADO");
-        when(tenant.actual()).thenReturn(new ConsultorioId(otra.consultorio()));
         assertThat(turnos.buscar(new ConsultorioId(otra.consultorio()), ajeno).orElseThrow().version()).isZero();
     }
 

@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Confirmar, cancelar o marcar ausente un turno según la máquina de estados de C-10 (spec gestion-de-turnos, US-022;
- * RN-AG-06). Cancelar guarda quién canceló según el actor. El motivo de cancelación no va al evento: es texto libre y
+ * RN-AG-06). Confirmar y marcar ausente son solo del odontólogo; el paciente solo cancela (su plazo lo valida C-15,
+ * RN-RP-04). Cancelar guarda quién canceló según el actor. El motivo de cancelación no va al evento: es texto libre y
  * puede traer datos de salud (design D8).
  */
 @Service
@@ -44,6 +45,7 @@ public class CambiarEstadoTurno {
 
     @Transactional
     public TurnoGuardado confirmar(TurnoId id, long versionEsperada, Autor autor) {
+        autor.exigirOdontologo();
         return cambiar(id, versionEsperada, autor, Turno::confirmar);
     }
 
@@ -56,6 +58,7 @@ public class CambiarEstadoTurno {
     /** Solo cuando el turno ya empezó, con la hora del reloj del sistema. */
     @Transactional
     public TurnoGuardado marcarAusente(TurnoId id, long versionEsperada, Autor autor) {
+        autor.exigirOdontologo();
         return cambiar(id, versionEsperada, autor, turno -> turno.marcarAusente(reloj.instant()));
     }
 

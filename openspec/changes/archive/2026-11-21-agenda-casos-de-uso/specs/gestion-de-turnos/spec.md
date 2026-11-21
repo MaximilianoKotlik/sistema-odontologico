@@ -51,7 +51,7 @@ Solo el odontólogo SHALL poder crear un sobreturno. Un sobreturno MAY solaparse
 - **THEN** se rechaza con código `ACCION_NO_PERMITIDA`
 
 ### Requirement: Cambiar el estado de un turno
-El sistema SHALL confirmar, cancelar o marcar como ausente un turno según la máquina de estados de RN-AG-06. Cancelar MUST registrar quién canceló: el odontólogo o el paciente, según el actor. Una transición inválida MUST rechazarse con código `TRANSICION_INVALIDA` sin cambiar el turno.
+El sistema SHALL confirmar, cancelar o marcar como ausente un turno según la máquina de estados de RN-AG-06. Confirmar y marcar ausente MUST ser solo del odontólogo; si los pide un paciente, MUST rechazarse con código `ACCION_NO_PERMITIDA`. Cancelar MUST registrar quién canceló: el odontólogo o el paciente, según el actor. Una transición inválida MUST rechazarse con código `TRANSICION_INVALIDA` sin cambiar el turno.
 
 #### Scenario: Confirmar un turno reservado
 - **GIVEN** un turno `RESERVADO`
@@ -62,6 +62,11 @@ El sistema SHALL confirmar, cancelar o marcar como ausente un turno según la m�
 - **GIVEN** un turno `CONFIRMADO`
 - **WHEN** el paciente lo cancela desde su link
 - **THEN** el turno queda `CANCELADO`, con cancelado por `PACIENTE`, y su horario queda libre (RN-AG-09)
+
+#### Scenario: El paciente no confirma
+- **GIVEN** un turno `RESERVADO`
+- **WHEN** el paciente pide confirmarlo o marcarlo como ausente
+- **THEN** se rechaza con código `ACCION_NO_PERMITIDA` y el turno no cambia
 
 #### Scenario: Ausente antes de tiempo
 - **GIVEN** un turno que empieza dentro de una hora
