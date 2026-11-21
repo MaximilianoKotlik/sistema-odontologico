@@ -53,5 +53,8 @@ class ArchitectureTest {
     static final ArchRule agendaSinDominioDeConsultorio = ReglasDeArquitectura.agendaSinDominioDeConsultorio();
 
     @ArchTest
+    static final ArchRule reservaSoloPorApplication = ReglasDeArquitectura.reservaSoloPorApplication();
+
+    @ArchTest
     static final ArchRule springDataSoloEnInfraestructura = ReglasDeArquitectura.springDataSoloEnInfraestructura();
 }
