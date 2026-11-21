@@ -37,16 +37,15 @@
 
 ## 6. Seed local
 
-- [ ] 6.1 `db/seed-local/R__demo.sql` y `spring.flyway.locations` en `application-local.yml`; documentar la contraseña de desarrollo en el README local (verificación: `docker compose up --build` con el perfil `local`, login con `demo@consultorio.test`, y `GET /api/v1/prestaciones` devuelve las 4 prestaciones)
+- [x] 6.1 `db/seed-local/R__demo.sql` y `spring.flyway.locations` en `application-local.yml`; documentar la contraseña de desarrollo en el README local (verificación: `docker compose up --build` con el perfil `local`, login con `demo@consultorio.test`, y `GET /api/v1/prestaciones` devuelve las 4 prestaciones)
 - [x] 6.2 Test de que el seed **no** se carga con el perfil por defecto ni en `test` (verificación: el test de integración no encuentra el slug `demo`)
 
 ## 7. Cierre del change
 
-- [ ] 7.1 `./gradlew test` completo en verde, `ArchitectureTest` verde (repositorios con tenant), cobertura ≥ 80 % en `consultorio.domain` y `consultorio.application`, `npm run api:types` regenerado y commiteado (verificación: CI del PR)
+- [x] 7.1 `./gradlew test` completo en verde, `ArchitectureTest` verde (repositorios con tenant), cobertura ≥ 80 % en `consultorio.domain` y `consultorio.application`, `npm run api:types` regenerado y commiteado (verificación: CI del PR)
 - [x] 7.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Consultorio y `05_reglas_de_negocio.md` (RN-TE-06) con el tope de 365 días, el teléfono obligatorio y la anticipación menor que el horizonte, aprobados por Maxi en #15 (verificación: diff de 04 y 05 en el PR)
-- [ ] 7.3 PR listo con evidencia, revisión de Maxi y aviso a Nacho del contrato para C-09 (verificación: PR con revisor asignado)
+- [x] 7.3 PR listo con evidencia, revisión de Maxi y aviso a Nacho del contrato para C-09 (verificación: PR con revisor asignado)
 
 ## Workflow follow-up
 
-- Maxi marca `[x]` en `CHANGES.md` al mergear.
-- Archivar el change con `/opsx:archive` después del merge.
+- Con el PR aprobado, el autor suma el commit de cierre en el mismo PR: `[x]` en `CHANGES.md` y `openspec archive consultorio-config-backend`. Maxi vuelve a aprobar ese commit y mergea.
