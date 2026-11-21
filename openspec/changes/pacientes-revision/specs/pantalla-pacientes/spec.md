@@ -67,6 +67,16 @@ Un 404 MUST mostrar "No encontramos este paciente", igual para un id inexistente
 - **WHEN** la confirmación responde 409 `SIN_REVISION_PENDIENTE`
 - **THEN** la pantalla muestra el paciente como revisado, sin las tres acciones
 
+### Requirement: Otra reserva mientras se revisa
+
+Las tres acciones SHALL enviar el `informadoAt` del detalle que se muestra. Un 409 `CONFLICTO_CONCURRENCIA` MUST recargar el paciente y mostrar la comparación con lo nuevo, con un aviso de que llegó otra reserva con datos distintos, sin perder lo escrito en "Corregir a mano".
+
+#### Scenario: Llegó otra reserva mientras revisaba
+
+- **GIVEN** la revisión abierta con el nombre informado "Anna"
+- **WHEN** "Usar «Anna Ejemplo»" responde 409 `CONFLICTO_CONCURRENCIA` porque otra reserva informó "Ana María"
+- **THEN** la pantalla recarga el paciente, muestra "Ana María" en la columna de la reserva con el aviso de que llegó otra reserva, y sigue con las tres acciones, ahora con "Usar «Ana María Ejemplo»"
+
 ### Requirement: Aviso de pacientes para revisar en la agenda
 
 Si hay pacientes con revisión pendiente, la agenda SHALL mostrar un aviso compacto con la cantidad ("3 pacientes para revisar") y el link "Revisar pacientes" a la lista filtrada, pegado al aviso de cambios de los pacientes (DD-30) y con la misma jerarquía. El link MUST tener un área táctil de al menos 44 px. Sin pacientes para revisar, el aviso MUST NOT aparecer.

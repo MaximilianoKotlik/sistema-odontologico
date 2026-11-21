@@ -49,7 +49,7 @@ Un paciente marcado para revisión MUST incluir, en la lista y en el detalle, lo
 
 ### Requirement: Confirmar la revisión
 
-`POST /api/v1/pacientes/{id}/confirmar-revision` SHALL mantener los datos guardados del paciente, poner `requiere_revision = false` y borrar lo informado, en una sola transacción que registra `PACIENTE_REVISADO`. Sobre un paciente sin revisión pendiente, MUST responder 409 `SIN_REVISION_PENDIENTE` sin cambiar nada.
+`POST /api/v1/pacientes/{id}/confirmar-revision` SHALL recibir el `informadoAt` que se mostró, mantener los datos guardados del paciente, poner `requiere_revision = false` y borrar lo informado, en una sola transacción que registra `PACIENTE_REVISADO`. Sobre un paciente sin revisión pendiente, MUST responder 409 `SIN_REVISION_PENDIENTE` sin cambiar nada.
 
 #### Scenario: Mantener los datos guardados
 
@@ -65,7 +65,7 @@ Un paciente marcado para revisión MUST incluir, en la lista y en el detalle, lo
 
 ### Requirement: Corregir los datos
 
-`PATCH /api/v1/pacientes/{id}` SHALL corregir el nombre, el apellido y el email de un paciente con revisión pendiente, poner `requiere_revision = false` y borrar lo informado, en la misma transacción. El nombre y el apellido son obligatorios (hasta 80 caracteres) y el email, si viene, tiene formato válido; un dato inválido MUST responder 400 `VALIDACION` sin cambiar nada. El DNI y el teléfono MUST NOT modificarse: si vienen en el cuerpo, se ignoran.
+`PATCH /api/v1/pacientes/{id}` SHALL recibir el `informadoAt` que se mostró y corregir el nombre, el apellido y el email de un paciente con revisión pendiente, poner `requiere_revision = false` y borrar lo informado, en la misma transacción. El nombre y el apellido son obligatorios (hasta 80 caracteres) y el email, si viene, tiene formato válido; un dato inválido MUST responder 400 `VALIDACION` sin cambiar nada. El DNI y el teléfono MUST NOT modificarse: si vienen en el cuerpo, se ignoran.
 
 #### Scenario: Usar lo escrito en la reserva
 
@@ -97,6 +97,28 @@ En v1, la corrección SHALL aplicarse solo a pacientes con revisión pendiente. 
 - **GIVEN** un paciente sin revisión pendiente
 - **WHEN** se intenta corregir su nombre
 - **THEN** la respuesta es 409 `SIN_REVISION_PENDIENTE` y el paciente no cambia
+
+### Requirement: La revisión se aplica sobre lo que se vio
+
+Confirmar y corregir MUST recibir el `informadoAt` que se mostró y tomar el `LockDeAgenda` del consultorio antes de leer el paciente. Si el paciente tiene revisión pendiente y su `informadoAt` no es igual al recibido, MUST responder 409 `CONFLICTO_CONCURRENCIA` sin cambiar nada ni auditar.
+
+#### Scenario: Llega otra reserva mientras se revisa
+
+- **GIVEN** la paciente "Ana Ejemplo", marcada con el nombre informado "Anna" a las 10:00, y el odontólogo abrió su revisión
+- **AND** a las 10:01 otra reserva con su DNI y el nombre "Ana María" pisó lo informado y dejó la marca
+- **WHEN** el odontólogo confirma la revisión, o corrige con "Anna", enviando el `informadoAt` de las 10:00
+- **THEN** la respuesta es 409 `CONFLICTO_CONCURRENCIA`, el nombre sigue siendo "Ana", la revisión sigue pendiente con lo informado "Ana María" y no hay evento `PACIENTE_REVISADO`
+
+#### Scenario: Sin el instante de lo informado
+
+- **WHEN** se confirma la revisión sin `informadoAt` en el cuerpo
+- **THEN** la respuesta es 400 `VALIDACION` con un error para `informadoAt` y el paciente no cambia
+
+#### Scenario: Ya revisado con un instante viejo
+
+- **GIVEN** un paciente que ya se revisó desde otra pestaña
+- **WHEN** se confirma su revisión con el `informadoAt` que se había mostrado
+- **THEN** la respuesta es 409 `SIN_REVISION_PENDIENTE`, no `CONFLICTO_CONCURRENCIA`
 
 ### Requirement: Auditoría de la revisión
 

@@ -4,10 +4,10 @@
 
 - Ver `proposal.md` para la motivación. C-17 resuelve las revisiones que deja la deduplicación por DNI (US-070, RN-RP-03, DD-24): lista con filtro, revisión que compara lo guardado con lo escrito en la reserva (DD-38), y confirmar o corregir.
 - **Lo que ya existe en `main`**: el `TenantContext` y la regla ArchUnit de repositorios con `ConsultorioId` (C-02), el puerto `PublicadorDeAuditoria` con `CambioAuditado` (C-03), el manejador global de errores con Problem Details (C-02), y el shell, el router y el cliente HTTP del frontend (C-06). El Service Worker solo cachea `GET /api/v1/agenda`, así que `/api/v1/pacientes` nunca queda guardado en el dispositivo.
-- **Lo que viene de otros changes**:
-  - C-10 (#18): tabla `paciente` con `requiere_revision` y, por DD-38, `nombre_informado`, `apellido_informado`, `email_informado`, `informado_at` e `informado_turno_id` en la migración `V6`, más el repositorio de pacientes por consultorio.
-  - C-11 (#38) y C-15 (#30): marcan para revisión al deduplicar y guardan lo informado (queda la última reserva).
-  - C-13: la agenda donde va el aviso. C-07 también toca la navegación del shell.
+- **Lo que dejaron C-10 y C-11 en `main`**:
+  - C-10 (#18): tabla `paciente` con `requiere_revision` y, por DD-38, `nombre_informado`, `apellido_informado`, `email_informado`, `informado_at` e `informado_turno_id` en la `V6`, con `ck_paciente_informado` (las cinco en `NULL` sin revisión pendiente). En el dominio, `DatosInformados` y `Paciente.datosDifierenDe`.
+  - C-11 (#46): `RegistrarPaciente` marca para revisión al deduplicar, guarda lo informado (pisa lo de una reserva anterior, así que queda la última) y publica `PACIENTE_MARCADO_PARA_REVISION`. C-15 usa ese caso de uso. Toda escritura de agenda y de pacientes toma primero el `LockDeAgenda`.
+- **Lo que viene de otros changes**: C-13, la agenda donde va el aviso. C-07 también toca la navegación del shell.
 - Base visual: sistema de diseño rev. 1 y mockups aprobados (#36, versión `dcb700b`).
 
 ## Goals / Non-Goals
@@ -26,7 +26,7 @@
 
 Las decisiones de UI están en `mockups/README.md` §Decisiones, aprobadas por Maxi en la revisión de #36 (2026-11-20). La que excede la UI quedó registrada:
 
-- **Guardar lo informado en la reserva** ([DD-38](../../../knowledge-base/09_decisiones_y_supuestos.md)): la deduplicación guarda nombre, apellido y email escritos en la reserva que disparó la marca, más el instante y el turno de origen, y C-17 los borra al revisar. Columnas en la `V6` de C-10 (Fran); las llenan C-11 y C-15.
+- **Guardar lo informado en la reserva** ([DD-38](../../../knowledge-base/09_decisiones_y_supuestos.md)): la deduplicación guarda nombre, apellido y email escritos en la reserva que disparó la marca, más el instante y el turno de origen, y C-17 los borra al revisar. Columnas en la `V6` de C-10; las llena `RegistrarPaciente` de C-11, que también usa C-15.
 
 Decisiones de implementación:
 
@@ -40,7 +40,7 @@ El paciente vive en `agenda` (`08_arquitectura_propuesta.md`), así que C-17 sum
 
 No hay un endpoint aparte: el frontend manda en el `PATCH` el nombre, el apellido y el email informados que recibió en el detalle. Así hay una sola forma de corregir, con la misma validación y la misma auditoría.
 
-- **Trade-off aceptado**: si entre que el odontólogo abrió la revisión y tocó "Usar «…»" llega otra reserva con otro nombre, se aplica lo que él vio. Es lo que eligió y queda auditado.
+- **Trade-off**: el `PATCH` no distingue "usar lo de la reserva" de "corregir a mano"; en la auditoría los dos se ven como una corrección. A cambio, no se aplica nada que el odontólogo no haya visto: si entre que abrió la revisión y tocó "Usar «…»" llegó otra reserva con otro nombre, el `PATCH` responde 409 `CONFLICTO_CONCURRENCIA` (D9) y la pantalla le muestra la variante nueva para que elija de nuevo.
 
 ### D3 — El contador sale del total de la lista
 
@@ -54,7 +54,7 @@ Parámetros `page` (desde 0) y `size` (20 por defecto, máximo 50), orden por ap
 
 ### D5 — Código de error `SIN_REVISION_PENDIENTE`
 
-Confirmar o corregir un paciente sin revisión pendiente responde 409 `SIN_REVISION_PENDIENTE` (tipo `CONFLICTO` de C-02). Cubre la doble confirmación y la revisión desde dos pestañas; la pantalla recarga el paciente y lo muestra revisado.
+Confirmar o corregir un paciente sin revisión pendiente responde 409 `SIN_REVISION_PENDIENTE` (tipo `CONFLICTO` de C-02). Cubre la doble confirmación y la revisión desde dos pestañas; la pantalla recarga el paciente y lo muestra revisado. Se evalúa antes que el `informadoAt` de D9: un paciente ya revisado responde `SIN_REVISION_PENDIENTE` aunque el `informadoAt` enviado no coincida.
 
 ### D6 — Auditoría con solo lo que cambió
 
@@ -62,24 +62,35 @@ Confirmar o corregir un paciente sin revisión pendiente responde 409 `SIN_REVIS
 
 ### D7 — La comparación usa la misma regla que la deduplicación
 
-La pantalla decide qué datos "difieren" con la misma comparación que usa la deduplicación para marcar (email sin distinguir mayúsculas). Así nunca muestra "Coinciden todos los datos" en un paciente marcado por una diferencia que el backend sí vio, ni marca "Distinto" por una mayúscula.
+La pantalla decide qué datos "difieren" con la misma regla que usa la deduplicación para marcar: `Paciente.datosDifierenDe` de C-10 (#18, `8cb7449`), que compara nombre y apellido sin distinguir mayúsculas, acentos (NFD sin diacríticos) ni espacios extra. El email se compara sin distinguir mayúsculas, porque el dominio lo guarda en minúsculas. Así nunca muestra "Coinciden todos los datos" en un paciente marcado por una diferencia que el backend sí vio, ni marca "Distinto" por una mayúscula o una tilde.
 
-- **Hoy hay dos reglas**: C-11 compara nombre y apellido "sin distinguir mayúsculas ni espacios en los extremos", y C-15, "sin distinguir mayúsculas, tildes ni espacios extra". C-17 usa la que quede al unificarlas (se pide junto con el nombre del evento, en el proposal). La tarea 1.2 lo verifica.
+- El frontend replica esa regla en una función pura (`normalize('NFD')`, sin diacríticos, espacios colapsados y minúsculas), con los mismos casos de prueba que el test de dominio de `datosDifierenDe`.
 
 ### D8 — Navegación y rutas
 
 `/app/pacientes` y `/app/pacientes/:id` se suman a la tabla de rutas del shell (`app.ts`). "Pacientes" entra en la barra lateral después de "Bloqueos" y en la hoja "Más" en mobile, con el contador de D3. Es el delta de la spec `app-shell`.
 
+### D9 — La revisión se aplica sobre lo que se vio (`informadoAt`)
+
+Mientras el odontólogo mira la revisión puede llegar otra reserva con el mismo DNI y otro nombre. `RegistrarPaciente` (C-11) pisa lo informado y deja la marca, así que, sin control, "Mantener" o "Usar «…»" borrarían una variante que nadie vio. Por eso:
+
+1. El `PATCH` y la confirmación reciben en el cuerpo el `informadoAt` del detalle que se mostró (obligatorio; si falta, 400 `VALIDACION`).
+2. El caso de uso toma primero el `LockDeAgenda` de C-11, como toda escritura de pacientes, y recién después lee el paciente. Así queda en la misma cola que `RegistrarPaciente`, y una reserva no puede colarse entre la comparación y la escritura.
+3. Si el paciente no tiene revisión pendiente → 409 `SIN_REVISION_PENDIENTE` (D5). Si tiene, y el `informadoAt` enviado no es igual al guardado → 409 `CONFLICTO_CONCURRENCIA`, sin cambiar nada ni auditar. El caso de uso lanza la misma `OptimisticLockingFailureException` que ya traduce el manejador global de C-02, así que no hace falta otro código de error.
+4. La pantalla, ante `CONFLICTO_CONCURRENCIA`, recarga el paciente y muestra la comparación con lo nuevo, con un aviso de que llegó otra reserva con datos distintos. En el formulario de "Corregir a mano" no se pierde lo escrito.
+
+- **Alternativa descartada**: una columna `version` en `paciente` con `@Version`. Necesitaría una migración nueva y detectaría también cambios que no afectan la revisión. `informado_at` ya identifica la variante que se vio y cambia con cada reserva que pisa lo informado.
+- **Alternativa descartada**: aceptar lo que vio el odontólogo y perder la variante nueva (el trade-off original de D2). La variante nueva puede ser justamente el error que había que ver.
+
 ## Risks / Trade-offs
 
-- **[C-10 o C-11 no incluyen DD-38]** → sin lo informado, la comparación no tiene la columna "En la reserva". La tarea 1.2 lo verifica antes de empezar; si falta, se frena y se coordina con Fran.
-- **[Nombre del evento de marca distinto entre C-11 y C-15]** → no bloquea a C-17, que solo escribe `PACIENTE_REVISADO`, pero el Registro de cambios (C-18) mostraría dos nombres para lo mismo. Se pide unificarlo (proposal, Coordinación).
+- **[Precisión de `informadoAt`]** → `RegistrarPaciente` lo toma de `reloj.instant()` (nanosegundos) y Postgres lo guarda con microsegundos. La comparación de D9 se hace siempre contra el valor leído de la base, y el detalle devuelve ese mismo valor, así que el redondeo no da falsos conflictos. Las marcas del mismo consultorio se serializan con el `LockDeAgenda`, así que en la práctica cada reserva deja un valor distinto.
 - **[Conflicto con C-07 en la navegación]** → los dos modifican "Navegación adaptada al ancho" de `app-shell`. El que archive segundo integra el texto del otro.
 - **[Plan `VENCIDO`]** → C-20 define el bloqueo de escrituras; los endpoints de escritura de C-17 lo respetan y C-23 lo verifica.
 
 ## Migration Plan
 
-Sin migración propia: las columnas de DD-38 las crea C-10. Se despliega después de C-09, C-10 y C-11. Sin datos que migrar.
+Sin migración propia: las columnas de DD-38 ya están en la `V6` de C-10. C-09, C-10 y C-11 ya están en `main`. Sin datos que migrar.
 
 ## Open Questions
 
