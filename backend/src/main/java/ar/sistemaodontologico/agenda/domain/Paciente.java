@@ -20,6 +20,8 @@ public record Paciente(PacienteId id, String nombre, String apellido, Dni dni, S
     private static final int LARGO_MAXIMO_EMAIL = 254;
     /** Marcas diacríticas que deja la descomposición NFD (tildes, diéresis, la virgulilla de la ñ). */
     private static final Pattern DIACRITICOS = Pattern.compile("\\p{M}+");
+    /** Espacios repetidos dentro de un nombre: no distinguen a una persona de otra (C-15, design D7). */
+    private static final Pattern ESPACIOS = Pattern.compile("\\s+");
     /** Sintaxis simple: algo, una arroba, un dominio con punto y sin espacios. */
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
@@ -59,7 +61,7 @@ public record Paciente(PacienteId id, String nombre, String apellido, Dni dni, S
 
     /**
      * Si los datos que llegan para su DNI no coinciden con los guardados, sin distinguir mayúsculas, acentos (NFD sin
-     * diacríticos) ni espacios en los extremos: "José Pérez" no difiere de "jose perez". Es la única regla para C-11 y
+     * diacríticos) ni espacios extra: "José  Pérez" no difiere de "jose perez". Es la única regla para C-11 y
      * C-15 (C-15 D7), que lo usan para reutilizar el paciente sin sobrescribirlo y marcarlo para revisión (DD-24).
      */
     public boolean datosDifierenDe(String otroNombre, String otroApellido) {
@@ -77,7 +79,7 @@ public record Paciente(PacienteId id, String nombre, String apellido, Dni dni, S
 
     private static String comparable(String texto) {
         String sinAcentos = DIACRITICOS.matcher(Normalizer.normalize(texto.strip(), Normalizer.Form.NFD)).replaceAll("");
-        return sinAcentos.toLowerCase(Locale.ROOT);
+        return ESPACIOS.matcher(sinAcentos).replaceAll(" ").toLowerCase(Locale.ROOT);
     }
 
     static String normalizarEmail(String email) {

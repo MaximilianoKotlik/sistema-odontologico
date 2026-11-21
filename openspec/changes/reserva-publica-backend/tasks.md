@@ -8,26 +8,26 @@
 
 ## 1. Preparación
 
-- [ ] 1.1 Rebasar sobre `main` con C-08, C-10 y C-11 mergeados. Fijar el número de la migración (posterior a la de `turno`) y verificar que existan las piezas de design D2 (`CrearTurno` con `LINK`, `ReprogramarTurno`/`CancelarTurno` con actor `PACIENTE`, alta por DNI y `LockDeAgenda` como `FOR UPDATE` sobre `consultorio`, design D2). Para cada pieza que falte, sumar una tarea en el grupo 4 con su test (verificación: suite existente en verde después del rebase y lista de piezas en el PR)
+- [x] 1.1 Rebasar sobre `main` con C-08, C-10 y C-11 mergeados. Fijar el número de la migración (posterior a la de `turno`) y verificar que existan las piezas de design D2 (`CrearTurno` con `LINK`, `ReprogramarTurno`/`CancelarTurno` con actor `PACIENTE`, alta por DNI y `LockDeAgenda` como `FOR UPDATE` sobre `consultorio`, design D2). Para cada pieza que falte, sumar una tarea en el grupo 4 con su test (verificación: suite existente en verde después del rebase y lista de piezas en el PR)
 - [x] 1.2 Volcar al design las respuestas de Maxi a §Open Questions (revisión del PR #30) y ajustar specs y tareas (verificación: `openspec validate reserva-publica-backend --strict` en verde)
-- [ ] 1.3 Regla ArchUnit: `reserva` no depende de `..agenda.domain..` ni de `..consultorio.infrastructure..`, con un fixture que la viole (verificación: `ReglasDeArquitecturaTest` detecta el fixture y `ArchitectureTest` pasa)
+- [x] 1.3 Regla ArchUnit: `reserva` no depende de `..agenda.domain..` ni de `..consultorio.infrastructure..`, con un fixture que la viole (verificación: `ReglasDeArquitecturaTest` detecta el fixture y `ArchitectureTest` pasa)
 
 ## 2. Movimiento de piezas compartidas desde `auth` (refactor, RN-AU-06)
 
-- [ ] 2.1 Mover `LimitadorDeSolicitudes`, `LimiteDeSolicitudes` y `ResultadoDeLimite` a `compartido.application`, y `LimitadorBucket4j` a `compartido.infrastructure`, sin cambiar lógica (verificación: todos los tests de C-05 en verde, sin editar sus aserciones; commit `refactor(...)` propio)
-- [ ] 2.2 Mover `GeneradorDeSecretos` y `EnviadorDeEmails` (con su implementación SMTP) a `compartido`, sin cambiar lógica (verificación: tests de recuperación de contraseña en verde y `ArchitectureTest` sin dependencias de `reserva` hacia `auth`)
+- [x] 2.1 Mover `LimitadorDeSolicitudes`, `LimiteDeSolicitudes` y `ResultadoDeLimite` a `compartido.application`, y `LimitadorBucket4j` a `compartido.infrastructure`, sin cambiar lógica (verificación: todos los tests de C-05 en verde, sin editar sus aserciones; commit `refactor(...)` propio)
+- [x] 2.2 Mover `GeneradorDeSecretos` y `EnviadorDeEmails` (con su implementación SMTP) a `compartido`, sin cambiar lógica (verificación: tests de recuperación de contraseña en verde y `ArchitectureTest` sin dependencias de `reserva` hacia `auth`)
 
 ## 3. Dominio de `reserva`
 
-- [ ] 3.1 `TokenDeGestion`: genera 32 bytes en base64url de 43 caracteres, calcula el SHA-256 hex, rechaza formatos inválidos y su `toString()` no expone el valor (verificación: tests unitarios de longitud, alfabeto, hash conocido y formato inválido)
-- [ ] 3.2 `PlazoDeModificacion` con `ahora` como parámetro: dentro, fuera y justo en el límite (verificación: escenarios "Cancelar fuera de plazo" y "Justo en el límite" a nivel unitario)
-- [ ] 3.3 `ComparadorDeNombres`: mayúsculas, tildes y espacios extra iguales; un nombre distinto es distinto (verificación: tests unitarios con "José  Pérez" vs "jose perez" y "Otra Persona")
+- [x] 3.1 `TokenDeGestion`: genera 32 bytes en base64url de 43 caracteres, calcula el SHA-256 hex, rechaza formatos inválidos y su `toString()` no expone el valor (verificación: tests unitarios de longitud, alfabeto, hash conocido y formato inválido)
+- [x] 3.2 `PlazoDeModificacion` con `ahora` como parámetro: dentro, fuera y justo en el límite (verificación: escenarios "Cancelar fuera de plazo" y "Justo en el límite" a nivel unitario)
+- [x] 3.3 `ComparadorDeNombres`: mayúsculas, tildes y espacios extra iguales; un nombre distinto es distinto (verificación: tests unitarios con "José  Pérez" vs "jose perez" y "Otra Persona")
 
 ## 4. Migración y repositorio del token
 
-- [ ] 4.1 Test de integración de `token_gestion_turno`: hash único, un token por turno, FK compuesta a un turno de otro consultorio falla y `app_rw` sin `DELETE`. Después, crear `V{n}__token_gestion_turno.sql` según design D3 (verificación: test en verde y `MigracionesTest` aplica todas las versiones en orden)
-- [ ] 4.2 `TokenDeGestionRepositorioJdbc` con join al turno y los dos niveles de design D3: `buscarConsultable(hash, ahora)` (activo o cancelado, antes del fin) y `buscarModificable(hash, ahora)` (activo y no revocado). Siempre filtra por el consultorio del turno encontrado (verificación: test de integración con vigente, revocado, cancelado por el odontólogo, ausente y terminado en los dos métodos, y la regla `repositoriosSiempreConTenant` en verde)
-- [ ] 4.3 `turno.novedad_paciente_at` (design D14): si C-12 ya la creó, verificar que exista. Si no, agregarla en la migración de este change (verificación: test de integración que la lee después del rebase)
+- [x] 4.1 Test de integración de `token_gestion_turno`: hash único, un token por turno, FK compuesta a un turno de otro consultorio falla y `app_rw` sin `DELETE`. Después, crear `V{n}__token_gestion_turno.sql` según design D3 (verificación: test en verde y `MigracionesTest` aplica todas las versiones en orden)
+- [x] 4.2 `TokenDeGestionRepositorioJdbc` con join al turno y los dos niveles de design D3: `buscarConsultable(hash, ahora)` (activo o cancelado, antes del fin) y `buscarModificable(hash, ahora)` (activo y no revocado). Siempre filtra por el consultorio del turno encontrado (verificación: test de integración con vigente, revocado, cancelado por el odontólogo, ausente y terminado en los dos métodos, y la regla `repositoriosSiempreConTenant` en verde)
+- [x] 4.3 `turno.novedad_paciente_at` (design D14): si C-12 ya la creó, verificar que exista. Si no, agregarla en la migración de este change (verificación: test de integración que la lee después del rebase)
 
 ## 5. Página pública y huecos
 
