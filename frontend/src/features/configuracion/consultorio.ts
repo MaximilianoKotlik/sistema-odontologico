@@ -218,6 +218,8 @@ export function montarConsultorio(contexto: ContextoPagina, destino: HTMLElement
       horizonteReservaDias: numero(c.horizonteReservaDias.control),
       pasoHuecosMin: Number(c.pasoHuecosMin.control.value),
       reservaPublicaActiva: reservaActiva,
+      // La versión no es un campo: es la del último valor leído o guardado (issue #59).
+      version: guardado?.version ?? valores.version,
     });
 
     function actualizarReserva(): void {

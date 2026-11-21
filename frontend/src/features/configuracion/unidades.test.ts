@@ -41,6 +41,7 @@ const respuesta = {
   reservaPublicaActiva: true,
   plan: 'PRUEBA',
   pruebaHasta: '2026-12-21',
+  version: 7,
 };
 
 describe('formulario ⇄ API', () => {
@@ -73,7 +74,12 @@ describe('formulario ⇄ API', () => {
       horizonteReservaDias: 60,
       pasoHuecosMin: 15,
       reservaPublicaActiva: true,
+      version: 7,
     });
+  });
+
+  it('conserva la versión leída para mandarla al guardar (issue #59)', () => {
+    expect(formularioDesdeRespuesta(respuesta).version).toBe(7);
   });
 
   it('recorta espacios y no manda una dirección vacía', () => {

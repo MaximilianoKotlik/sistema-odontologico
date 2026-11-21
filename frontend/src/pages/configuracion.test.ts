@@ -17,6 +17,7 @@ const CONSULTORIO = {
   reservaPublicaActiva: true,
   plan: 'PRUEBA',
   pruebaHasta: '2026-12-21',
+  version: 3,
 };
 
 async function montar(extra: Guion = {}) {
@@ -232,6 +233,36 @@ describe('Configuración: consultorio', () => {
 
     expect(llamadas.filter((l) => l.metodo === 'GET')).toHaveLength(2);
     expect(campo('nombre')?.value).toBe('Consultorio Demo Centro');
+  });
+
+  it('guarda con la versión leída y el próximo guardado usa la versión nueva (issue #59)', async () => {
+    const { contenedor, campo, llamadas } = await montar({
+      'PUT /api/v1/consultorio': [
+        json({ ...CONSULTORIO, nombre: 'Consultorio Demo Norte', version: 4 }),
+        json({ ...CONSULTORIO, nombre: 'Consultorio Demo Oeste', version: 5 }),
+      ],
+    });
+
+    escribir(campo('nombre'), 'Consultorio Demo Norte');
+    enviar(contenedor);
+    await esperar();
+    escribir(campo('nombre'), 'Consultorio Demo Oeste');
+    enviar(contenedor);
+    await esperar();
+
+    const puts = llamadas.filter((l) => l.metodo === 'PUT').map((l) => (l.cuerpo as { version: number }).version);
+    expect(puts).toEqual([3, 4]);
+  });
+
+  it('dos pestañas con la misma versión leída: la segunda en guardar ve "Ver los valores actuales" (issue #59)', async () => {
+    const pestanaB = await montar({ 'PUT /api/v1/consultorio': [problema(409, 'CONFLICTO_CONCURRENCIA')] });
+
+    escribir(pestanaB.campo('nombre'), 'Consultorio Demo Este');
+    enviar(pestanaB.contenedor);
+    await esperar();
+
+    expect((pestanaB.llamadas.find((l) => l.metodo === 'PUT')?.cuerpo as { version: number }).version).toBe(3);
+    expect(botonConTexto(pestanaB.contenedor, 'Ver los valores actuales')).not.toBeNull();
   });
 
   it('si no carga, muestra un error con "Reintentar"', async () => {

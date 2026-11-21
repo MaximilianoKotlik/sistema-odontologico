@@ -52,6 +52,7 @@ describe('api de configuración', () => {
       horizonteReservaDias: 60,
       pasoHuecosMin: 15,
       reservaPublicaActiva: true,
+      version: 0,
     };
 
     await expect(obtenerConfiguracion(http)).resolves.toEqual({ nombre: 'Consultorio Demo Sur' });
