@@ -131,12 +131,4 @@ public class GestionarTurnoPorToken {
                 new ConsultorioVisible(datos.nombre(), datos.direccion(), datos.telefonoContacto(), datos.zonaHoraria()),
                 puedeModificar, puedeModificar && ConsultorioPublico.tomaTurnos(consultorio), limite);
     }
-
-    /** Señal interna para revertir antes de armar el 409 con los huecos actualizados. */
-    private static final class HuecoTomado extends RuntimeException {
-
-        HuecoTomado() {
-            super(null, null, false, false);
-        }
-    }
 }
