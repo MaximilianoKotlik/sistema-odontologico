@@ -36,7 +36,7 @@ El diferenciador central de la v1 es que el paciente reserve, reprograme o cance
 - **Marca de novedad** `turno.novedad_paciente_at` (DD-30), seteada al reservar, reprogramar y cancelar por link.
 - **Auditoría** con `actor_tipo = PACIENTE` en la misma transacción:
   - `TURNO_CREADO`, `TURNO_REPROGRAMADO` y `TURNO_ESTADO_CAMBIADO` (cancelación).
-  - `PACIENTE_CREADO` y `PACIENTE_REQUIERE_REVISION`, sin PII (RN-AD-05).
+  - `PACIENTE_CREADO` y `PACIENTE_MARCADO_PARA_REVISION`, sin PII (RN-AD-05).
 - **Contrato OpenAPI** y `api-types.ts` regenerados para C-16.
 - **Tests**: US-030, US-031, US-032, RN-RP-11 (cancelar sí, reservar y reprogramar no), concurrencia, enumeración de tokens, rate limit y aislamiento por tenant en cada endpoint.
 

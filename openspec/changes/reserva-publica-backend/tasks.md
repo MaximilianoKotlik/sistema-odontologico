@@ -21,7 +21,7 @@
 
 - [x] 3.1 `TokenDeGestion`: genera 32 bytes en base64url de 43 caracteres, calcula el SHA-256 hex, rechaza formatos inválidos y su `toString()` no expone el valor (verificación: tests unitarios de longitud, alfabeto, hash conocido y formato inválido)
 - [x] 3.2 `PlazoDeModificacion` con `ahora` como parámetro: dentro, fuera y justo en el límite (verificación: escenarios "Cancelar fuera de plazo" y "Justo en el límite" a nivel unitario)
-- [x] 3.3 `ComparadorDeNombres`: mayúsculas, tildes y espacios extra iguales; un nombre distinto es distinto (verificación: tests unitarios con "José  Pérez" vs "jose perez" y "Otra Persona")
+- [x] 3.3 Comparación de nombres en `Paciente.datosDifierenDe` (la regla única de C-10): mayúsculas, tildes y espacios extra iguales; un nombre distinto es distinto (verificación: tests unitarios con "José  Pérez" vs "jose perez" y "Otra Persona")
 
 ## 4. Migración y repositorio del token
 
@@ -69,7 +69,7 @@
 
 ## 10. Verificación integral
 
-- [ ] 10.1 Recorrido FL-04 y FL-05 de punta a punta con `docker compose up` y el seed `demo`: reservar, ver por token, reprogramar, cancelar y ver el email en Mailpit (verificación: capturas o log de `curl` en el PR, con datos ficticios)
+- [x] 10.1 Recorrido FL-04 y FL-05 de punta a punta con `docker compose up` y el seed `demo`: reservar, ver por token, reprogramar, cancelar y ver el email en Mailpit (verificación: capturas o log de `curl` en el PR, con datos ficticios)
 
 ## Workflow follow-up
 

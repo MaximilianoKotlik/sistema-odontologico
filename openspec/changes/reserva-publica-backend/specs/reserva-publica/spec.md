@@ -177,7 +177,7 @@ Reservar, reprogramar o cancelar por link MUST registrar en el turno, en la mism
 - **THEN** el turno vuelve a tener una novedad pendiente
 
 ### Requirement: Auditoría de la reserva
-La reserva MUST registrar, en su misma transacción y con `actor_tipo = PACIENTE` y la IP de origen, `TURNO_CREADO` y, si corresponde, `PACIENTE_CREADO` y `PACIENTE_REQUIERE_REVISION`. Los eventos MUST NOT contener el token, el DNI, el teléfono, el email ni el nombre del paciente; lo identifican por `paciente_id`.
+La reserva MUST registrar, en su misma transacción y con `actor_tipo = PACIENTE` y la IP de origen, `TURNO_CREADO` y, si corresponde, `PACIENTE_CREADO` y `PACIENTE_MARCADO_PARA_REVISION`. Los eventos MUST NOT contener el token, el DNI, el teléfono, el email ni el nombre del paciente; lo identifican por `paciente_id`.
 
 #### Scenario: Eventos de una reserva de paciente nuevo
 - **WHEN** un paciente nuevo reserva

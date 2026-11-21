@@ -36,7 +36,7 @@
 ### D1 — Módulo `reserva` con sus capas, que habla con `agenda` y `consultorio` por `application`
 - `reserva.web`: `ControladorDeReservaPublica` y `ControladorDeGestionDeTurno`, con DTOs propios. Ningún DTO expone entidades de otros módulos.
 - `reserva.application`: casos de uso `ConsultarPaginaPublica`, `ConsultarHuecosPublicos`, `ReservarTurnoPublico`, `VerTurnoPorToken`, `ConsultarHuecosParaReprogramar`, `ReprogramarPorToken` y `CancelarPorToken`.
-- `reserva.domain`: `TokenDeGestion` (generar, hashear y validar el formato), `PlazoDeModificacion` (RN-RP-04, puro, con `ahora` como parámetro) y `ComparadorDeNombres` (normalización para `requiere_revision`).
+- `reserva.domain`: `TokenDeGestion` (generar, hashear y validar el formato), `PlazoDeModificacion` (RN-RP-04, puro, con `ahora` como parámetro). La comparación de nombres para `requiere_revision` es `Paciente.datosDifierenDe` de C-10.
 - `reserva.infrastructure`: `TokenDeGestionRepositorioJdbc`.
 - Los datos de consultorio y agenda se piden por puertos de `application` de esos módulos (08: los módulos hablan por `application`). Se agrega la regla ArchUnit `reserva` no depende de `..agenda.domain..` ni de `..consultorio.infrastructure..`.
 
@@ -90,7 +90,7 @@
 - **Orden de los errores 409**: hueco antes que límite. Así, quien elige un horario ocupado no recibe `LIMITE_TURNOS` por un turno que no se habría podido crear.
 
 ### D7 — Deduplicación y nombres
-- `ComparadorDeNombres` normaliza con trim, espacios simples, minúsculas y NFD sin marcas diacríticas, y compara `nombre` y `apellido` por separado. "José  Pérez" = "jose perez".
+- `Paciente.datosDifierenDe` (la regla única de C-10 y C-11) normaliza con trim, espacios simples, minúsculas y NFD sin marcas diacríticas, y compara `nombre` y `apellido` por separado. "José  Pérez" = "jose perez".
 - Si el paciente existe, sus datos no se sobrescriben: ni el teléfono ni el email nuevos (DD-24). El email para la confirmación se toma del pedido, no del paciente guardado, y no se persiste si el paciente ya existía.
 - El consentimiento (`consentimiento_at` y `consentimiento_version`) se actualiza en cada reserva por link, porque es la aceptación vigente de esa persona. Si cambia, se audita en `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` con versión anterior y nueva.
 - **Versión vigente**: propiedad `app.privacidad.version-vigente` (hoy `2026-11-borrador`, de `docs/legal/politica-de-privacidad.md`), análoga a `TERMINOS_VERSION_VIGENTE` de C-04.
@@ -135,7 +135,7 @@
   | Acción | Entidad | Valores |
   |---|---|---|
   | `PACIENTE_CREADO` | `paciente` | nuevo `{origen: LINK}` |
-  | `PACIENTE_REQUIERE_REVISION` | `paciente` | `{requiere_revision: false → true}` |
+  | `PACIENTE_MARCADO_PARA_REVISION` | `paciente` | `{requiere_revision: false → true}` |
   | `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` | `paciente` | `{consentimiento_version}` |
   | `TURNO_CREADO` | `turno` | nuevo `{inicio, fin, duracion_min, tipo_prestacion_id, estado, origen}` |
   | `TURNO_REPROGRAMADO` | `turno` | `{inicio, fin}` anterior y nuevo |
