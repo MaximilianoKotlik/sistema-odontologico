@@ -36,6 +36,6 @@ Las decisiones de UI que salen de los mockups están en `mockups/README.md` §De
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: openspec/changes/frontend-reserva-publica/mockups/ (`reserva.html`, `gestion.html`, más `publica.css` y `mockup.js`)
-- Approval: pending
+- Approval: approved (2026-11-20, by Maxi), versión 461d39f (#25)
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #25); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
