@@ -84,7 +84,7 @@
 | `SLUG_EN_USO` (`sugerencias`) | En el campo del slug, con chips de sugerencias |
 | `TELEFONO_INVALIDO` | En el campo del teléfono, con un ejemplo de formato |
 | Teléfono vacío (`VALIDACION` en `telefonoContacto`) | En el campo del teléfono: "Poné un teléfono de contacto…" |
-| Anticipación de reserva ≥ horizonte (código que defina C-08 en `ReglasDeReserva`; si llega como `VALIDACION`, por campo) | En el campo de anticipación de reserva |
+| `ANTICIPACION_FUERA_DE_HORIZONTE` (anticipación de reserva ≥ horizonte; C-08, `ReglasDeReserva`) | En el campo de anticipación de reserva |
 | `ZONA_HORARIA_INVALIDA` | En el selector de zona horaria |
 | `DURACION_INVALIDA` | En la duración del diálogo |
 | `PRESTACION_DUPLICADA` | En el nombre del diálogo |
