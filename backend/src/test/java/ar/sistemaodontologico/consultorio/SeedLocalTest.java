@@ -57,6 +57,19 @@ class SeedLocalTest extends IntegracionPostgresTest {
                 assertThat(contar(owner, """
                         SELECT count(*) FROM disponibilidad d JOIN consultorio c ON c.id = d.consultorio_id
                         WHERE c.slug = 'demo'""")).isEqualTo(10);
+                // C-10 (tarea 6.1, design D9): pacientes, turnos de la semana en curso y un bloqueo.
+                assertThat(contar(owner, demo("paciente"))).isEqualTo(5);
+                assertThat(contar(owner, demo("turno"))).isEqualTo(10);
+                assertThat(contar(owner, demo("turno") + " AND es_sobreturno")).isEqualTo(1);
+                assertThat(contar(owner, demo("bloqueo"))).isEqualTo(1);
+                assertThat(contar(owner, """
+                        SELECT count(*) FROM paciente p JOIN consultorio c ON c.id = p.consultorio_id
+                        WHERE c.slug = 'demo' AND p.dni BETWEEN '90000001' AND '90000005'""")).isEqualTo(5);
+                // El bloqueo no pisa turnos activos (RN-AG-05).
+                assertThat(contar(owner, """
+                        SELECT count(*) FROM turno t JOIN bloqueo b ON b.consultorio_id = t.consultorio_id
+                        WHERE t.estado IN ('RESERVADO', 'CONFIRMADO')
+                          AND tstzrange(t.inicio, t.fin, '[)') && tstzrange(b.inicio, b.fin, '[)')""")).isZero();
                 assertThat(new BCryptPasswordEncoder().matches(CONTRASENA_DE_DESARROLLO,
                         texto(owner, "SELECT password_hash FROM usuario WHERE email = 'demo@consultorio.test'")))
                         .isTrue();
@@ -64,6 +77,10 @@ class SeedLocalTest extends IntegracionPostgresTest {
                 owner.rollback();
             }
         }
+    }
+
+    private static String demo(String tabla) {
+        return "SELECT count(*) FROM " + tabla + " x JOIN consultorio c ON c.id = x.consultorio_id WHERE c.slug = 'demo'";
     }
 
     private static int contar(Connection conexion, String sql) throws Exception {

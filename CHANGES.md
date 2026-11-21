@@ -12,7 +12,7 @@
 2. Leer los docs de la knowledge-base indicados en "Leer antes". En los changes de frontend, leer además el sistema de diseño aprobado (`design-system/README.md`, `tokens.css`, `components.html`).
 3. Acordar el alcance y los criterios de aceptación del item (los Given/When/Then de `06_funcionalidades.md` son la base; Strict TDD: cada criterio se escribe primero como test en rojo).
 4. Implementar, verificar los criterios acordados y registrar la evidencia en el PR.
-5. Cerrar el change en el mismo PR de implementación: cuando el PR está aprobado (o el líder confirma que no quedan cambios pedidos), el autor suma un último commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). No hace falta un PR aparte para el cierre.
+5. Cerrar el change en el mismo PR de implementación, **antes de pedir la revisión**: con todo en verde, el autor suma un commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). El `[x]` llega a `main` solo con el merge, que exige la aprobación del líder. Si el líder pide cambios, se hacen en commits nuevos y el `[x]` queda puesto. No hace falta un PR aparte para el cierre.
 
 Reglas del equipo:
 - **Governance**: CRITICO = solo análisis hasta aprobación humana explícita; ALTO = proponer y esperar revisión antes de escribir; MEDIO = implementar con checkpoints; BAJO = autonomía si los tests pasan.
@@ -138,7 +138,7 @@ Reglas de coordinación del paralelismo:
 - **Propuestas un paso antes**: los changes CRITICO y ALTO preparan su propuesta en el paso previo, para que la aprobación del líder no frene el change.
 - **Prioridad de revisión**: los PRs del camino crítico (C-02, C-04, C-08, C-10, C-11, C-12, C-13, C-14/C-18) se revisan antes que el resto.
 - **Migraciones Flyway**: cada change numera su migración provisoriamente y, al rebasar sobre `main` antes del merge, la pasa al siguiente número libre (una migración no mergeada todavía se puede renumerar; una mergeada nunca se edita).
-- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, recién con la aprobación del líder (paso 5). Los PRs de solo propuesta o mockups no marcan `[x]`.
+- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, antes de pedir la revisión (paso 5); llega a `main` solo con el merge aprobado. Los PRs de solo propuesta o mockups no marcan `[x]`.
 - **Trabajo anticipado**: se pueden preparar mockups, tests y propuestas antes de que se habilite un change, pero su PR se abre recién con las dependencias en `[x]`.
 
 ---
@@ -297,7 +297,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 3 — Agenda del odontólogo
 
 ### [C-10] `agenda-esquema-dominio`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #18, 2026-11-21)
 - **Scope**:
   - Migración: `paciente` (único `(consultorio_id, dni)` por DD-24, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
   - Dominio puro (sin Spring/JPA): entidades y value objects (`Intervalo` semiabierto, `Duracion` múltiplo de 5), `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento`, `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), derivación `fin = inicio + duracion_min` (RN-AG-12), reglas de bloqueo (rechazo con lista de conflictos), invariantes de sobreturno.
@@ -326,7 +326,8 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG), RN-RP-03, §Auditoría (RN-AD-01, RN-AD-04, RN-AD-05), RN-GL-02
   - `knowledge-base/06_funcionalidades.md` §US-012, US-021 a US-025
   - `knowledge-base/07_flujos_principales.md` §FL-03
-  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-17
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-17, DD-24 (paciente por DNI; DD-09 quedó reemplazada)
+  - `openspec/changes/archive/*-agenda-esquema-dominio/design.md` §Risks: **serializar las escrituras de agenda por consultorio** con el mismo bloqueo que C-08 usa en la grilla (`SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`), no con un lock consultivo aparte. Así turnos, bloqueos, reservas (C-15) y cambios de grilla quedan en una sola cola (revisión de Maxi en #18). La exclusión GiST no cruza tablas: sin ese bloqueo, un turno y un bloqueo concurrentes podrían pasar las dos validaciones.
 
 ### [C-12] `agenda-api-odontologo`
 - **Estado**: `[ ]` pendiente
