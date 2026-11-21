@@ -74,6 +74,7 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
             case NO_AUTENTICADO -> HttpStatus.UNAUTHORIZED;
             case NO_ENCONTRADO -> HttpStatus.NOT_FOUND;
             case CONFLICTO -> HttpStatus.CONFLICT;
+            case NO_DISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
         };
         ProblemDetail problema = problema(estado, error.getCodigo(), error.getMessage(), peticion);
         error.getPropiedades().forEach(problema::setProperty);

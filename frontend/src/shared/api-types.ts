@@ -211,6 +211,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/public/planes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["planes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -322,6 +338,26 @@ export interface components {
         CambioRequest: {
             passwordActual?: string;
             passwordNueva?: string;
+        };
+        PlanPublicoResponse: {
+            id: string;
+            nombre: string;
+            descripcion?: string;
+            incluye: string[];
+            importeARS: string;
+            moneda: string;
+            impuestosIncluidos: boolean;
+        };
+        PlanesPublicosResponse: {
+            planes: components["schemas"]["PlanPublicoResponse"][];
+            prueba: components["schemas"]["PruebaResponse"];
+            /** Format: date-time */
+            actualizadoEn: string;
+        };
+        PruebaResponse: {
+            /** Format: int32 */
+            dias: number;
+            requiereMedioDePago: boolean;
         };
     };
     responses: never;
@@ -711,6 +747,26 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    planes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PlanesPublicosResponse"];
+                };
             };
         };
     };

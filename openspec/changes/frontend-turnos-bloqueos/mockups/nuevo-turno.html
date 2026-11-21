@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agenda · {brand} (mockup C-14)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="agenda.css">
+<link rel="stylesheet" href="c14.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="vacio:Abierto desde “Nuevo turno”|buscar:Buscando paciente|paciente-nuevo:Alta rápida de paciente|dni-invalido:DNI inválido|paciente-elegido:Listo para crear (desde el hueco de 12:00)|aviso-superpone:Aviso de superposición antes de enviar|sobreturno:Sobreturno marcado|solapado:Turno solapado (409)|fuera:Fuera de horario (409)|bloqueado:Horario bloqueado (409)|guardando:Creando|creado:Creado|plan-vencido:Plan vencido (403)">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-userx" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.3 0 2.5.3 3.5 1M16 15l5 5M21 15l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3.5h8.5L19 8v12.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3.5V8.5h5M9 12.5h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 006 6l1.5-2 4 1.5v3a2 2 0 01-2 2A16.5 16.5 0 014.5 5.5a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 11-2.2-5.3L19.5 9M19.5 4.5V9H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 017 0M5 13a10 10 0 015.5-2.8M19 13a10 10 0 00-2.5-1.8M2 9.5a15 15 0 015-3M22 9.5A15 15 0 0012 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5l1-4L15.8 5.2a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8.5 18.5l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12.5h8L17 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-useradd" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.6 0 3 .4 4 1.2M18 14v6M15 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9.5L5.5 4.5h13L20 9.5M4 9.5h16M4 9.5a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0M5.5 11.5v8h13v-8M10 19.5v-4.5h4v4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="5" cy="6.5" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="17.5" r="1.3" fill="currentColor"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="agenda.html" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-14</span>
+    <ul>
+      <li><a class="sidelink" href="agenda.html" aria-current="page"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo Sur</p>
+      <a class="sidelink" href="#"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar"><h1 class="page-title">Agenda</h1><span class="grow"></span><a class="btn btn-primary" href="#" data-no="offline offline-sin-cache cargando"><svg aria-hidden="true"><use href="#i-plus"/></svg><span class="lbl-short">Nuevo</span><span class="lbl-long">Nuevo turno</span></a><button class="btn btn-primary" type="button" disabled data-solo="offline offline-sin-cache"><svg aria-hidden="true"><use href="#i-plus"/></svg><span class="lbl-short">Nuevo</span><span class="lbl-long">Nuevo turno</span></button></header>
+    <main class="content" id="contenido" tabindex="-1">
+<div class="fondo" aria-hidden="true"><div class="ag-bar"><div class="ag-nav"><h2 class="ag-title">Viernes 20 de noviembre<small>Hoy</small></h2></div></div><div class="dia"><ol class="tl" aria-label="Agenda del viernes 20">
+<li><div class="hora"><b>09:00</b><span>09:30</span></div><a class="tc ausente" href="turno.html?estado=ausente" aria-label="09:00 a 09:30, Ana Ejemplo, Consulta, Ausente"><div class="who"><span class="name">Ana Ejemplo</span><span class="what">Consulta · 30 min</span></div><div class="tags"><span class="chip ausente"><svg aria-hidden="true"><use href="#i-userx"/></svg>Ausente</span></div></a></li>
+<li><div class="hora"><b>09:30</b><span>10:15</span></div><a class="tc confirmado" href="turno.html?estado=confirmado-nota" aria-label="09:30 a 10:15, Bruno Prueba, Limpieza, Confirmado"><div class="who"><span class="name">Bruno Prueba</span><span class="what">Limpieza · 45 min</span></div><div class="tags"><span class="chip confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></div></a></li>
+<li><div class="hora"><span>10:15</span></div><a class="libre" href="#"><svg aria-hidden="true"><use href="#i-plus"/></svg><span><b>Libre</b> · 10:15 a 10:30</span></a></li>
+<li><div class="hora"><b>10:30</b><span>11:30</span></div><a class="tc confirmado" href="turno.html?estado=confirmado-nota" aria-label="10:30 a 11:30, Carla Ficticia, Extracción, Confirmado, con nota"><div class="who"><span class="name">Carla Ficticia</span><span class="what">Extracción · 60 min</span></div><div class="tags"><span class="chip confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></div><p class="extra"><svg aria-hidden="true"><use href="#i-note"/></svg>Trae radiografía panorámica.</p></a></li>
+<li><div class="hora"><b>10:45</b><span>11:05</span></div><a class="tc reservado sobreturno" href="turno.html?estado=sobreturno" aria-label="10:45 a 11:05, Diego Muestra, Control, Reservado, sobreturno"><div class="who"><span class="name">Diego Muestra</span><span class="what">Control · 20 min</span></div><div class="tags"><span class="chip reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span><span class="chip sobreturno"><svg aria-hidden="true"><use href="#i-plus"/></svg>Sobreturno</span></div><p class="extra"><svg aria-hidden="true"><use href="#i-info"/></svg>Se superpone con 10:30 · Carla F.</p></a></li>
+<li class="is-cancelado"><div class="hora"><b>11:30</b><span>12:00</span></div><a class="tc cancelado" href="turno.html?estado=cancelado" aria-label="11:30 a 12:00, Elena Demo, Consulta, Cancelado, nuevo: canceló por el link"><div class="who"><span class="name">Elena Demo</span><span class="what">Consulta · 30 min</span></div><div class="tags"><span class="chip cancelado"><svg aria-hidden="true"><use href="#i-x"/></svg>Cancelado</span><span class="chip nuevo">Nuevo · canceló por el link</span></div></a></li>
+<li class="ahora-row"><span class="ahora-dot" aria-hidden="true"></span><div class="ahora" role="note">Ahora · 12:10</div></li>
+<li><div class="hora"><span>12:00</span></div><a class="libre" href="#"><svg aria-hidden="true"><use href="#i-plus"/></svg><span><b>Libre</b> · 12:00 a 13:00</span></a></li>
+<li><div class="hora"><span>13:00</span></div><div class="fuera"><svg aria-hidden="true"><use href="#i-moon"/></svg>No atendés · 13:00 a 15:00</div></li>
+<li><div class="hora"><b>15:00</b><span>16:00</span></div><div class="tc bloqueo" role="group" aria-label="Bloqueo de 15:00 a 16:00: Reunión con el laboratorio"><div class="who"><span class="name">Reunión con el laboratorio</span></div><div class="tags"><span class="chip bloqueo"><svg aria-hidden="true"><use href="#i-lock"/></svg>Bloqueo</span></div></div></li>
+<li><div class="hora"><b>16:00</b><span>16:30</span></div><a class="tc reservado" href="turno.html?estado=reservado-nuevo" aria-label="16:00 a 16:30, Federico Ejemplo, Consulta, Reservado, nuevo: reservó por el link"><div class="who"><span class="name">Federico Ejemplo</span><span class="what">Consulta · 30 min</span></div><div class="tags"><span class="chip reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span><span class="chip nuevo">Nuevo · reservó por el link</span></div></a></li>
+<li><div class="hora"><span>16:30</span></div><a class="libre" href="#"><svg aria-hidden="true"><use href="#i-plus"/></svg><span><b>Libre</b> · 16:30 a 17:00</span></a></li>
+<li><div class="hora"><b>17:00</b><span>17:45</span></div><a class="tc confirmado" href="turno.html?estado=confirmado-nota" aria-label="17:00 a 17:45, Gabriela Prueba, Limpieza, Confirmado"><div class="who"><span class="name">Gabriela Prueba</span><span class="what">Limpieza · 45 min</span></div><div class="tags"><span class="chip confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></div></a></li>
+<li><div class="hora"><span>17:45</span></div><a class="libre" href="#"><svg aria-hidden="true"><use href="#i-plus"/></svg><span><b>Libre</b> · 17:45 a 18:00</span></a></li>
+<li><div class="hora"><b>18:00</b><span>18:30</span></div><a class="tc reservado" href="turno.html?estado=reprogramado" aria-label="18:00 a 18:30, Hernán Muestra, Consulta, Reservado, nuevo: reprogramó por el link"><div class="who"><span class="name">Hernán Muestra</span><span class="what">Consulta · 30 min</span></div><div class="tags"><span class="chip reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span><span class="chip nuevo">Nuevo · reprogramó por el link</span></div></a></li>
+<li><div class="hora"><span>18:30</span></div><a class="libre" href="#"><svg aria-hidden="true"><use href="#i-plus"/></svg><span><b>Libre</b> · 18:30 a 19:00</span></a></li>
+</ol></div></div>
+      <section class="review" aria-labelledby="rev-t">
+        <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+        <ul id="estados"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="agenda.html" aria-current="page"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+
+<div class="scrim" data-solo="vacio buscar paciente-nuevo dni-invalido paciente-elegido aviso-superpone sobreturno solapado fuera bloqueado guardando plan-vencido"></div>
+<div class="dialog lg" role="dialog" aria-modal="true" aria-labelledby="nt-t" data-solo="vacio buscar paciente-nuevo dni-invalido paciente-elegido aviso-superpone sobreturno solapado fuera bloqueado guardando plan-vencido">
+  <div class="d-head"><h2 id="nt-t"><span data-texto="*=Nuevo turno|sobreturno=Nuevo sobreturno">Nuevo turno</span></h2><button class="btn btn-ghost btn-icon" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>
+  <div class="d-body"><div class="notice danger" role="alert" data-solo="plan-vencido"><svg aria-hidden="true"><use href="#i-lock"/></svg><div><strong>Tu agenda está en solo lectura</strong><p>El período de prueba terminó. Activá el plan para volver a dar turnos; tus datos siguen guardados.</p></div></div>
+<div class="notice warn" role="alert" data-solo="solapado"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>Se superpone con el turno de 10:30 de Carla Ficticia</strong><p>Elegí otro horario o crealo como sobreturno.</p><div class="actions"><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Crear como sobreturno</button></div></div></div>
+<div class="notice warn" role="alert" data-solo="fuera"><svg aria-hidden="true"><use href="#i-moon"/></svg><div><strong>Ese horario está fuera de tu horario de atención</strong><p>El viernes atendés de 09:00 a 13:00 y de 15:00 a 19:00. Podés crearlo como sobreturno.</p><div class="actions"><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Crear como sobreturno</button></div></div></div>
+<div class="notice danger" role="alert" data-solo="bloqueado"><svg aria-hidden="true"><use href="#i-lock"/></svg><div><strong>Ese horario está bloqueado</strong><p>De 15:00 a 16:00 tenés “Reunión con el laboratorio”. Los bloqueos no admiten turnos ni sobreturnos.</p></div></div>
+<fieldset class="fs"><legend>Paciente</legend><div class="search" data-solo="vacio buscar"><svg class="lupa" aria-hidden="true"><use href="#i-search"/></svg><input class="input" id="q" type="search" autocomplete="off" placeholder="Nombre, DNI o teléfono" aria-describedby="q-h" data-valor="*=|buscar=3000"></div>
+<p class="hint" id="q-h" data-solo="vacio">Buscá entre tus pacientes o cargá uno nuevo.</p>
+<ul class="res" data-solo="buscar" aria-label="Pacientes encontrados">
+  <li><button type="button"><span><span class="n">Carla Ficticia</span><small>DNI <mark>30.00</mark>0.003 · +54 9 11 0000-0003</small></span><svg aria-hidden="true"><use href="#i-right"/></svg></button></li>
+  <li><button type="button"><span><span class="n">Bruno Prueba</span><small>DNI <mark>30.00</mark>0.002 · +54 9 11 0000-0002</small></span><svg aria-hidden="true"><use href="#i-right"/></svg></button></li>
+  <li><button type="button"><span><span class="n">Lucía Muestra</span><small>DNI <mark>30.00</mark>0.010 · +54 9 11 0000-0010</small></span><svg aria-hidden="true"><use href="#i-right"/></svg></button></li>
+  <li><button type="button" class="nuevo-pac"><svg aria-hidden="true"><use href="#i-useradd"/></svg>Cargar paciente nuevo</button></li>
+</ul>
+<ul class="res" data-solo="vacio"><li><button type="button" class="nuevo-pac"><svg aria-hidden="true"><use href="#i-useradd"/></svg>Cargar paciente nuevo</button></li></ul><div class="pac-sel" data-solo="paciente-elegido aviso-superpone sobreturno solapado fuera bloqueado guardando plan-vencido"><div class="who"><span class="n">Lucía Muestra</span><small>DNI 30.000.010 · +54 9 11 0000-0010</small></div><button class="btn btn-ghost btn-sm-text" type="button">Cambiar</button></div><div class="alta" data-solo="paciente-nuevo dni-invalido">
+  <div class="alta-h"><span>Paciente nuevo</span><button class="btn btn-ghost btn-sm-text" type="button">Buscar otro</button></div>
+  <div class="row-2">
+    <div class="field"><label for="pn-n">Nombre</label><input class="input" id="pn-n" autocomplete="off" value="Iris"></div>
+    <div class="field"><label for="pn-a">Apellido</label><input class="input" id="pn-a" autocomplete="off" value="Ejemplo"></div>
+  </div>
+  <div class="row-2">
+    <div class="field"><label for="pn-d">DNI</label><input class="input" id="pn-d" inputmode="numeric" autocomplete="off" aria-describedby="pn-d-h pn-d-e" data-invalido="dni-invalido" data-valor="*=30000009|dni-invalido=30000">
+      <p class="hint" id="pn-d-h" data-no="dni-invalido">Solo números, sin puntos.</p>
+      <p class="error-msg" id="pn-d-e" data-solo="dni-invalido"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>El DNI tiene 7 u 8 números.</span></p></div>
+    <div class="field"><label for="pn-t">Celular</label><input class="input" id="pn-t" type="tel" inputmode="tel" autocomplete="off" value="11 0000-0009"></div>
+  </div>
+  <div class="field"><label for="pn-e">Email <span class="opt">(opcional)</span></label><input class="input" id="pn-e" type="email" autocomplete="off" placeholder="paciente@example.com"></div>
+</div></fieldset>
+<fieldset class="fs"><legend id="pr-l">Prestación</legend><div class="opts" role="group" aria-labelledby="pr-l"><button class="popt" type="button" aria-pressed="false" data-press="paciente-elegido guardando plan-vencido paciente-nuevo dni-invalido fuera"><span>Consulta</span><small>30 min</small></button><button class="popt" type="button" aria-pressed="false" data-press=""><span>Limpieza</span><small>45 min</small></button><button class="popt" type="button" aria-pressed="false" data-press="aviso-superpone sobreturno solapado bloqueado"><span>Extracción</span><small>60 min</small></button><button class="popt" type="button" aria-pressed="false" data-press=""><span>Control</span><small>20 min</small></button></div></fieldset>
+<fieldset class="fs"><legend>Día y hora</legend>
+  <div class="row-dt">
+    <div class="field"><label for="nt-d">Día</label><input class="input" id="nt-d" type="date" value="2026-11-20"></div>
+    <div class="field"><label for="nt-h">Empieza</label><input class="input" id="nt-h" type="time" step="300" aria-describedby="nt-fin" data-valor="*=|paciente-elegido=12:00|guardando=12:00|plan-vencido=12:00|paciente-nuevo=12:00|dni-invalido=12:00|aviso-superpone=10:45|sobreturno=10:45|solapado=10:15|fuera=13:30|bloqueado=15:30"></div>
+  </div>
+  <p class="fin" id="nt-fin" aria-live="polite"><svg aria-hidden="true"><use href="#i-clock"/></svg><span>Termina <b data-texto="*=Elegí la prestación y la hora|paciente-elegido=12:30|guardando=12:30|plan-vencido=12:30|paciente-nuevo=12:30|dni-invalido=12:30|aviso-superpone=11:45|sobreturno=11:45|solapado=11:15|fuera=14:00|bloqueado=16:30">—</b></span></p>
+  <div class="notice info" role="status" data-solo="aviso-superpone"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Ese horario se superpone con 10:30 · Carla F.</strong><p>Si es una urgencia, marcalo como sobreturno. Si no, elegí otro horario.</p></div></div>
+</fieldset>
+<div class="sob-box" data-no="sobreturno"><div class="check"><input type="checkbox" id="sob1"><label for="sob1"><strong>Sobreturno</strong>Para una urgencia: puede superponerse con otro turno o quedar fuera de tu horario.</label></div></div>
+<div class="sob-box on" data-solo="sobreturno"><div class="check"><input type="checkbox" id="sob2" checked><label for="sob2"><strong>Sobreturno</strong>Se va a ver marcado en tu agenda y nunca se ofrece en tu página. No puede caer en un horario bloqueado.</label></div></div></div>
+  <div class="d-foot"><button class="btn btn-ghost" type="button">Cancelar</button>
+<button class="btn btn-primary" type="submit" data-no="guardando plan-vencido" data-desactivar="vacio buscar">Crear turno</button>
+<button class="btn btn-primary" type="button" disabled data-solo="plan-vencido">Crear turno</button>
+<button class="btn btn-primary" type="button" disabled data-solo="guardando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Creando…</button></div>
+</div>
+<div class="toast" role="status" data-solo="creado"><svg aria-hidden="true"><use href="#i-check"/></svg>Turno creado: Lucía Muestra, viernes 20 a las 12:00</div>
+<script>
+  /* Solo mockup: marca la prestación elegida según el estado */
+  document.addEventListener("DOMContentLoaded", function () {
+    var e = document.body.getAttribute("data-estado");
+    document.querySelectorAll("[data-press]").forEach(function (b) { b.setAttribute("aria-pressed", String((b.getAttribute("data-press") || "").split(" ").indexOf(e) >= 0)); });
+  });
+</script>
+</body>
+</html>

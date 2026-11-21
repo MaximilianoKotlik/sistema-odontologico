@@ -52,7 +52,7 @@ La fuente de verdad del dominio vive en `knowledge-base/` ([README](knowledge-ba
 
 **Sistema de diseño**: [design-system/README.md](design-system/README.md) (modo `system-and-mockups`, rev. 1 aprobada). Todo change con pantallas necesita un mockup revisado y aprobado antes de implementar; el sistema de diseño aprobado es la base visual.
 
-> Antes de arrancar los changes afectados, resolver las preguntas **Alta** abiertas: hoy solo queda **PA-02** acotada a país del VPS y backups (DD-25). PA-01 → DD-24, PA-03 → DD-22, PA-04..PA-06 → DD-26..DD-28 de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
+> No quedan preguntas **Alta** abiertas. PA-02 → DD-40: VPS y backups en Argentina, con requisitos de infraestructura que bloquean el lanzamiento (criterio de salida de C-23). PA-01 → DD-24, PA-03 → DD-22, PA-04..PA-06 → DD-26..DD-28 de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
 
 **Discovery**: [docs/discovery/](docs/discovery/) (`discovery.md` e `informe-discovery.md`).
 

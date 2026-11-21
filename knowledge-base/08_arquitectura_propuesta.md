@@ -88,8 +88,8 @@ servicios de `application` públicos o por eventos de dominio (`auditoria` escuc
 - **CORS**: solo el origen del frontend (`APP_FRONTEND_ORIGIN`).
 - **Secrets management**: variables de entorno vía `.env` (no versionado; se versiona `.env.example`).
   En cloud, el gestor de secretos del proveedor elegido ([PA-02](10_preguntas_abiertas.md)).
-- **Datos sensibles** ([11](11_marco_legal_argentino.md)): minimización (sin DNI ni datos clínicos en
-  v1), enmascarado de PII en logs, TLS en tránsito fuera de local, cifrado en reposo delegado al
+- **Datos sensibles** ([11](11_marco_legal_argentino.md)): minimización (sin datos clínicos en v1; el
+  DNI se guarda porque identifica al paciente, [DD-24](09_decisiones_y_supuestos.md)), enmascarado de PII en logs, TLS en tránsito fuera de local, cifrado en reposo delegado al
   Postgres como contenedor del mismo Compose en un VPS ([DD-25](09_decisiones_y_supuestos.md)); país del VPS y backups pendientes ([PA-02](10_preguntas_abiertas.md)).
 
 ## Persistencia y migraciones
