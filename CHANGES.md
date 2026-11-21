@@ -210,7 +210,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-06, DD-15
 
 ### [C-05] `auth-recuperacion-hardening`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #29, 2026-11-20)
 - **Scope**:
   - Migración: `token_recuperacion` (hash, 30 min, un solo uso).
   - `POST /api/v1/auth/recuperacion` (202 idéntica exista o no el email) y `POST /api/v1/auth/recuperacion/confirmar` (400 `TOKEN_INVALIDO` si está usado o vencido; revoca todos los refresh tokens); email por SMTP (Mailpit en local).
