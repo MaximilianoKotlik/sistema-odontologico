@@ -37,18 +37,18 @@
 
 ## 4. Turnos
 
-- [ ] 4.1 `CrearTurno`:
+- [x] 4.1 `CrearTurno`:
   - manual, sobreturno y desde un paciente;
   - prestación inactiva, ajena o inexistente;
   - el orden de errores del dominio;
   - `TURNO_CREADO`.
 
   (verificación: escenarios "Crear un turno" y "Sobreturno solo del odontólogo")
-- [ ] 4.2 `CambiarEstadoTurno`: confirmar, cancelar con `cancelado_por` según el actor y marcar ausente con el `Clock`. Las transiciones inválidas no cambian el turno (verificación: escenarios de "Cambiar el estado de un turno")
-- [ ] 4.3 `ReprogramarTurno` y `AjustarDuracion`: se validan sin contar al propio turno y, si fallan, no cambian nada (verificación: escenarios de "Reprogramar un turno" y "Ajustar la duración de un turno")
-- [ ] 4.4 `EditarNota`: hasta 500 caracteres, solo el odontólogo, y sin evento si la nota es la misma (verificación: escenarios de "Nota interna del odontólogo")
-- [ ] 4.5 Auditoría de cada operación con los valores de D8, y rollback si falla la inserción del evento (verificación: escenarios de "Auditoría de los turnos")
-- [ ] 4.6 Concurrencia:
+- [x] 4.2 `CambiarEstadoTurno`: confirmar, cancelar con `cancelado_por` según el actor y marcar ausente con el `Clock`. Las transiciones inválidas no cambian el turno (verificación: escenarios de "Cambiar el estado de un turno")
+- [x] 4.3 `ReprogramarTurno` y `AjustarDuracion`: se validan sin contar al propio turno y, si fallan, no cambian nada (verificación: escenarios de "Reprogramar un turno" y "Ajustar la duración de un turno")
+- [x] 4.4 `EditarNota`: hasta 500 caracteres, solo el odontólogo, y sin evento si la nota es la misma (verificación: escenarios de "Nota interna del odontólogo")
+- [x] 4.5 Auditoría de cada operación con los valores de D8, y rollback si falla la inserción del evento (verificación: escenarios de "Auditoría de los turnos")
+- [x] 4.6 Concurrencia:
   - versión vieja → `CONFLICTO_CONCURRENCIA`;
   - dos `CrearTurno` simultáneos al mismo horario → uno `TURNO_SOLAPADO`;
   - `ex_turno_sin_solapamiento` mapeado en el manejador.
@@ -57,8 +57,8 @@
 
 ## 5. Bloqueos
 
-- [ ] 5.1 `CrearBloqueo` y `EliminarBloqueo`: `BLOQUEO_CON_TURNOS` con todos los turnos, los cancelados no cuentan, los bloqueos superpuestos se permiten, la auditoría y el aislamiento (verificación: escenarios de `gestion-de-bloqueos`)
-- [ ] 5.2 Un turno y un bloqueo creados a la vez no se pisan (verificación: escenario "Un turno y un bloqueo a la vez")
+- [x] 5.1 `CrearBloqueo` y `EliminarBloqueo`: `BLOQUEO_CON_TURNOS` con todos los turnos, los cancelados no cuentan, los bloqueos superpuestos se permiten, la auditoría y el aislamiento (verificación: escenarios de `gestion-de-bloqueos`)
+- [x] 5.2 Un turno y un bloqueo creados a la vez no se pisan (verificación: escenario "Un turno y un bloqueo a la vez")
 
 ## 6. Cierre del change
 
