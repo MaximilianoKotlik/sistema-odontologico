@@ -61,6 +61,23 @@ La tira de días SHALL mostrar cada fecha que devuelve la consulta de huecos. Un
 - **WHEN** el paciente lo elige
 - **THEN** ve que no quedan horarios ese día y un botón para ir al próximo día con horarios
 
+### Requirement: Más días hasta el horizonte de reserva
+
+La página SHALL ofrecer "Ver más días" hasta llegar al horizonte de reserva del consultorio, aunque los días ya mostrados no tengan huecos, y MUST ocultarlo solo al alcanzar ese horizonte. Si todos los días mostrados están sin huecos, la página MUST decir "No hay turnos en estos días" junto al botón para ver más.
+
+#### Scenario: Dos semanas cerrado por vacaciones
+
+- **GIVEN** un consultorio con horizonte de 60 días y sin huecos en los próximos 14 días por un bloqueo de vacaciones
+- **WHEN** el paciente elige una prestación
+- **THEN** ve los 14 días como "sin turnos", el texto "No hay turnos en estos días" y el botón "Ver más días"
+- **AND** al tocarlo aparecen los días siguientes, con los huecos posteriores a las vacaciones
+
+#### Scenario: Fin del horizonte
+
+- **GIVEN** un consultorio con horizonte de 30 días
+- **WHEN** el paciente ya cargó los días hasta el día 30
+- **THEN** "Ver más días" ya no aparece
+
 ### Requirement: Horarios en la zona del consultorio
 
 Los horarios SHALL mostrarse en la zona horaria que devuelve la API (`zonaHoraria`), agrupados en mañana y tarde, y la página MUST aclarar la zona con el texto "Horarios en hora de …, la del consultorio". MUST NOT usarse la zona del dispositivo. Los inicios se envían a la API como el instante UTC recibido, sin reconstruirlo desde la hora local.
@@ -105,10 +122,21 @@ Al crearse el turno (201), la página SHALL mostrar el día, la hora, la prestac
 - **THEN** se ve "Guardá este link", el link completo y los botones "Copiar link" y "Agregar al calendario"
 - **AND** el token no queda guardado en ningún almacenamiento del navegador
 
+### Requirement: Archivo de calendario seguro
+
+El `.ics` SHALL incluir el inicio y el fin del turno en UTC, el consultorio y el link de gestión. Todo texto que venga del consultorio o de la API (`SUMMARY`, `LOCATION`, `DESCRIPTION`) MUST escaparse según RFC 5545 (`\`, `;`, `,` y saltos de línea), y las líneas de más de 75 octetos MUST plegarse, para que ningún dato pueda agregar propiedades al evento.
+
 #### Scenario: Archivo de calendario
 
 - **WHEN** el paciente toca "Agregar al calendario"
 - **THEN** descarga un `.ics` con el inicio y el fin del turno en UTC, el nombre y la dirección del consultorio y el link de gestión en la descripción
+
+#### Scenario: Dirección con caracteres especiales
+
+- **GIVEN** un consultorio con la dirección `Av. Ejemplo 1234, piso 2; depto B` seguida de un salto de línea y `ATTENDEE:mailto:x@example.com`
+- **WHEN** se genera el `.ics`
+- **THEN** `LOCATION` queda como una sola propiedad con `\,`, `\;` y `\n` escapados, sin ninguna línea `ATTENDEE`
+- **AND** ninguna línea del archivo supera los 75 octetos sin plegarse
 
 ### Requirement: Horario ocupado mientras el paciente elegía
 

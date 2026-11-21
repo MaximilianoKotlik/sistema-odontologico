@@ -6,23 +6,23 @@
 
 - [x] 1.1 Obtener la aprobación de Maxi para los mockups de `/c/{slug}` y `/t/{token}`; verificar `Approval: approved` en `design.md` y en `mockups/README.md` (#25, versión `461d39f`)
 - [ ] 1.2 Confirmar que C-06 y C-15 están mergeados y `[x]` en `CHANGES.md`; verificar con `git log origin/main --oneline`
-- [ ] 1.3 Regenerar `frontend/src/shared/api-types.ts` desde el OpenAPI de C-15 y comparar los nombres con los specs de este change; verificar que `npm run typecheck` pasa y, si algún nombre cambió, ajustar los specs en el mismo PR
+- [ ] 1.3 Regenerar `frontend/src/shared/api-types.ts` desde el OpenAPI de C-15 y comparar los nombres con los specs de este change, incluido el horizonte de reserva de la página pública (design D3); verificar que `npm run typecheck` pasa y, si algún nombre cambió, ajustar los specs en el mismo PR
 
 ## 2. Rutas públicas y base compartida
 
 - [ ] 2.1 Sumar a `publico.ts` las rutas `/c/:slug` y `/t/:token` reutilizando la compilación de patrones del router de C-06; verificar con tests Vitest que resuelven el parámetro, que `/c/` sin slug no coincide y que no montan el shell ni envían `Authorization`
-- [ ] 2.2 Agregar a `nginx.conf` `Referrer-Policy: no-referrer` para `/c/` y `/t/` (design D7); verificar con un test o `curl -I` contra la imagen del frontend
+- [ ] 2.2 Agregar a `nginx.conf` `Referrer-Policy: no-referrer` para `/c/` y `/t/`, y `<meta name="referrer" content="no-referrer">` en `frontend/index.html` (design D7); verificar las dos cosas: la cabecera con `curl -I` contra la imagen del frontend y la meta con un test Vitest sobre el `index.html` del build
 - [ ] 2.3 Implementar el nombre legible de la zona horaria ("Buenos Aires", "Córdoba", con el identificador IANA como respaldo) y verificar con tests Vitest las zonas argentinas y una desconocida
 - [ ] 2.4 Implementar la traducción de `ApiError` a estados de pantalla por `codigo` (design D8); verificar con tests Vitest cada código de los specs, 404, 429 con `Retry-After` y `SIN_CONEXION`
 
 ## 3. Reserva `/c/{slug}`
 
 - [ ] 3.1 Cargar la página pública del consultorio y mostrar encabezado, prestaciones, el estado "no toma turnos online" y el 404 del slug; verificar con tests Vitest los tres casos y que no aparecen datos del odontólogo
-- [ ] 3.2 Implementar la tira de días por ventanas de 14 (design D3) con días "sin turnos" según `atiende` y huecos, y el ofrecimiento del próximo día con horarios; verificar con tests Vitest sábado elegible, domingo "sin turnos", día completo y "Ver más días"
+- [ ] 3.2 Implementar la tira de días por ventanas de 14 hasta el horizonte de reserva (design D3), con días "sin turnos" según `atiende` y huecos, el ofrecimiento del próximo día con horarios y "No hay turnos en estos días"; verificar con tests Vitest sábado elegible, domingo "sin turnos", día completo, 14 días seguidos sin huecos (el botón sigue) y fin del horizonte (el botón desaparece)
 - [ ] 3.3 Mostrar los horarios en la zona del consultorio, agrupados en mañana y tarde, con el aviso de la zona, y guardar el instante UTC elegido (design D4); verificar con tests Vitest en un entorno con otra zona del dispositivo
 - [ ] 3.4 Implementar el paso de datos con validación en el cliente (DNI con o sin puntos, celular, email opcional, consentimiento sin marcar con el texto del anexo legal) y el resumen de errores enlazado; verificar con tests Vitest cada regla y que el DNI se envía solo con dígitos
 - [ ] 3.5 Enviar la reserva y manejar 201, `HUECO_NO_DISPONIBLE` (vuelve a horarios con los huecos del 409 y conserva los datos), `LIMITE_TURNOS`, `RESERVA_NO_DISPONIBLE`, 400 por campo y 429; verificar con tests Vitest con el cliente HTTP falso
-- [ ] 3.6 Implementar la confirmación con el link destacado, "Copiar link" y el `.ics` generado en el cliente (design D6); verificar con tests Vitest el contenido del `.ics` (UTC, CRLF, link en la descripción) y que el token no queda en `localStorage`, `sessionStorage` ni cookies
+- [ ] 3.6 Implementar la confirmación con el link destacado, "Copiar link" y el `.ics` generado en el cliente (design D6); verificar con tests Vitest el contenido del `.ics` (UTC, CRLF, link en la descripción), el escapado RFC 5545 con una dirección que tiene coma, punto y coma y un salto de línea seguido de una propiedad falsa, el plegado de líneas de más de 75 octetos sin partir caracteres multibyte, y que el token no queda en `localStorage`, `sessionStorage` ni cookies
 
 ## 4. Gestión `/t/{token}`
 

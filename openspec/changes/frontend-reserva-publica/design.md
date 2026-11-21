@@ -4,7 +4,7 @@
 
 - Ver `proposal.md` para la motivación. C-16 es el frontend público del paciente: `/c/{slug}` para reservar y `/t/{token}` para ver, reprogramar o cancelar, sin cuenta (`CHANGES.md` §C-16, FL-04 y FL-05).
 - **Contrato**: la propuesta de C-15 (#30, en `main`) fija los endpoints, los nombres de los campos y el cuerpo de los errores en sus specs `reserva-publica` y `gestion-turno-paciente`:
-  - `GET /api/v1/public/consultorios/{slug}` → nombre, dirección, teléfono, `zonaHoraria`, `tomaTurnosOnline` y prestaciones (id, nombre, duración).
+  - `GET /api/v1/public/consultorios/{slug}` → nombre, dirección, teléfono, `zonaHoraria`, `tomaTurnosOnline` y prestaciones (id, nombre, duración). **Falta el horizonte de reserva** (D3): se le pide a C-15 que lo sume.
   - `GET .../huecos?prestacionId&desde&hasta` (hasta 31 días) → `{ zonaHoraria, dias: [{ fecha, atiende, huecos: [instante UTC] }] }`.
   - `POST .../turnos` con `aceptaPrivacidad` → 201 con el turno y `linkGestion`; 409 `HUECO_NO_DISPONIBLE` (con `huecos` del día), `LIMITE_TURNOS`, `RESERVA_NO_DISPONIBLE`; 400 `VALIDACION`, `DNI_INVALIDO`, `TELEFONO_INVALIDO`.
   - `GET /api/v1/public/turnos/{token}` → turno, paciente (nombre), consultorio, `puedeModificar`, `puedeReprogramar`, `modificableHasta` y, si está cancelado, `canceladoPor`.
@@ -50,9 +50,11 @@ La reserva es una sola página con estado en memoria (prestación, día, horario
 
 - **Alternativa descartada**: guardar el avance en `sessionStorage`. Dejaría datos personales del paciente en el navegador sin necesidad.
 
-### D3 — Días en ventanas de 14
+### D3 — Días en ventanas de 14, hasta el horizonte (ajustada en la revisión de #41)
 
-La API acepta rangos de hasta 31 días y el horizonte puede ser de hasta 365. La tira pide los primeros 14 días y suma la ventana siguiente con "Ver más días" mientras la última ventana haya traído algún hueco. Cada día se pinta según `atiende` y la cantidad de huecos: con huecos se puede elegir, sin huecos se ve "sin turnos".
+La API acepta rangos de hasta 31 días y el horizonte puede ser de hasta 365. La tira pide los primeros 14 días y suma la ventana siguiente con "Ver más días" **hasta llegar al horizonte de reserva**, aunque las ventanas anteriores no hayan traído huecos: un consultorio cerrado dos semanas por vacaciones o por un bloqueo largo no puede esconder los huecos de después. El botón se oculta solo al alcanzar el horizonte. Si todos los días mostrados están sin huecos, se ve "No hay turnos en estos días" junto al botón. Cada día se pinta según `atiende` y la cantidad de huecos: con huecos se puede elegir, sin huecos se ve "sin turnos".
+
+- **Necesita a C-15 (Mati)**: hoy la página pública no devuelve el horizonte, y un día fuera del horizonte se ve igual que uno sin huecos. Se pide sumar a `GET /api/v1/public/consultorios/{slug}` un campo con el último día reservable (por ejemplo `reservableHasta`, fecha local del consultorio). Mientras no exista, el frontend no tiene cómo cortar el botón.
 
 - **Alternativa descartada**: pedir 31 días de una. Es más lento en el celular y la mayoría de los pacientes reserva en la primera semana.
 
@@ -64,13 +66,20 @@ Las fechas y horas se presentan con los helpers de `shared/fechas.ts` usando `zo
 
 DNI: se quitan puntos y espacios y tiene que quedar con 7 u 8 dígitos. Celular: el mismo criterio de celular argentino que usa C-02 para normalizar a E.164. Email: formato simple, opcional. Consentimiento: obligatorio. Se valida al enviar (no mientras escribe) y, si el backend igual responde 400, se muestra el error en el campo que corresponda. El backend sigue siendo la fuente de verdad (RN-GL-04).
 
-### D6 — `.ics` generado en el cliente
+### D6 — `.ics` generado en el cliente, con el texto escapado (ajustada en la revisión de #41)
 
 El archivo se arma como texto (`BEGIN:VCALENDAR`… con CRLF y `UID` derivado del id del turno), con `DTSTART`/`DTEND` en UTC, el consultorio como `LOCATION` y el link de gestión en `DESCRIPTION`, y se descarga con un `Blob`. Sin librerías.
 
-### D7 — El token no sale de la URL ni del texto en pantalla
+- **Escapado (RFC 5545 §3.3.11)**: el nombre y la dirección los escribe el odontólogo. En `SUMMARY`, `LOCATION` y `DESCRIPTION` se escapa primero la barra invertida (`\` → `\\`), después `;` → `\;` y `,` → `\,`, y cada salto de línea (CRLF, LF o CR) pasa a `\n`. Así un salto de línea en la dirección no puede agregar propiedades al evento.
+- **Plegado (RFC 5545 §3.1)**: las líneas de más de 75 octetos en UTF-8 se cortan con CRLF seguido de un espacio, sin partir un carácter multibyte.
+- Lo cubre un test con una dirección que tiene coma, punto y coma y un salto de línea seguido de una propiedad falsa.
 
-En la confirmación, el link se muestra y se copia, pero el token no se guarda en ningún almacenamiento. En `/t/{token}`, el token solo vive en la URL y en memoria. Como viaja en la ruta, las páginas `/c/` y `/t/` se sirven con `Referrer-Policy: no-referrer` desde nginx, así un link saliente (mapa, `tel:`) no lo filtra. Hoy nginx no envía esa cabecera: se suma en este change.
+### D7 — El token no sale de la URL ni del texto en pantalla (ajustada en la revisión de #41)
+
+En la confirmación, el link se muestra y se copia, pero el token no se guarda en ningún almacenamiento. En `/t/{token}`, el token solo vive en la URL y en memoria. Como viaja en la ruta, el Referer se bloquea en dos capas, para que un link saliente (mapa, `tel:`) no lo filtre:
+
+- **Cabecera** `Referrer-Policy: no-referrer` desde nginx para `/c/` y `/t/`. Hoy nginx no la envía: se suma en este change.
+- **Defensa en profundidad**: `<meta name="referrer" content="no-referrer">` en `frontend/index.html`, así el token queda protegido aunque alguien sirva el build sin esa configuración de nginx. Como el HTML es el mismo para toda la SPA, la meta también aplica a la app del odontólogo, que tampoco necesita enviar el Referer.
 
 ### D8 — Errores por código en un solo lugar
 

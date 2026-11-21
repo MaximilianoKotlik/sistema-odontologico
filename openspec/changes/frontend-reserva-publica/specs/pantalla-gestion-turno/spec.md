@@ -21,6 +21,16 @@ La página `/t/{token}` SHALL mostrarse sin iniciar sesión y sin el shell del o
 - **WHEN** se muestra la vista del turno
 - **THEN** la página no contiene el DNI, el teléfono ni el email del paciente, ni la nota interna
 
+### Requirement: El token no se filtra por el Referer
+
+Como el token viaja en la ruta, la página MUST pedir al navegador que no envíe el Referer, tanto con la cabecera `Referrer-Policy: no-referrer` como con `<meta name="referrer" content="no-referrer">` en el HTML.
+
+#### Scenario: Link saliente sin el token
+
+- **GIVEN** el build servido sin la configuración de nginx
+- **WHEN** el paciente toca un link a un mapa desde `/t/{token}`
+- **THEN** el pedido al sitio externo no lleva el token en el Referer, porque el HTML trae `<meta name="referrer" content="no-referrer">`
+
 ### Requirement: Link inválido
 
 Ante cualquier 404 de la API por token, la página MUST mostrar un único mensaje, "Este link no funciona", sin datos del consultorio ni la causa (inexistente, vencido, terminado o malformado).

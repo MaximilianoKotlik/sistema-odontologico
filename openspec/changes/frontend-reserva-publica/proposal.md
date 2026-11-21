@@ -24,7 +24,7 @@ El diferenciador central de la v1 es que el paciente reserve, reprograme o cance
   - Fuera de plazo (`FUERA_DE_PLAZO` o `puedeModificar: false`): mensaje con el botón para llamar a `telefonoContacto`. Con la reserva desactivada: solo cancelar.
   - Un turno `CANCELADO` se ve sin acciones, con quién lo canceló (`canceladoPor`). `HUECO_NO_DISPONIBLE` al reprogramar avisa que el turno conserva su horario (RN-RP-05).
   - Cualquier 404 muestra un único "Este link no funciona", sin datos del consultorio.
-- **Ruteo público**: las dos rutas se suman a las páginas públicas de `publico.ts` (C-21), sin sesión ni `Authorization`. El token nunca se guarda en el navegador.
+- **Ruteo público**: las dos rutas se suman a las páginas públicas de `publico.ts` (C-21), sin sesión ni `Authorization`. El token nunca se guarda en el navegador, y el Referer se bloquea con la cabecera de nginx y con `<meta name="referrer">` en el HTML.
 - **Contrato**: los tipos salen de `api-types.ts`, regenerado cuando C-15 publique sus endpoints.
 - **Tests Vitest** de las validaciones (DNI, celular, email, consentimiento), los estados de error por código, la zona horaria del consultorio y el `.ics`.
 
@@ -49,6 +49,7 @@ El diferenciador central de la v1 es que el paciente reserve, reprograme o cance
 - **Código**: `frontend/src/features/reserva-publica/**`, `frontend/src/features/gestion-turno/**`, las páginas en `frontend/src/pages/`, la tabla de páginas públicas de `frontend/src/publico.ts` y `frontend/src/shared/api-types.ts` regenerado. Sin cambios en `backend/`.
 - **Dependencias**: ninguna nueva. El `.ics` se arma a mano (texto plano con CRLF) y el copiado usa `navigator.clipboard`.
 - **Coordinación**:
+  - **C-15 (Mati), pedido nuevo**: la página pública del consultorio tiene que devolver el horizonte de reserva (por ejemplo `reservableHasta`), para que "Ver más días" llegue hasta ahí y se corte en el lugar correcto (design D3, revisión de #41).
   - **C-15 (Mati)**: este change consume exactamente los nombres de sus specs (`tomaTurnosOnline`, `zonaHoraria`, `dias[].atiende`, `dias[].huecos`, `aceptaPrivacidad`, `linkGestion`, `puedeModificar`, `puedeReprogramar`, `modificableHasta`, `canceladoPor`, `telefonoContacto`, `nuevoInicio`). Si cambian al implementar, se ajustan los specs de este change.
   - **C-21**: reutiliza la estructura de páginas públicas de `publico.ts`.
 - **Correcciones de documentación**: CHANGES.md §C-15 todavía menciona el `.ics`, que pasa a C-16 (ya anotado en la propuesta de C-15).
