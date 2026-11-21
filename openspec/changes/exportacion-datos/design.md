@@ -144,13 +144,14 @@ Para la revisión de Maxi:
 2. **Entidad `odontologo`**: no está en la lista de RN-EX-01. Propongo incluirla sin secretos, por la portabilidad de los datos del propio titular (11 §Derechos del titular). ¿Se confirma, o se actualiza RN-EX-01?
 3. **Dependencias**: OpenPDF y la fuente Noto Sans (OFL) embebida (D6).
 4. **Escape del `+` en teléfonos del CSV** (D5): ¿regla simple para todo, como propongo, o una excepción para los teléfonos E.164 que genera el sistema?
-5. **Mockup de `/app/exportar`**: según el plan del equipo, lo hace Octi (paso 5). ¿Lo hace él o lo hago yo en este mismo PR?
+5. **Mockup de `/app/exportar`**: lo preparó Mati en este PR (ver §UI Mockups), aunque el plan del equipo se lo asignaba a Octi. Falta la aprobación. ¿Hace falta mostrar la fecha de la última exportación? Hoy el backend no la expone, y sumarla requiere un `GET` nuevo.
 6. **Correcciones de documentación al cerrar**: CHANGES.md §C-19 (pantalla en `configuracion/` → `/app/exportar`), FL-06, DD-14 y 03 (método), y RN-EX-01 si se confirma la pregunta 2.
 
 ## UI Mockups
 
 - Design system revision: 1
 - Decision: yes (2026-11-20). La sección `/app/exportar` es una pantalla nueva.
-- Mockups: `openspec/changes/exportacion-datos/mockups/` (pendiente; responsable según la pregunta 5). Estados: inicial, generando, éxito, exportación reciente (429), sin conexión y error en la descarga, en 390x844 y 1440x900.
+- Mockups: [`mockups/exportar.html`](mockups/exportar.html), con su [README](mockups/README.md), brief y decisiones. Estados: `inicial`, `generando`, `listo`, `reciente` (429), `sin-conexion`, `error` y `vencido`.
 - Approval: pending
-- Preview: pendiente
+- Preview: rendered (2026-11-20), 14 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440x900, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola.
+- Visual verify: pendiente (tarea 9.1).

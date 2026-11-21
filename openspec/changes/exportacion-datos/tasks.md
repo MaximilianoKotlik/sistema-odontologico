@@ -52,7 +52,7 @@
 ## 8. Frontend (requiere mockup aprobado)
 
 - [ ] 8.1 `descargar()` en `shared/http.ts` con autorización, refresh único, Problem Details, `Content-Disposition` y `Retry-After` (verificación: escenarios del spec `cliente-api` en `http.test.ts`)
-- [ ] 8.2 Feature `exportacion/` y `pages/exportar.ts` según el mockup aprobado: contenido, progreso, éxito, 429 con minutos restantes, sin conexión y corte de descarga, con un solo pedido en vuelo (verificación: escenarios del spec `pantalla-exportacion` en Vitest + jsdom)
+- [ ] 8.2 Feature `exportacion/` y `pages/exportar.ts` según el mockup aprobado ([`mockups/exportar.html`](mockups/exportar.html) y sus capturas en `mockups/previews/`, criterio de aceptación): contenido, progreso, éxito, 429 con minutos restantes, sin conexión y corte de descarga, con un solo pedido en vuelo (verificación: escenarios del spec `pantalla-exportacion` en Vitest + jsdom)
 - [ ] 8.3 Accesibilidad AA: foco, 44 px, `aria-live` y reduced motion (verificación: escenario "Navegación con teclado" y revisión con el checklist de `accessibility`)
 - [ ] 8.4 Corregir el comentario de `pages/seccion-pendiente.ts` (C-18 y C-19 cruzados) y quitar `exportar` de las secciones pendientes (verificación: `shell.test.ts` en verde)
 

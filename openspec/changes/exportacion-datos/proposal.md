@@ -61,7 +61,7 @@ La exportación completa es uno de los pilares del diferenciador de transparenci
   - **C-15**: la exclusión de `token_gestion_turno` se prueba contra su tabla.
   - **C-20 (Fran)**: la exportación tiene que quedar habilitada con el plan `VENCIDO`, igual que su evento.
   - **C-22 (Octi)**: `/seguridad` tiene que describir el contenido real del ZIP.
-  - **Mockup**: según el plan del equipo, lo hace Octi (paso 5). Ver design §UI Mockups.
+  - **Mockup**: lo preparó Mati en este PR, aunque el plan se lo asignaba a Octi. Está pendiente de aprobación (design §UI Mockups).
 - **Correcciones de documentación al cerrar el change**:
   - CHANGES.md §C-19 ubica la pantalla en `configuracion/`, pero la ruta es `/app/exportar` (03 y C-06).
   - FL-06 y DD-14 dicen `GET /exportacion` y CHANGES.md dice `POST` (design D1).
