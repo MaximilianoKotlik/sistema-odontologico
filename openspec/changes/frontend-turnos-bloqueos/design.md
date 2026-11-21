@@ -105,6 +105,6 @@
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: `openspec/changes/frontend-turnos-bloqueos/mockups/` (`nuevo-turno.html`, `acciones-turno.html`, `bloqueos.html`, `aviso-fuera-de-horario.html`, más `c14.css`, y `base.css`, `agenda.css` y `mockup.js` copiados de C-13)
-- Approval: pending
+- Approval: approved (2026-11-20, by Maxi), versión `e91e1b8` (#31). El estado `aviso-fuera-de-horario` se sumó después, a pedido de Maxi (#34)
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
