@@ -141,6 +141,15 @@ class PacienteTest {
     }
 
     @Test
+    void losEspaciosExtraNoHacenQueLosDatosDifieran() {
+        // C-15, design D7: "José  María" y "jose maria" son la misma persona.
+        Paciente jose = manual("José  María", "Pérez   Gómez", "+5491100000001", null);
+
+        assertThat(jose.datosDifierenDe("jose maria", "perez gomez")).isFalse();
+        assertThat(jose.datosDifierenDe("Otra Persona", "perez gomez")).isTrue();
+    }
+
+    @Test
     void losAcentosNoHacenQueLosDatosDifieran() {
         Paciente jose = manual("José", "Pérez", "+5491100000001", null);
 

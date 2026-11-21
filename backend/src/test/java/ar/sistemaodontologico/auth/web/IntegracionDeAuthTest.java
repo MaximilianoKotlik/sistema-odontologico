@@ -1,7 +1,7 @@
 package ar.sistemaodontologico.auth.web;
 
-import ar.sistemaodontologico.auth.application.EnviadorDeEmails;
 import ar.sistemaodontologico.compartido.IntegracionPostgresTest;
+import ar.sistemaodontologico.compartido.application.EnviadorDeEmails;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;

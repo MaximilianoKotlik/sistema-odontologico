@@ -1,9 +1,11 @@
 package ar.sistemaodontologico.agenda.application;
 
 import ar.sistemaodontologico.agenda.domain.Intervalo;
+import ar.sistemaodontologico.agenda.domain.PacienteId;
 import ar.sistemaodontologico.agenda.domain.Turno;
 import ar.sistemaodontologico.agenda.domain.TurnoId;
 import ar.sistemaodontologico.compartido.domain.ConsultorioId;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +25,10 @@ public interface TurnoRepositorio {
      * {@code OptimisticLockingFailureException} (409 {@code CONFLICTO_CONCURRENCIA}, RN-GL-02) sin escribir.
      */
     long actualizar(Turno turno, long versionEsperada);
+
+    /** Los turnos activos del paciente, reservados por link, que todavía no empezaron (RN-RP-08). */
+    long contarFuturosActivosPorLink(ConsultorioId consultorio, PacienteId paciente, Instant ahora);
+
+    /** Registra un cambio hecho por el paciente que el odontólogo todavía no vio (DD-30); no cambia la versión. */
+    void marcarNovedadPaciente(ConsultorioId consultorio, TurnoId turno, Instant ahora);
 }

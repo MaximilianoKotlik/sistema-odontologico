@@ -4,6 +4,7 @@ import ar.sistemaodontologico.auth.application.EmisorDeAccessToken.AccessToken;
 import ar.sistemaodontologico.auth.domain.HashDeToken;
 import ar.sistemaodontologico.auth.domain.RefreshToken;
 import ar.sistemaodontologico.auth.domain.Usuario;
+import ar.sistemaodontologico.compartido.application.GeneradorDeSecretos;
 import ar.sistemaodontologico.compartido.application.PublicadorDeAuditoria;
 import ar.sistemaodontologico.compartido.domain.ConsultorioId;
 import ar.sistemaodontologico.compartido.domain.GeneradorDeIds;

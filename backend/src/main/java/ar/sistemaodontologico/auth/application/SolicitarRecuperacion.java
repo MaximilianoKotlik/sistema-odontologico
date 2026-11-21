@@ -3,6 +3,7 @@ package ar.sistemaodontologico.auth.application;
 import ar.sistemaodontologico.auth.domain.HashDeToken;
 import ar.sistemaodontologico.auth.domain.TokenDeRecuperacion;
 import ar.sistemaodontologico.auth.domain.Usuario;
+import ar.sistemaodontologico.compartido.application.GeneradorDeSecretos;
 import ar.sistemaodontologico.compartido.domain.GeneradorDeIds;
 import java.time.Clock;
 import java.time.Instant;

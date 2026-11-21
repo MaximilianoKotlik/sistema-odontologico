@@ -107,6 +107,18 @@ class PacienteRepositorioJdbc implements PacienteRepositorio {
                 .update();
     }
 
+    @Override
+    public void actualizarConsentimiento(ConsultorioId consultorio, PacienteId paciente, Consentimiento consentimiento) {
+        jdbc.sql("""
+                UPDATE paciente SET consentimiento_at = :at, consentimiento_version = :version, updated_at = now()
+                 WHERE consultorio_id = :consultorio AND id = :id""")
+                .param("at", Timestamp.from(consentimiento.aceptadoAt()))
+                .param("version", consentimiento.version())
+                .param("consultorio", consultorio.valor())
+                .param("id", paciente.valor())
+                .update();
+    }
+
     private static Paciente paciente(ResultSet fila) throws SQLException {
         Timestamp consentimientoAt = fila.getTimestamp("consentimiento_at");
         Timestamp informadoAt = fila.getTimestamp("informado_at");

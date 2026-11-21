@@ -126,7 +126,7 @@ sequenceDiagram
     end
 ```
 
-**Casos de error**: slug inexistente → 404; reserva pública desactivada o plan vencido → 200 con `tomaTurnosOnline = false` y teléfono ([RN-RP-11](05_reglas_de_negocio.md)); hueco tomado → 409; límite por teléfono → 409 `LIMITE_TURNOS`; rate limit → 429.
+**Casos de error**: slug inexistente → 404; reserva pública desactivada o plan vencido → 200 con `tomaTurnosOnline = false` y teléfono ([RN-RP-11](05_reglas_de_negocio.md)); hueco tomado → 409; límite por paciente (DNI) → 409 `LIMITE_TURNOS`; rate limit → 429.
 
 ## FL-05: El paciente reprograma o cancela con anticipación mínima
 

@@ -392,11 +392,11 @@ Reglas de coordinación del paralelismo:
 > C-15 se ejecuta en paralelo con C-12 apenas termina C-11. C-16 arranca apenas terminan C-06 y C-15; no espera a la agenda del odontólogo.
 
 ### [C-15] `reserva-publica-backend`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #47, 2026-11-21)
 - **Scope**:
   - Migración: `token_gestion_turno` (hash SHA-256, `expira_at = fin`, `revocado_at`).
   - Endpoints públicos sin cuenta: `GET /api/v1/public/consultorios/{slug}` (nombre, dirección, teléfono, prestaciones visibles), `GET .../huecos`, `POST .../turnos` (crea turno `origen = LINK` vía el caso de uso de C-11, devuelve el token una sola vez; consentimiento de privacidad; 409 `HUECO_NO_DISPONIBLE`, `LIMITE_TURNOS`), `GET/POST /api/v1/public/turnos/{token}` para ver, reprogramar y cancelar (409 `FUERA_DE_PLAZO` con teléfono del consultorio; 404 uniforme ante token inválido). La vista por token nunca expone `nota_interna`.
-  - Token de 256 bits (`SecureRandom`, base64url), reserva concurrente (exactamente una prospera), dedupe por teléfono (con `requiere_revision`), límite 2 turnos futuros activos, body máx. 64 KB, rate limiting por IP/token, `.ics` descargable (P1).
+  - Token de 256 bits (`SecureRandom`, base64url), reserva concurrente (exactamente una prospera), dedupe por DNI (DD-24) (con `requiere_revision`), límite 2 turnos futuros activos, body máx. 64 KB, rate limiting por IP/token.
   - Reserva desactivada si `reserva_publica_activa = false` o plan `VENCIDO`: la página informa que no toma turnos online y muestra el teléfono. **Criterio de aceptación explícito (RN-RP-11)**: en ese estado, los links de gestión existentes siguen permitiendo **cancelar** (dentro de RN-RP-04), pero no reservar ni reprogramar.
   - Auditoría con `actor_tipo = PACIENTE`.
   - Tests: US-030, US-031, US-032, RN-RP-11 (cancelar sí / reservar y reprogramar no, con reserva desactivada), concurrencia, enumeración de tokens, aislamiento por tenant.
@@ -412,6 +412,7 @@ Reglas de coordinación del paralelismo:
 ### [C-16] `frontend-reserva-publica`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
+  - `.ics` descargable generado en el cliente (P1; FL-04 paso 6).
   - Features `reserva-publica/` (`/c/{slug}`: elegir prestación, hueco, datos, consentimiento, confirmación con link `/t/{token}` para guardar; estado "no toma turnos online" con teléfono) y `gestion-turno/` (`/t/{token}`: ver, reprogramar, cancelar; mensaje con teléfono si está fuera de plazo; con reserva desactivada solo ofrece cancelar).
   - Mobile-first a 360 px, áreas táctiles >= 44 px, selector de horarios del sistema de diseño; sin cachear respuestas públicas en el Service Worker; objetivo de reserva < 90 s.
   - Mockup revisado de todo el flujo del paciente antes de implementar.
