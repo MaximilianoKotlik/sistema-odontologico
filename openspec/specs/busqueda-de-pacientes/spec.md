@@ -6,7 +6,12 @@ Define cómo el odontólogo encuentra a un paciente de su consultorio por nombre
 ## Requirements
 
 ### Requirement: Buscar pacientes
-El odontólogo SHALL buscar los pacientes de su consultorio con un texto de al menos 3 caracteres. Un texto de solo dígitos (sin contar puntos, espacios, `+` ni guiones) MUST buscar el DNI que empieza con esos dígitos o el teléfono que los contiene. Un texto con letras MUST buscar el nombre o el apellido que empiezan con alguna de sus palabras, sin distinguir mayúsculas. La búsqueda MUST devolver como máximo 20 pacientes.
+El odontólogo SHALL buscar los pacientes de su consultorio con un texto de al menos 3 caracteres. Un texto de solo dígitos (sin contar puntos, espacios, `+` ni guiones) MUST buscar el DNI que empieza con esos dígitos o el teléfono que los contiene. Un texto con letras MUST buscar el nombre o el apellido que empiezan con alguna de sus palabras, sin distinguir mayúsculas ni tildes. La búsqueda MUST devolver como máximo 20 pacientes.
+
+#### Scenario: Sin tildes
+- **GIVEN** el paciente "José Pérez"
+- **WHEN** el odontólogo busca "perez"
+- **THEN** la respuesta trae a "José Pérez"
 
 #### Scenario: Por apellido
 - **GIVEN** los pacientes "Ana Prueba" y "Carla Ficticia"
