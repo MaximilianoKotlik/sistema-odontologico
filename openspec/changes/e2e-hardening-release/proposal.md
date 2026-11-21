@@ -2,7 +2,7 @@
 
 > Change **C-23** de [CHANGES.md](../../../CHANGES.md) · Governance **MEDIO** · Depende de `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21` y `C-22` · Responsable: Maxi · Aprobación: Maxi.
 >
-> Trabajo anticipado: esta propuesta se prepara con C-13, C-14, C-16, C-17, C-18 y C-22 todavía abiertos. `tasks.md` separa lo que se puede implementar ya, sobre lo que está en `main` (C-01 a C-12, C-15, C-19, C-20 y C-21), de lo que espera a cada dependencia. El change se cierra recién cuando todas estén `[x]`.
+> Trabajo anticipado: esta propuesta se prepara con C-13, C-14, C-16, C-17, C-18 y C-22 todavía abiertos. Por decisión de Maxi (2026-11-21), no se implementa nada hasta que todas estén `[x]`. `tasks.md` separa igual lo que no depende de esos changes de lo que integra lo que trae cada uno.
 
 ## Why
 

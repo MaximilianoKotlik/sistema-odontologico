@@ -1,8 +1,8 @@
 # Tasks
 
 > Strict TDD: cada tarea de código arranca con un test que falla (red → green → triangulate → refactor).
-> Los grupos 1 a 6 se pueden hacer ya, sobre lo que está en `main`. El grupo 7 espera a cada dependencia: cada tarea dice a cuál.
-> El change se cierra (grupo 8) recién cuando C-13, C-14, C-16, C-17, C-18 y C-22 estén `[x]`.
+> **Decisión de Maxi (2026-11-21)**: no se implementa ninguna tarea hasta que C-13, C-14, C-16, C-17, C-18 y C-22 estén `[x]`. Hasta entonces el PR tiene solo la propuesta.
+> Cuando estén todas, el orden es el de los grupos: los grupos 1 a 6 no dependen de esos changes, el grupo 7 integra lo que trajo cada uno y el grupo 8 cierra.
 
 ## 0. Propuesta (trabajo anticipado)
 
@@ -45,7 +45,7 @@
 - [ ] 6.3 Medir la duración del job en el PR. Si pasa de 10 minutos, proponer a Maxi un ajuste de D3 antes de seguir
 - [ ] 6.4 Maxi suma `E2E (humo)` a los checks requeridos de la protección de `main` (configuración de GitHub, a mano). Verificar en un PR que el check aparece como requerido
 
-## 7. Lo que espera a las dependencias
+## 7. Integración con lo que trajo cada dependencia
 
 - [ ] 7.1 **C-13**: rebasar y cambiar el recorrido de 5.2 para que valide la agenda real del día de la semana de demo. Verificar que pasa en CI
 - [ ] 7.2 **C-14**: sumar al recorrido del odontólogo crear un turno en un hueco libre con un paciente único por corrida, verlo en la agenda y cancelarlo al final (D4). Verificar dos corridas seguidas sobre el mismo stack

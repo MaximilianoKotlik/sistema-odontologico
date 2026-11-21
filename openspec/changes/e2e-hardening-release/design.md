@@ -93,7 +93,7 @@
 
 - [El humo corre contra el dev server de Vite, no contra el build de producción] → El job `frontend` ya prueba que el build compila, y el checklist anota servir el build en el VPS y repetir el humo contra él antes de lanzar.
 - [El job de E2E suma minutos a cada PR (construir las imágenes y levantar Compose)] → Corre en paralelo con los otros jobs y reusa la caché de capas de Docker. Si pasa de 10 minutos se revisa la decisión D3.
-- [Los recorridos dependen de pantallas que todavía no están (C-13, C-14 y C-16)] → El humo arranca con login → agenda visible, y los recorridos completos se suman cuando entra cada pantalla (tareas del grupo 7).
+- [Los recorridos dependen de pantallas que todavía no están (C-13, C-14 y C-16)] → No se implementa nada hasta que estén todas las dependencias (decisión de Maxi, 2026-11-21), así que los recorridos se escriben sobre las pantallas reales. El paso intermedio de D4 (login → agenda visible) queda como primer recorrido, no como espera.
 - [Flakiness por esperas o por el orden de los datos] → Esperas por estado de la UI (nunca `waitForTimeout`), un reintento en CI y recorridos independientes (D4).
 - [La matriz de aislamiento necesita un cuerpo válido por escritura, y eso hay que mantenerlo] → Es el precio de que cierre por defecto: el test dice exactamente qué endpoint falta.
 - [`native` confía en las IPs de red privada como proxies] → En el VPS el proxy corre en el mismo host o en la red de Compose. Si no, se fija `internal-proxies`. Queda en el checklist de despliegue.
