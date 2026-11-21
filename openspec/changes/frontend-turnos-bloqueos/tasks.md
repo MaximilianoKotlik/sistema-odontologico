@@ -9,7 +9,7 @@
 - [x] 0.1 Mockups de nuevo turno, acciones sobre el turno y bloqueos, con sus estados, sobre el sistema de diseño rev. 1
 - [x] 0.2 Capturas a 390×844 y 1440×900 en `mockups/previews/`
 - [ ] 0.3 Aprobación de Maxi registrada en `design.md` y `mockups/README.md`
-- [ ] 0.4 Acordar con Fran (C-12): búsqueda de pacientes, listado de bloqueos futuros y turno con el que choca en `TURNO_SOLAPADO`
+- [x] 0.4 Acordado: Maxi sumó a C-12 la búsqueda de pacientes, el listado de bloqueos futuros, el turno con el que choca en `TURNO_SOLAPADO` y los turnos fuera de disponibilidad (#34)
 
 ## 1. Base
 
@@ -31,6 +31,7 @@
 - [ ] 3.4 Ajustar duración
 - [ ] 3.5 Nota interna con contador
 - [ ] 3.6 Bloqueos: listado, vacío, alta (rango o días completos), `BLOQUEO_CON_TURNOS` y eliminar
+- [ ] 3.7 Aviso de turnos fuera de horario en la pestaña Horarios de C-09, con `GET /api/v1/turnos/fuera-de-disponibilidad` (D10)
 
 ## 4. Verificación
 

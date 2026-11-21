@@ -91,3 +91,19 @@ Sin conexión, las acciones SHALL estar deshabilitadas (C-13). Ante 403 `PLAN_VE
 #### Scenario: Plan vencido
 - **WHEN** la respuesta a crear un turno es 403 `PLAN_VENCIDO`
 - **THEN** el formulario dice que la agenda está en solo lectura y no muestra un error genérico
+
+### Requirement: Aviso de turnos fuera de horario
+Después de guardar los horarios de atención en Configuración, la pantalla SHALL pedir los turnos futuros activos que quedaron fuera de la grilla nueva (sin contar los sobreturnos) y, si hay, MUST listarlos con día, hora, paciente y un link a cada turno. El aviso MUST NOT bloquear ni deshacer el guardado.
+
+#### Scenario: Tres turnos afuera
+- **GIVEN** turnos el viernes a las 16:00, 17:00 y 18:00
+- **WHEN** el odontólogo guarda el viernes solo de 09:00 a 13:00
+- **THEN** se ve "Guardamos tus horarios" y el aviso "3 turnos quedan fuera de tu horario nuevo" con los tres turnos y "Ver turno" en cada uno
+
+#### Scenario: Muchos turnos afuera
+- **WHEN** quedan 12 turnos fuera del horario nuevo
+- **THEN** el aviso muestra los primeros 5 y un acceso "Ver los 12 en la agenda"
+
+#### Scenario: Ninguno afuera
+- **WHEN** ningún turno futuro queda fuera del horario nuevo
+- **THEN** solo se ve "Guardamos tus horarios", sin aviso

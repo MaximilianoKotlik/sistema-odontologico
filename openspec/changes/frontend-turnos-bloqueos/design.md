@@ -84,6 +84,12 @@
 - El contador de la nota es `aria-live="polite"` y se anuncia solo cada 50 caracteres y al pasarse.
 - El selector de duración se puede usar con teclado y el valor nuevo se anuncia.
 
+### D10 — Aviso de turnos fuera de horario
+- Vive en la pestaña Horarios de C-09. Después de un `PUT /api/v1/disponibilidad` exitoso, se muestra "Guardamos tus horarios" y se pide `GET /api/v1/turnos/fuera-de-disponibilidad` (C-12, #34). Mientras tanto, "Estamos revisando si algún turno quedó afuera…".
+- Si hay turnos afuera: aviso `role="alert"` arriba de la grilla, con la cantidad, la explicación (siguen vigentes; reprogramalos o cancelalos) y hasta 5 turnos con "Ver turno", que lleva al detalle de C-13 donde están las acciones. Con más de 5: "Ver los N en la agenda". El botón "Entendido" lo cierra.
+- No bloquea ni deshace el guardado: la grilla ya se guardó. Los sobreturnos no se cuentan, porque pueden quedar fuera de horario (RN-AG-04).
+- Si el `GET` falla, el guardado sigue confirmado y el aviso no aparece. Es información, no una condición del guardado.
+
 ## Risks / Trade-offs
 
 - [C-12 sin propuesta y tres puntos sin dueño: búsqueda de pacientes, listado de bloqueos y detalle del solapado] → quedan en la tarea 0.4 para acordar antes de C-12. Mientras tanto, `api.ts` aísla el contrato.
@@ -98,7 +104,7 @@
 
 - Design system revision: 1
 - Decision: yes (2026-11-20)
-- Mockups: `openspec/changes/frontend-turnos-bloqueos/mockups/` (`nuevo-turno.html`, `acciones-turno.html`, `bloqueos.html`, más `c14.css`, y `base.css`, `agenda.css` y `mockup.js` copiados de C-13)
+- Mockups: `openspec/changes/frontend-turnos-bloqueos/mockups/` (`nuevo-turno.html`, `acciones-turno.html`, `bloqueos.html`, `aviso-fuera-de-horario.html`, más `c14.css`, y `base.css`, `agenda.css` y `mockup.js` copiados de C-13)
 - Approval: pending
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending

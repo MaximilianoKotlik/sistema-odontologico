@@ -24,6 +24,7 @@ C-13 deja la agenda para leer. Sin C-14, el odontólogo no puede cargar el turno
   - crear un bloqueo por rango de horas o días completos, con motivo;
   - eliminar un bloqueo con confirmación.
   Ante 409 `BLOQUEO_CON_TURNOS`, se muestra la lista de turnos en conflicto con acceso a cada uno (RN-AG-05).
+- **Aviso de turnos fuera de horario** (decisión de Maxi en #15, alcance en #34): al guardar los horarios en Configuración (pantalla de C-09), si quedan turnos futuros fuera de la grilla nueva, se listan con un link a cada uno. No bloquea el guardado. Va en C-14 porque necesita la API de turnos de C-12.
 - **Errores de C-12 traducidos a mensajes y salidas**:
   - `TURNO_SOLAPADO` (con el turno que choca y la opción "Crear como sobreturno");
   - `FUERA_DE_DISPONIBILIDAD` (con la opción "Crear como sobreturno");
@@ -54,11 +55,9 @@ C-13 deja la agenda para leer. Sin C-14, el odontólogo no puede cargar el turno
 - **Código**:
   - `frontend/src/features/turnos/` (formularios, validaciones, mapeo de errores y cliente de la API);
   - `frontend/src/features/bloqueos/`;
+  - el aviso de turnos fuera de horario en la pestaña Horarios de C-09 (`features/configuracion/`);
   - `pages/bloqueos.ts`, que reemplaza el placeholder de C-06.
-- **API**: consume los endpoints de C-12 (`POST /turnos`, `PATCH /turnos/{id}/estado`, `POST /turnos/{id}/reprogramar`, `PATCH /turnos/{id}/duracion`, `PATCH /turnos/{id}/nota`, `POST/DELETE /bloqueos`) y las prestaciones activas de C-08.
-- **Coordinación con C-12 (Fran)**, puntos que el scope de C-12 no nombra:
-  - **búsqueda de pacientes** por nombre, DNI o teléfono para el alta del turno (FL-03), por ejemplo `GET /api/v1/pacientes?q=`, con aislamiento por tenant;
-  - **listado de bloqueos futuros** para `/app/bloqueos`, por ejemplo `GET /api/v1/bloqueos?desde=`, o sacarlos de la agenda;
-  - que el 409 `TURNO_SOLAPADO` incluya el turno con el que choca, como `BLOQUEO_CON_TURNOS` incluye su lista.
+- **API**: consume los endpoints de C-12 (`POST /turnos`, `PATCH /turnos/{id}/estado`, `POST /turnos/{id}/reprogramar`, `PATCH /turnos/{id}/duracion`, `PATCH /turnos/{id}/nota`, `POST/DELETE /bloqueos`) y las prestaciones activas de C-08. El aviso usa `GET /api/v1/turnos/fuera-de-disponibilidad` (C-12, #34).
+- **Coordinación con C-12 (Fran)**: Maxi sumó al alcance de C-12 (#34) la búsqueda de pacientes (`GET /api/v1/pacientes?q=`), el listado de bloqueos futuros (`GET /api/v1/bloqueos?desde=`), el turno con el que choca en `TURNO_SOLAPADO` y `GET /api/v1/turnos/fuera-de-disponibilidad`.
 - **Dependencias**: ninguna nueva.
 - **Preguntas abiertas**: no toca ninguna Alta. Respeta DD-24 (DNI), DD-32 (teléfono obligatorio), DD-36 (un sillón) y DD-37: el paciente sin DNI argentino pide el turno por teléfono y el odontólogo lo carga a mano con un DNI. El texto de ayuda para ese caso queda para revisar (design D4).

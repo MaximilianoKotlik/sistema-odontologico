@@ -25,9 +25,10 @@ Cada archivo elige el estado con `?estado=…`. Al pie hay una franja "Estados d
 |---|---|---|
 | Nuevo turno y sobreturno (sobre la agenda) | `nuevo-turno.html` | `vacio`, `buscar`, `paciente-nuevo`, `dni-invalido`, `paciente-elegido` (desde el hueco de 12:00), `aviso-superpone` (antes de enviar), `sobreturno`, `solapado` (409), `fuera` (409 `FUERA_DE_DISPONIBILIDAD`), `bloqueado` (409 `HORARIO_BLOQUEADO`), `guardando`, `creado`, `plan-vencido` (403) |
 | Acciones sobre el turno (sobre el detalle) | `acciones-turno.html` | `confirmado-ok` (sin diálogo), `cancelar`, `ausente`, `reprogramar`, `reprogramar-solapado` (409), `duracion`, `duracion-solapado` (409), `nota`, `nota-larga`, `transicion` (409 `TRANSICION_INVALIDA`), `concurrencia` (409 `CONFLICTO_CONCURRENCIA`) |
+| Aviso de turnos fuera de horario (Configuración › Horarios de C-09, después de guardar) | `aviso-fuera-de-horario.html` | `aviso` (3 turnos), `aviso-muchos` (12: muestra 5 y "Ver los 12 en la agenda"), `cargando-aviso`, `sin-turnos` |
 | Bloqueos (`/app/bloqueos`) | `bloqueos.html` | `lista`, `vacio`, `nuevo` (por horas), `nuevo-dias` (todo el día), `fin-invalido`, `con-turnos` (409 `BLOQUEO_CON_TURNOS`), `eliminar`, `eliminado`, `cargando` |
 
-Capturas: `previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png` (66 en total).
+Capturas: `previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png` (74 en total).
 
 Para verlos: abrir el HTML en el navegador, o servir la raíz del repo (`python -m http.server`) y entrar a `/openspec/changes/frontend-turnos-bloqueos/mockups/nuevo-turno.html`.
 
@@ -45,7 +46,8 @@ Para verlos: abrir el HTML en el navegador, o servir la raíz del repo (`python 
 6. **Duración con −5 / +5 y atajos** (D7), con el fin nuevo en vivo.
 7. **Paciente: un solo buscador** por nombre, DNI o teléfono, y alta rápida en el mismo diálogo, con DNI y celular obligatorios (DD-24, DD-32). **Para revisar**: no se muestra ayuda extra para pacientes sin DNI argentino (DD-37). El criterio queda en el consultorio.
 8. **Bloqueos**: por horas o por días completos ("Todo el día"), con motivo opcional de hasta 120 caracteres (04) y confirmación para quitarlos.
-9. **Para acordar con C-12 (Fran)**: la búsqueda de pacientes, el listado de bloqueos futuros y que `TURNO_SOLAPADO` traiga el turno con el que choca. Ninguno está hoy en su scope (tarea 0.4).
+9. **API de C-12**: Maxi sumó a su alcance (#34) la búsqueda de pacientes, el listado de bloqueos futuros, el turno con el que choca en `TURNO_SOLAPADO` y los turnos fuera de disponibilidad.
+10. **Aviso de turnos fuera de horario** (D10, pedido por Maxi en #34): después de guardar los horarios, si quedan turnos futuros afuera se listan con "Ver turno". No bloquea el guardado ni cuenta los sobreturnos.
 
 ## Datos ficticios
 

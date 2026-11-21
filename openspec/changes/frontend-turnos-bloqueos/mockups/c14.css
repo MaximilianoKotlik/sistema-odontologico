@@ -111,3 +111,8 @@ textarea.input{min-height:140px;padding:var(--space-2) var(--space-3);resize:ver
 
 /* Campos en fila alineados arriba: sin esto, el campo más bajo se estira y reparte el sobrante entre su etiqueta y su input (revisión de Maxi en #31) */
 .row-2>.field,.row-dt>.field{align-content:start}
+
+/* Lista de turnos dentro de un aviso: sin la sangría de las listas del aviso y con "Ver turno" en una línea */
+.notice .conflictos{padding-left:0;margin-top:var(--space-2)}
+.conflictos a{white-space:nowrap;flex:none}
+.conflictos li>span{min-width:0}
