@@ -32,8 +32,8 @@
 
 ### D2 — Lo que la vista necesita de la API (a acordar con C-12)
 - `GET /api/v1/agenda?desde&hasta` (instantes UTC). Por cada turno: `id`, `inicio`, `fin`, `duracionMin`, `estado`, `esSobreturno`, `origen`, `prestacion {id, nombre}`, `paciente {id, nombre, apellido}`, `tieneNota`, `canceladoPor` y `cambioPaciente` (`RESERVO` | `REPROGRAMO` | `CANCELO` | `null`, sin ver). Por cada bloqueo: `id`, `inicio`, `fin` y `motivo`. Los cancelados vienen siempre: el filtro es del cliente, para que la caché offline sirva con los dos valores del interruptor.
-- **Detalle**: `GET /api/v1/turnos/{id}` con los datos completos (DNI, teléfono, email, nota, motivo de cancelación, horario anterior si el paciente lo reprogramó). No está en el scope de C-12. **Para acordar**: se suma a C-12, o la agenda trae todo y el detalle se arma desde la caché.
-- **Visto**: abrir el detalle marca el cambio como visto. **Para acordar**: `POST /api/v1/turnos/{id}/visto` u otro mecanismo de C-12.
+- **Detalle**: `GET /api/v1/turnos/{id}` con los datos completos (DNI, teléfono, email, nota, motivo de cancelación, horario anterior si el paciente lo reprogramó). **Decidido por Maxi (#27)**: se suma a C-12, con su test de aislamiento por tenant. La agenda sigue liviana, así la caché offline no guarda más datos personales de los necesarios.
+- **Visto**: abrir el detalle llama a `POST /api/v1/turnos/{id}/visto` (DD-30). **Decidido por Maxi (#27)**: se suma a C-12.
 - La disponibilidad sale de `GET /api/v1/disponibilidad` (C-08), cacheada en memoria durante la sesión.
 
 ### D3 — Vista diaria como línea de tiempo y no como grilla proporcional
@@ -43,7 +43,7 @@
 - En desktop, la vista Día es la misma lista, en una columna de hasta 720 px.
 
 ### D4 — Vista semanal
-- **Desktop**: grilla proporcional de 7 columnas, de 08:00 a 20:00 a 1,2 px por minuto (un turno de 20 minutos mide 24 px, el mínimo de WCAG 2.5.8 para puntero). El horario de atención va en fondo de superficie y lo de fuera de horario en `surface-muted`. Los superpuestos se reparten en columnas dentro del día. El rango de horas se ajusta a la disponibilidad y a los turnos de la semana.
+- **Desktop**: grilla proporcional de 7 columnas, de 08:00 a 20:00 a 1,2 px por minuto (un turno de 20 minutos mide 24 px, el mínimo de WCAG 2.5.8 para puntero). El horario de atención va en fondo de superficie y lo de fuera de horario en `surface-muted`. Con un solo sillón (DD-36), lo único que se superpone es un sobreturno: el turno base ocupa todo el ancho y el sobreturno se superpone a la derecha, con alto mínimo de 34 px, el ícono "+" y el borde punteado, la hora y el apellido, y un `title` y un nombre accesible con el resto (revisión de Maxi en #27). El rango de horas se ajusta a la disponibilidad y a los turnos de la semana.
 - **Mobile**: la grilla de 7 columnas no se lee a 360 px, así que la semana es una lista agrupada por día ("Lunes 16 · 6 turnos") con filas compactas. Tocar el día abre su vista diaria.
 
 ### D5 — Estados y marcas visuales (sin tokens nuevos)
@@ -58,7 +58,9 @@
 | Nuevo | etiqueta sólida `primary` | punto · "Nuevo · reservó / reprogramó / canceló por el link" |
 | Nota | ícono de nota y texto oculto "con nota" | — |
 
-**Para revisar**: Ausente usa los neutros porque el sistema de diseño rev. 1 no tiene un token de estado para Ausente. Si Maxi prefiere un token propio, se sube la revisión del sistema de diseño.
+Ausente usa los neutros porque el sistema de diseño rev. 1 no tiene un token de estado para Ausente: **aprobado por Maxi (#27)**, sin token propio, y el sistema sigue en rev. 1.
+
+Los cancelados se atenúan **sin opacidad** (fondo `surface-muted`, texto `text-muted` y nombre tachado), para que sus etiquetas y su texto secundario conserven el contraste AA (revisión de Maxi en #27).
 
 ### D6 — URL y estado de la vista
 - `/app/agenda?vista=dia&fecha=2026-11-20` y `?vista=semana&fecha=2026-11-16`. Sin parámetros se aplica D1 de la spec (por ancho y hoy).
@@ -81,10 +83,9 @@
 
 ## Risks / Trade-offs
 
-- [C-12 sin propuesta: la forma de la respuesta puede cambiar] → D2 queda como contrato propuesto y el mapeo vive en `api.ts`. Los dos puntos abiertos (detalle y visto) se acuerdan con Fran antes de implementar C-12.
+- [C-12 sin propuesta: la forma de la respuesta puede cambiar] → D2 queda como contrato propuesto y el mapeo vive en `api.ts`. Los dos endpoints del detalle y el visto ya están decididos (#27).
+- [Un sobreturno superpuesto tapa parte del texto del turno base en la grilla] → el sobreturno empieza más abajo que el turno base, así que la primera línea (hora y paciente) queda siempre visible, y el turno completo está en el detalle.
 - [Una agenda muy cargada hace larga la lista del día] → la marca de ahora y el botón "Hoy" llevan al momento actual. Las filas de libre y fuera de horario son de una línea.
-- [La grilla semanal con muchos superpuestos se vuelve angosta] → con un solo sillón (DD-36), lo normal es un turno más algún sobreturno, y nunca más de 3 columnas.
-- [Ausente sin token propio] → D5, para revisar.
 
 ## Migration Plan
 

@@ -9,7 +9,7 @@
 - [x] 0.1 Mockups de la agenda (día, semana y estados) y del detalle de turno, sobre el sistema de diseño rev. 1
 - [x] 0.2 Capturas a 390×844 y 1440×900 en `mockups/previews/`
 - [ ] 0.3 Aprobación de Maxi registrada en `design.md` y `mockups/README.md`
-- [ ] 0.4 Acordar con Fran (C-12) los puntos abiertos de D2: datos del detalle y marca de visto
+- [x] 0.4 Acordar los puntos abiertos de D2: Maxi decidió en #27 sumar a C-12 `GET /api/v1/turnos/{id}` y `POST /api/v1/turnos/{id}/visto`
 
 ## 1. Base
 
