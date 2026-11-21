@@ -77,3 +77,7 @@
 @media (min-width:1024px){.cols-ficha{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start}}
 /* La base anula el margen del último campo; dentro de una fila de dos (que en mobile se apila) hace falta. */
 form .row-2 > .field{margin-bottom:var(--space-4)}
+
+/* Agenda: el aviso de pacientes va pegado al de cambios de DD-30, con la misma jerarquía (revisión de #36). */
+.notice.pegado{margin-bottom:var(--space-2)}
+.notice strong.inline{display:inline;font-size:inherit;line-height:inherit}

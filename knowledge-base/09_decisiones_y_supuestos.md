@@ -251,6 +251,15 @@
 **Justificación**: mantiene el modelo de DD-24 simple.
 **Trade-offs aceptados**: esos pacientes no pueden reservar solos; el odontólogo carga un DNI en la carga manual.
 
+### DD-38 — Guardar lo informado en la reserva hasta revisar al paciente (aprobada en la revisión de los mockups de C-17, 2026-11-20)
+**Estado**: aprobada por Maxi en la revisión de los mockups de C-17 (#36).
+**Decisión**: cuando la deduplicación por DNI ([RN-RP-03](05_reglas_de_negocio.md), [DD-24](#dd-24--identidad-del-paciente-por-dni-resuelve-pa-01-confirmada-por-el-usuario-2026-11-20)) reutiliza un paciente y lo marca con `requiere_revision`, se guarda también lo que se escribió en esa reserva: `nombre_informado`, `apellido_informado`, `email_informado`, `informado_at` y el turno de origen (`informado_turno_id`). La ficha del paciente **no** cambia. Si llegan varias reservas distintas antes de revisar, queda la última. Al revisar con cualquiera de las tres salidas de C-17 (mantener lo guardado, usar lo informado o corregir a mano), las cinco columnas vuelven a `NULL` junto con `requiere_revision = false`.
+**Contexto**: sin estos datos, la pantalla de revisión (US-070) no puede mostrar **qué** difiere entre la ficha y la reserva, y el odontólogo tendría que adivinar.
+**Minimización (Ley 25.326, [11](11_marco_legal_argentino.md))**: son datos temporales. Existen solo mientras el paciente está marcado y se borran al revisarlo. No se guarda un historial de variantes: la auditoría `PACIENTE_REVISADO` registra solo los campos de la ficha que efectivamente cambian ([RN-AD-05](05_reglas_de_negocio.md)).
+**Dónde impacta**: C-10 suma las columnas en su migración `V6`; C-11 (carga manual) y C-15 (reserva pública) las llenan al marcar; C-17 las muestra y las borra al revisar.
+**Alternativas consideradas**: mostrar solo la ficha, el aviso y el turno de origen (el odontólogo no sabe qué difiere); guardar todas las variantes (más datos personales sin necesidad); sobrescribir la ficha con lo último (contradice RN-RP-03).
+**Trade-offs aceptados**: cinco columnas más en `paciente`, casi siempre en `NULL`; si dos reservas distintas llegan antes de revisar, la primera variante se pierde.
+
 ## Supuestos inferidos
 
 ### SU-01 — El paciente argentino acepta reservar por link

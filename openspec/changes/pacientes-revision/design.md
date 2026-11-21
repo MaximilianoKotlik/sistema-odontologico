@@ -10,14 +10,13 @@
 
 ## Decisions
 
-Las decisiones de UI están en `mockups/README.md` §Decisiones para revisar. Hay una que excede la UI y necesita a Maxi:
+Las decisiones de UI están en `mockups/README.md` §Decisiones, aprobadas por Maxi en la revisión de #36 (2026-11-20). La que excede la UI quedó registrada:
 
-- **Guardar lo informado en la reserva** (propuesta, pendiente de DD): para mostrar qué difiere, la deduplicación tendría que guardar el nombre, apellido y email escritos en la reserva que disparó la marca, y borrarlos al revisar. Toca C-10, C-11, C-15 y C-17.
+- **Guardar lo informado en la reserva** ([DD-38](../../../knowledge-base/09_decisiones_y_supuestos.md)): la deduplicación guarda nombre, apellido y email escritos en la reserva que disparó la marca, más el instante y el turno de origen, y C-17 los borra al revisar. Columnas en la `V6` de C-10 (Fran); las llenan C-11 y C-15.
 
 ## Open Questions
 
-- ¿Se aprueba guardar lo informado en la reserva (decisión 1 del README de mockups)? Si no, la revisión muestra solo los datos guardados y el turno de origen.
-- `CHANGES.md` describe la deduplicación de C-11, C-15 y C-17 por teléfono; DD-24 la cambió a DNI. Hay que corregir el texto.
+- Ninguna de UI. El texto de §C-11 en `CHANGES.md` (deduplicación por teléfono) lo corrige Fran en la propuesta de C-11.
 
 ## UI Mockups
 
@@ -25,5 +24,5 @@ Las decisiones de UI están en `mockups/README.md` §Decisiones para revisar. Ha
 - Decision: yes (2026-11-20)
 - Mockups: openspec/changes/pacientes-revision/mockups/ (`agenda-aviso.html`, `pacientes.html`, `paciente.html`, más `base.css`, `agenda.css`, `pacientes.css` y `mockup.js`)
 - Approval: pending
-- Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
+- Preview: rendered (2026-11-20, segunda versión con la revisión de #36); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
