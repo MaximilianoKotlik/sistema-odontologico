@@ -11,9 +11,9 @@
 
 ## 1. Lógica pura
 
-- [ ] 1.1 `validaciones.ts`: email, al menos 10 caracteres, distinta del email, hasta 72 bytes en UTF-8 (con tildes y ñ), coincidencia y términos
-- [ ] 1.2 `volver.ts`: `sanearVolver` con casos de `/app/...`, `/app`, `//otro`, `/\otro`, `https://otro`, `javascript:`, `\\`, rutas públicas y vacío, más las rutas que salen de `/app` al normalizarse: `/app/../login`, `/app/%2e%2e/login`, `/app/%2E%2E/login` y `/app\..\login` (D5)
-- [ ] 1.3 `errores.ts`: cada código de D8 a mensaje y campo, y la espera desde `Retry-After` en segundos y fecha HTTP
+- [x] 1.1 `validaciones.ts`: email, al menos 10 caracteres, distinta del email, hasta 72 bytes en UTF-8 (con tildes y ñ), coincidencia y términos
+- [x] 1.2 `volver.ts`: `sanearVolver` con casos de `/app/...`, `/app`, `//otro`, `/\otro`, `https://otro`, `javascript:`, `\\`, rutas públicas y vacío, más las rutas que salen de `/app` al normalizarse: `/app/../login`, `/app/%2e%2e/login`, `/app/%2E%2E/login` y `/app\..\login` (D5)
+- [x] 1.3 `errores.ts`: cada código de D8 a mensaje y campo, y la espera desde `Retry-After` en segundos y fecha HTTP
 
 ## 2. Sesión y cliente
 
