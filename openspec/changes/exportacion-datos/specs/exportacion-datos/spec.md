@@ -116,6 +116,11 @@ Al completarse la exportación, el sistema MUST registrar un evento `EXPORTACION
 - **WHEN** se completa una exportación
 - **THEN** queda un evento `EXPORTACION_GENERADA` con actor `ODONTOLOGO` y `valor_nuevo` con las cantidades por entidad
 
+#### Scenario: Actor e IP del evento
+- **GIVEN** el odontólogo del consultorio A con sesión, pidiendo desde la IP `203.0.113.10`
+- **WHEN** se completa su exportación
+- **THEN** el evento `EXPORTACION_GENERADA` queda en el consultorio A con `actor_id` igual al id de ese odontólogo e IP `203.0.113.10`
+
 #### Scenario: Falla durante la generación
 - **GIVEN** un error al leer los turnos en medio de la exportación
 - **WHEN** se pide la exportación

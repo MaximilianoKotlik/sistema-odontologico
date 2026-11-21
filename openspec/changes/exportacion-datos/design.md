@@ -4,7 +4,8 @@
 
 - Ver `proposal.md` §Why. Governance **ALTO**: se propone y se espera la revisión de Maxi antes de escribir código.
 - **Base disponible en `main`**:
-  - C-02: `TenantContext`, `ConsultorioId`, `Reloj`, `ErrorDeNegocio` y la regla `repositoriosSiempreConTenant`.
+  - C-02: `TenantContext` (`@RequestScope`), `ConsultorioId`, `Reloj`, `ErrorDeNegocio` y la regla `repositoriosSiempreConTenant`.
+  - C-08: `SesionActual` (usuario e IP desde `ThreadLocal`).
   - C-03: `PublicadorDeAuditoria` y `evento_auditoria`, con `SELECT` e `INSERT` para `app_rw`.
   - C-04 y C-05: el usuario autenticado (`sub`, `cid`).
   - C-06:
@@ -43,8 +44,15 @@
 
 ### D2 — Foto consistente con una transacción de solo lectura
 - Todo se lee en una transacción `@Transactional(readOnly = true, isolation = REPEATABLE_READ)`. Todas las consultas ven la misma foto, así que las cantidades del manifest coinciden con los archivos aunque haya escrituras concurrentes.
-- Cada consulta filtra por el `ConsultorioId` de `TenantContext` y usa `JdbcClient` con `fetchSize` para no cargar todo en memoria.
-- **El streaming ocurre dentro de la transacción**: el controlador devuelve un `StreamingResponseBody` que corre el caso de uso. Se usa `TransactionTemplate` explícito, porque el streaming corre en otro hilo, fuera del proxy del controlador.
+- **El streaming corre en otro hilo, sin petición ni sesión** (revisión de Maxi al PR #32). `StreamingResponseBody` se ejecuta en un hilo del ejecutor asíncrono de Spring. En ese hilo:
+  - `TenantContext` (`TenantContextDePeticion`, `@RequestScope`) no se puede leer;
+  - `SesionActual` (C-08) no encuentra usuario en el `SecurityContextHolder` ni IP en el `RequestContextHolder`, que son `ThreadLocal`.
+- **Por eso el controlador arma un `PedidoDeExportacion(ConsultorioId, UUID usuarioId, String ip, Instant solicitadoAt)` en el hilo de la petición**, antes de devolver el `StreamingResponseBody`.
+  - El caso de uso recibe ese pedido como parámetro y nunca lee `TenantContext` ni `SesionActual`.
+  - Cada consulta filtra por `pedido.consultorio()` de forma explícita, con `JdbcClient` y `fetchSize` para no cargar todo en memoria.
+  - Se agrega una regla ArchUnit: `exportacion.application` no depende de `TenantContext` ni de `SesionActual`.
+- **La transacción se abre en el hilo del streaming**: `TransactionTemplate` explícito, de solo lectura y `REPEATABLE READ`. La anotación `@Transactional` del controlador no alcanza, porque el cuerpo corre después y en otro hilo.
+- **Todo lo que decide el código de estado ocurre antes**, en el hilo de la petición: la autenticación y el límite de D7. Cuando el streaming empieza, la respuesta ya salió con 200. Un error posterior solo puede cortar la descarga, que es el caso "Falla durante la generación".
 
 ### D3 — Estructura del ZIP
 - **Archivos**:
@@ -93,17 +101,17 @@
 - **Tests**: se extrae el texto con PDFBox (solo en `testImplementation`) para verificar las secciones, las cantidades, los caracteres y la ausencia de secretos.
 
 ### D7 — Límite: 1 cada 5 minutos, durable y sin carreras
-- **"Última exportación completada"** = el último `EXPORTACION_GENERADA` del consultorio. Se consulta en `evento_auditoria` por el índice `(consultorio_id, ocurrido_at DESC)`. Así sobrevive a reinicios y no consume cupo si la exportación falla (spec "Falla durante la generación").
-  - *Alternativa*: Bucket4j en memoria (C-05) → se pierde al reiniciar y consume cupo aunque la descarga falle.
-- **Exportaciones simultáneas**: `pg_try_advisory_xact_lock(hash('exportacion', consultorio_id))` al abrir la transacción de lectura. Si no se obtiene → 429. Los locks consultivos se permiten en transacciones de solo lectura.
-- **Orden**: primero el lock y después el último evento, para que dos pedidos no pasen los dos por la consulta.
-- `Retry-After` = segundos hasta `último + 5 min`, redondeados hacia arriba. Con un pedido simultáneo: 30 s.
+> Ajustado por D2: el 429 se decide en el hilo de la petición, antes del streaming. El lock consultivo de la versión anterior vivía en la transacción del otro hilo y no podía producir un 429.
+
+- **Pedidos simultáneos del mismo consultorio**: `GuardiaDeExportaciones`, un registro en memoria por consultorio (`ConcurrentHashMap`). Se toma en el hilo de la petición, y si ya está tomado → 429 con `Retry-After: 30`. Se libera en un `finally` del hilo del streaming, y también si la petición falla antes de empezarlo.
+- **"Última exportación completada"**: después de tomar la guardia, en el hilo de la petición, una consulta corta al último `EXPORTACION_GENERADA` del consultorio, por el índice `(consultorio_id, ocurrido_at DESC)`. Si fue hace menos de 5 minutos → se libera la guardia y responde 429 con `Retry-After` = segundos hasta `último + 5 min`, redondeados hacia arriba. Es durable: sobrevive a reinicios y no consume cupo si la exportación falla (spec "Falla durante la generación").
+- **Con varias instancias** (hoy hay una sola, 08): la guardia en memoria no las coordina. Como segunda defensa, la transacción del streaming toma `pg_try_advisory_xact_lock` sobre el consultorio. Si no lo obtiene, corta la descarga sin registrar el evento y loguea el caso. No es un 429, pero mantiene el invariante de una exportación a la vez.
 - Código `EXPORTACION_RECIENTE` (429), en vez del `DEMASIADAS_SOLICITUDES` genérico, para que la pantalla muestre un mensaje específico.
 
 ### D8 — Evento al final, en otra transacción
 - Cuando el ZIP terminó de escribirse (`ZipOutputStream.finish()` sin excepción), se registra `EXPORTACION_GENERADA` con `REQUIRES_NEW`:
   - `entidad = consultorio` y `entidad_id = consultorio_id`;
-  - actor `ODONTOLOGO` con su `usuario_id` y la IP;
+  - actor `ODONTOLOGO` con el `usuarioId` y la IP del `PedidoDeExportacion` (D2), no de `SesionActual`, que en el hilo del streaming no tiene datos;
   - `valor_nuevo = {versionEsquema, entidades: {…cantidades}}`, sin datos de pacientes.
 - Es lo que pide FL-06 paso 4. La regla de "misma transacción" de RN-AD-03 aplica a cambios de datos, y la exportación no modifica nada.
 - **Si la escritura del evento falla después de enviar el ZIP**: se loguea un error sin PII. El archivo ya se entregó, y el límite queda sin aplicar para ese pedido. Riesgo aceptado (Risks).
@@ -138,20 +146,22 @@
 
 ## Open Questions
 
-Para la revisión de Maxi:
+Resueltas por Maxi en la revisión del PR #32 (2026-11-20):
 
-1. **Método HTTP** (D1): `POST`, contra el `GET` de FL-06 y DD-14. ¿Se confirma?
-2. **Entidad `odontologo`**: no está en la lista de RN-EX-01. Propongo incluirla sin secretos, por la portabilidad de los datos del propio titular (11 §Derechos del titular). ¿Se confirma, o se actualiza RN-EX-01?
-3. **Dependencias**: OpenPDF y la fuente Noto Sans (OFL) embebida (D6).
-4. **Escape del `+` en teléfonos del CSV** (D5): ¿regla simple para todo, como propongo, o una excepción para los teléfonos E.164 que genera el sistema?
-5. **Mockup de `/app/exportar`**: lo preparó Mati en este PR (ver §UI Mockups), aunque el plan del equipo se lo asignaba a Octi. Falta la aprobación. ¿Hace falta mostrar la fecha de la última exportación? Hoy el backend no la expone, y sumarla requiere un `GET` nuevo.
-6. **Correcciones de documentación al cerrar**: CHANGES.md §C-19 (pantalla en `configuracion/` → `/app/exportar`), FL-06, DD-14 y 03 (método), y RN-EX-01 si se confirma la pregunta 2.
+1. **Método**: `POST` (D1). FL-06 y DD-14 se corrigen en el cierre.
+2. **Entidad `odontologo`**: se incluye con las columnas de D3, sin secretos. RN-EX-01 se actualiza en el cierre.
+3. **Dependencias**: aprobadas OpenPDF y Noto Sans (OFL), con la licencia en `resources/fonts/`. PDFBox solo en tests (D6).
+4. **`+` de los teléfonos en el CSV**: se escapa también. El JSON conserva el valor exacto (D5).
+5. **Mockup**: se usa el de este PR (versión `45847c9`), aprobado con sus 6 decisiones y sin "última exportación".
+6. **Correcciones de documentación**: en el commit de cierre.
+
+Cambio pedido y aplicado: el pedido de exportación (consultorio, usuario e IP) se arma en el hilo de la petición, porque el streaming corre en otro hilo (D2, D7 y D8).
 
 ## UI Mockups
 
 - Design system revision: 1
 - Decision: yes (2026-11-20). La sección `/app/exportar` es una pantalla nueva.
 - Mockups: [`mockups/exportar.html`](mockups/exportar.html), con su [README](mockups/README.md), brief y decisiones. Estados: `inicial`, `generando`, `listo`, `reciente` (429), `sin-conexion`, `error` y `vencido`.
-- Approval: pending
+- Approval: approved (2026-11-20, by Maxi), versión `45847c9`
 - Preview: rendered (2026-11-20), 14 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440x900, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola.
 - Visual verify: pendiente (tarea 9.1).

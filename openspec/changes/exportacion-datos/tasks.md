@@ -32,15 +32,17 @@
 
 ## 5. Caso de uso, límite y auditoría
 
-- [ ] 5.1 `ExportarDatos` con `TransactionTemplate` de solo lectura y `REPEATABLE READ` (design D2): arma el ZIP completo con el manifest al final (verificación: escenarios "Archivos presentes", "Entidad vacía", "Datos que no son del presente", "Cantidades que coinciden" e "Integridad de los archivos")
+- [ ] 5.0 `PedidoDeExportacion` y regla ArchUnit: `exportacion.application` no depende de `TenantContext` ni de `SesionActual` (verificación: `ArchitectureTest` detecta un fixture que la viola)
+- [ ] 5.1 `ExportarDatos(PedidoDeExportacion, OutputStream)` con `TransactionTemplate` de solo lectura y `REPEATABLE READ`, abierto en el hilo del streaming (design D2): arma el ZIP completo con el manifest al final y filtra por `pedido.consultorio()` (verificación: escenarios "Archivos presentes", "Entidad vacía", "Datos que no son del presente", "Cantidades que coinciden" e "Integridad de los archivos")
 - [ ] 5.2 Consistencia con escrituras concurrentes: un turno creado durante la exportación queda igual en el manifest, el JSON y el CSV (verificación: escenario "Turno creado durante la exportación", con un latch en el exportador de turnos)
-- [ ] 5.3 Límite de design D7: último evento, `pg_try_advisory_xact_lock` y `Retry-After` (verificación: escenarios "Otra exportación a los 2 minutos", "Pasados 5 minutos", "Dos pedidos simultáneos" y "Otro consultorio no comparte el límite", con `Clock` fijo)
-- [ ] 5.4 Evento `EXPORTACION_GENERADA` al final, en `REQUIRES_NEW`, y nada si falla el streaming (verificación: escenarios "Evento registrado" y "Falla durante la generación")
+- [ ] 5.3 Límite de design D7 en el hilo de la petición: `GuardiaDeExportaciones`, último evento y `Retry-After`, más `pg_try_advisory_xact_lock` como segunda defensa en el streaming. La guardia se libera siempre, también ante errores (verificación: escenarios "Otra exportación a los 2 minutos", "Pasados 5 minutos", "Dos pedidos simultáneos" y "Otro consultorio no comparte el límite", con `Clock` fijo)
+- [ ] 5.4 Evento `EXPORTACION_GENERADA` al final, en `REQUIRES_NEW`, con el actor y la IP del pedido, y nada si falla el streaming (verificación: escenarios "Evento registrado", "Actor e IP del evento" y "Falla durante la generación")
 - [ ] 5.5 Plan `VENCIDO` (verificación: escenario "Plan vencido")
 
 ## 6. Endpoint y seguridad
 
-- [ ] 6.1 `POST /api/v1/exportacion` con `StreamingResponseBody`, cabeceras de descarga, `Cache-Control: no-store`, 401 sin sesión y 429 `EXPORTACION_RECIENTE` en Problem Details (verificación: escenarios "Exportación con datos" y "Sin sesión" en MockMvc + Testcontainers)
+- [ ] 6.1 `POST /api/v1/exportacion`: el controlador arma el `PedidoDeExportacion` y decide el 429 antes de devolver el `StreamingResponseBody`, con cabeceras de descarga, `Cache-Control: no-store`, 401 sin sesión y 429 `EXPORTACION_RECIENTE` en Problem Details (verificación: escenarios "Exportación con datos" y "Sin sesión" en MockMvc + Testcontainers)
+- [ ] 6.1b Test de integración que descarga el ZIP real por MockMvc con `asyncDispatch`, lo abre y verifica que el consultorio sea el de la sesión, y que el evento quede con el `usuario_id` y la IP de la petición (verificación: escenarios "Exportación con datos" y "Actor e IP del evento" corriendo el streaming en el hilo asíncrono real)
 - [ ] 6.2 Búsqueda de secretos de punta a punta: hash de contraseña, refresh, recuperación y token de gestión conocidos, buscados en todas las entradas y en el texto del PDF (verificación: escenario "Búsqueda de secretos en el ZIP")
 - [ ] 6.3 Aislamiento por tenant de punta a punta (verificación: escenario "Dos consultorios con datos")
 - [ ] 6.4 Medición de volumen: 10 000 turnos y 1 000 pacientes, con el tiempo y el pico de memoria registrados en el PR (verificación: test etiquetado `@Tag("volumen")`, fuera de la suite por defecto, con la salida pegada en el PR)

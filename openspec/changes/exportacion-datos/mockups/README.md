@@ -1,6 +1,6 @@
 # Mockups de C-19 · `exportacion-datos`
 
-`Approval: pending`
+`Approval: approved (2026-11-20, by Maxi)`, versión `45847c9` (#32)
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20).

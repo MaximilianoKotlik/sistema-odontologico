@@ -4,8 +4,8 @@
 >
 > Es trabajo anticipado. Se apoya en la propuesta de C-15 (PR #30, en borrador) y en las de C-08 y C-10 (PRs #15 y #18). El código no se escribe hasta que se cumplan tres condiciones:
 > - C-09 y C-15 están `[x]`. Por C-15 llegan también C-08, C-10 y C-11, que crean las tablas que se exportan.
-> - Maxi aprobó esta propuesta (ALTO) y el mockup de `/app/exportar` (modo `system-and-mockups`).
-> - Las decisiones de `design.md` §Open Questions están resueltas.
+> - Maxi aprobó esta propuesta (ALTO). El mockup de `/app/exportar` ya está aprobado (modo `system-and-mockups`).
+> - Las decisiones de `design.md` §Open Questions ya las resolvió Maxi en la revisión del PR #32, y aprobó el mockup (versión `45847c9`).
 
 ## Why
 
@@ -61,7 +61,7 @@ La exportación completa es uno de los pilares del diferenciador de transparenci
   - **C-15**: la exclusión de `token_gestion_turno` se prueba contra su tabla.
   - **C-20 (Fran)**: la exportación tiene que quedar habilitada con el plan `VENCIDO`, igual que su evento.
   - **C-22 (Octi)**: `/seguridad` tiene que describir el contenido real del ZIP.
-  - **Mockup**: lo preparó Mati en este PR, aunque el plan se lo asignaba a Octi. Está pendiente de aprobación (design §UI Mockups).
+  - **Mockup**: lo preparó Mati en este PR, aunque el plan se lo asignaba a Octi. Maxi lo aprobó (versión `45847c9`, design §UI Mockups).
 - **Correcciones de documentación al cerrar el change**:
   - CHANGES.md §C-19 ubica la pantalla en `configuracion/`, pero la ruta es `/app/exportar` (03 y C-06).
   - FL-06 y DD-14 dicen `GET /exportacion` y CHANGES.md dice `POST` (design D1).
