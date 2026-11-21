@@ -1,6 +1,7 @@
 package ar.sistemaodontologico.compartido.web;
 
 import ar.sistemaodontologico.compartido.domain.EnmascaradorDePii;
+import ar.sistemaodontologico.compartido.domain.PatronDeRutaSensible;
 import ar.sistemaodontologico.compartido.domain.error.ErrorDeNegocio;
 import java.net.URI;
 import java.util.List;
@@ -149,7 +150,7 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
         problema.setType(URI.create(PREFIJO_TYPE + codigo.toLowerCase(Locale.ROOT).replace('_', '-')));
         problema.setProperty(PROPIEDAD_CODIGO, codigo);
         if (peticion instanceof ServletWebRequest servlet) {
-            problema.setInstance(URI.create(servlet.getRequest().getRequestURI()));
+            problema.setInstance(URI.create(PatronDeRutaSensible.enmascarar(servlet.getRequest().getRequestURI())));
         }
     }
 
@@ -162,7 +163,7 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
         problema.setTitle(estado.getReasonPhrase());
         problema.setType(URI.create(PREFIJO_TYPE + codigo.toLowerCase(Locale.ROOT).replace('_', '-')));
         problema.setProperty(PROPIEDAD_CODIGO, codigo);
-        problema.setInstance(URI.create(rutaPedida));
+        problema.setInstance(URI.create(PatronDeRutaSensible.enmascarar(rutaPedida)));
         return problema;
     }
 

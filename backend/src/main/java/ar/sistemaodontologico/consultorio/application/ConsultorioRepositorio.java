@@ -16,6 +16,9 @@ public interface ConsultorioRepositorio extends SlugsEnUso {
 
     Optional<ConfiguracionDelConsultorio> buscarConfiguracion(ConsultorioId id);
 
+    /** El consultorio de una ruta pública (C-15): el slug es la única fuente del tenant sin sesión. */
+    Optional<ConsultorioId> buscarIdPorSlug(String slug);
+
     /**
      * Reemplaza los datos editables si la versión no cambió desde que se leyeron; si cambió, lanza
      * {@code OptimisticLockingFailureException} (409 {@code CONFLICTO_CONCURRENCIA}, RN-GL-02).

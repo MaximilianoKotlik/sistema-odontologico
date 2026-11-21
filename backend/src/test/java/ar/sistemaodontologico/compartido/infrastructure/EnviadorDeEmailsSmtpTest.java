@@ -79,6 +79,19 @@ class EnviadorDeEmailsSmtpTest {
                 .hasMessageNotContaining(DESTINATARIO);
     }
 
+    @Test
+    void enviaLaConfirmacionDeTurnoConFechaConsultorioYLink() throws Exception {
+        // C-15, tarea 6.7: en texto plano, sin datos de salud (design D12).
+        enviador(MAILPIT.getMappedPort(1025)).enviarConfirmacionDeTurno("paciente1@example.com", "Consultorio Demo",
+                "lunes 7 de diciembre a las 10:00", TOKEN);
+
+        JsonNode mensaje = unicoMensaje();
+        assertThat(mensaje.at("/To/0/Address").asText()).isEqualTo("paciente1@example.com");
+        assertThat(mensaje.at("/Subject").asText()).isEqualTo("Tu turno en Consultorio Demo");
+        assertThat(mensaje.at("/Text").asText()).contains("lunes 7 de diciembre a las 10:00", "Consultorio Demo",
+                ORIGEN + "/t/" + TOKEN);
+    }
+
     private EnviadorDeEmailsSmtp enviador(int puerto) {
         JavaMailSenderImpl smtp = new JavaMailSenderImpl();
         smtp.setHost(MAILPIT.getHost());

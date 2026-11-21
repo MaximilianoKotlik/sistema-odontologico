@@ -47,6 +47,33 @@ public class EnviadorDeEmailsSmtp implements EnviadorDeEmails {
         }
     }
 
+    @Override
+    public void enviarConfirmacionDeTurno(String destinatario, String consultorio, String fecha, String token) {
+        String link = propiedades.frontendOrigin() + "/t/" + token;
+        try {
+            MimeMessage mensaje = smtp.createMimeMessage();
+            MimeMessageHelper ayudante = new MimeMessageHelper(mensaje, false, StandardCharsets.UTF_8.name());
+            ayudante.setFrom(propiedades.from());
+            ayudante.setTo(destinatario);
+            ayudante.setSubject("Tu turno en " + consultorio);
+            ayudante.setText("""
+                    Hola:
+
+                    Tu turno en %s quedó reservado para el %s.
+
+                    Para verlo, cambiarlo o cancelarlo, abrí este link:
+
+                    %s
+
+                    Guardalo: es la única forma de gestionar tu turno sin llamar al consultorio. No lo compartas.
+                    """.formatted(consultorio, fecha, link), false);
+            smtp.send(mensaje);
+        } catch (MessagingException | MailException e) {
+            // Solo el tipo de falla: el mensaje de JavaMail puede incluir el destinatario.
+            throw new EnvioDeEmailFallido("El servidor de correo rechazó el email (" + e.getClass().getSimpleName() + ")");
+        }
+    }
+
     private static String cuerpoDeRecuperacion(String link) {
         long minutos = TokenDeRecuperacion.VIGENCIA.toMinutes();
         return """
