@@ -1,6 +1,7 @@
 package ar.sistemaodontologico.agenda.domain;
 
 import ar.sistemaodontologico.compartido.domain.telefono.NormalizadorDeTelefono;
+import java.text.Normalizer;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -17,6 +18,8 @@ public record Paciente(PacienteId id, String nombre, String apellido, Dni dni, S
 
     public static final int LARGO_MAXIMO_NOMBRE = 80;
     private static final int LARGO_MAXIMO_EMAIL = 254;
+    /** Marcas diacríticas que deja la descomposición NFD (tildes, diéresis, la virgulilla de la ñ). */
+    private static final Pattern DIACRITICOS = Pattern.compile("\\p{M}+");
     /** Sintaxis simple: algo, una arroba, un dominio con punto y sin espacios. */
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
@@ -55,8 +58,9 @@ public record Paciente(PacienteId id, String nombre, String apellido, Dni dni, S
     }
 
     /**
-     * Si los datos que llegan para su DNI no coinciden con los guardados, sin distinguir mayúsculas ni espacios en los
-     * extremos. C-15 lo usa para reutilizar el paciente sin sobrescribirlo y marcarlo para revisión (DD-24).
+     * Si los datos que llegan para su DNI no coinciden con los guardados, sin distinguir mayúsculas, acentos (NFD sin
+     * diacríticos) ni espacios en los extremos: "José Pérez" no difiere de "jose perez". Es la única regla para C-11 y
+     * C-15 (C-15 D7), que lo usan para reutilizar el paciente sin sobrescribirlo y marcarlo para revisión (DD-24).
      */
     public boolean datosDifierenDe(String otroNombre, String otroApellido) {
         return !iguales(nombre, otroNombre) || !iguales(apellido, otroApellido);
@@ -68,7 +72,12 @@ public record Paciente(PacienteId id, String nombre, String apellido, Dni dni, S
     }
 
     private static boolean iguales(String guardado, String recibido) {
-        return recibido != null && guardado.equalsIgnoreCase(recibido.strip());
+        return recibido != null && comparable(guardado).equals(comparable(recibido));
+    }
+
+    private static String comparable(String texto) {
+        String sinAcentos = DIACRITICOS.matcher(Normalizer.normalize(texto.strip(), Normalizer.Form.NFD)).replaceAll("");
+        return sinAcentos.toLowerCase(Locale.ROOT);
     }
 
     static String normalizarEmail(String email) {

@@ -59,7 +59,7 @@
 - [x] 3.5 Value object `Dni`: quita puntos y espacios, exige 7 u 8 dígitos y rechaza con `DNI_INVALIDO`; `toString()` sin el número (verificación: escenarios de "DNI normalizado")
 - [x] 3.6 `Paciente`: recorte y largo de nombre y apellido, `Dni`, teléfono obligatorio por `NormalizadorDeTelefono`, email opcional, consentimiento obligatorio con origen `LINK`, `datosDifierenDe` para un DNI existente, marcar para revisión y `toString()` sin PII (verificación: escenarios del spec `pacientes`)
 - [x] 3.7 `DatosInformados` y `Paciente.marcadoParaRevision(informados)` (DD-38, pedido de Maxi en #18): nombre y apellido obligatorios, email normalizado, instante y turno de origen opcional; solo con la revisión pendiente; una reserva nueva reemplaza lo informado; `toString()` sin PII (verificación: escenarios de "Datos informados en la reserva")
-- [ ] 3.8 `Paciente.datosDifierenDe` ignora los acentos (NFD sin diacríticos), además de las mayúsculas y los espacios en los extremos: "José Pérez" no difiere de "jose perez". Es la regla de C-15 D7 (pedido de Maxi en #18, desde #38). Primero el test en rojo (verificación: escenario "Mismo DNI con acentos distintos")
+- [x] 3.8 `Paciente.datosDifierenDe` ignora los acentos (NFD sin diacríticos), además de las mayúsculas y los espacios en los extremos: "José Pérez" no difiere de "jose perez". Es la regla de C-15 D7 (pedido de Maxi en #18, desde #38). Primero el test en rojo (verificación: escenario "Mismo DNI con acentos distintos")
 
 ## 4. Validadores
 

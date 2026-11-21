@@ -141,6 +141,17 @@ class PacienteTest {
     }
 
     @Test
+    void losAcentosNoHacenQueLosDatosDifieran() {
+        Paciente jose = manual("José", "Pérez", "+5491100000001", null);
+
+        assertThat(jose.datosDifierenDe("jose", "perez")).isFalse();
+        assertThat(jose.datosDifierenDe(" JOSÉ ", "PÉREZ ")).isFalse();
+        assertThat(manual("Jose", "Perez", "+5491100000001", null).datosDifierenDe("José", "Pérez")).isFalse();
+        assertThat(manual("Iñaki", "Muñoz", "+5491100000001", null).datosDifierenDe("Inaki", "Munoz")).isFalse();
+        assertThat(jose.datosDifierenDe("Josefa", "Pérez")).isTrue();
+    }
+
+    @Test
     void laRepresentacionTextualNoTienePii() {
         Paciente ana = manual("Ana", "Prueba", "+5491100000001", "ana.prueba@example.com");
 

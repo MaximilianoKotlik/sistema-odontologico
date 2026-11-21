@@ -59,7 +59,7 @@ Dentro de un consultorio, dos pacientes MUST NOT tener el mismo DNI, y la base M
 - **THEN** la base lo acepta
 
 ### Requirement: DNI existente con otros datos
-Cuando llegan datos para un DNI que ya existe en el consultorio, el paciente existente MUST reutilizarse sin sobrescribir sus datos. Si el nombre o el apellido difieren (sin distinguir mayúsculas ni espacios en los extremos), el paciente MUST quedar marcado para revisión. El límite de turnos futuros se cuenta por paciente, o sea por DNI (DD-24).
+Cuando llegan datos para un DNI que ya existe en el consultorio, el paciente existente MUST reutilizarse sin sobrescribir sus datos. Si el nombre o el apellido difieren (sin distinguir mayúsculas, acentos ni espacios en los extremos: se comparan en NFD sin diacríticos, la misma regla de C-15 D7), el paciente MUST quedar marcado para revisión. El límite de turnos futuros se cuenta por paciente, o sea por DNI (DD-24).
 
 #### Scenario: Mismo DNI con otro nombre
 - **GIVEN** el paciente "Ana Prueba" con DNI `90000001`
@@ -69,6 +69,11 @@ Cuando llegan datos para un DNI que ya existe en el consultorio, el paciente exi
 #### Scenario: Mismo DNI con los mismos datos
 - **GIVEN** el paciente "Ana Prueba" con DNI `90000001`
 - **WHEN** llegan los datos "ana prueba" con el mismo DNI
+- **THEN** se reutiliza el mismo paciente y no queda con revisión pendiente
+
+#### Scenario: Mismo DNI con acentos distintos
+- **GIVEN** el paciente "José Pérez" con DNI `90000001`
+- **WHEN** llegan los datos "jose perez" con el mismo DNI
 - **THEN** se reutiliza el mismo paciente y no queda con revisión pendiente
 
 ### Requirement: Origen, revisión y consentimiento
