@@ -313,7 +313,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/08_arquitectura_propuesta.md` §Patrones aplicados, §Estrategia de tests
 
 ### [C-11] `agenda-casos-de-uso`
-- **Estado**: `[x]` completado (PR #38, 2026-11-21)
+- **Estado**: `[x]` completado (PR #46, 2026-11-21)
 - **Scope**:
   - Casos de uso de aplicación sobre el dominio de C-10: crear turno (manual, sobreturno y desde reserva pública, como puerto que consume C-15), cambiar estado, reprogramar (RN-AG-11), **ajustar duración** (RN-AG-12: recalcula `fin`, revalida RN-AG-01/03/04, múltiplos de 5), **editar nota interna** (`nota_interna`, máx. 500), crear y **eliminar** bloqueo.
   - Deduplicación de paciente por DNI (RN-RP-03, DD-24): reutiliza sin sobrescribir y marca `requiere_revision` si nombre/apellido difieren (sin mayúsculas, acentos ni espacios), guardando lo informado y el turno de origen (DD-38).
