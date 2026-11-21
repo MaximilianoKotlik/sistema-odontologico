@@ -5,14 +5,14 @@
 > - Maxi aprobó esta propuesta (ALTO), incluidas las dependencias nuevas (design D6).
 > - Las preguntas de design §Open Questions están respondidas.
 >
-> El frontend (grupo 8) además necesita el **mockup aprobado** de `/app/exportar`.
+> El frontend (grupo 8) usa el **mockup aprobado** de `/app/exportar` (versión `45847c9`).
 >
 > Verificación base: `./gradlew test` y `npm run typecheck && npm run lint && npm test` en verde. Los tests de integración extienden `IntegracionPostgresTest` (Testcontainers, PostgreSQL 16) y usan solo datos ficticios evidentes (regla dura 17).
 
 ## 1. Preparación
 
 - [ ] 1.1 Rebasar sobre `main` con C-09 y C-15 (y con ellos C-08, C-10 y C-11) mergeados. Verificar los nombres reales de las tablas y columnas que se exportan contra las migraciones, y ajustar las listas blancas de design D3 si difieren (verificación: suite existente en verde y la lista de columnas por entidad en el PR)
-- [ ] 1.2 Volcar al design las respuestas de Maxi a §Open Questions, ajustando specs y tareas si cambian (verificación: `openspec validate exportacion-datos --strict` en verde)
+- [x] 1.2 Volcar al design las respuestas de Maxi a §Open Questions, ajustando specs y tareas si cambian (verificación: `openspec validate exportacion-datos --strict` en verde)
 - [ ] 1.3 Agregar `openpdf` (versión fijada), `pdfbox` solo para tests y la fuente Noto Sans con su licencia OFL en `resources/fonts/` (verificación: `./gradlew dependencies` muestra las versiones fijadas y un test carga la fuente)
 
 ## 2. Formatos (unitarios, sin base)
@@ -23,7 +23,7 @@
 
 ## 3. Lectores por entidad con lista blanca
 
-- [ ] 3.1 Un `ExportadorDe{Entidad}` por cada una de las 8 entidades, con columnas explícitas, filtro por `ConsultorioId` y lectura por streaming (verificación: test de integración por entidad con dos consultorios, en el que B no aparece; regla `repositoriosSiempreConTenant` en verde)
+- [ ] 3.1 Un `ExportadorDe{Entidad}` por cada una de las 8 entidades, con columnas explícitas, filtro por `ConsultorioId` y lectura por streaming (verificación: test de integración por entidad con dos consultorios, en el que B no aparece; escenario "Turno relacionado con su paciente"; regla `repositoriosSiempreConTenant` en verde)
 - [ ] 3.2 Test de arquitectura: ningún exportador lee `refresh_token`, `token_recuperacion` ni `token_gestion_turno`, y ninguna lista blanca contiene `password_hash` ni `token_hash` (verificación: test que inspecciona las listas declaradas)
 
 ## 4. PDF
