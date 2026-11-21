@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import '../shared/prueba-blob';
 import { crearContextoDePagina, esperar, json, problema, type Guion, type Respuesta } from '../features/configuracion/prueba-contexto';
 import { pagina } from './exportar';
 
@@ -63,6 +64,13 @@ describe('Exportar: contenido', () => {
     const { contenedor } = await montar([], 'VENCIDO');
 
     expect(contenedor.textContent).toContain('Tu prueba terminó, pero tus datos siguen siendo tuyos');
+  });
+
+  it('el botón queda habilitado en solo lectura (RN-EX-03)', async () => {
+    const { accion } = await montar([], 'VENCIDO');
+
+    expect(accion()?.dataset['permitidoEnSoloLectura']).toBeDefined();
+    expect(accion()?.disabled).toBe(false);
   });
 
   it('con otro plan no muestra ese aviso', async () => {

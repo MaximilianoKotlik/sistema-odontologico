@@ -69,13 +69,8 @@ function avisoDeError(error: unknown): HTMLDivElement {
   });
 }
 
-function leerBytes(contenido: Blob): Promise<Uint8Array> {
-  return new Promise((resolver, rechazar) => {
-    const lector = new FileReader();
-    lector.onload = () => resolver(new Uint8Array(lector.result as ArrayBuffer));
-    lector.onerror = () => rechazar(new Error('No se pudo leer el archivo'));
-    lector.readAsArrayBuffer(contenido);
-  });
+async function leerBytes(contenido: Blob): Promise<Uint8Array> {
+  return new Uint8Array(await contenido.arrayBuffer());
 }
 
 /** Un streaming que falla no llama a `finish()`: sin el cierre del ZIP, el archivo está incompleto (design D8). */
@@ -121,6 +116,7 @@ function tarjetaDeAccion(http: ClienteHttp): HTMLElement {
   const accion = boton({ texto: 'Exportar mis datos', icono: 'descargar', alHacerClic: () => void exportar() });
   const contenidoInicial = [...accion.childNodes];
   accion.setAttribute('data-exportar', '');
+  accion.setAttribute('data-permitido-en-solo-lectura', '');
   accion.setAttribute('aria-describedby', idAyuda);
   accion.classList.add('w-full', 'min-[520px]:w-auto');
 

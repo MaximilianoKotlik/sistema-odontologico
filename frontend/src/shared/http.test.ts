@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import './prueba-blob';
 import { ApiError, crearClienteHttp, MENSAJE_PLAN_VENCIDO, type ClienteHttp } from './http';
 
 type Respuesta = Response | Error;
@@ -45,13 +46,7 @@ describe('cliente HTTP: descarga de archivos (C-19)', () => {
     const archivo = await http.descargar(RUTA, { metodo: 'POST' });
 
     expect(archivo.nombre).toBe('export-demo-2026-11-20.zip');
-    // El Blob de jsdom no tiene arrayBuffer().
-    const bytes = await new Promise<ArrayBuffer>((resolver, rechazar) => {
-      const lector = new FileReader();
-      lector.onload = () => resolver(lector.result as ArrayBuffer);
-      lector.onerror = () => rechazar(new Error('No se pudo leer el archivo'));
-      lector.readAsArrayBuffer(archivo.contenido);
-    });
+    const bytes = await archivo.contenido.arrayBuffer();
     expect([...new Uint8Array(bytes)]).toEqual([80, 75, 5, 6]);
     expect(llamadas[0]?.init.method).toBe('POST');
     expect(encabezado(llamadas[0], 'Authorization')).toBe('Bearer token-ficticio');
