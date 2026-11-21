@@ -73,7 +73,7 @@ Cada alta, edición, desactivación y activación MUST registrar en la misma tra
 
 #### Scenario: Alta auditada
 - **WHEN** se crea "Limpieza" de 45 min
-- **THEN** queda un evento `PRESTACION_CREADA` con valor nuevo `{nombre: Limpieza, duracion_min: 45, visible_publica: true}` y sin valor anterior
+- **THEN** queda un evento `PRESTACION_CREADA` con valor nuevo `{nombre: Limpieza, duracion_min: 45, visible_publica: true, orden: 1, activa: true}` y sin valor anterior
 
 ### Requirement: Aislamiento de prestaciones
 Una prestación de otro consultorio MUST responder 404 `RECURSO_NO_ENCONTRADO` al consultarla, editarla, desactivarla o activarla, sin modificarla.

@@ -32,8 +32,15 @@ Los valores MUST respetar los rangos del modelo: anticipación de cancelación e
 - **WHEN** se guarda el paso de huecos en 25
 - **THEN** la respuesta es 400 con código `VALIDACION` y un error para `pasoHuecosMin`
 
-### Requirement: Teléfono de contacto normalizado
-El teléfono de contacto, cuando se informa, MUST guardarse normalizado a E.164; uno inválido MUST responder 400 `TELEFONO_INVALIDO`. Un valor vacío MUST quitar el teléfono.
+### Requirement: Anticipación de reserva dentro del horizonte
+La anticipación de reserva MUST ser menor que el horizonte (`anticipacion_reserva_min < horizonte_reserva_dias × 1440`); si no, la respuesta MUST ser 400 `ANTICIPACION_FUERA_DE_HORIZONTE` con `campo: anticipacionReservaMin` (RN-TE-06).
+
+#### Scenario: Anticipación que no entra en el horizonte
+- **WHEN** se guarda un horizonte de 1 día con una anticipación de reserva de 1440 min
+- **THEN** la respuesta es 400 con código `ANTICIPACION_FUERA_DE_HORIZONTE` y `campo` `anticipacionReservaMin`
+
+### Requirement: Teléfono de contacto obligatorio y normalizado
+El teléfono de contacto MUST informarse al guardar la configuración y MUST guardarse normalizado a E.164; uno inválido MUST responder 400 `TELEFONO_INVALIDO` y uno vacío o nulo MUST responder 400 `VALIDACION` con un error para `telefonoContacto` (RN-TE-06; el registro puede crear el consultorio sin teléfono).
 
 #### Scenario: Teléfono local
 - **WHEN** se guarda el teléfono `011 15-0000-0001`
@@ -42,6 +49,10 @@ El teléfono de contacto, cuando se informa, MUST guardarse normalizado a E.164;
 #### Scenario: Teléfono inválido
 - **WHEN** se guarda el teléfono `123`
 - **THEN** la respuesta es 400 con código `TELEFONO_INVALIDO`
+
+#### Scenario: Teléfono vacío
+- **WHEN** se guarda la configuración con el teléfono vacío
+- **THEN** la respuesta es 400 con código `VALIDACION` y un error para `telefonoContacto`
 
 ### Requirement: Zona horaria válida
 La zona horaria MUST ser un identificador IANA válido; si no lo es, la respuesta MUST ser 400 `ZONA_HORARIA_INVALIDA`.

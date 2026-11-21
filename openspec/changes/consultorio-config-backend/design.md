@@ -34,7 +34,8 @@
 - `ConsultorioRepositorio` ya está exceptuado de la regla de tenant (`REPOSITORIOS_EXCEPTUADOS`): es la raíz y se busca por su id, que es el tenant. `PrestacionRepositorio` y `DisponibilidadRepositorio` reciben `ConsultorioId` en todo.
 
 ### D2 — Persistencia
-- `consultorio` y `tipo_prestacion` con JPA. `@Version` en `consultorio` usa la columna que ya existe: dos guardados concurrentes dan 409 `CONFLICTO_CONCURRENCIA` (RN-GL-02), y el cliente no manda la versión.
+- **Ajuste en la implementación (2026-11-20)**: todo el módulo usa `JdbcClient`, no JPA. C-04 ya había creado `ConsultorioRepositorioJdbc`, y mezclar dos estilos en el mismo módulo no aportaba nada. La versión del consultorio se controla en el `UPDATE … WHERE version = :leida`: si no actualiza ninguna fila, lanza `OptimisticLockingFailureException` (409 `CONFLICTO_CONCURRENCIA`).
+- Plan original: `consultorio` y `tipo_prestacion` con JPA. `@Version` en `consultorio` usa la columna que ya existe: dos guardados concurrentes dan 409 `CONFLICTO_CONCURRENCIA` (RN-GL-02), y el cliente no manda la versión.
 - `disponibilidad` con `JdbcClient`: el reemplazo completo es `DELETE … WHERE consultorio_id = ?` más un `INSERT` por franja. Es más simple que sincronizar una colección JPA, y la restricción de exclusión actúa fila por fila.
 - **Flush y auditoría**: el listener de C-03 hace `flush()` antes de insertar el evento, así que el evento de `PRESTACION_CREADA` encuentra la fila aunque la haya creado JPA en la misma transacción.
 
@@ -74,9 +75,10 @@
 
 ### D9 — Validación de la configuración
 - Bean Validation en el DTO para los rangos, y reglas de dominio en `ReglasDeReserva`.
-- **Horizonte de 1 a 365 días**: la base solo exige `> 0`. El tope de 365 es una regla de aplicación nueva, para que el cálculo de huecos de C-15 no recorra años. Se registra en este diseño y, si Maxi la aprueba, en 04.
+- **Horizonte de 1 a 365 días**: la base solo exige `> 0`. El tope de 365 es una regla de aplicación nueva, para que el cálculo de huecos de C-15 no recorra años. Aprobada por Maxi en #15 y registrada en 04 y en RN-TE-06.
 - **Zona horaria**: `ZoneId.of`. Si es inválida, `ZONA_HORARIA_INVALIDA`.
-- **Teléfono**: `NormalizadorDeTelefono`. Un string vacío o `null` lo quita.
+- **Teléfono**: `NormalizadorDeTelefono`. **Obligatorio** al guardar (decisión de Maxi en #15, por los mockups de C-09): vacío o `null` → 400 `VALIDACION` en `telefonoContacto`.
+- **Anticipación menor que el horizonte** (decisión de Maxi en #15): `ReglasDeReserva` rechaza `anticipacion_reserva_min >= horizonte_reserva_dias × 1440` con `ANTICIPACION_FUERA_DE_HORIZONTE` y la propiedad `campo: anticipacionReservaMin`, para que C-09 lo muestre en el campo.
 - `plan` y `pruebaHasta` no están en el DTO de entrada, así que se ignoran por construcción.
 
 ### D10 — API
@@ -96,7 +98,7 @@
 - Depende de las tablas de C-04 (`usuario`), que es dependencia de este change.
 
 ### D12 — Migración
-- `V{n}__prestaciones_y_disponibilidad.sql`: el número se fija al rebasar sobre `main` con C-03, C-04 y C-05.
+- `V4__prestaciones_y_disponibilidad.sql` (V2 es la auditoría de C-03 y V3 la de C-04). Si C-05 entra antes, se renumera al siguiente libre.
 - Convención de `CONVENCIONES.md`: `consultorio_id` con FK, `UNIQUE (consultorio_id, id)`, índices que empiezan por `consultorio_id` y constraints con nombre.
 - **Permisos**: `REVOKE DELETE` solo en `tipo_prestacion`. `disponibilidad` conserva `DELETE`, porque el reemplazo completo lo necesita y la tabla es de configuración auditada.
 
