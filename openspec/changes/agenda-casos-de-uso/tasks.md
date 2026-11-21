@@ -30,10 +30,10 @@
 
 ## 3. Pacientes
 
-- [ ] 3.1 `PacienteRepositorio` JDBC: alta con `ON CONFLICT (consultorio_id, dni) DO NOTHING`, búsqueda por id y DNI con `FOR UPDATE`, la marca de revisión con las columnas `*_informado` y el turno de origen (verificación: escenario "Registro simultáneo" y test de aislamiento)
-- [ ] 3.2 `RegistrarPaciente.registrar`: crea, reutiliza sin sobrescribir con los datos guardados, y con un nombre distinto marca y guarda lo informado, pisándolo si ya estaba marcado (DD-38). Con el mismo nombre no cambia nada (verificación: escenarios "Primera marca", "Segunda reserva distinta sin revisar" y "DNI existente con el mismo nombre")
-- [ ] 3.3 `RegistrarPaciente.vincularTurnoDeOrigen`: completa `informado_turno_id` en la misma transacción solo si el registro marcó al paciente (verificación: escenarios de "Turno de origen de lo informado")
-- [ ] 3.4 Auditoría de pacientes: `PACIENTE_CREADO` y `PACIENTE_MARCADO_PARA_REVISION` (también en la segunda variante) sin PII ni lo informado (verificación: escenarios de "Auditoría de los pacientes")
+- [x] 3.1 `PacienteRepositorio` JDBC: alta con `ON CONFLICT (consultorio_id, dni) DO NOTHING`, búsqueda por id y DNI con `FOR UPDATE`, la marca de revisión con las columnas `*_informado` y el turno de origen (verificación: escenario "Registro simultáneo" y test de aislamiento)
+- [x] 3.2 `RegistrarPaciente.registrar`: crea, reutiliza sin sobrescribir con los datos guardados, y con un nombre distinto marca y guarda lo informado, pisándolo si ya estaba marcado (DD-38). Con el mismo nombre no cambia nada (verificación: escenarios "Primera marca", "Segunda reserva distinta sin revisar" y "DNI existente con el mismo nombre")
+- [x] 3.3 `RegistrarPaciente.vincularTurnoDeOrigen`: completa `informado_turno_id` en la misma transacción solo si el registro marcó al paciente (verificación: escenarios de "Turno de origen de lo informado")
+- [x] 3.4 Auditoría de pacientes: `PACIENTE_CREADO` y `PACIENTE_MARCADO_PARA_REVISION` (también en la segunda variante) sin PII ni lo informado (verificación: escenarios de "Auditoría de los pacientes")
 
 ## 4. Turnos
 

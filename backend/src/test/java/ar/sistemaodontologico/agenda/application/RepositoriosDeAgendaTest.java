@@ -6,10 +6,13 @@ import static pruebas.agenda.AgendaDePrueba.lunesA;
 
 import ar.sistemaodontologico.agenda.domain.Bloqueo;
 import ar.sistemaodontologico.agenda.domain.BloqueoId;
+import ar.sistemaodontologico.agenda.domain.Dni;
 import ar.sistemaodontologico.agenda.domain.Duracion;
 import ar.sistemaodontologico.agenda.domain.EstadoTurno;
 import ar.sistemaodontologico.agenda.domain.Intervalo;
+import ar.sistemaodontologico.agenda.domain.OrigenPaciente;
 import ar.sistemaodontologico.agenda.domain.OrigenTurno;
+import ar.sistemaodontologico.agenda.domain.Paciente;
 import ar.sistemaodontologico.agenda.domain.PacienteId;
 import ar.sistemaodontologico.agenda.domain.Turno;
 import ar.sistemaodontologico.agenda.domain.TurnoId;
@@ -34,6 +37,9 @@ class RepositoriosDeAgendaTest extends IntegracionPostgresTest {
 
     @Autowired
     private BloqueoRepositorio bloqueos;
+
+    @Autowired
+    private PacienteRepositorio pacientes;
 
     @Autowired
     private JdbcTemplate jdbc;
@@ -151,6 +157,34 @@ class RepositoriosDeAgendaTest extends IntegracionPostgresTest {
         assertThat(bloqueos.listarQueIntersectan(consultorio, new Intervalo(lunesA("18:00"), lunesA("19:00"))))
                 .extracting(bloqueo -> bloqueo.id().valor())
                 .containsExactly(tarde);
+    }
+
+    // --- pacientes ---
+
+    @Test
+    void unPacienteDeOtroConsultorioNoSeEncuentra() {
+        AgendaDePrueba otra = AgendaDePrueba.nueva(jdbc);
+        UUID ajeno = otra.paciente("Otra", "Prueba");
+        String dni = jdbc.queryForObject("SELECT dni FROM paciente WHERE id = ?", String.class, ajeno);
+
+        assertThat(pacientes.buscar(consultorio, new PacienteId(ajeno))).isEmpty();
+        assertThat(pacientes.buscarPorDniParaActualizar(consultorio, new Dni(dni))).isEmpty();
+        assertThat(pacientes.buscar(new ConsultorioId(otra.consultorio()), new PacienteId(ajeno))).isPresent();
+    }
+
+    @Test
+    void elMismoDniNoSeInsertaDosVecesEnElConsultorio() {
+        String dni = AgendaDePrueba.dniNuevo();
+
+        assertThat(pacientes.insertarSiNoExiste(consultorio, pacienteNuevo(dni))).isTrue();
+        assertThat(pacientes.insertarSiNoExiste(consultorio, pacienteNuevo(dni))).isFalse();
+        assertThat(pacientes.insertarSiNoExiste(new ConsultorioId(AgendaDePrueba.nueva(jdbc).consultorio()),
+                pacienteNuevo(dni))).isTrue();
+    }
+
+    private static Paciente pacienteNuevo(String dni) {
+        return Paciente.nuevo(new PacienteId(UUID.randomUUID()), "Ana", "Prueba", dni, "+5491100000001", null,
+                OrigenPaciente.MANUAL, null);
     }
 
     private Turno turnoNuevo(String hora) {
