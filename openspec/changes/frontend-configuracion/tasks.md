@@ -25,8 +25,8 @@
 
 ## 3. Pantallas de Configuración
 
-- [ ] 3.1 Pestañas con rutas y `aria-current` (D2), reemplazando el placeholder de C-06
-- [ ] 3.2 Consultorio: formulario, link público copiable, slug con vista previa y sugerencias, interruptor de reserva pública, zona horaria, resumen de errores y conflicto de concurrencia
+- [x] 3.1 Pestañas con rutas y `aria-current` (D2), reemplazando el placeholder de C-06
+- [x] 3.2 Consultorio: formulario, link público copiable, slug con vista previa y sugerencias, interruptor de reserva pública, zona horaria, resumen de errores y conflicto de concurrencia
 - [ ] 3.3 Prestaciones: listado, estado vacío, diálogo de alta y edición, subir/bajar, desactivar con confirmación, inactivas y activar
 - [ ] 3.4 Horarios: tarjetas por día, agregar y quitar franjas, copiar a otros días, barra de cambios sin guardar, errores por día y confirmación de semana vacía
 - [ ] 3.5 Cambios sin guardar: guarda de navegación y `beforeunload` (D9)
