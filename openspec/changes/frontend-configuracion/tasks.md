@@ -12,16 +12,16 @@
 
 ## 1. Base
 
-- [ ] 1.1 Rebasar sobre `main` con C-07 y C-08; regenerar `api-types.ts` y verificar los 9 endpoints y los códigos de error de C-08 (incluido el de anticipación de reserva ≥ horizonte, para completar D8)
+- [x] 1.1 Rebasar sobre `main` con C-07 y C-08; regenerar `api-types.ts` y verificar los 9 endpoints y los códigos de error de C-08 (incluido el de anticipación de reserva ≥ horizonte, para completar D8)
 - [ ] 1.2 Guarda de navegación en el router de C-06 si no existe (D9), con test
-- [ ] 1.3 `features/configuracion/api.ts` tipado con `api-types.ts`, con tests sobre dobles de `fetch`
+- [x] 1.3 `features/configuracion/api.ts` tipado con `api-types.ts`, con tests sobre dobles de `fetch`
 
 ## 2. Lógica pura
 
-- [ ] 2.1 `unidades.ts`: horas y días ⇄ minutos, y minutos no enteros mostrados como minutos (D4)
-- [ ] 2.2 `validaciones.ts`: slug (normalización y RN-TE-03), duración (5–480, múltiplo de 5), teléfono obligatorio (D4b) y reglas de reserva (rangos de D4, anticipación de reserva menor que el horizonte)
-- [ ] 2.3 `validaciones.ts`: grilla semanal (fin > inicio, múltiplos de 5, solapadas vs. contiguas por día)
-- [ ] 2.4 `errores.ts`: mapeo de cada código de D8 a campo, prestación o día, incluidas `sugerencias` y `dias`
+- [x] 2.1 `unidades.ts`: horas y días ⇄ minutos, y minutos no enteros mostrados como minutos (D4)
+- [x] 2.2 `validaciones.ts`: slug (normalización y RN-TE-03), duración (5–480, múltiplo de 5), teléfono obligatorio (D4b) y reglas de reserva (rangos de D4, anticipación de reserva menor que el horizonte)
+- [x] 2.3 `validaciones.ts`: grilla semanal (fin > inicio, múltiplos de 5, solapadas vs. contiguas por día)
+- [x] 2.4 `errores.ts`: mapeo de cada código de D8 a campo, prestación o día, incluidas `sugerencias` y `dias`
 
 ## 3. Pantallas de Configuración
 

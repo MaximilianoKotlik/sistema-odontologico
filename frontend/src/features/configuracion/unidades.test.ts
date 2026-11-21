@@ -54,7 +54,8 @@ describe('formulario ⇄ API', () => {
   });
 
   it('una respuesta sin dirección deja el campo vacío', () => {
-    const { direccion: _sinDireccion, ...sinDireccion } = respuesta;
+    const sinDireccion: Partial<typeof respuesta> = { ...respuesta };
+    delete sinDireccion.direccion;
     expect(formularioDesdeRespuesta(sinDireccion).direccion).toBe('');
   });
 
