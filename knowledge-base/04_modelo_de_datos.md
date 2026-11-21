@@ -143,7 +143,7 @@ erDiagram
 - CHECKs (C-10, `V6`): `ck_turno_duracion` (5 a 480, múltiplo de 5), `ck_turno_fin` (`fin = inicio + duracion_min`, comparando epochs), `ck_turno_grilla` (inicio en múltiplos de 5 minutos, `extract(epoch FROM inicio) % 300 = 0` en `numeric`), `ck_turno_estado`, `ck_turno_origen`, `ck_turno_sobreturno_manual` (`NOT es_sobreturno OR origen = 'MANUAL'`) y `ck_turno_cancelacion` (`cancelado_por` y `motivo_cancelacion` solo en un turno `CANCELADO`). FKs compuestas `fk_turno_paciente` y `fk_turno_tipo_prestacion`. Sin `DELETE` para el rol de la aplicación.
 
 ### TokenGestionTurno
-- `id`, `consultorio_id`, `turno_id UNIQUE`, `token_hash CHAR(64) UNIQUE`, `expira_at` (= `fin` del turno), `revocado_at NULL`, `created_at`.
+- `id`, `consultorio_id`, `turno_id UNIQUE`, `token_hash CHAR(64) UNIQUE`, `revocado_at NULL`, `created_at`. Sin `expira_at`: la vigencia se deriva del turno en cada consulta (C-15, design D3).
 - El token en claro (256 bits, base64url) se devuelve **una sola vez** al reservar ([RN-RP-06](05_reglas_de_negocio.md)).
 
 ### EventoAuditoria (append-only)
