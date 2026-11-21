@@ -12,9 +12,9 @@
     - `PrestacionRepositorio.buscar`, con la duración y si está activa;
     - `DisponibilidadRepositorio.consultar` y `bloquear`;
     - `ReemplazarDisponibilidad`, que ya toma el `FOR UPDATE` sobre `consultorio`.
-- **Lo que llega con C-10 (#18)**:
-  - Las tablas `paciente`, `turno` y `bloqueo` (`V6`), con `version`, `ex_turno_sin_solapamiento` y los permisos.
-  - `agenda.domain`: `Turno`, `Paciente`, `Dni`, `Bloqueo`, `Intervalo`, `Duracion`, `DisponibilidadSemanal`, `ValidadorDeSolapamiento`, `ValidadorDeBloqueo` y `CalculadoraDeHuecos`.
+- **Lo que llega con C-10 (#18, aprobado)**:
+  - Las tablas `paciente` (con las columnas `*_informado` de DD-38 y `ck_paciente_informado`), `turno` y `bloqueo` (`V6`), con `version`, `ex_turno_sin_solapamiento` y los permisos.
+  - `agenda.domain`: `Turno`, `Paciente` (con `DatosInformados` y `marcadoParaRevision(informados)`), `Dni`, `Bloqueo`, `Intervalo`, `Duracion`, `DisponibilidadSemanal`, `ValidadorDeSolapamiento`, `ValidadorDeBloqueo` y `CalculadoraDeHuecos`.
 - **Quién lo consume**:
   - C-12, la API del odontólogo.
   - C-15, la reserva pública. Su D2 lista lo que espera de este change y este design lo cubre.
@@ -45,7 +45,7 @@
 - *Alternativa*: leer `disponibilidad` y `tipo_prestacion` con SQL propio desde `agenda.infrastructure` → duplica el mapeo de C-08 y ata dos módulos a la misma tabla.
 
 ### D2 — Persistencia con JDBC, como C-04 y C-08
-- C-10 D1 decía "C-11 agrega las entidades JPA". Se cambia a `JdbcClient`, porque C-08 ya mostró que el módulo `consultorio` funciona así y mezclar dos estilos en el backend no aporta.
+- `JdbcClient`, no JPA (decisión de Maxi en #38, ya corregida en C-10 D1 en #18): C-08 ya mostró que el módulo `consultorio` funciona así y mezclar dos estilos en el backend no aporta.
 - **Optimistic locking (RN-GL-02)**: el `UPDATE … SET …, version = version + 1 WHERE consultorio_id = :c AND id = :id AND version = :esperada`. Si no actualiza ninguna fila, lanza `OptimisticLockingFailureException`, y el manejador de C-02 ya la traduce a 409 `CONFLICTO_CONCURRENCIA`.
 - `Turno.restaurar` (C-10) reconstruye el turno validando los mismos invariantes que la base.
 - *Alternativa*: entidades JPA con `@Version` → hace falta un mapeo paralelo al dominio puro de C-10, que no tiene anotaciones (`dominioSinFramework`).
@@ -86,17 +86,18 @@
 - **`ex_turno_sin_solapamiento`** queda como red de seguridad. El manejador la traduce a 409 `TURNO_SOLAPADO` sin `turnosEnConflicto`, porque una carrera no dice con quién chocó.
 - **Paciente y prestación de otro consultorio** → 404 `RECURSO_NO_ENCONTRADO`, antes de llegar a la FK compuesta.
 
-### D6 — Pacientes: alta idempotente por DNI
+### D6 — Pacientes: alta idempotente por DNI y lo informado (DD-38)
 - `RegistrarPaciente.registrar(datos, origen, consentimiento, autor)`:
   1. `INSERT … ON CONFLICT (consultorio_id, dni) DO NOTHING RETURNING id`;
-  2. si no insertó, `SELECT` del existente.
-- **Si ya existía**:
-  - no se sobrescribe ningún dato (RN-RP-03, DD-24);
-  - si `datosDifierenDe(nombre, apellido)` y no estaba marcado, se marca `requiere_revision` y se audita `PACIENTE_MARCADO_PARA_REVISION`;
-  - el resultado dice `reutilizado = true`.
-- **Si es nuevo**: `PACIENTE_CREADO`.
-- **El mismo flujo para los dos orígenes**: el alta rápida del odontólogo con un DNI existente reutiliza el paciente y la UI de C-14 lo muestra. **Para la revisión de Maxi**: la alternativa es devolver 409 `PACIENTE_EXISTENTE` en el alta manual, para que el odontólogo elija.
-- **Comparación de nombres, para alinear con C-15**: C-15 D7 normaliza con NFD sin diacríticos ("José Pérez" = "jose perez"), y `Paciente.datosDifierenDe` de C-10 compara solo mayúsculas y espacios. Se propone llevar la normalización NFD a `datosDifierenDe` en C-10, que sigue en revisión (#18), para que haya **una sola** regla.
+  2. si no insertó, `SELECT … FOR UPDATE` del existente (ya con el `LockDeAgenda` tomado, D3).
+- **Si es nuevo**: `PACIENTE_CREADO`. No guarda nada en las columnas `*_informado`.
+- **Si ya existía**, no se sobrescribe ningún dato de la ficha (RN-RP-03, DD-24) y el resultado dice `reutilizado = true` con los datos guardados, para que C-14 muestre "Ya tenés a Ana Ejemplo con ese DNI". Además:
+  - **Mismo nombre y apellido** según `Paciente.datosDifierenDe` → no cambia nada, no hay evento y lo informado que ya hubiera queda como está.
+  - **Nombre o apellido distinto** → `Paciente.marcadoParaRevision(DatosInformados)` de C-10: `requiere_revision = true` y se guardan `nombre_informado`, `apellido_informado`, `email_informado` e `informado_at` (el `Clock`). **Si ya estaba marcado, se pisan con lo de esta reserva**: queda la última (DD-38). El resultado dice `marcadoParaRevision = true`.
+- **El turno de origen se completa después**: el paciente se registra antes que el turno, así que `informado_turno_id` queda en `NULL` al marcar. Quien orquesta (C-12 o C-15), después de `CrearTurno` y en la misma transacción, llama a `RegistrarPaciente.vincularTurnoDeOrigen(resultado, turnoId)`. Solo escribe si este registro marcó al paciente; si no, no hace nada. Un alta rápida sin turno deja el turno de origen en `NULL`, que la `V6` permite.
+- **Auditoría** (D8): `PACIENTE_MARCADO_PARA_REVISION` con `{requiere_revision}` anterior y nuevo, **sin** los datos informados (RN-AD-05). También se emite en la segunda variante, aunque quede `true` → `true`, porque se modificó el paciente (regla dura 7). `vincularTurnoDeOrigen` completa la misma marca y no emite otro evento.
+- **El mismo flujo para los dos orígenes** (decisión de Maxi en #38): el alta manual con un DNI existente reutiliza el paciente igual que la reserva pública, y lo marca si el nombre difiere. No existe `PACIENTE_EXISTENTE`.
+- **Comparación de nombres** (decisión de Maxi en #38): una sola regla, `Paciente.datosDifierenDe` de C-10 (#18), que compara sin mayúsculas, acentos (NFD sin diacríticos) ni espacios en los extremos. C-11 y C-15 la usan tal cual.
 
 ### D7 — Comandos y concurrencia
 - Los comandos sobre un turno existente llevan la `versionEsperada` que leyó el cliente: estado, reprogramar, duración y nota. Devuelven el turno con su versión nueva.
@@ -114,11 +115,11 @@
 | `BLOQUEO_CREADO` | `bloqueo` | nuevo `{inicio, fin, motivo}` |
 | `BLOQUEO_ELIMINADO` | `bloqueo` | anterior `{inicio, fin, motivo}` |
 | `PACIENTE_CREADO` | `paciente` | nuevo `{origen}` |
-| `PACIENTE_MARCADO_PARA_REVISION` | `paciente` | `{requiere_revision}` anterior y nuevo |
+| `PACIENTE_MARCADO_PARA_REVISION` | `paciente` | `{requiere_revision}` anterior y nuevo, sin lo informado (D6) |
 
 - **Sin datos personales del paciente**: nunca nombre, DNI, teléfono ni email. El paciente aparece solo como `paciente_id` (RN-AD-05).
 - **El motivo de cancelación no va al evento**: es texto libre y puede traer datos de salud.
-- **La nota sí va**, porque US-025 pide su valor anterior y nuevo. **Para la revisión de Maxi**: la exportación (C-19) y la vista de auditoría (C-18) la muestran solo al odontólogo dueño.
+- **La nota sí va completa**, anterior y nueva, porque la pide US-025 (decisión de Maxi en #38). La exportación (C-19) y la vista de auditoría (C-18) la muestran solo al odontólogo dueño.
 - **Sin cambios, sin evento**: una nota idéntica, o reprogramar al mismo inicio, devuelve el turno sin escribir, como en C-08 D4.
 - Coincide con la tabla de C-15 D11. C-15 no duplica los `TURNO_*`: solo pasa el actor.
 
@@ -135,11 +136,10 @@
 
 ## Risks / Trade-offs
 
-- **[C-10 todavía en revisión]** → este design usa sus nombres (#18). Si Maxi pide cambios en el dominio, se ajustan acá antes de aprobar.
+- **[C-10 aprobado pero sin mergear]** → este design usa los nombres finales de #18. La tarea 1.1 confirma que no cambiaron al rebasar.
 - **[El lock serializa todas las escrituras del consultorio]** → con un sillón y poco volumen es aceptable. Si con multi-sillón (PA-14) hiciera falta paralelizar, la fila del lock pasa a ser la del sillón y el contrato de `LockDeAgenda` no cambia.
 - **[Validación contra datos leídos después del lock]** → el lock garantiza que nadie más escribe en la agenda del consultorio entre la lectura y la escritura. La exclusión de la base sigue como red.
-- **[Cambio de D1 de C-10, de JPA a JDBC]** → queda visible acá para la revisión. Revertirlo agrega un mapeo, pero no cambia los contratos.
-- **[La nota en la auditoría]** → la pide US-025 y queda marcada para la revisión (D8).
+- **[Lo informado en el paciente]** → son datos personales temporales (DD-38). Existen solo mientras el paciente está marcado, no van a la auditoría y C-17 los borra al revisar.
 
 ## Migration Plan
 
@@ -147,9 +147,7 @@
 
 ## Open Questions
 
-- D6: ¿el alta manual con un DNI existente reutiliza el paciente o responde 409 `PACIENTE_EXISTENTE`?
-- D6: ¿se pasa la normalización NFD de C-15 a `Paciente.datosDifierenDe` en C-10?
-- D8: ¿la nota interna va completa en `TURNO_NOTA_CAMBIADA`, como pide US-025?
+- Ninguna. Las tres de la propuesta las decidió Maxi en #38: el alta manual con un DNI existente reutiliza el paciente (D6), la comparación de nombres es la NFD de C-10 (D6) y la nota va completa a la auditoría (D8).
 
 ## UI Mockups
 

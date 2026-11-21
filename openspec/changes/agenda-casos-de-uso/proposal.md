@@ -25,7 +25,7 @@ Por eso concentra lo que no puede quedar repartido:
   - `AjustarDuracion`: recalcula el fin y revalida RN-AG-01/03/04, con `TURNO_DURACION_CAMBIADA`.
   - `EditarNota`: hasta 500 caracteres, con `TURNO_NOTA_CAMBIADA`.
 - **Casos de uso de bloqueos**: `CrearBloqueo` (`BLOQUEO_CON_TURNOS` con la lista de turnos, RN-AG-05, y `BLOQUEO_CREADO`) y `EliminarBloqueo` (`BLOQUEO_ELIMINADO`).
-- **Pacientes**: `RegistrarPaciente` busca o crea el paciente por DNI, de forma idempotente (RN-RP-03, DD-24). Si el DNI ya existe, lo reutiliza sin sobrescribirlo y lo marca para revisión si el nombre difiere. Lo usan el alta rápida del turno manual (FL-03) y la reserva pública (C-15).
+- **Pacientes**: `RegistrarPaciente` busca o crea el paciente por DNI, de forma idempotente (RN-RP-03, DD-24). Si el DNI ya existe, lo reutiliza sin sobrescribirlo y lo marca para revisión si el nombre difiere, guardando lo informado en la reserva (DD-38; queda la última) y, después de crear el turno, el turno de origen. Lo usan el alta rápida del turno manual (FL-03) y la reserva pública (C-15).
 - **`LockDeAgenda`**: toda escritura de agenda toma primero `SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`. Es el mismo bloqueo que ya usa la grilla de C-08 (`ReemplazarDisponibilidad`). Así, turnos, bloqueos, reservas y cambios de grilla quedan en **una sola cola por consultorio** (pedido de Maxi en #18, y C-15 D2).
 - **Optimistic locking**: los cambios sobre un turno reciben la `version` que leyó el cliente. Si no coincide, devuelven 409 `CONFLICTO_CONCURRENCIA` (RN-GL-02).
 - **Actor explícito**: cada caso de uso recibe quién actúa:
@@ -45,7 +45,7 @@ Fuera de alcance:
 ### New Capabilities
 - `gestion-de-turnos`: crear, cambiar de estado, reprogramar, ajustar la duración y anotar turnos, con validación contra la agenda del consultorio, auditoría y control de concurrencia.
 - `gestion-de-bloqueos`: crear y eliminar bloqueos sin pisar turnos activos, con auditoría.
-- `registro-de-pacientes`: alta idempotente por DNI y marca de revisión cuando los datos no coinciden.
+- `registro-de-pacientes`: alta idempotente por DNI, marca de revisión cuando los datos no coinciden y lo informado en la reserva (DD-38).
 
 ### Modified Capabilities
 - Ninguna. Las capabilities de C-10 (`turnos`, `bloqueos`, `pacientes` y `huecos-disponibles`) todavía no están archivadas. C-11 las usa sin cambiar sus requisitos.
@@ -60,5 +60,5 @@ Fuera de alcance:
 - **Base**: sin migración. C-10 ya trae las tablas, la columna `version` y los permisos.
 - **API**: ninguna. Los endpoints son de C-12.
 - **Dependencias**: ninguna nueva.
-- **Preguntas abiertas**: no toca ninguna Alta. Las decisiones para la revisión están en design.md (D4, D6 y D9).
+- **Preguntas abiertas**: no toca ninguna Alta. Las tres decisiones que quedaban abiertas (D6 y D8) las tomó Maxi en #38 y están en design.md.
 - **Changes desbloqueados**: C-12 y C-15, que ya cuenta con estos casos de uso (su D2).
