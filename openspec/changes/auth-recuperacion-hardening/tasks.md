@@ -50,7 +50,7 @@
 - [x] 6.1 Agregar `TokenDeRecuperacionRepositorio.buscarPorHash` a la lista de excepciones ArchUnit (con referencia a D10) y verificar `./gradlew test` completo en verde
 - [x] 6.2 Corregir en `knowledge-base/07_flujos_principales.md` `LOGIN_OK` → `LOGIN_EXITOSO` y en `CHANGES.md` la ruta `confirmar-recuperacion` → `recuperacion/confirmar`; verificar con `grep` que no queden las formas viejas
 - [x] 6.3 Regenerar el contrato OpenAPI y `api-types.ts` (`npm run api:types`) con los endpoints y códigos nuevos; verificar que el chequeo de CI del contrato pasa
-- [ ] 6.4 Pasar el PR de borrador a listo con la evidencia de los tests; pedir la revisión a Maxi, avisar a Fran (cambios en `GestionDeSesion.iniciar`/`RegistrarOdontologo` y el fix de `CITEXT`) y a Nacho (link con `#token=` para C-07)
+- [x] 6.4 Pasar el PR de borrador a listo con la evidencia de los tests; pedir la revisión a Maxi, avisar a Fran (cambios en `GestionDeSesion.iniciar`/`RegistrarOdontologo` y el fix de `CITEXT`) y a Nacho (link con `#token=` para C-07)
 
 ## Workflow follow-up
 
