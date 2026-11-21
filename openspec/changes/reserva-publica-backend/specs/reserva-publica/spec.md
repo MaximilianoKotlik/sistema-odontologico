@@ -164,6 +164,18 @@ Si dos reservas compiten por el mismo hueco, MUST prosperar exactamente una; la 
 - **THEN** una respuesta es 201 y la otra es 409 `HUECO_NO_DISPONIBLE` con una lista de huecos que ya no incluye las 10:00
 - **AND** existe un solo turno activo a las 10:00
 
+### Requirement: Marca de novedad para el odontólogo
+Reservar, reprogramar o cancelar por link MUST registrar en el turno, en la misma transacción, el instante del cambio como novedad pendiente de ver por el odontólogo (DD-30). La marca la limpia el odontólogo desde la agenda.
+
+#### Scenario: Reserva nueva marcada
+- **WHEN** un paciente reserva por link
+- **THEN** el turno queda con la novedad registrada en el instante de la reserva
+
+#### Scenario: Cancelación por link sobre un turno ya visto
+- **GIVEN** un turno cuya novedad el odontólogo ya marcó como vista
+- **WHEN** el paciente lo cancela por link
+- **THEN** el turno vuelve a tener una novedad pendiente
+
 ### Requirement: Auditoría de la reserva
 La reserva MUST registrar, en su misma transacción y con `actor_tipo = PACIENTE` y la IP de origen, `TURNO_CREADO` y, si corresponde, `PACIENTE_CREADO` y `PACIENTE_REQUIERE_REVISION`. Los eventos MUST NOT contener el token, el DNI, el teléfono, el email ni el nombre del paciente; lo identifican por `paciente_id`.
 

@@ -7,7 +7,7 @@ Permite que el paciente, sin cuenta y solo con el token de su link `/t/{token}`,
 ## ADDED Requirements
 
 ### Requirement: Vigencia del token de gestión
-Un token SHALL ser válido solo si su hash existe, no fue revocado, su turno está `RESERVADO` o `CONFIRMADO` y el turno todavía no terminó. En cualquier otro caso, toda operación con ese token MUST responder 404 `RECURSO_NO_ENCONTRADO` con el mismo cuerpo, sin indicar la causa.
+La vista por token SHALL responder solo si el hash existe, el turno no terminó y está `RESERVADO`, `CONFIRMADO` o `CANCELADO`. Las demás operaciones exigen además un turno activo y un token no revocado. En cualquier otro caso, la respuesta MUST ser 404 `RECURSO_NO_ENCONTRADO` con el mismo cuerpo, sin indicar la causa.
 
 #### Scenario: Token inexistente
 - **WHEN** se pide `GET /api/v1/public/turnos/{token}` con un token que nunca se emitió
@@ -18,10 +18,10 @@ Un token SHALL ser válido solo si su hash existe, no fue revocado, su turno est
 - **WHEN** se usa su token
 - **THEN** la respuesta es 404 con el mismo cuerpo que un token inexistente
 
-#### Scenario: Turno cancelado por el odontólogo
-- **GIVEN** un turno reservado por link que el odontólogo canceló
-- **WHEN** el paciente usa su token
-- **THEN** la respuesta es 404
+#### Scenario: Turno marcado ausente
+- **GIVEN** un turno que el odontólogo marcó `AUSENTE` y que todavía no terminó
+- **WHEN** se usa su token
+- **THEN** la respuesta es 404 con el mismo cuerpo que un token inexistente
 
 #### Scenario: Token malformado
 - **WHEN** se usa un token con caracteres fuera de base64url o de otra longitud
@@ -44,6 +44,24 @@ Un token SHALL ser válido solo si su hash existe, no fue revocado, su turno est
 - **GIVEN** un turno con nota interna
 - **WHEN** se pide la vista por token
 - **THEN** la respuesta no contiene la nota, el DNI, el teléfono ni el email del paciente
+
+### Requirement: Vista de un turno cancelado
+Si el turno está `CANCELADO` y todavía no terminó, la vista por token SHALL responder 200 con `estado: CANCELADO`, `canceladoPor` (`PACIENTE` u `ODONTOLOGO`), `puedeModificar: false`, `puedeReprogramar: false` y el teléfono del consultorio. MUST NOT devolver el motivo de la cancelación. Los huecos, la reprogramación y la cancelación con ese token MUST responder 404.
+
+#### Scenario: El odontólogo canceló el turno
+- **GIVEN** un turno reservado por link que el odontólogo canceló y que todavía no terminó
+- **WHEN** el paciente abre su link
+- **THEN** la respuesta es 200 con `estado: CANCELADO`, `canceladoPor: ODONTOLOGO`, sin acciones disponibles, con el teléfono del consultorio y sin el motivo
+
+#### Scenario: Intentar reprogramar un turno cancelado
+- **GIVEN** un turno cancelado por el odontólogo
+- **WHEN** el paciente intenta reprogramarlo con su token
+- **THEN** la respuesta es 404 y el turno sigue cancelado
+
+#### Scenario: Turno cancelado que ya terminó
+- **GIVEN** un turno cancelado cuyo fin ya pasó
+- **WHEN** el paciente abre su link
+- **THEN** la respuesta es 404
 
 ### Requirement: Respuestas por token no cacheables
 Toda respuesta de `/api/v1/public/turnos/**` MUST incluir `Cache-Control: no-store`.
@@ -72,7 +90,7 @@ El paciente SHALL poder cancelar o reprogramar solo si `ahora ≤ inicio − ant
 - **GIVEN** un turno dentro del plazo
 - **WHEN** el paciente cancela
 - **THEN** el turno queda `CANCELADO` con `cancelado_por = PACIENTE`, el horario vuelve a ofrecerse y queda el evento con actor `PACIENTE`
-- **AND** un nuevo uso del token responde 404
+- **AND** la vista por token muestra `estado: CANCELADO` con `canceladoPor: PACIENTE`, y una nueva cancelación con el mismo token responde 404
 
 ### Requirement: Cancelación con la reserva online desactivada
 Si el consultorio desactivó la reserva pública o su plan está `VENCIDO`, la cancelación por link MUST seguir funcionando dentro del plazo (criterio de aceptación de RN-RP-11).

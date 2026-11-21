@@ -3,14 +3,14 @@
 > Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que se cumplan tres condiciones:
 > - C-08 y C-11 están `[x]`.
 > - Maxi aprobó esta propuesta (ALTO), incluido el movimiento de clases de `auth` (RN-AU-06).
-> - Las preguntas de design §Open Questions están respondidas.
+> - Maxi aprobó de forma explícita el movimiento de clases de `auth` (design D9, RN-AU-06).
 >
 > Verificación base de cada grupo: `./gradlew test` en verde. Los tests de integración extienden `IntegracionPostgresTest` (Testcontainers, PostgreSQL 16) y usan solo datos ficticios evidentes (regla dura 17): DNI `90000001`…, teléfonos `+54 9 11 0000-00xx` y emails `@example.com`.
 
 ## 1. Preparación
 
 - [ ] 1.1 Rebasar sobre `main` con C-08, C-10 y C-11 mergeados. Fijar el número de la migración (posterior a la de `turno`) y verificar que existan las piezas de design D2 (`CrearTurno` con `LINK`, `ReprogramarTurno`/`CancelarTurno` con actor `PACIENTE`, alta por DNI y `LockDeAgenda`). Para cada pieza que falte, sumar una tarea en el grupo 4 con su test (verificación: suite existente en verde después del rebase y lista de piezas en el PR)
-- [ ] 1.2 Volcar al design las respuestas de Maxi a §Open Questions. Si cambian D3, D8, D9 o D13, ajustar los specs y esta lista antes de seguir (verificación: `openspec validate reserva-publica-backend --strict` en verde)
+- [x] 1.2 Volcar al design las respuestas de Maxi a §Open Questions (revisión del PR #30) y ajustar specs y tareas (verificación: `openspec validate reserva-publica-backend --strict` en verde)
 - [ ] 1.3 Regla ArchUnit: `reserva` no depende de `..agenda.domain..` ni de `..consultorio.infrastructure..`, con un fixture que la viole (verificación: `ReglasDeArquitecturaTest` detecta el fixture y `ArchitectureTest` pasa)
 
 ## 2. Movimiento de piezas compartidas desde `auth` (refactor, RN-AU-06)
@@ -27,7 +27,8 @@
 ## 4. Migración y repositorio del token
 
 - [ ] 4.1 Test de integración de `token_gestion_turno`: hash único, un token por turno, FK compuesta a un turno de otro consultorio falla y `app_rw` sin `DELETE`. Después, crear `V{n}__token_gestion_turno.sql` según design D3 (verificación: test en verde y `MigracionesTest` aplica todas las versiones en orden)
-- [ ] 4.2 `TokenDeGestionRepositorioJdbc.buscarVigente(hash, ahora)` con join al turno: vigente, revocado, turno cancelado, turno ausente y turno terminado; siempre filtra por el consultorio del turno encontrado (verificación: test de integración con los cinco casos y la regla `repositoriosSiempreConTenant` en verde)
+- [ ] 4.2 `TokenDeGestionRepositorioJdbc` con join al turno y los dos niveles de design D3: `buscarConsultable(hash, ahora)` (activo o cancelado, antes del fin) y `buscarModificable(hash, ahora)` (activo y no revocado). Siempre filtra por el consultorio del turno encontrado (verificación: test de integración con vigente, revocado, cancelado por el odontólogo, ausente y terminado en los dos métodos, y la regla `repositoriosSiempreConTenant` en verde)
+- [ ] 4.3 `turno.novedad_paciente_at` (design D14): si C-12 ya la creó, verificar que exista. Si no, agregarla en la migración de este change (verificación: test de integración que la lee después del rebase)
 
 ## 5. Página pública y huecos
 
@@ -37,7 +38,7 @@
 ## 6. Reserva
 
 - [ ] 6.1 Validación del pedido: datos obligatorios, `aceptaPrivacidad`, `DNI_INVALIDO`, `TELEFONO_INVALIDO` y un body con `consultorioId` ignorado (verificación: escenarios de "Datos obligatorios de la reserva" y "Body con otro consultorio")
-- [ ] 6.2 `ReservarTurnoPublico` en el orden de design D6: alta del turno `RESERVADO`/`LINK`, consentimiento con la versión vigente (`app.privacidad.version-vigente`), token emitido una vez y respuesta 201 con `linkGestion` (verificación: escenarios "Reserva exitosa", "Hueco no ofrecible", "Solo el hash en la base" y "Tokens distintos")
+- [ ] 6.2 `ReservarTurnoPublico` en el orden de design D6: alta del turno `RESERVADO`/`LINK` con `novedad_paciente_at`, consentimiento con la versión vigente (`app.privacidad.version-vigente`), token emitido una vez y respuesta 201 con `linkGestion` (verificación: escenarios "Reserva exitosa", "Hueco no ofrecible", "Solo el hash en la base" y "Tokens distintos")
 - [ ] 6.3 Deduplicación por DNI y marca de revisión, sin sobrescribir datos y por consultorio (verificación: escenarios "DNI con puntos ya registrado", "Mismo DNI con otro nombre" y "Mismo DNI en otro consultorio")
 - [ ] 6.4 Límite de 2 turnos futuros activos por link (verificación: escenarios "Tercer turno" y "Turnos que no cuentan")
 - [ ] 6.5 Concurrencia con dos hilos y un `CountDownLatch` contra Postgres real: mismo hueco con distintos pacientes (exactamente una 201 y un 409 con `huecos` sin ese horario) y mismo DNI en dos horarios con el límite al borde (verificación: escenarios "Dos pacientes al mismo tiempo" y "Reservas simultáneas del mismo DNI", repetidos 20 veces sin fallos)
@@ -47,10 +48,11 @@
 ## 7. Gestión por token
 
 - [ ] 7.1 `VerTurnoPorToken` y `GET /api/v1/public/turnos/{token}`: campos de la vista, `puedeModificar`, `puedeReprogramar`, `modificableHasta`, sin nota, DNI, teléfono ni email, y `Cache-Control: no-store` (verificación: escenarios de "Vista del turno por token" y "Vista sin caché")
-- [ ] 7.2 404 uniforme: token inexistente, malformado, revocado, de un turno terminado y de un turno cancelado por el odontólogo, con cuerpos idénticos byte a byte (verificación: escenarios de "Vigencia del token de gestión")
-- [ ] 7.3 `CancelarPorToken`: plazo, `CANCELADO` con `cancelado_por = PACIENTE`, revocación, horario liberado, evento y cancelación con plan `VENCIDO` (verificación: escenarios "Cancelación dentro del plazo", "Cancelar fuera de plazo" y "Cancelar con plan vencido")
+- [ ] 7.2 404 uniforme en la vista: token inexistente, malformado, de un turno terminado y de un turno ausente, con cuerpos idénticos byte a byte (verificación: escenarios de "Vigencia del token de gestión")
+- [ ] 7.2b Vista de un turno cancelado por el paciente y por el odontólogo: `estado: CANCELADO`, `canceladoPor`, sin acciones y sin el motivo; huecos, reprogramación y cancelación con ese token dan 404 (verificación: escenarios de "Vista de un turno cancelado")
+- [ ] 7.3 `CancelarPorToken`: plazo, `CANCELADO` con `cancelado_por = PACIENTE`, revocación, horario liberado, `novedad_paciente_at`, evento y cancelación con plan `VENCIDO` (verificación: escenarios "Cancelación dentro del plazo", "Cancelar fuera de plazo" y "Cancelar con plan vencido")
 - [ ] 7.4 `ConsultarHuecosParaReprogramar` y `GET .../huecos` por token, sin contar el propio turno (verificación: escenario "Moverse media hora")
-- [ ] 7.5 `ReprogramarPorToken`: mismo id y token, estado conservado (o lo que decida Maxi en Open Question 2), evento, hueco tomado o no ofrecible con el horario original intacto, y `RESERVA_NO_DISPONIBLE` con la reserva desactivada (verificación: escenarios de "Reprogramación por link" y "Reprogramar con la reserva desactivada")
+- [ ] 7.5 `ReprogramarPorToken`: mismo id y token, estado conservado (decisión de Maxi), `novedad_paciente_at`, evento, hueco tomado o no ofrecible con el horario original intacto, y `RESERVA_NO_DISPONIBLE` con la reserva desactivada (verificación: escenarios de "Reprogramación por link" y "Reprogramar con la reserva desactivada")
 - [ ] 7.6 Concurrencia de la gestión: dos cancelaciones simultáneas y una cancelación del paciente contra una reprogramación del odontólogo (verificación: escenario "Dos cancelaciones simultáneas", con un solo evento de cancelación)
 
 ## 8. Seguridad de la superficie pública

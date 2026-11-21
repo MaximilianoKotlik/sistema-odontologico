@@ -5,7 +5,7 @@
 > Es trabajo anticipado. Se apoya en la propuesta de C-08 (PR #15, aprobada) y en la de C-10 (PR #18, con cambios pedidos). C-11 todavía no tiene propuesta. El código no se escribe hasta que se cumplan tres condiciones:
 > - C-08 y C-11 están `[x]`.
 > - Maxi aprobó esta propuesta (ALTO: se propone y se espera la revisión).
-> - Las decisiones marcadas en `design.md` §Open Questions están resueltas.
+> - Maxi aprobó de forma explícita el movimiento de clases de `auth` (RN-AU-06). Las demás preguntas de `design.md` §Open Questions ya las resolvió en la revisión del PR #30.
 
 ## Why
 
@@ -27,7 +27,8 @@ El diferenciador central de la v1 es que el paciente reserve, reprograme o cance
   - `GET /api/v1/public/turnos/{token}` devuelve el turno, el consultorio, el nombre del paciente, `puedeModificar` y `puedeReprogramar`. Nunca expone la nota interna, el DNI ni el teléfono.
   - `GET /api/v1/public/turnos/{token}/huecos?desde&hasta` devuelve los huecos de la misma prestación.
   - `POST /api/v1/public/turnos/{token}/reprogramacion` y `POST /api/v1/public/turnos/{token}/cancelacion`.
-  - Errores: 409 `FUERA_DE_PLAZO` con el teléfono del consultorio (RN-RP-04), 409 `HUECO_NO_DISPONIBLE` (el turno conserva su horario, RN-RP-05) y 404 uniforme ante cualquier token inválido, vencido o revocado, o ante un turno que ya no está activo.
+  - Errores: 409 `FUERA_DE_PLAZO` con el teléfono del consultorio (RN-RP-04), 409 `HUECO_NO_DISPONIBLE` (el turno conserva su horario, RN-RP-05) y 404 uniforme ante cualquier token inexistente o de un turno terminado.
+  - Un turno cancelado (por el paciente o por el odontólogo) se sigue viendo por su link hasta su fin, con `estado: CANCELADO` y quién canceló, pero sin acciones.
   - Con la reserva desactivada, se puede cancelar pero no reprogramar (criterio explícito de RN-RP-11).
 - **Concurrencia**: de dos reservas al mismo hueco prospera exactamente una (RN-RP-07). El límite de turnos y la deduplicación resisten reservas simultáneas del mismo DNI.
 - **Seguridad de la superficie pública**:
@@ -35,6 +36,7 @@ El diferenciador central de la v1 es que el paciente reserve, reprograme o cance
   - Body máximo de 64 KB (413).
   - El token no aparece en logs.
   - Las respuestas por token se marcan `Cache-Control: no-store`.
+- **Marca de novedad** `turno.novedad_paciente_at` (DD-30), seteada al reservar, reprogramar y cancelar por link.
 - **Auditoría** con `actor_tipo = PACIENTE` en la misma transacción:
   - `TURNO_CREADO`, `TURNO_REPROGRAMADO` y `TURNO_ESTADO_CAMBIADO` (cancelación).
   - `PACIENTE_CREADO` y `PACIENTE_REQUIERE_REVISION`, sin PII (RN-AD-05).
@@ -69,7 +71,7 @@ El diferenciador central de la v1 es que el paciente reserve, reprograme o cance
 - **Dependencias**: ninguna nueva (Bucket4j y Caffeine ya están desde C-05).
 - **Coordinación**:
   - **C-11 (Fran)**: C-15 necesita casos de uso para crear un turno con `origen = LINK` y para reprogramar y cancelar con actor `PACIENTE`, con la serialización por consultorio que pide C-10. Están listados en design D2 para que su propuesta los incluya.
-  - **C-12 (Fran)**: la marca de "nuevo" de DD-30 la escribe C-15 y la lee C-12. Hay que acordar dónde vive (Open Questions).
+  - **C-12 (Fran)**: la marca de "nuevo" de DD-30 es `turno.novedad_paciente_at`, que escribe C-15 y limpia C-12 con `/visto` (decisión de Maxi, design D14). La crea la migración del primero que se mergee.
   - **C-16 (Octi)**: los nombres de los campos y el cuerpo de los 409 quedan fijados en los specs. Atiende el punto 4 de la revisión de Maxi al PR #25.
 - **Correcciones de documentación al cerrar el change**:
   - CHANGES.md §C-15 dice "dedupe por teléfono", pero DD-24 lo reemplazó por DNI, y la mención del `.ics` debe pasar a C-16.

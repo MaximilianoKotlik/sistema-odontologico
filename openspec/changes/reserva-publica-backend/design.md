@@ -27,7 +27,7 @@
 
 **Non-Goals:**
 - Pantallas, `.ics` y Service Worker (C-16).
-- Email al odontólogo (DD-30): necesita una preferencia que C-08 no tiene (Open Questions).
+- Email al odontólogo (DD-30): queda fuera de C-15 (D14).
 - Captcha o verificación del teléfono: la v1 se apoya en el rate limit y en el límite de turnos (SU de [09](../../../knowledge-base/09_decisiones_y_supuestos.md)).
 - El pase de `PRUEBA` a `VENCIDO` (C-20): C-15 solo lee `plan`.
 
@@ -50,9 +50,13 @@
 
 ### D3 — Vigencia del token derivada del turno, sin `expira_at`
 - `token_gestion_turno (id, consultorio_id, turno_id UNIQUE, token_hash CHAR(64) UNIQUE, revocado_at NULL, created_at)` con `fk_token_turno (consultorio_id, turno_id) → turno (consultorio_id, id)`.
-- **Válido** = no revocado, turno `RESERVADO` o `CONFIRMADO` y `ahora < turno.fin`. Se resuelve con un join en la misma consulta que busca por hash.
-- *Por qué no `expira_at = fin`* (como dice 04): el odontólogo puede reprogramar o ajustar la duración (C-11). Si no, el `expira_at` copiado quedaría desfasado, y C-11 tendría que conocer esta tabla. Derivarlo del turno elimina ese acoplamiento, y una cancelación del odontólogo invalida el token sin tocar `token_gestion_turno`.
-- `revocado_at` se setea igual al cancelar por link (RN-RP-06), por trazabilidad.
+- **Dos niveles de validez**, resueltos con un join en la misma consulta que busca por hash:
+  - **Consultable** (solo la vista `GET /public/turnos/{token}`): `ahora < turno.fin` y turno `RESERVADO`, `CONFIRMADO` o `CANCELADO`. Así, el paciente cuyo turno canceló el odontólogo abre su link y ve que se lo cancelaron, en vez de un "link inválido" (revisión de Maxi al PR #30).
+  - **Modificable** (huecos para reprogramar, reprogramación y cancelación): además, `revocado_at IS NULL` y turno `RESERVADO` o `CONFIRMADO`.
+  - Fuera de eso (hash inexistente, turno terminado o `AUSENTE`): 404 uniforme.
+- **Por qué mostrar el cancelado no revela nada nuevo**: solo lo ve quien tiene el token, que es el paciente del turno. La vista de un cancelado muestra el estado y quién canceló (`PACIENTE` u `ODONTOLOGO`), pero no el motivo de cancelación, que escribe el odontólogo y puede ser interno, igual que la nota.
+- *Por qué no `expira_at = fin`* (como dice 04): el odontólogo puede reprogramar o ajustar la duración (C-11). Si no, el `expira_at` copiado quedaría desfasado, y C-11 tendría que conocer esta tabla. Derivarlo del turno elimina ese acoplamiento, y una cancelación del odontólogo deja de permitir modificaciones sin tocar `token_gestion_turno`.
+- `revocado_at` se setea al cancelar por link (RN-RP-06): marca que el token ya no sirve para modificar, aunque la vista siga mostrando el turno cancelado hasta su fin.
 - Al cerrar el change se actualiza 04 §TokenGestionTurno.
 - Sin `DELETE` para `app_rw`. Índices: `ux_token_hash` y `ux_token_turno`.
 - *Alternativa*: mantener `expira_at` y actualizarlo desde C-11 → acopla la agenda al módulo de reserva.
@@ -92,7 +96,7 @@
 - **Versión vigente**: propiedad `app.privacidad.version-vigente` (hoy `2026-11-borrador`, de `docs/legal/politica-de-privacidad.md`), análoga a `TERMINOS_VERSION_VIGENTE` de C-04.
 
 ### D8 — Gestión por token
-- **Vista**: `puedeModificar = ahora ≤ inicio − anticipacion_cancelacion_min`, `puedeReprogramar = puedeModificar ∧ tomaTurnosOnline` y `modificableHasta = inicio − anticipación`.
+- **Vista**: `puedeModificar = turno activo ∧ ahora ≤ inicio − anticipacion_cancelacion_min`, `puedeReprogramar = puedeModificar ∧ tomaTurnosOnline` y `modificableHasta = inicio − anticipación`. Para un turno `CANCELADO`: `estado`, `canceladoPor`, las dos banderas en `false` y el teléfono del consultorio.
 - **Cancelar**:
   - lock de agenda, token válido y plazo → `CancelarTurno` (C-11) con la `version` leída;
   - `revocado_at = ahora` y evento.
@@ -100,8 +104,8 @@
   - lock de agenda, token válido, toma turnos y plazo sobre el horario **actual**;
   - hueco ofrecible para `nuevoInicio` (D5, sin el propio turno);
   - `ReprogramarTurno` (C-11) con la `version` → `TURNO_REPROGRAMADO`.
-- **El estado se conserva al reprogramar** (un `CONFIRMADO` sigue confirmado). RN-AG-06 no tiene la transición `CONFIRMADO → RESERVADO`, y la marca de novedad (DD-30) le avisa al odontólogo. Se marca para la revisión de Maxi.
-- **Doble cancelación**: el lock la serializa. La segunda ve el turno `CANCELADO` → token inválido → 404. Si llega a JPA o JDBC con una `version` vieja → 409 `CONFLICTO_CONCURRENCIA`.
+- **El estado se conserva al reprogramar** (un `CONFIRMADO` sigue confirmado). RN-AG-06 no tiene la transición `CONFIRMADO → RESERVADO`, y la marca de novedad (D14) le avisa al odontólogo. Decidido por Maxi.
+- **Doble cancelación**: el lock la serializa. La segunda ve el turno `CANCELADO` → no modificable → 404. Si llega a la base con una `version` vieja → 409 `CONFLICTO_CONCURRENCIA`.
 
 ### D9 — Rate limiting y tamaño del body
 - **Mover a `compartido.application`** `LimitadorDeSolicitudes`, `LimiteDeSolicitudes` y `ResultadoDeLimite`, y a `compartido.infrastructure` `LimitadorBucket4j`. Sigue el mismo comportamiento. `auth` los importa desde ahí. Con `GeneradorDeSecretos` y `EnviadorDeEmails` pasa lo mismo, porque `reserva` también los usa.
@@ -109,7 +113,8 @@
 - **`LimitesPublicosFilter`** sobre `/api/v1/public/**`, antes de los controladores. Mismo formato 429 y `Retry-After` que C-05.
   - **Por IP**: `public-reserva` (POST de turnos), 10 por hora, y `public-consulta` (todos los GET), 60 por minuto.
   - **Por token**: `public-token` (POST de reprogramación y cancelación), 10 por hora. La clave es el **hash** del token, para que el token no viva en la memoria del limitador.
-  - Los GET por token cuentan en el cupo por IP de consulta. RN-RP-09 dice "10 operaciones/hora" por token, y se interpreta como operaciones de modificación, para que recargar la página no agote el cupo. Se marca para la revisión de Maxi.
+  - Los GET por token cuentan en el cupo por IP de consulta. Las "10 operaciones/hora" por token de RN-RP-09 son solo de modificación (reprogramar y cancelar), para que recargar la página no agote el cupo. Decidido por Maxi.
+- **Aprobación aparte**: mover clases de `auth` es un cambio en un dominio CRITICO (RN-AU-06). Maxi lo aprueba explícitamente en el PR #30, separado de la aprobación del resto de la propuesta.
 - **Tamaño del body**: `TamanoMaximoDeCuerpoFilter` rechaza con 413 por `Content-Length` > 64 KB, y corta la lectura si un cuerpo chunked supera ese tamaño.
 - **IP real detrás del proxy**: misma limitación que C-05, ya en la checklist de C-23.
 
@@ -140,8 +145,14 @@
 
 ### D13 — Plan `VENCIDO` y reserva desactivada
 - `tomaTurnosOnline = reserva_publica_activa ∧ plan ≠ VENCIDO`. C-15 no evalúa `prueba_hasta`: el pase a `VENCIDO` es de C-20 (RN-PL-03).
-- **Bloquea**: huecos públicos, reserva, huecos para reprogramar y reprogramación (409 `RESERVA_NO_DISPONIBLE`).
+- **Bloquea**: huecos públicos, reserva, huecos para reprogramar y reprogramación (409 `RESERVA_NO_DISPONIBLE`, código aprobado por Maxi).
 - **No bloquea**: la vista y la cancelación por token (RN-RP-11).
+
+### D14 — Marca de novedad para el odontólogo (DD-30)
+- Columna `turno.novedad_paciente_at TIMESTAMPTZ NULL` (decisión de Maxi en el PR #30). La crea la migración del primero que se mergee entre C-12 y C-15. Al rebasar, el otro verifica que exista y no la vuelve a crear.
+- **C-15 la escribe** con `ahora` en la misma transacción que reservar, reprogramar o cancelar por link. **C-12 la limpia** con `POST /api/v1/turnos/{id}/visto`.
+- No genera un evento propio: el cambio que la dispara ya está auditado (`TURNO_CREADO`, `TURNO_REPROGRAMADO` o `TURNO_ESTADO_CAMBIADO`).
+- El email al odontólogo de DD-30 queda fuera de C-15. Se decide en qué change va (C-20 o después de la v1) al planificarlo.
 
 ## Risks / Trade-offs
 
@@ -160,14 +171,18 @@
 
 ## Open Questions
 
-Para la revisión de Maxi:
+Resueltas por Maxi en la revisión del PR #30 (2026-11-20):
 
-1. **Marca de novedad (DD-30)**: CHANGES.md deja a C-12 decidir dónde se guarda, pero quien la escribe es C-15. Propuesta: `turno.novedad_paciente_at TIMESTAMPTZ NULL`, creada en la migración del primero que se mergee (C-12 o C-15). C-15 la setea en reservar, reprogramar y cancelar, y C-12 la limpia con `/visto`. Hay que acordarlo con Fran.
-2. **Estado al reprogramar un turno confirmado** (D8): se propone conservarlo. ¿O debería volver a `RESERVADO` (nueva transición en RN-AG-06)?
-3. **"10 operaciones por hora por token"** (D9): ¿solo modificaciones (propuesta) o también las lecturas?
-4. **Email al odontólogo (DD-30)**: falta la preferencia en la configuración del consultorio. ¿Va en C-12, en C-20 o en un change nuevo?
-5. **`RESERVA_NO_DISPONIBLE`**: código nuevo para huecos, reserva y reprogramación con la reserva desactivada. C-16 lo tiene que traducir.
-6. **Correcciones de documentación**: CHANGES.md §C-15 ("dedupe por teléfono" → DNI, y el `.ics` pasa a C-16), FL-04 ("límite por teléfono") y 04 (`expira_at`). Se proponen al cerrar este change, salvo que Maxi prefiera corregirlas antes.
+1. **Marca de novedad (DD-30)**: `turno.novedad_paciente_at`, que escribe C-15 y limpia C-12 (D14).
+2. **Reprogramar un `CONFIRMADO`**: conserva el estado, sin una transición nueva en RN-AG-06 (D8).
+3. **"10 operaciones por hora por token"**: solo modificaciones. Las lecturas van en el cupo por IP (D9).
+4. **Email al odontólogo (DD-30)**: fuera de C-15. Se decide el change al planificarlo (D14).
+5. **`RESERVA_NO_DISPONIBLE` (409)**: aprobado. C-16 lo suma a sus mensajes (D13).
+6. **Correcciones de documentación** (CHANGES.md §C-15, FL-04 y 04): en el commit de cierre de este change.
+
+Cambio pedido y aplicado: el turno cancelado se sigue viendo por su link hasta que termina (D3, D8 y spec `gestion-turno-paciente`).
+
+Pendiente: la aprobación explícita de Maxi al movimiento de clases de `auth` (D9, RN-AU-06).
 
 ## UI Mockups
 
