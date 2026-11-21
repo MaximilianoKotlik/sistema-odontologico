@@ -66,7 +66,7 @@
 **Para acordar con C-12**: que `TURNO_SOLAPADO` incluya el turno con el que choca (como `BLOQUEO_CON_TURNOS` incluye su lista). Si no lo trae, el mensaje queda genérico.
 
 ### D6 — Reprogramar
-- Diálogo con el turno actual arriba ("Hoy viernes 20 · 16:00 a 16:30"), día, hora y la lista "Huecos libres el viernes" con los inicios posibles, que salen de C-13 y alcanzan para la duración.
+- Diálogo con el turno actual arriba ("Hoy viernes 20 · 16:00 a 16:30"), día, hora y la lista "Huecos libres el viernes" con los inicios posibles, que salen de C-13, alcanzan para la duración y **siguen el paso de huecos del consultorio** (`paso_huecos_min` de C-08, 15 minutos por defecto), revisión de Maxi en #31.
 - Al elegir, se ve "Nuevo horario: 16:30 a 17:00". El paciente conserva su link de gestión (RN-AG-11).
 
 ### D7 — Ajustar duración

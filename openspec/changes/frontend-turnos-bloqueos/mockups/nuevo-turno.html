@@ -117,9 +117,10 @@
 <ul class="res" data-solo="buscar" aria-label="Pacientes encontrados">
   <li><button type="button"><span><span class="n">Carla Ficticia</span><small>DNI <mark>30.00</mark>0.003 · +54 9 11 0000-0003</small></span><svg aria-hidden="true"><use href="#i-right"/></svg></button></li>
   <li><button type="button"><span><span class="n">Bruno Prueba</span><small>DNI <mark>30.00</mark>0.002 · +54 9 11 0000-0002</small></span><svg aria-hidden="true"><use href="#i-right"/></svg></button></li>
+  <li><button type="button"><span><span class="n">Lucía Muestra</span><small>DNI <mark>30.00</mark>0.010 · +54 9 11 0000-0010</small></span><svg aria-hidden="true"><use href="#i-right"/></svg></button></li>
   <li><button type="button" class="nuevo-pac"><svg aria-hidden="true"><use href="#i-useradd"/></svg>Cargar paciente nuevo</button></li>
 </ul>
-<ul class="res" data-solo="vacio"><li><button type="button" class="nuevo-pac"><svg aria-hidden="true"><use href="#i-useradd"/></svg>Cargar paciente nuevo</button></li></ul><div class="pac-sel" data-solo="paciente-elegido aviso-superpone sobreturno solapado fuera bloqueado guardando plan-vencido"><div class="who"><span class="n">Carla Ficticia</span><small>DNI 30.000.003 · +54 9 11 0000-0003</small></div><button class="btn btn-ghost btn-sm-text" type="button">Cambiar</button></div><div class="alta" data-solo="paciente-nuevo dni-invalido">
+<ul class="res" data-solo="vacio"><li><button type="button" class="nuevo-pac"><svg aria-hidden="true"><use href="#i-useradd"/></svg>Cargar paciente nuevo</button></li></ul><div class="pac-sel" data-solo="paciente-elegido aviso-superpone sobreturno solapado fuera bloqueado guardando plan-vencido"><div class="who"><span class="n">Lucía Muestra</span><small>DNI 30.000.010 · +54 9 11 0000-0010</small></div><button class="btn btn-ghost btn-sm-text" type="button">Cambiar</button></div><div class="alta" data-solo="paciente-nuevo dni-invalido">
   <div class="alta-h"><span>Paciente nuevo</span><button class="btn btn-ghost btn-sm-text" type="button">Buscar otro</button></div>
   <div class="row-2">
     <div class="field"><label for="pn-n">Nombre</label><input class="input" id="pn-n" autocomplete="off" value="Iris"></div>
@@ -139,7 +140,7 @@
     <div class="field"><label for="nt-d">Día</label><input class="input" id="nt-d" type="date" value="2026-11-20"></div>
     <div class="field"><label for="nt-h">Empieza</label><input class="input" id="nt-h" type="time" step="300" aria-describedby="nt-fin" data-valor="*=|paciente-elegido=12:00|guardando=12:00|plan-vencido=12:00|paciente-nuevo=12:00|dni-invalido=12:00|aviso-superpone=10:45|sobreturno=10:45|solapado=10:15|fuera=13:30|bloqueado=15:30"></div>
   </div>
-  <p class="fin" id="nt-fin" aria-live="polite"><svg aria-hidden="true"><use href="#i-clock"/></svg><span>Termina <b data-texto="*=Elegí la prestación y la hora|paciente-elegido=12:30|guardando=12:30|plan-vencido=12:30|paciente-nuevo=12:30|dni-invalido=12:30|aviso-superpone=11:15|sobreturno=11:15|solapado=10:45|fuera=14:00|bloqueado=16:00">—</b></span></p>
+  <p class="fin" id="nt-fin" aria-live="polite"><svg aria-hidden="true"><use href="#i-clock"/></svg><span>Termina <b data-texto="*=Elegí la prestación y la hora|paciente-elegido=12:30|guardando=12:30|plan-vencido=12:30|paciente-nuevo=12:30|dni-invalido=12:30|aviso-superpone=11:45|sobreturno=11:45|solapado=11:15|fuera=14:00|bloqueado=16:30">—</b></span></p>
   <div class="notice info" role="status" data-solo="aviso-superpone"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Ese horario se superpone con 10:30 · Carla F.</strong><p>Si es una urgencia, marcalo como sobreturno. Si no, elegí otro horario.</p></div></div>
 </fieldset>
 <div class="sob-box" data-no="sobreturno"><div class="check"><input type="checkbox" id="sob1"><label for="sob1"><strong>Sobreturno</strong>Para una urgencia: puede superponerse con otro turno o quedar fuera de tu horario.</label></div></div>
@@ -149,7 +150,7 @@
 <button class="btn btn-primary" type="button" disabled data-solo="plan-vencido">Crear turno</button>
 <button class="btn btn-primary" type="button" disabled data-solo="guardando" aria-live="polite"><span class="spin" aria-hidden="true"></span>Creando…</button></div>
 </div>
-<div class="toast" role="status" data-solo="creado"><svg aria-hidden="true"><use href="#i-check"/></svg>Turno creado: Carla Ficticia, viernes 20 a las 12:00</div>
+<div class="toast" role="status" data-solo="creado"><svg aria-hidden="true"><use href="#i-check"/></svg>Turno creado: Lucía Muestra, viernes 20 a las 12:00</div>
 <script>
   /* Solo mockup: marca la prestación elegida según el estado */
   document.addEventListener("DOMContentLoaded", function () {
