@@ -3,16 +3,16 @@
 > Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que se cumplan tres condiciones:
 > - C-09 y C-15 están `[x]`.
 > - Maxi aprobó esta propuesta (ALTO), incluidas las dependencias nuevas (design D6).
-> - Las preguntas de design §Open Questions están respondidas.
+> - Las preguntas de design §Open Questions están respondidas, incluida la 7 (columnas de `pacientes`).
 >
-> El frontend (grupo 8) además necesita el **mockup aprobado** de `/app/exportar`.
+> El frontend (grupo 8) usa el **mockup aprobado** de `/app/exportar` (versión `45847c9`).
 >
 > Verificación base: `./gradlew test` y `npm run typecheck && npm run lint && npm test` en verde. Los tests de integración extienden `IntegracionPostgresTest` (Testcontainers, PostgreSQL 16) y usan solo datos ficticios evidentes (regla dura 17).
 
 ## 1. Preparación
 
 - [ ] 1.1 Rebasar sobre `main` con C-09 y C-15 (y con ellos C-08, C-10 y C-11) mergeados. Verificar los nombres reales de las tablas y columnas que se exportan contra las migraciones, y ajustar las listas blancas de design D3 si difieren (verificación: suite existente en verde y la lista de columnas por entidad en el PR)
-- [ ] 1.2 Volcar al design las respuestas de Maxi a §Open Questions, ajustando specs y tareas si cambian (verificación: `openspec validate exportacion-datos --strict` en verde)
+- [x] 1.2 Volcar al design las respuestas de Maxi a §Open Questions, ajustando specs y tareas si cambian (verificación: `openspec validate exportacion-datos --strict` en verde)
 - [ ] 1.3 Agregar `openpdf` (versión fijada), `pdfbox` solo para tests y la fuente Noto Sans con su licencia OFL en `resources/fonts/` (verificación: `./gradlew dependencies` muestra las versiones fijadas y un test carga la fuente)
 
 ## 2. Formatos (unitarios, sin base)
