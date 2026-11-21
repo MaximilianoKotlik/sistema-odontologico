@@ -31,7 +31,7 @@
   - **Vencido**: `plan = VENCIDO`, o `plan = PRUEBA` y `hoy > pruebaHasta`. `prueba_hasta` es el último día de prueba (FL-07: "`prueba_hasta < hoy`").
   - **Días restantes**: `pruebaHasta − hoy + 1` en `PRUEBA` sin vencer (5 el día que faltan 4 días más el de hoy); `null` en otro caso.
 - **Por qué no depender solo de la tarea**: si el servidor está caído a las 03:00 o la tarea falla, el consultorio seguiría escribiendo hasta la próxima corrida. Con la fecha, el bloqueo empieza a las 00:00 del día siguiente en la zona del consultorio, haya corrido o no la tarea. La tarea sigue siendo la que cambia `plan` y deja el evento `PLAN_VENCIDO` (RN-AD).
-- *Alternativa*: mirar solo `plan = VENCIDO`. Es más simple, pero el momento del bloqueo depende de una tarea programada. **A decidir por Maxi** (pregunta 1).
+- *Alternativa*: mirar solo `plan = VENCIDO`. Es más simple, pero el momento del bloqueo depende de una tarea programada. Descartada: el estado efectivo fue aprobado por Maxi en #53 (pregunta 1).
 
 ### D2 — Tarea diaria de vencimiento (FL-07)
 - `consultorio.application.VencerPruebas.vencer(Instant ahora)`, `@Transactional`:
@@ -106,17 +106,23 @@
 
 ## Open Questions
 
-Para la revisión de Maxi:
-1. **Estado efectivo (D1)**: ¿el bloqueo arranca a las 00:00 del día siguiente a `prueba_hasta` en la zona del consultorio, aunque la tarea no haya corrido? Recomiendo que sí.
-2. **Cómo se pide el pase a `ACTIVO`**: el aviso de vencido necesita un contacto, y el dominio y el email del equipo están pendientes (DD-34). Propongo un texto con el email como `(TBD)` en una constante, como el nombre de marca.
-3. **¿`ACTIVO` → `VENCIDO` manual?** Por ejemplo, si un consultorio deja de pagar. Propongo dejarlo fuera de la v1, porque RN-PL-04 solo habla del pase a `ACTIVO`.
-4. **Aviso en toda la prueba o solo al final**: propongo mostrarlo siempre, discreto, y destacarlo en los últimos 7 días. US-061 da el ejemplo de 5 días.
+Todas aprobadas por Maxi en #53:
+1. **Estado efectivo (D1)**: sí. El bloqueo arranca a las 00:00 del día siguiente a `prueba_hasta`, en la zona del consultorio, haya corrido o no la tarea.
+2. **Contacto para activar el plan**: `(TBD)` en una constante única hasta que se resuelva DD-34.
+3. **`ACTIVO` → `VENCIDO` manual**: fuera de la v1.
+4. **Aviso durante la prueba**: discreto durante toda la prueba y destacado en los últimos 7 días, como en el mockup.
+5. **Colores**: `warn` para el vencido y `danger` solo para el 403 de una escritura que no se guardó.
+
+Pautas de Maxi para la guarda (D4), aprobadas en #53:
+- Lista de permitidas por método + ruta completa, anclada al inicio y al final (por ejemplo, `POST ^/api/v1/turnos/[^/]+/visto$`). Sin `startsWith` ni `contains`, salvo `/api/v1/public/` y `/api/v1/auth/`, que son prefijos a propósito.
+- Se compara contra la ruta normalizada sin el context path, la misma que usa Spring para resolver el controlador.
+- Tests de evasión en la matriz: barra final (`/visto/`), `;` (`/estado;/visto`), `//`, mayúsculas en la ruta y caracteres codificados (`%2F`, `%2e`). Todas dan 403 o no llegan a ningún controlador de escritura.
 
 ## UI Mockups
 
 - Design system revision: 1
 - Decision: yes (2026-11-21)
 - Mockups: `openspec/changes/plan-ciclo-de-vida/mockups/`
-- Approval: pending
+- Approval: approved (2026-11-21, by Maxi), versión 1a8340b (#53)
 - Preview: rendered (2026-11-21, `mockups/previews/`: cinco estados a 390×844 y 1440×900)
 - Visual verify: pending (tarea 6.1)
