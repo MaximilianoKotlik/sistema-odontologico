@@ -28,7 +28,7 @@
 
 ## 4. Reserva pública
 
-- [ ] 4.1 `ConsultorioPublico.tomaTurnos` con `EstadoDelPlan` (D6). Tests: la página pública, la reprogramación y la cancelación por token con la prueba vencida antes de la tarea, y la suite de C-15 en verde (verificación: specs `reserva-publica` y `gestion-turno-paciente`)
+- [x] 4.1 `ConsultorioPublico.tomaTurnos` con `EstadoDelPlan` (D6). Tests: la página pública, la reprogramación y la cancelación por token con la prueba vencida antes de la tarea, y la suite de C-15 en verde (verificación: specs `reserva-publica` y `gestion-turno-paciente`)
 
 ## 5. Frontend
 

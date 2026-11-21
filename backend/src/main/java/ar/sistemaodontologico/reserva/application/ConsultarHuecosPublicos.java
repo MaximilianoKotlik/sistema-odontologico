@@ -23,7 +23,7 @@ public class ConsultarHuecosPublicos {
 
     public HuecosPublicos consultar(String slug, UUID prestacionId, LocalDate desde, LocalDate hasta) {
         ConfiguracionDelConsultorio consultorio = publico.porSlug(slug);
-        ConsultorioPublico.exigirQueTomeTurnos(consultorio);
+        publico.exigirQueTomeTurnos(consultorio);
         TipoDePrestacion prestacion = prestacionOfrecida(prestaciones, consultorio, prestacionId);
         return publico.huecos(consultorio, prestacion.duracionMin(), desde, hasta, Optional.empty());
     }

@@ -52,7 +52,7 @@ public class GestionarTurnoPorToken {
     public HuecosPublicos huecos(String crudo, LocalDate desde, LocalDate hasta) {
         TurnoPorToken turno = modificable(hash(crudo));
         ConfiguracionDelConsultorio consultorio = publico.porId(turno.consultorio());
-        ConsultorioPublico.exigirQueTomeTurnos(consultorio);
+        publico.exigirQueTomeTurnos(consultorio);
         return publico.huecos(consultorio, turno.duracionMin(), desde, hasta, Optional.of(turno.turno()));
     }
 
@@ -81,7 +81,7 @@ public class GestionarTurnoPorToken {
                 lock.tomar(leido.consultorio());
                 TurnoPorToken turno = modificable(hash);
                 ConfiguracionDelConsultorio consultorio = publico.porId(turno.consultorio());
-                ConsultorioPublico.exigirQueTomeTurnos(consultorio);
+                publico.exigirQueTomeTurnos(consultorio);
                 Instant ahora = publico.ahora();
                 exigirPlazo(turno, consultorio, ahora);
                 if (!huecosDelDia(turno, consultorio, nuevoInicio, ahora).contains(nuevoInicio)) {
@@ -129,6 +129,6 @@ public class GestionarTurnoPorToken {
                 new TurnoVisible(turno.inicio(), turno.fin(), turno.prestacion(), turno.estado(), turno.canceladoPor()),
                 new PacienteVisible(turno.nombre(), turno.apellido()),
                 new ConsultorioVisible(datos.nombre(), datos.direccion(), datos.telefonoContacto(), datos.zonaHoraria()),
-                puedeModificar, puedeModificar && ConsultorioPublico.tomaTurnos(consultorio), limite);
+                puedeModificar, puedeModificar && publico.tomaTurnos(consultorio), limite);
     }
 }

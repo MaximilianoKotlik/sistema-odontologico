@@ -9,6 +9,7 @@ import ar.sistemaodontologico.compartido.domain.error.RecursoNoEncontrado;
 import ar.sistemaodontologico.compartido.domain.error.ValidacionDeNegocio;
 import ar.sistemaodontologico.consultorio.application.ConsultorioRepositorio;
 import ar.sistemaodontologico.consultorio.domain.ConfiguracionDelConsultorio;
+import ar.sistemaodontologico.consultorio.domain.EstadoDelPlan;
 import ar.sistemaodontologico.consultorio.domain.ReglasDeReserva;
 import java.time.Clock;
 import java.time.Instant;
@@ -29,7 +30,6 @@ class ConsultorioPublico {
 
     private static final int DIAS_POR_DEFECTO = 14;
     private static final int DIAS_MAXIMOS = 31;
-    private static final String PLAN_VENCIDO = "VENCIDO";
 
     private final ConsultorioRepositorio consultorios;
     private final AgendaParaReserva agenda;
@@ -53,11 +53,16 @@ class ConsultorioPublico {
         return consultorios.buscarConfiguracion(id).orElseThrow(() -> new RecursoNoEncontrado("consultorio"));
     }
 
-    static boolean tomaTurnos(ConfiguracionDelConsultorio consultorio) {
-        return consultorio.datos().reservaPublicaActiva() && !PLAN_VENCIDO.equals(consultorio.plan());
+    /**
+     * Toma turnos online si la reserva pública está activa y el plan no está vencido (RN-RP-11), con el estado efectivo
+     * de C-20 (design D6): una prueba terminada cuenta aunque la tarea diaria todavía no la haya pasado a {@code VENCIDO}.
+     */
+    boolean tomaTurnos(ConfiguracionDelConsultorio consultorio) {
+        return consultorio.datos().reservaPublicaActiva()
+                && !EstadoDelPlan.en(consultorio.plan(), consultorio.pruebaHasta(), zona(consultorio), ahora()).vencido();
     }
 
-    static void exigirQueTomeTurnos(ConfiguracionDelConsultorio consultorio) {
+    void exigirQueTomeTurnos(ConfiguracionDelConsultorio consultorio) {
         if (!tomaTurnos(consultorio)) {
             throw ErroresPublicos.reservaNoDisponible(consultorio.datos().telefonoContacto());
         }

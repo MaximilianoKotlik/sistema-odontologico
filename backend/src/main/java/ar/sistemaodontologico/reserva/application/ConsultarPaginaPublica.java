@@ -25,7 +25,7 @@ public class ConsultarPaginaPublica {
     public PaginaPublica consultar(String slug) {
         ConfiguracionDelConsultorio consultorio = publico.porSlug(slug);
         DatosDelConsultorio datos = consultorio.datos();
-        boolean tomaTurnos = ConsultorioPublico.tomaTurnos(consultorio);
+        boolean tomaTurnos = publico.tomaTurnos(consultorio);
         List<PrestacionPublica> visibles = !tomaTurnos ? List.of() : prestaciones.listar(consultorio.id(), false).stream()
                 .filter(prestacion -> prestacion.activa() && prestacion.visiblePublica())
                 .map(prestacion -> new PrestacionPublica(prestacion.id(), prestacion.nombre(), prestacion.duracionMin()))
