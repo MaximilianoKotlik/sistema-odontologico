@@ -17,13 +17,13 @@
 
 ## 2. Formatos (unitarios, sin base)
 
-- [ ] 2.1 `EscritorCsv`: RFC 4180, UTF-8 sin BOM, `\r\n`, comillas y saltos de línea dentro de celdas, y escape de fórmulas de design D5 (verificación: tests unitarios, incluido el escenario "Nombre con fórmula")
-- [ ] 2.2 `EscritorJson` fila por fila con Jackson: arreglo vacío, instantes ISO-8601 UTC y JSONB como objeto (verificación: tests unitarios que parsean la salida)
-- [ ] 2.3 `ManifestDeExportacion` con el SHA-256 y los bytes calculados mientras se escribe (verificación: test que recalcula el hash de cada entrada y compara)
+- [x] 2.1 `EscritorCsv`: RFC 4180, UTF-8 sin BOM, `\r\n`, comillas y saltos de línea dentro de celdas, y escape de fórmulas de design D5 (verificación: tests unitarios, incluido el escenario "Nombre con fórmula")
+- [x] 2.2 `EscritorJson` fila por fila con Jackson: arreglo vacío, instantes ISO-8601 UTC y JSONB como objeto (verificación: tests unitarios que parsean la salida)
+- [x] 2.3 `ManifestDeExportacion` con el SHA-256 y los bytes calculados mientras se escribe (verificación: test que recalcula el hash de cada entrada y compara)
 
 ## 3. Lectores por entidad con lista blanca
 
-- [ ] 3.1 Un `ExportadorDe{Entidad}` por cada una de las 8 entidades, con columnas explícitas, filtro por `ConsultorioId` y lectura por streaming (verificación: test de integración por entidad con dos consultorios, en el que B no aparece; escenario "Turno relacionado con su paciente"; regla `repositoriosSiempreConTenant` en verde)
+- [x] 3.1 Un `ExportadorDe{Entidad}` por cada una de las 8 entidades, con columnas explícitas, filtro por `ConsultorioId` y lectura por streaming (verificación: test de integración por entidad con dos consultorios, en el que B no aparece; escenario "Turno relacionado con su paciente"; regla `repositoriosSiempreConTenant` en verde)
 - [ ] 3.2 Test de arquitectura: ningún exportador lee `refresh_token`, `token_recuperacion` ni `token_gestion_turno`, y ninguna lista blanca contiene `password_hash` ni `token_hash` (verificación: test que inspecciona las listas declaradas)
 
 ## 4. PDF
