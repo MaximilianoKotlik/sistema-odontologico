@@ -62,8 +62,8 @@
 
 ## 6. Cierre del change
 
-- [ ] 6.1 `./gradlew test` completo en verde, `ArchitectureTest` en verde y cobertura ≥ 80 % en `agenda.application` (verificación: CI del PR)
-- [ ] 6.2 PR listo con la evidencia y la revisión de Maxi. Avisar a Mati (C-15) y a quien haga C-12 de los nombres finales de los casos de uso y de los errores nuevos (`PRESTACION_INACTIVA` y `ACCION_NO_PERMITIDA`) (verificación: PR con revisor asignado)
+- [x] 6.1 `./gradlew test` completo en verde, `ArchitectureTest` en verde y cobertura ≥ 80 % en `agenda.application` (verificación: CI del PR)
+- [x] 6.2 PR listo con la evidencia y la revisión de Maxi. Avisar a Mati (C-15) y a quien haga C-12 de los nombres finales de los casos de uso y de los errores nuevos (`PRESTACION_INACTIVA` y `ACCION_NO_PERMITIDA`) (verificación: PR con revisor asignado)
 
 ## Workflow follow-up
 
