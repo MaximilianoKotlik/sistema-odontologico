@@ -95,7 +95,7 @@ function interruptor(encendido: boolean, alCambiar: (valor: boolean) => void): H
       },
       el('span', {
         class:
-          'absolute top-px left-px w-4 h-4 rounded-full bg-superficie shadow-sm transition-transform duration-rapida ' +
+          'absolute top-[calc(var(--space-1)/2)] left-[calc(var(--space-1)/2)] w-4 h-4 rounded-full bg-superficie shadow-sm transition-transform duration-rapida ' +
           'group-aria-checked:translate-x-5',
       }),
     ),
@@ -162,7 +162,7 @@ function tiraDeDias(fecha: string, hoy: string, agenda: Agenda, franjas: readonl
             'aria-current': elegido ? 'date' : null,
             'aria-label': `${formatearDia(dia, zona)}${dia === hoy ? ' (hoy)' : ''}, ${cantidad > 0 ? plural(cantidad, 'turno', 'turnos') : atiende ? 'sin turnos' : 'no atendés'}`,
             class:
-              'flex flex-col items-center justify-center gap-px min-h-7 rounded-md border-control border-borde bg-superficie text-texto no-underline tabular ' +
+              'flex flex-col items-center justify-center gap-0 min-h-7 rounded-md border-control border-borde bg-superficie text-texto no-underline tabular ' +
               'aria-[current=date]:bg-primario aria-[current=date]:border-primario aria-[current=date]:text-sobre-primario',
           },
           el('span', { class: `text-xs font-semibold ${elegido ? '' : 'text-texto-tenue'}` }, LETRAS_TIRA[i]),

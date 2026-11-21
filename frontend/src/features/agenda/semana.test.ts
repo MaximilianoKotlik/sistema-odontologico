@@ -128,6 +128,14 @@ describe('listaSemanal (mobile)', () => {
     expect(lista.querySelector('h3 a')?.getAttribute('href')).toBe('/app/agenda?vista=dia&fecha=2026-11-16');
   });
 
+  it('marca el sobreturno con "+" y los cambios sin ver con un punto, como la grilla', () => {
+    const viernes = listaSemanal(entrada()).querySelector('[data-dia="2026-11-20"]');
+    expect(viernes?.querySelector('a[data-turno="sobre"] b svg')).not.toBeNull();
+    expect(viernes?.querySelector('a[data-turno="base"] b svg')).toBeNull();
+    expect(viernes?.querySelector('a[data-turno="n"] [data-punto-nuevo]')).not.toBeNull();
+    expect(viernes?.querySelector('a[data-turno="base"] [data-punto-nuevo]')).toBeNull();
+  });
+
   it('cada turno es una fila tocable con hora, paciente y estado, y los días vacíos lo dicen', () => {
     const lista = listaSemanal(entrada());
     const viernes = lista.querySelector('[data-dia="2026-11-20"]');

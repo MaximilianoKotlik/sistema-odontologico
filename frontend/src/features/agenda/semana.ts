@@ -80,22 +80,31 @@ function bloqueDeTurno(b: Extract<BloqueDeGrilla, { tipo: 'turno' }>, zona: stri
       'aria-label': nombre,
       title: nombre,
       class:
-        `absolute z-10 block overflow-hidden mx-px px-2 rounded-sm text-xs no-underline ${a.compacta} ` +
+        `absolute z-10 block overflow-hidden mx-[calc(var(--space-1)/2)] ${b.superpuesto ? 'px-1' : 'px-2'} rounded-sm text-xs leading-tight no-underline ${a.compacta} ` +
         `${turno.esSobreturno ? 'border-2 border-dashed border-l-4' : 'border border-l-4'} ` +
-        `${b.superpuesto ? 'left-1/2 right-0 z-20 shadow-md' : 'inset-x-0'} ${dosLineas ? '' : 'truncate whitespace-nowrap'}`,
+        `${b.superpuesto ? 'left-1/2 right-0 z-20 shadow-md' : 'inset-x-0'} ${dosLineas || b.superpuesto ? '' : 'truncate whitespace-nowrap'}`,
     },
     turno.cambioPaciente === null ? null : el('span', { 'data-punto-nuevo': true, 'aria-hidden': 'true', class: 'inline-block w-2 h-2 mr-1 rounded-full bg-primario' }),
-    turno.esSobreturno ? icono('mas', 'inline w-3 h-3 align-[-2px]') : null,
-    el('b', { class: 'tabular' }, horaLocal(turno.inicio, zona)),
+    // El sobreturno superpuesto tiene media columna: hora arriba y apellido abajo (D4, revisión de Maxi en #27).
+    el(
+      'span',
+      { class: b.superpuesto ? 'block whitespace-nowrap' : '' },
+      turno.esSobreturno ? icono('mas', 'inline w-3 h-3 align-[-2px]') : null,
+      el('b', { class: 'tabular' }, horaLocal(turno.inicio, zona)),
+    ),
     ' ',
     turno.esSobreturno ? null : icono(a.icono, 'inline w-3 h-3 align-[-2px]'),
     ' ',
-    el('span', { class: `font-semibold ${turno.estado === 'CANCELADO' ? 'line-through' : ''}` }, turno.esSobreturno ? turno.paciente.apellido : nombreCorto(turno.paciente)),
+    el(
+      'span',
+      { class: `font-semibold ${turno.estado === 'CANCELADO' ? 'line-through' : ''} ${b.superpuesto ? 'block truncate' : ''}` },
+      turno.esSobreturno ? turno.paciente.apellido : nombreCorto(turno.paciente),
+    ),
     dosLineas ? el('span', { 'data-prestacion': true, class: 'block truncate' }, turno.prestacion) : null,
   );
   enlace.style.top = escala(desde - desdeRango);
   enlace.style.height = escala(hasta - desde);
-  if (b.superpuesto) enlace.style.minHeight = 'calc(var(--touch-min) - var(--space-3))';
+  if (b.superpuesto) enlace.style.minHeight = 'calc(var(--touch-min) - var(--space-2))';
   return el('li', {}, enlace);
 }
 
@@ -106,7 +115,7 @@ function bloqueDeBloqueo(b: Extract<BloqueDeGrilla, { tipo: 'bloqueo' }>, desdeR
   const motivo = b.bloqueo.motivo ?? 'Bloqueado';
   const caja = el(
     'div',
-    { 'data-bloqueo': b.bloqueo.id, title: motivo, class: 'absolute inset-x-0 z-10 overflow-hidden mx-px px-2 rounded-sm border border-l-4 border-bloqueo-bd fondo-rayado text-xs text-bloqueo-fg' },
+    { 'data-bloqueo': b.bloqueo.id, title: motivo, class: 'absolute inset-x-0 z-10 overflow-hidden mx-[calc(var(--space-1)/2)] px-2 rounded-sm border border-l-4 border-bloqueo-bd fondo-rayado text-xs leading-tight text-bloqueo-fg' },
     el('b', { class: 'tabular' }, horaDeMinutos(b.desde)),
     ' ',
     icono('candado', 'inline w-3 h-3 align-[-2px]'),
@@ -218,8 +227,13 @@ function filaDeTurno(turno: TurnoAgenda, zona: string): HTMLLIElement {
           `grid grid-cols-[calc(var(--space-7))_minmax(0,1fr)_auto] items-center gap-2 min-h-touch px-3 py-1 rounded-md text-sm text-texto no-underline ` +
           `${turno.esSobreturno ? 'border-2 border-dashed border-l-4' : 'border border-l-4'} ${a.compacta}`,
       },
-      el('b', { class: 'tabular' }, horaLocal(turno.inicio, zona)),
-      el('span', { class: `min-w-0 truncate text-texto ${turno.estado === 'CANCELADO' ? 'line-through text-texto-tenue' : ''}` }, nombreCompleto(turno.paciente)),
+      el('b', { class: 'tabular whitespace-nowrap' }, turno.esSobreturno ? icono('mas', 'inline w-3 h-3 align-[-1px]') : null, horaLocal(turno.inicio, zona)),
+      el(
+        'span',
+        { class: `min-w-0 truncate text-texto ${turno.estado === 'CANCELADO' ? 'line-through text-texto-tenue' : ''}` },
+        turno.cambioPaciente === null ? null : el('span', { 'data-punto-nuevo': true, 'aria-hidden': 'true', class: 'inline-block w-2 h-2 mr-1 rounded-full bg-primario' }),
+        nombreCompleto(turno.paciente),
+      ),
       el('span', { class: 'inline-flex items-center gap-1 text-xs font-semibold' }, icono(a.icono, 'w-3 h-3 flex-none'), a.texto),
     ),
   );

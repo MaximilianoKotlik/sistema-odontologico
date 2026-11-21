@@ -25,7 +25,7 @@ const ACCIONES: Record<AccionTurno, { readonly texto: string; readonly icono: No
   AJUSTAR_DURACION: { texto: 'Ajustar duración', icono: 'reloj-arena', variante: 'secundario' },
   MARCAR_AUSENTE: { texto: 'Marcar ausente', icono: 'ausente', variante: 'secundario' },
   EDITAR_NOTA: { texto: 'Editar nota', icono: 'lapiz', variante: 'secundario' },
-  CANCELAR: { texto: 'Cancelar turno', icono: 'cruz', variante: 'peligro' },
+  CANCELAR: { texto: 'Cancelar turno', icono: 'cruz', variante: 'peligro-secundario' },
 };
 
 const VERBO: Record<CambioPaciente, string> = { RESERVO: 'reservó', REPROGRAMO: 'reprogramó', CANCELO: 'canceló' };
@@ -60,7 +60,7 @@ function listaDeDatos(...pares: [string, Node | string][]): HTMLDListElement {
   return el(
     'dl',
     { class: 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 m-0' },
-    ...pares.flatMap(([termino, valor]) => [el('dt', { class: 'pt-px text-sm text-texto-tenue' }, termino), el('dd', { class: 'm-0 font-medium [overflow-wrap:anywhere]' }, valor)]),
+    ...pares.flatMap(([termino, valor]) => [el('dt', { class: 'text-sm text-texto-tenue' }, termino), el('dd', { class: 'm-0 font-medium [overflow-wrap:anywhere]' }, valor)]),
   );
 }
 
@@ -156,7 +156,7 @@ function vistaDelTurno(turno: DetalleTurno, zona: string): { readonly nodo: HTML
           ...acciones.map((accion) => {
             const { texto, icono: nombreIcono, variante } = ACCIONES[accion];
             const b = boton({ texto, icono: nombreIcono, variante, requiereConexion: true, alHacerClic: () => puntosDeEntrada().accion(accion, turno) });
-            b.classList.add('w-full', 'justify-start');
+            b.classList.add('w-full', '!justify-start');
             return b;
           }),
         ),
