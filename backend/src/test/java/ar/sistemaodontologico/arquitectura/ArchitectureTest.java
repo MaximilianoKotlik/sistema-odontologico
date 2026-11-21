@@ -50,5 +50,8 @@ class ArchitectureTest {
             ReglasDeArquitectura.repositoriosSiempreConTenant(REPOSITORIOS_EXCEPTUADOS);
 
     @ArchTest
+    static final ArchRule agendaSinDominioDeConsultorio = ReglasDeArquitectura.agendaSinDominioDeConsultorio();
+
+    @ArchTest
     static final ArchRule springDataSoloEnInfraestructura = ReglasDeArquitectura.springDataSoloEnInfraestructura();
 }

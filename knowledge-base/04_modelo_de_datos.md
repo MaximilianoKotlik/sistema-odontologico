@@ -122,7 +122,7 @@ erDiagram
 - Índice GiST: `(consultorio_id, tstzrange(inicio, fin))`.
 
 ### Paciente (datos mínimos)
-- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(10) NULL`, `created_at`, `updated_at`.
+- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(40) NULL` (como `usuario.terminos_version`; la versión vigente `2026-11-borrador` no entra en 10), `created_at`, `updated_at`.
 - Unique: `(consultorio_id, dni)` — clave de deduplicación ([DD-24](09_decisiones_y_supuestos.md)). El teléfono es contacto obligatorio, no único.
 - Sin datos clínicos en v1 (minimización, [11](11_marco_legal_argentino.md)).
 
@@ -134,11 +134,12 @@ erDiagram
 - Constraint clave ([RN-AG-01](05_reglas_de_negocio.md)):
   ```sql
   CREATE EXTENSION IF NOT EXISTS btree_gist;
-  ALTER TABLE turno ADD CONSTRAINT turno_sin_solapamiento
+  ALTER TABLE turno ADD CONSTRAINT ex_turno_sin_solapamiento
     EXCLUDE USING gist (consultorio_id WITH =, tstzrange(inicio, fin, '[)') WITH &&)
     WHERE (NOT es_sobreturno AND estado IN ('RESERVADO','CONFIRMADO'));
   ```
 - Índices: `(consultorio_id, inicio)`, `(consultorio_id, paciente_id, inicio)`.
+- CHECKs (C-10, `V6`): `ck_turno_duracion` (5 a 480, múltiplo de 5), `ck_turno_fin` (`fin = inicio + duracion_min`, comparando epochs), `ck_turno_grilla` (inicio en múltiplos de 5 minutos, `extract(epoch FROM inicio) % 300 = 0` en `numeric`), `ck_turno_estado`, `ck_turno_origen`, `ck_turno_sobreturno_manual` (`NOT es_sobreturno OR origen = 'MANUAL'`) y `ck_turno_cancelacion` (`cancelado_por` y `motivo_cancelacion` solo en un turno `CANCELADO`). FKs compuestas `fk_turno_paciente` y `fk_turno_tipo_prestacion`. Sin `DELETE` para el rol de la aplicación.
 
 ### TokenGestionTurno
 - `id`, `consultorio_id`, `turno_id UNIQUE`, `token_hash CHAR(64) UNIQUE`, `expira_at` (= `fin` del turno), `revocado_at NULL`, `created_at`.
