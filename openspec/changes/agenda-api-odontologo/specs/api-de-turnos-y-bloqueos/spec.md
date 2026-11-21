@@ -16,7 +16,12 @@ El odontólogo SHALL crear un turno, o un sobreturno, para un paciente existente
 #### Scenario: Alta rápida con un DNI existente
 - **GIVEN** un paciente con DNI `90000001`
 - **WHEN** el odontólogo crea un turno con un paciente nuevo con ese DNI
-- **THEN** la respuesta es 201, el turno usa el paciente existente y la respuesta indica que se reutilizó
+- **THEN** la respuesta es 201, el turno usa el paciente existente y la respuesta indica que se reutilizó, con los datos guardados del paciente y no los escritos
+
+#### Scenario: Alta rápida con un DNI existente y otro nombre
+- **GIVEN** el paciente "Ana Prueba" con DNI `90000001`
+- **WHEN** el odontólogo crea un turno con un paciente nuevo "Anna Prueba" con ese DNI
+- **THEN** la respuesta es 201 con `pacienteReutilizado` y el paciente "Ana Prueba", que queda con revisión pendiente y con ese turno como turno de origen de lo informado
 
 ### Requirement: Cambiar un turno por la API
 El odontólogo SHALL confirmar, cancelar, marcar ausente, reprogramar, ajustar la duración y editar la nota de un turno indicando la versión que leyó. La respuesta MUST ser el turno actualizado con su versión nueva.
@@ -40,7 +45,7 @@ Un 409 `TURNO_SOLAPADO` causado por un turno existente MUST incluir el id, el in
 - **THEN** la respuesta es 409 `TURNO_SOLAPADO` con el id, el inicio y el fin del turno de las 10:00, y sin el nombre del paciente
 
 ### Requirement: Errores de la agenda con su estado HTTP
-Los errores de la agenda MUST llegar en Problem Details con su código estable: 400 para `VALIDACION`, `DURACION_INVALIDA` y `HORARIO_INVALIDO`; 404 para `RECURSO_NO_ENCONTRADO`; 409 para `TURNO_SOLAPADO`, `HORARIO_BLOQUEADO`, `FUERA_DE_DISPONIBILIDAD`, `BLOQUEO_CON_TURNOS`, `TRANSICION_INVALIDA`, `PRESTACION_INACTIVA` y `CONFLICTO_CONCURRENCIA`.
+Los errores de la agenda MUST llegar en Problem Details con su código estable: 400 para `VALIDACION`, `DURACION_INVALIDA` y `HORARIO_INVALIDO`; 404 para `RECURSO_NO_ENCONTRADO`; 409 para `TURNO_SOLAPADO`, `HORARIO_BLOQUEADO`, `FUERA_DE_DISPONIBILIDAD`, `BLOQUEO_CON_TURNOS`, `TRANSICION_INVALIDA`, `PRESTACION_INACTIVA`, `ACCION_NO_PERMITIDA` y `CONFLICTO_CONCURRENCIA`.
 
 #### Scenario: Duración no múltiplo de 5
 - **WHEN** el odontólogo ajusta la duración de un turno a 47 minutos
