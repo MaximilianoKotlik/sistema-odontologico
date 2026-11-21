@@ -142,12 +142,13 @@ class ExportacionApiTest extends IntegracionPostgresTest {
     @Test
     void conOtraEnCursoEs429Con30Segundos() throws Exception {
         ConsultorioId consultorio = new ConsultorioId(agenda.consultorio());
-        assertThat(guardia.tomar(consultorio)).isTrue();
+        PedidoDeExportacion enCurso = new PedidoDeExportacion(consultorio, agenda.usuario(), null, clock.instant());
+        assertThat(guardia.tomar(enCurso)).isTrue();
         try {
             mvc.perform(pedido(agenda)).andExpect(status().isTooManyRequests())
                     .andExpect(header().string(HttpHeaders.RETRY_AFTER, "30"));
         } finally {
-            guardia.liberar(consultorio);
+            guardia.liberar(enCurso);
         }
     }
 

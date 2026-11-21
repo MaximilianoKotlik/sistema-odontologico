@@ -114,25 +114,25 @@ public class ExportarDatos {
     /** Toma la guardia y aplica el límite de una exportación cada 5 minutos (design D7). */
     public Reserva reservar(PedidoDeExportacion pedido) {
         ConsultorioId consultorio = pedido.consultorio();
-        if (!guardia.tomar(consultorio)) {
+        if (!guardia.tomar(pedido)) {
             return Reserva.rechazada(SEGUNDOS_CON_OTRA_EN_CURSO);
         }
         try {
             Optional<Long> espera = segundosDeEspera(consultorio);
             if (espera.isPresent()) {
-                guardia.liberar(consultorio);
+                guardia.liberar(pedido);
                 return Reserva.rechazada(espera.get());
             }
             return new Reserva(true, 0, nombreArchivo(pedido));
         } catch (RuntimeException e) {
-            guardia.liberar(consultorio);
+            guardia.liberar(pedido);
             throw e;
         }
     }
 
     /** Devuelve la guardia de una reserva cuyo streaming no llegó a empezar. */
     public void liberar(PedidoDeExportacion pedido) {
-        guardia.liberar(pedido.consultorio());
+        guardia.liberar(pedido);
     }
 
     /**
@@ -144,7 +144,7 @@ public class ExportarDatos {
             ManifestDeExportacion manifest = escribirZip(pedido, salida);
             registrarEvento(pedido, manifest);
         } finally {
-            guardia.liberar(pedido.consultorio());
+            guardia.liberar(pedido);
         }
     }
 

@@ -45,7 +45,8 @@ class ExportarDatosTest {
     private final PedidoDeExportacion pedido =
             new PedidoDeExportacion(consultorio, USUARIO, "203.0.113.10", AHORA);
     private final ObjectMapper mapper = new ObjectMapper();
-    private final GuardiaDeExportaciones guardia = new GuardiaDeExportaciones();
+    private final GuardiaDeExportaciones guardia =
+            new GuardiaDeExportaciones(Clock.fixed(AHORA, ZoneOffset.UTC), Duration.ofMinutes(5));
     private final ConsultaFalsa consulta = new ConsultaFalsa();
     private final List<CambioAuditado> eventos = new ArrayList<>();
     private final TransaccionesFalsas transacciones = new TransaccionesFalsas();
