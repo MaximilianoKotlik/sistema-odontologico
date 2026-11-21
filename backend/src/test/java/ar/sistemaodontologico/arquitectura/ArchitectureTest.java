@@ -60,5 +60,8 @@ class ArchitectureTest {
     static final ArchRule reservaSoloPorApplication = ReglasDeArquitectura.reservaSoloPorApplication();
 
     @ArchTest
+    static final ArchRule exportacionSinContextoDePeticion = ReglasDeArquitectura.exportacionSinContextoDePeticion();
+
+    @ArchTest
     static final ArchRule springDataSoloEnInfraestructura = ReglasDeArquitectura.springDataSoloEnInfraestructura();
 }

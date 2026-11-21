@@ -27,6 +27,7 @@ abstract class ExportadorJdbc implements ExportadorDeEntidad {
     private final JdbcClient jdbc;
     private final ObjectMapper json;
     private final String entidad;
+    private final String tabla;
     private final List<String> columnas;
     private final String consulta;
 
@@ -38,6 +39,7 @@ abstract class ExportadorJdbc implements ExportadorDeEntidad {
         this.jdbc = JdbcClient.create(plantilla);
         this.json = json;
         this.entidad = entidad;
+        this.tabla = tabla;
         this.columnas = List.copyOf(columnas);
         this.consulta = "SELECT " + String.join(", ", columnas) + " FROM " + tabla + " WHERE " + columnaTenant
                 + " = :consultorio ORDER BY " + orden;
@@ -51,6 +53,11 @@ abstract class ExportadorJdbc implements ExportadorDeEntidad {
     @Override
     public final List<String> columnas() {
         return columnas;
+    }
+
+    /** Tabla que lee, para verificar que ninguna sea de tokens (RN-EX-02). */
+    final String tabla() {
+        return tabla;
     }
 
     @Override

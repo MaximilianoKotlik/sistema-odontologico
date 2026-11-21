@@ -121,6 +121,21 @@ public final class ReglasDeArquitectura {
     }
 
     /**
+     * La exportación corre en el hilo del streaming, donde no hay petición ni sesión (C-19, design D2): recibe el
+     * consultorio, el usuario y la IP en el pedido, y no lee {@code TenantContext} ni {@code SesionActual}.
+     */
+    public static ArchRule exportacionSinContextoDePeticion() {
+        return noClasses()
+                .that().resideInAPackage("..exportacion.application..")
+                .should().dependOnClassesThat().haveFullyQualifiedName(
+                        "ar.sistemaodontologico.compartido.application.TenantContext")
+                .orShould().dependOnClassesThat().haveFullyQualifiedName(
+                        "ar.sistemaodontologico.compartido.application.SesionActual")
+                .as("exportacion.application no depende de TenantContext ni de SesionActual")
+                .allowEmptyShould(true);
+    }
+
+    /**
      * La hora sale solo del {@link java.time.Clock} inyectado (C-02, design D2): nadie llama a los
      * {@code now()} sin argumentos de java.time, que usan el reloj del sistema y no se pueden fijar en tests.
      */

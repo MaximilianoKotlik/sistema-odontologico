@@ -147,6 +147,12 @@ class ExportadoresTest extends IntegracionPostgresTest {
     }
 
     @Test
+    void ningunExportadorLeeTablasDeTokens() {
+        assertThat(exportadores).allSatisfy(e -> assertThat(((ExportadorJdbc) e).tabla())
+                .isNotIn("refresh_token", "token_recuperacion", "token_gestion_turno"));
+    }
+
+    @Test
     void elOdontologoNoExportaSuHash() throws IOException {
         assertThat(leer("odontologo", consultorioA).toString()).doesNotContain(HASH_FICTICIO);
     }
