@@ -20,6 +20,11 @@ app:
     recuperacion-por-email: { capacidad: 2, periodo: 1h }
     confirmar-recuperacion: { capacidad: 10000, periodo: 1h }
     cambiar-password: { capacidad: 3, periodo: 15m }
+  # API pública (C-15): altos por la misma razón; LimitesPublicosTest usa su propio contexto con límites bajos.
+  rate-limit-publico:
+    reserva: { capacidad: 100000, periodo: 1h }
+    consulta: { capacidad: 100000, periodo: 1m }
+    token: { capacidad: 100000, periodo: 1h }
 
 logging:
   level:

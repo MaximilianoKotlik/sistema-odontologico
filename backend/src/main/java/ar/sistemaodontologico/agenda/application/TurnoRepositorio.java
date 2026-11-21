@@ -1,6 +1,7 @@
 package ar.sistemaodontologico.agenda.application;
 
 import ar.sistemaodontologico.agenda.domain.Intervalo;
+import ar.sistemaodontologico.agenda.domain.PacienteId;
 import ar.sistemaodontologico.agenda.domain.Turno;
 import ar.sistemaodontologico.agenda.domain.TurnoId;
 import ar.sistemaodontologico.compartido.domain.ConsultorioId;
@@ -31,4 +32,10 @@ public interface TurnoRepositorio {
      * versión ni otra columna (DD-39).
      */
     void limpiarNovedad(ConsultorioId consultorio, TurnoId id, Instant novedadVista);
+
+    /** Los turnos activos del paciente, reservados por link, que todavía no empezaron (RN-RP-08). */
+    long contarFuturosActivosPorLink(ConsultorioId consultorio, PacienteId paciente, Instant ahora);
+
+    /** Registra un cambio hecho por el paciente que el odontólogo todavía no vio (DD-30); no cambia la versión. */
+    void marcarNovedadPaciente(ConsultorioId consultorio, TurnoId turno, Instant ahora);
 }

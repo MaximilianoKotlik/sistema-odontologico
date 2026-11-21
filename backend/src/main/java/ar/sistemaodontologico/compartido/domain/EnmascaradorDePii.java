@@ -36,7 +36,7 @@ public final class EnmascaradorDePii {
             return null;
         }
         // Los tokens van primero: pueden contener tramos de dígitos que el patrón de teléfono cortaría a medias.
-        String sinTokens = TOKEN.matcher(texto).replaceAll(MASCARA_TOKEN);
+        String sinTokens = TOKEN.matcher(PatronDeRutaSensible.enmascarar(texto)).replaceAll(MASCARA_TOKEN);
         String sinEmails = EMAIL.matcher(sinTokens).replaceAll(MASCARA_EMAIL);
         String sinDni = DNI_CON_PUNTOS.matcher(sinEmails).replaceAll(MASCARA_DNI);
         Matcher telefonos = TELEFONO.matcher(sinDni);

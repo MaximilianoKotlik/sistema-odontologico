@@ -100,7 +100,8 @@ class RegistrarPacienteTest extends CasoDeUsoDeAgendaTest {
                 .containsEntry("informado_turno_id", null);
         assertThat(jdbc.queryForObject("SELECT informado_at FROM paciente WHERE id = ?", java.sql.Timestamp.class,
                 ana.paciente().id().valor()).toInstant())
-                .isEqualTo(reloj.instant().truncatedTo(java.time.temporal.ChronoUnit.MICROS));
+                // Postgres redondea a microsegundos: según el reloj, queda uno arriba del valor truncado.
+                .isCloseTo(reloj.instant(), org.assertj.core.api.Assertions.within(1, java.time.temporal.ChronoUnit.MICROS));
         Evento evento = eventos().getLast();
         assertThat(evento.accion()).isEqualTo(RegistrarPaciente.ACCION_MARCADO);
         assertThat(evento.anterior()).isEqualTo("{\"requiere_revision\": false}");

@@ -123,6 +123,30 @@ class TurnoRepositorioJdbc implements TurnoRepositorio {
                 .update();
     }
 
+    @Override
+    public long contarFuturosActivosPorLink(ConsultorioId consultorio, PacienteId paciente, Instant ahora) {
+        return jdbc.sql("""
+                SELECT count(*) FROM turno
+                 WHERE consultorio_id = :consultorio AND paciente_id = :paciente AND origen = 'LINK'
+                   AND estado IN ('RESERVADO', 'CONFIRMADO') AND inicio > :ahora""")
+                .param("consultorio", consultorio.valor())
+                .param("paciente", paciente.valor())
+                .param("ahora", Timestamp.from(ahora))
+                .query(Long.class)
+                .single();
+    }
+
+    @Override
+    public void marcarNovedadPaciente(ConsultorioId consultorio, TurnoId turno, Instant ahora) {
+        jdbc.sql("""
+                UPDATE turno SET novedad_paciente_at = :ahora, updated_at = now()
+                 WHERE consultorio_id = :consultorio AND id = :id""")
+                .param("ahora", Timestamp.from(ahora))
+                .param("consultorio", consultorio.valor())
+                .param("id", turno.valor())
+                .update();
+    }
+
     private static Turno turno(ResultSet fila) throws SQLException {
         String canceladoPor = fila.getString("cancelado_por");
         return Turno.restaurar(

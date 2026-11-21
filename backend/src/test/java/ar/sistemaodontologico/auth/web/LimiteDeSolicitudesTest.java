@@ -11,8 +11,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static pruebas.seguridad.ClienteDeAuth.CONTRASENA;
 
-import ar.sistemaodontologico.auth.application.EnviadorDeEmails;
 import ar.sistemaodontologico.compartido.IntegracionPostgresTest;
+import ar.sistemaodontologico.compartido.application.EnviadorDeEmails;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;

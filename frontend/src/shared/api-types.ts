@@ -99,6 +99,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/public/turnos/{token}/reprogramacion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mover el turno a otro hueco */
+        post: operations["reprogramar_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/turnos/{token}/cancelacion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancelar el turno */
+        post: operations["cancelar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/consultorios/{slug}/turnos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reservar un turno sin cuenta; el link de gestión se devuelve una sola vez */
+        post: operations["reservar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/prestaciones": {
         parameters: {
             query?: never;
@@ -355,6 +406,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/public/turnos/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ver el turno */
+        get: operations["ver"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/turnos/{token}/huecos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Huecos para reprogramar, sin contar el propio turno */
+        get: operations["huecos"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/public/planes": {
         parameters: {
             query?: never;
@@ -363,6 +448,40 @@ export interface paths {
             cookie?: never;
         };
         get: operations["planes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/consultorios/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Página pública del consultorio */
+        get: operations["pagina"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/consultorios/{slug}/huecos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Huecos ofrecibles para una prestación, hasta 31 días */
+        get: operations["huecos_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -578,6 +697,64 @@ export interface components {
             /** Format: int64 */
             version: number;
         };
+        PedidoDeReprogramacion: {
+            /** Format: date-time */
+            nuevoInicio: string;
+        };
+        ConsultorioVisible: {
+            nombre?: string;
+            direccion?: string;
+            telefono?: string;
+            zonaHoraria?: string;
+        };
+        PacienteVisible: {
+            nombre?: string;
+            apellido?: string;
+        };
+        TurnoVisible: {
+            /** Format: date-time */
+            inicio?: string;
+            /** Format: date-time */
+            fin?: string;
+            prestacion?: string;
+            estado?: string;
+            canceladoPor?: string;
+        };
+        VistaDeTurno: {
+            turno?: components["schemas"]["TurnoVisible"];
+            paciente?: components["schemas"]["PacienteVisible"];
+            consultorio?: components["schemas"]["ConsultorioVisible"];
+            puedeModificar?: boolean;
+            puedeReprogramar?: boolean;
+            /** Format: date-time */
+            modificableHasta?: string;
+        };
+        PedidoDeReservaDto: {
+            /** Format: uuid */
+            prestacionId: string;
+            /** Format: date-time */
+            inicio: string;
+            nombre: string;
+            apellido: string;
+            dni: string;
+            telefono: string;
+            email?: string;
+            aceptaPrivacidad?: boolean;
+        };
+        ReservaCreada: {
+            turno?: components["schemas"]["TurnoReservado"];
+            linkGestion?: string;
+        };
+        TurnoReservado: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            inicio?: string;
+            /** Format: date-time */
+            fin?: string;
+            prestacion?: string;
+            estado?: string;
+        };
         CrearBloqueoRequest: {
             /** Format: date-time */
             inicio: string;
@@ -680,6 +857,16 @@ export interface components {
             /** Format: int64 */
             version?: number;
         };
+        Dia: {
+            /** Format: date */
+            fecha?: string;
+            atiende?: boolean;
+            huecos?: string[];
+        };
+        HuecosPublicos: {
+            zonaHoraria?: string;
+            dias?: components["schemas"]["Dia"][];
+        };
         PlanPublicoResponse: {
             id: string;
             nombre: string;
@@ -699,6 +886,23 @@ export interface components {
             /** Format: int32 */
             dias: number;
             requiereMedioDePago: boolean;
+        };
+        PaginaPublica: {
+            nombre?: string;
+            direccion?: string;
+            telefono?: string;
+            zonaHoraria?: string;
+            tomaTurnosOnline?: boolean;
+            /** Format: date */
+            reservableHasta?: string;
+            prestaciones?: components["schemas"]["PrestacionPublica"][];
+        };
+        PrestacionPublica: {
+            /** Format: uuid */
+            id?: string;
+            nombre?: string;
+            /** Format: int32 */
+            duracionMin?: number;
         };
         PacienteResponse: {
             /** Format: uuid */
@@ -928,6 +1132,197 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["DetalleResponse"];
+                };
+            };
+        };
+    };
+    reprogramar_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoDeReprogramacion"];
+            };
+        };
+        responses: {
+            /** @description Turno con el horario nuevo */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description VALIDACION */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description RECURSO_NO_ENCONTRADO */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description FUERA_DE_PLAZO o RESERVA_NO_DISPONIBLE (con telefonoContacto), HUECO_NO_DISPONIBLE (con huecos) o CONFLICTO_CONCURRENCIA */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description CUERPO_DEMASIADO_GRANDE */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description DEMASIADAS_SOLICITUDES */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+        };
+    };
+    cancelar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Turno CANCELADO */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description RECURSO_NO_ENCONTRADO */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description FUERA_DE_PLAZO (con telefonoContacto) o CONFLICTO_CONCURRENCIA */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description DEMASIADAS_SOLICITUDES */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+        };
+    };
+    reservar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoDeReservaDto"];
+            };
+        };
+        responses: {
+            /** @description Turno RESERVADO con linkGestion */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReservaCreada"];
+                };
+            };
+            /** @description VALIDACION, DNI_INVALIDO o TELEFONO_INVALIDO */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReservaCreada"];
+                };
+            };
+            /** @description RECURSO_NO_ENCONTRADO */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReservaCreada"];
+                };
+            };
+            /** @description HUECO_NO_DISPONIBLE (con huecos), LIMITE_TURNOS o RESERVA_NO_DISPONIBLE (con telefonoContacto) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReservaCreada"];
+                };
+            };
+            /** @description CUERPO_DEMASIADO_GRANDE */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReservaCreada"];
+                };
+            };
+            /** @description DEMASIADAS_SOLICITUDES */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ReservaCreada"];
                 };
             };
         };
@@ -1344,6 +1739,107 @@ export interface operations {
             };
         };
     };
+    ver: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Turno, paciente, consultorio y acciones disponibles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description RECURSO_NO_ENCONTRADO */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+            /** @description DEMASIADAS_SOLICITUDES */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["VistaDeTurno"];
+                };
+            };
+        };
+    };
+    huecos: {
+        parameters: {
+            query?: {
+                desde?: string;
+                hasta?: string;
+            };
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Días con sus huecos en UTC */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+            /** @description VALIDACION */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+            /** @description RECURSO_NO_ENCONTRADO */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+            /** @description RESERVA_NO_DISPONIBLE, con telefonoContacto */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+            /** @description DEMASIADAS_SOLICITUDES */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+        };
+    };
     planes: {
         parameters: {
             query?: never;
@@ -1360,6 +1856,108 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PlanesPublicosResponse"];
+                };
+            };
+        };
+    };
+    pagina: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Datos públicos; sin reserva online, sin prestaciones */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PaginaPublica"];
+                };
+            };
+            /** @description RECURSO_NO_ENCONTRADO */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PaginaPublica"];
+                };
+            };
+            /** @description DEMASIADAS_SOLICITUDES */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PaginaPublica"];
+                };
+            };
+        };
+    };
+    huecos_1: {
+        parameters: {
+            query: {
+                prestacionId: string;
+                desde?: string;
+                hasta?: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Días con sus huecos en UTC */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+            /** @description VALIDACION */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+            /** @description RECURSO_NO_ENCONTRADO */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+            /** @description RESERVA_NO_DISPONIBLE, con telefonoContacto */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
+                };
+            };
+            /** @description DEMASIADAS_SOLICITUDES */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["HuecosPublicos"];
                 };
             };
         };

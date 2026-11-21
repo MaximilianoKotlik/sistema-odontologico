@@ -109,6 +109,18 @@ public final class ReglasDeArquitectura {
     }
 
     /**
+     * El módulo de reserva habla con agenda y consultorio por su capa {@code application} (C-15, design D1): no usa el
+     * dominio de agenda ni la infraestructura de consultorio.
+     */
+    public static ArchRule reservaSoloPorApplication() {
+        return noClasses()
+                .that().resideInAPackage("..reserva..")
+                .should().dependOnClassesThat().resideInAnyPackage("..agenda.domain..", "..consultorio.infrastructure..")
+                .as("reserva no depende del dominio de agenda ni de la infraestructura de consultorio")
+                .allowEmptyShould(true);
+    }
+
+    /**
      * La hora sale solo del {@link java.time.Clock} inyectado (C-02, design D2): nadie llama a los
      * {@code now()} sin argumentos de java.time, que usan el reloj del sistema y no se pueden fijar en tests.
      */

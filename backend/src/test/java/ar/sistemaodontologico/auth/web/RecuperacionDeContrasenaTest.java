@@ -10,8 +10,8 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static pruebas.seguridad.ClienteDeAuth.CONTRASENA;
 
-import ar.sistemaodontologico.auth.application.EnvioDeEmailFallido;
 import ar.sistemaodontologico.auth.domain.HashDeToken;
+import ar.sistemaodontologico.compartido.application.EnvioDeEmailFallido;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

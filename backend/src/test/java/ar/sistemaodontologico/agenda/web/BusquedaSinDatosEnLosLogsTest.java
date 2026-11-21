@@ -73,6 +73,18 @@ class BusquedaSinDatosEnLosLogsTest extends ApiDeAgendaTest {
         assertThat(salida.getAll()).contains("/api/v1/bloqueos?desde=2026-11-23T03:00:00Z");
     }
 
+    /** Convive con {@code PatronDeRutaSensible} de C-15: este filtro tapa la query y aquel, el token de la ruta. */
+    @Test
+    void elTokenDeGestionEnLaRutaSigueEnmascarado(CapturedOutput salida) throws Exception {
+        String token = "tokenFicticioDeGestionParaElTestDeLogs";
+
+        HttpClient.newHttpClient().send(HttpRequest.newBuilder(
+                        URI.create("http://localhost:" + puerto + "/api/v1/public/turnos/" + token)).GET().build(),
+                HttpResponse.BodyHandlers.ofString());
+
+        assertThat(salida.getAll()).contains("/public/turnos/***").doesNotContain(token);
+    }
+
     private int buscar(String q) throws Exception {
         return HttpClient.newHttpClient().send(HttpRequest.newBuilder(
                         URI.create("http://localhost:" + puerto + "/api/v1/pacientes?q=" + q))

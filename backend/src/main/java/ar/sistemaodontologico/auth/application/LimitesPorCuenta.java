@@ -1,5 +1,8 @@
 package ar.sistemaodontologico.auth.application;
 
+import ar.sistemaodontologico.compartido.application.LimitadorDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.LimiteDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.ResultadoDeLimite;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;

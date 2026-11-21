@@ -1,5 +1,6 @@
 package ar.sistemaodontologico.agenda.application;
 
+import ar.sistemaodontologico.agenda.domain.Consentimiento;
 import ar.sistemaodontologico.agenda.domain.Dni;
 import ar.sistemaodontologico.agenda.domain.Paciente;
 import ar.sistemaodontologico.agenda.domain.PacienteId;
@@ -23,4 +24,7 @@ public interface PacienteRepositorio {
 
     /** Completa el turno de origen de lo informado (DD-38). */
     void vincularTurnoDeOrigen(ConsultorioId consultorio, PacienteId paciente, TurnoId turno);
+
+    /** La aceptación vigente de la política de privacidad, renovada en cada reserva por link (C-15, design D7). */
+    void actualizarConsentimiento(ConsultorioId consultorio, PacienteId paciente, Consentimiento consentimiento);
 }

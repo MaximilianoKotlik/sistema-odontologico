@@ -70,6 +70,14 @@ class ConsultorioRepositorioJdbc implements ConsultorioRepositorio {
     }
 
     @Override
+    public Optional<ConsultorioId> buscarIdPorSlug(String slug) {
+        return jdbc.sql("SELECT id FROM consultorio WHERE slug = :slug")
+                .param("slug", slug)
+                .query((fila, numero) -> new ConsultorioId(fila.getObject("id", java.util.UUID.class)))
+                .optional();
+    }
+
+    @Override
     public void actualizarDatos(ConsultorioId id, DatosDelConsultorio datos, long versionLeida) {
         int filas = jdbc.sql("""
                 UPDATE consultorio
