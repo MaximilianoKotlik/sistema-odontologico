@@ -1,6 +1,6 @@
 # Mockups de C-18 · `historial-auditoria`
 
-`Approval: approved (2026-11-20, by Maxi)`, versión `9cb3635` (#35)
+`Approval: pending` (2026-11-21) para el caso "Reserva con este DNI" (#51). El resto sigue `approved (2026-11-20, by Maxi)`, versión `9cb3635` (#35).
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20).
@@ -30,10 +30,10 @@ Cada archivo elige el estado con `?estado=…`. Al pie hay una franja "Estados d
 
 | Pantalla | Archivo | Estados (`?estado=`) |
 |---|---|---|
-| Registro de cambios (`/app/auditoria`) | `registro.html` | `normal` (todos, agrupados por día, con "Cargar más"), `turno` (chip del turno al llegar desde el detalle), `accion` (rango y tipo "Accesos", con IP), `rango-invalido`, `sin-resultados` (con "Quitar filtros"), `vacio` (consultorio sin cambios todavía), `cargando`, `error` (con "Reintentar"), `offline` |
-| Detalle del turno (`/app/agenda/turnos/{id}`) | `turno-historial.html` | `historial` (reservó por link y reprogramó, con "Ver en el registro de cambios"), `historial-cargando`, `historial-error` (el resto del detalle se ve igual) |
+| Registro de cambios (`/app/auditoria`) | `registro.html` | `normal` (todos, agrupados por día, con "Cargar más"), `turno` (chip del turno al llegar desde el detalle), `accion` (rango y tipo "Accesos", con IP), `rango-invalido`, `sin-resultados` (con "Quitar filtros"), `vacio` (consultorio sin cambios todavía), `cargando`, `error` (con "Reintentar"), `offline`, `dni-repetido` (revisión pendiente, nuevo en #51) |
+| Detalle del turno (`/app/agenda/turnos/{id}`) | `turno-historial.html` | `historial` (reservó por link y reprogramó, con "Ver en el registro de cambios"), `historial-cargando`, `historial-error` (el resto del detalle se ve igual), `historial-dni` (revisión pendiente, nuevo en #51) |
 
-Capturas: `previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png` (24 en total).
+Capturas: `previews/<pantalla>-<estado>-mobile-390x844.png` y `previews/<pantalla>-<estado>-desktop-1440x900.png` (28 en total: las 24 aprobadas y 4 del caso nuevo).
 
 Para verlos: servir la raíz del repo (`python -m http.server`) y entrar a `/openspec/changes/historial-auditoria/mockups/registro.html`.
 
@@ -51,6 +51,8 @@ Para verlos: servir la raíz del repo (`python -m http.server`) y entrar a `/ope
 7. **Un intento de sesión fallido** usa el ícono en tono de alerta, para que se destaque al recorrer la lista. Se muestra con el actor **"Sin sesión"**, porque C-05 lo registra como `ODONTOLOGO` sin id, nunca como "Sistema", con el número de intento y la IP (revisión de Maxi).
 8. **El error del historial no rompe el detalle**: la tarjeta muestra su propio error con "Reintentar".
 9. **Sin conexión**: el registro no se cachea (tiene datos personales), así que se muestra el aviso y no hay filtros.
+
+10. **Reserva con un DNI ya registrado y otro nombre** (decisión de Maxi en #51): mientras la revisión esté pendiente, el actor es "Reserva con este DNI" y no el nombre de la ficha. Al resolverla, se vuelve a ver como el estado `historial`, con el nombre que quedó en la ficha. "Turno de …" sigue indicando a quién está asignado el turno.
 
 ## (TBD) y datos ficticios
 

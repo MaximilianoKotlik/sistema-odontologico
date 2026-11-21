@@ -45,7 +45,9 @@
 ```sql
 SELECT e.*, u.nombre AS u_nombre, u.apellido AS u_apellido,
        pa.nombre AS pa_nombre, pa.apellido AS pa_apellido,
-       t.inicio AS t_inicio, pt.nombre AS pt_nombre, pt.apellido AS pt_apellido
+       t.inicio AS t_inicio, pt.nombre AS pt_nombre, pt.apellido AS pt_apellido,
+       (e.actor_tipo = 'PACIENTE' AND e.entidad = 'turno' AND pa.requiere_revision
+        AND pa.informado_turno_id = e.entidad_id) IS TRUE AS actor_en_revision
 FROM evento_auditoria e
 LEFT JOIN usuario u   ON e.actor_tipo = 'ODONTOLOGO' AND u.id = e.actor_id AND u.consultorio_id = e.consultorio_id
 LEFT JOIN paciente pa ON e.actor_tipo = 'PACIENTE'   AND pa.id = e.actor_id AND pa.consultorio_id = e.consultorio_id
@@ -58,6 +60,12 @@ LIMIT :tamano + 1
 - Todos los joins repiten `consultorio_id`: un `actor_id` mal cargado no puede traer el nombre de otro consultorio.
 - **El contexto del turno muestra su estado actual** (inicio y paciente de hoy). El horario de cada momento está en los valores anterior y nuevo del evento. Se documenta en la UI ("Turno del 12/11 10:00 · Paciente Uno Prueba").
 - `LIMIT tamano + 1` sirve para saber si hay otra página sin un `COUNT`.
+- **Reserva con un DNI ya registrado y otro nombre** (decisión de Maxi en #51, DD-24 y DD-38): el historial no puede afirmar que reservó la persona de la ficha cuando el nombre escrito no coincidía.
+  - **Alcance**: los eventos con actor `PACIENTE` cuya entidad es el turno `informado_turno_id` de ese paciente, mientras `requiere_revision = true`.
+  - **Respuesta**: el backend resuelve la regla y devuelve `actor.identidadEnRevision = true`, con `actor.nombre` nulo. Así el nombre de la ficha no llega como autor y el frontend no consulta pacientes. En el resto de los eventos la marca es `false`.
+  - **Al resolver la revisión (C-17)**: se borran las columnas de lo informado, la marca pasa a `false` y el actor muestra el nombre que quede en la ficha.
+  - **Límite aceptado por DD-38**: lo informado guarda solo la última reserva con diferencias. Si hay otra, la marca pasa a ese turno y el anterior vuelve a mostrar el nombre de la ficha.
+  - El contexto ("Turno de …") sigue mostrando al paciente de la ficha, porque indica a quién está asignado el turno y no quién hizo el cambio.
 
 ### D4 — Índices: los de C-03 alcanzan
 - **Registro sin filtros o por rango**: `ix_evento_auditoria_consultorio_ocurrido` resuelve el `WHERE consultorio_id = ? AND ocurrido_at BETWEEN …` y el orden.
@@ -79,16 +87,18 @@ LIMIT :tamano + 1
   - turnos: `TURNO_CREADO`, `TURNO_REPROGRAMADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_DURACION_CAMBIADA` y `TURNO_NOTA_CAMBIADA`;
   - bloqueos: `BLOQUEO_CREADO` y `BLOQUEO_ELIMINADO`;
   - configuración: `CONSULTORIO_CONFIG_CAMBIADA`, `PRESTACION_*` y `DISPONIBILIDAD_CAMBIADA`;
-  - pacientes: `PACIENTE_CREADO`, `PACIENTE_REQUIERE_REVISION`, `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` y `PACIENTE_REVISADO`;
+  - pacientes: `PACIENTE_CREADO`, `PACIENTE_MARCADO_PARA_REVISION`, `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` y `PACIENTE_REVISADO`;
   - accesos: `CUENTA_CREADA`, `LOGIN_EXITOSO`, `LOGIN_FALLIDO`, `PASSWORD_CAMBIADA` y `PASSWORD_RECUPERADA`;
   - exportación: `EXPORTACION_GENERADA`.
 
   Una acción sin etiqueta se muestra con su código.
-- **Valores**: `formatearCambio(clave, valor)` con etiquetas por clave (`inicio`, `fin`, `estado`, `duracion_min`, `nota_interna`, etc.).
+- **Valores**: `formatearCambio(clave, valor)` con etiquetas por clave: `inicio`, `fin`, `estado`, `duracion_min`, `nota_interna`, `es_sobreturno`, `origen`, `cancelado_por`, `requiere_revision`, `consentimiento_version` y `consentimiento_at`, entre otras (claves reales de C-11 y C-15).
+  - `paciente_id` y `tipo_prestacion_id` no se muestran: son ids internos y el contexto de la fila ya identifica el turno y el paciente.
   - Instantes en la zona del consultorio con `shared/fechas.ts`, estados con su nombre, minutos y Sí/No.
   - Para `nota_interna` se muestra el texto completo: es del odontólogo, no del paciente.
   - Una clave desconocida se muestra cruda.
 - **IP**: viene en la respuesta y se muestra solo en los eventos de acceso (`LOGIN_*` y `PASSWORD_*`), donde sirve para detectar un acceso ajeno. En el resto es ruido. Decidido por Maxi.
+- **Actor en revisión**: con `actor.identidadEnRevision = true`, la UI muestra **"Reserva con este DNI"** en lugar del nombre (D3).
 - **Actor sin id**: `LOGIN_FALLIDO` se registra con `actor_tipo = ODONTOLOGO` y `actor_id` nulo, porque quien intenta todavía no está autenticado (C-05, design D9). La UI lo muestra como **"Sin sesión"**, con el texto "Intento fallido de iniciar sesión con tu email", el número de intento (`intentos_fallidos` de 5) y la IP. Nunca como "Sistema": ese actor queda para operaciones internas, como el pase de plan de RN-PL-04 (revisión de Maxi al PR #35). El catálogo cubre cualquier evento con `actor_id` nulo: "Sin sesión" si el tipo es `ODONTOLOGO` o `PACIENTE`, y "Sistema" solo si el tipo es `SISTEMA`.
 
 ### D7 — Fechas del filtro
@@ -126,6 +136,10 @@ Resueltas por Maxi en la revisión del PR #35 (2026-11-20):
 3. **IP**: solo en los eventos de acceso (`LOGIN_*` y `PASSWORD_*`) (D6).
 4. **Contexto del turno**: alcanza con su estado actual, porque cada fila muestra el "antes → después" (D3).
 
+Resuelta por Maxi en la revisión del PR #51 (2026-11-21):
+
+5. **Actor de una reserva con un DNI ya registrado y otro nombre**: mientras el paciente tenga la revisión pendiente, los eventos de su turno de origen muestran "Reserva con este DNI". Una vez resuelta con C-17, muestran el nombre que quede en la ficha (D3).
+
 Ajustes de mockup pedidos y aplicados: el actor "Sin sesión" para `LOGIN_FALLIDO` (D6) y las capturas de desktop con la barra lateral de alto completo.
 
 ## UI Mockups
@@ -133,6 +147,6 @@ Ajustes de mockup pedidos y aplicados: el actor "Sin sesión" para `LOGIN_FALLID
 - Design system revision: 1
 - Decision: yes (2026-11-20). Dos pantallas: `/app/auditoria` y la tarjeta "Historial" del detalle del turno.
 - Mockups: [`mockups/registro.html`](mockups/registro.html) y [`mockups/turno-historial.html`](mockups/turno-historial.html), con su [README](mockups/README.md).
-- Approval: approved (2026-11-20, by Maxi), versión `9cb3635` (#35)
-- Preview: rendered (2026-11-20, versión 2 con los ajustes de la revisión del PR #35), 24 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440 de ancho, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola.
+- Approval: pending (2026-11-21): falta aprobar el caso "Reserva con este DNI" (estados `dni-repetido` e `historial-dni`, #51). El resto sigue aprobado por Maxi en la versión `9cb3635` (#35).
+- Preview: rendered (2026-11-20, versión 2 con los ajustes de la revisión del PR #35), 24 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440 de ancho, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola. Caso nuevo: rendered (2026-11-21), 4 capturas más con los mismos tamaños.
 - Visual verify: pendiente (tarea 6.1).
