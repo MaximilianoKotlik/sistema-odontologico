@@ -2,10 +2,7 @@
 
 > Change **C-15** de [CHANGES.md](../../../CHANGES.md) · Governance **ALTO** · Depende de `C-08` (`consultorio-config-backend`) y `C-11` (`agenda-casos-de-uso`) · Responsable: Mati · Aprobación: Maxi.
 >
-> Es trabajo anticipado. Se apoya en la propuesta de C-08 (PR #15, aprobada) y en la de C-10 (PR #18, con cambios pedidos). C-11 todavía no tiene propuesta. El código no se escribe hasta que se cumplan tres condiciones:
-> - C-08 y C-11 están `[x]`.
-> - Maxi aprobó esta propuesta (ALTO: se propone y se espera la revisión).
-> - Maxi aprobó de forma explícita el movimiento de clases de `auth` (RN-AU-06). Las demás preguntas de `design.md` §Open Questions ya las resolvió en la revisión del PR #30.
+> Es trabajo anticipado. Se apoya en C-08 (mergeado en #15) y en la propuesta de C-10 (PR #18, aprobada). C-11 todavía no tiene propuesta. Maxi aprobó esta propuesta en el PR #30, incluido el movimiento de clases de `auth` (RN-AU-06, design D9). El código se escribe recién cuando C-08 y C-11 estén `[x]`.
 
 ## Why
 

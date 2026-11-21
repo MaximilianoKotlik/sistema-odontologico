@@ -1,15 +1,14 @@
 # Tasks
 
-> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que se cumplan tres condiciones:
+> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que se cumplan dos condiciones:
 > - C-08 y C-11 están `[x]`.
-> - Maxi aprobó esta propuesta (ALTO), incluido el movimiento de clases de `auth` (RN-AU-06).
-> - Maxi aprobó de forma explícita el movimiento de clases de `auth` (design D9, RN-AU-06).
+> - Propuesta y movimiento de clases de `auth` aprobados por Maxi en el PR #30 (design D9, RN-AU-06).
 >
 > Verificación base de cada grupo: `./gradlew test` en verde. Los tests de integración extienden `IntegracionPostgresTest` (Testcontainers, PostgreSQL 16) y usan solo datos ficticios evidentes (regla dura 17): DNI `90000001`…, teléfonos `+54 9 11 0000-00xx` y emails `@example.com`.
 
 ## 1. Preparación
 
-- [ ] 1.1 Rebasar sobre `main` con C-08, C-10 y C-11 mergeados. Fijar el número de la migración (posterior a la de `turno`) y verificar que existan las piezas de design D2 (`CrearTurno` con `LINK`, `ReprogramarTurno`/`CancelarTurno` con actor `PACIENTE`, alta por DNI y `LockDeAgenda`). Para cada pieza que falte, sumar una tarea en el grupo 4 con su test (verificación: suite existente en verde después del rebase y lista de piezas en el PR)
+- [ ] 1.1 Rebasar sobre `main` con C-08, C-10 y C-11 mergeados. Fijar el número de la migración (posterior a la de `turno`) y verificar que existan las piezas de design D2 (`CrearTurno` con `LINK`, `ReprogramarTurno`/`CancelarTurno` con actor `PACIENTE`, alta por DNI y `LockDeAgenda` como `FOR UPDATE` sobre `consultorio`, design D2). Para cada pieza que falte, sumar una tarea en el grupo 4 con su test (verificación: suite existente en verde después del rebase y lista de piezas en el PR)
 - [x] 1.2 Volcar al design las respuestas de Maxi a §Open Questions (revisión del PR #30) y ajustar specs y tareas (verificación: `openspec validate reserva-publica-backend --strict` en verde)
 - [ ] 1.3 Regla ArchUnit: `reserva` no depende de `..agenda.domain..` ni de `..consultorio.infrastructure..`, con un fixture que la viole (verificación: `ReglasDeArquitecturaTest` detecta el fixture y `ArchitectureTest` pasa)
 
@@ -41,6 +40,7 @@
 - [ ] 6.2 `ReservarTurnoPublico` en el orden de design D6: alta del turno `RESERVADO`/`LINK` con `novedad_paciente_at`, consentimiento con la versión vigente (`app.privacidad.version-vigente`), token emitido una vez y respuesta 201 con `linkGestion` (verificación: escenarios "Reserva exitosa", "Hueco no ofrecible", "Solo el hash en la base" y "Tokens distintos")
 - [ ] 6.3 Deduplicación por DNI y marca de revisión, sin sobrescribir datos y por consultorio (verificación: escenarios "DNI con puntos ya registrado", "Mismo DNI con otro nombre" y "Mismo DNI en otro consultorio")
 - [ ] 6.4 Límite de 2 turnos futuros activos por link (verificación: escenarios "Tercer turno" y "Turnos que no cuentan")
+- [ ] 6.5a Concurrencia con la grilla: una reserva y un `PUT /api/v1/disponibilidad` simultáneos que quitan la franja del hueco. O la reserva entra antes y la grilla se reemplaza después, o la reserva ve la grilla nueva y responde 409 `HUECO_NO_DISPONIBLE`. Nunca queda un turno validado contra la grilla vieja (verificación: test de integración con dos hilos y un latch, repetido 20 veces)
 - [ ] 6.5 Concurrencia con dos hilos y un `CountDownLatch` contra Postgres real: mismo hueco con distintos pacientes (exactamente una 201 y un 409 con `huecos` sin ese horario) y mismo DNI en dos horarios con el límite al borde (verificación: escenarios "Dos pacientes al mismo tiempo" y "Reservas simultáneas del mismo DNI", repetidos 20 veces sin fallos)
 - [ ] 6.6 Auditoría de la reserva según design D11, sin PII ni token, y rollback completo si falla el evento (verificación: escenarios "Eventos de una reserva de paciente nuevo" y "Falla la auditoría")
 - [ ] 6.7 Email de confirmación `AFTER_COMMIT` con Mailpit/GreenMail en el test, y SMTP caído sin afectar la respuesta (verificación: escenarios "Reserva con email" y "SMTP caído")

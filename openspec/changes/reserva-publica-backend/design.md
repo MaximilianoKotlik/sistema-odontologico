@@ -44,7 +44,7 @@
 - **`CrearTurno`** con `origen = LINK` y actor `PACIENTE`. Valida RN-AG-01/03, nunca crea un sobreturno, publica `TURNO_CREADO`, mapea `ex_turno_sin_solapamiento` a `TURNO_SOLAPADO` y toma el lock por consultorio.
 - **`ReprogramarTurno` y `CancelarTurno`** con un actor `PACIENTE` y la `version` esperada. Cancelar con `cancelado_por = PACIENTE`.
 - **`RegistrarPaciente` / `BuscarPacientePorDni`**: alta idempotente por `(consultorio_id, dni)` y `marcarRevision()`, con sus eventos.
-- **`LockDeAgenda.tomar(ConsultorioId)`**: `pg_advisory_xact_lock` sobre el consultorio, el mismo que usa C-11 al escribir agenda (riesgo de C-10).
+- **`LockDeAgenda.tomar(ConsultorioId)`**: `SELECT … FROM consultorio WHERE id = ? FOR UPDATE`, el mismo mecanismo que ya usa `ReemplazarDisponibilidad` de C-08 (mergeado en #15). Así, las reservas, los turnos manuales de C-11 y los cambios de grilla quedan en una sola cola por consultorio: una reserva nunca se valida contra una grilla que se está reemplazando. Es el pedido de Maxi a Fran en #18 y en la revisión de este PR. No se usa un lock consultivo aparte.
 - Si C-11 no los trae, C-15 los agrega en `agenda.application` con sus tests. Eso agranda este change, y se avisa al rebasar.
 - C-15 traduce los errores de agenda a errores públicos: `TURNO_SOLAPADO`, `FUERA_DE_DISPONIBILIDAD` y `HORARIO_BLOQUEADO` → 409 `HUECO_NO_DISPONIBLE`, para no revelar por qué un horario no está libre.
 
@@ -114,7 +114,12 @@
   - **Por IP**: `public-reserva` (POST de turnos), 10 por hora, y `public-consulta` (todos los GET), 60 por minuto.
   - **Por token**: `public-token` (POST de reprogramación y cancelación), 10 por hora. La clave es el **hash** del token, para que el token no viva en la memoria del limitador.
   - Los GET por token cuentan en el cupo por IP de consulta. Las "10 operaciones/hora" por token de RN-RP-09 son solo de modificación (reprogramar y cancelar), para que recargar la página no agote el cupo. Decidido por Maxi.
-- **Aprobación aparte**: mover clases de `auth` es un cambio en un dominio CRITICO (RN-AU-06). Maxi lo aprueba explícitamente en el PR #30, separado de la aprobación del resto de la propuesta.
+- **Aprobado por Maxi** (RN-AU-06) en [este comentario del PR #30](https://github.com/MaximilianoKotlik/sistema-odontologico/pull/30#issuecomment-7054269867), con tres condiciones:
+  - solo cambia el paquete;
+  - va en un commit `refactor` propio;
+  - los tests de C-05 tienen que estar en verde antes y después.
+
+  Si hace falta tocar algo más que el paquete, se vuelve a pedir la aprobación.
 - **Tamaño del body**: `TamanoMaximoDeCuerpoFilter` rechaza con 413 por `Content-Length` > 64 KB, y corta la lectura si un cuerpo chunked supera ese tamaño.
 - **IP real detrás del proxy**: misma limitación que C-05, ya en la checklist de C-23.
 
@@ -157,7 +162,7 @@
 ## Risks / Trade-offs
 
 - **[C-11 sin propuesta]** → D2 lista lo que C-15 necesita. Si C-11 no lo incluye, este change suma esos casos de uso y crece. Se coordina con Fran antes de su propuesta.
-- **[Lock por consultorio]** → serializa las reservas de un consultorio. Con un sillón y volúmenes bajos es aceptable, y es el mismo lock que C-10 le pide a C-11.
+- **[Lock por consultorio]** → serializa las reservas de un consultorio, y también contra los cambios de grilla y los turnos manuales (es el `FOR UPDATE` sobre `consultorio` de C-08). Con un sillón y volúmenes bajos es aceptable. Una edición de la configuración (`EditarConfiguracion`, con optimistic locking) puede esperar a que termine una reserva en curso, y no falla.
 - **[Revelación por `LIMITE_TURNOS`]** → quien escriba el DNI de otra persona puede deducir que tiene turnos en ese consultorio. Maxi aceptó el trade-off en la revisión de #25. Lo mitigan el rate limit por IP y que la respuesta no revela cuáles ni cuándo.
 - **[Rate limit en memoria]** → con una instancia alcanza (08). Con varias, cada una cuenta aparte. Se migra con el despliegue si hace falta.
 - **[DNI ajeno]** → sin verificación, alguien puede reservar con un DNI ajeno (trade-off de DD-24). El odontólogo ve el turno con la marca de revisión si el nombre no coincide.
@@ -182,7 +187,7 @@ Resueltas por Maxi en la revisión del PR #30 (2026-11-20):
 
 Cambio pedido y aplicado: el turno cancelado se sigue viendo por su link hasta que termina (D3, D8 y spec `gestion-turno-paciente`).
 
-Pendiente: la aprobación explícita de Maxi al movimiento de clases de `auth` (D9, RN-AU-06).
+El movimiento de clases de `auth` (D9, RN-AU-06) lo aprobó Maxi en [este comentario](https://github.com/MaximilianoKotlik/sistema-odontologico/pull/30#issuecomment-7054269867). El `LockDeAgenda` es el `FOR UPDATE` sobre `consultorio` de C-08 (D2), según la revisión de Maxi en #18 y en este PR.
 
 ## UI Mockups
 
