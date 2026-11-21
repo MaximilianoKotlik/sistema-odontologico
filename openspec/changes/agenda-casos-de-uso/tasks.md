@@ -8,8 +8,8 @@
 
 ## 1. Preparación
 
-- [ ] 1.1 Rebasar sobre `main` con C-10 mergeado y ajustar los nombres a lo que quedó en `agenda.domain`. Confirmar que `Paciente.marcadoParaRevision(DatosInformados)` y `datosDifierenDe` (NFD) quedaron como en #18 (verificación: la suite existente en verde)
-- [ ] 1.2 Corregir en `CHANGES.md` el alcance de C-11: deduplicación por DNI (DD-24), no por teléfono (verificación: diff de CHANGES.md en el PR)
+- [x] 1.1 Rebasar sobre `main` con C-10 mergeado y ajustar los nombres a lo que quedó en `agenda.domain`. Confirmar que `Paciente.marcadoParaRevision(DatosInformados)` y `datosDifierenDe` (NFD) quedaron como en #18 (verificación: la suite existente en verde)
+- [x] 1.2 Corregir en `CHANGES.md` el alcance de C-11: deduplicación por DNI (DD-24), no por teléfono (verificación: diff de CHANGES.md en el PR)
 
 ## 2. Lock y lecturas
 

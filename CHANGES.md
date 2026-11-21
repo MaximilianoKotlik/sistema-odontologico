@@ -316,9 +316,9 @@ Reglas de coordinación del paralelismo:
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - Casos de uso de aplicación sobre el dominio de C-10: crear turno (manual, sobreturno y desde reserva pública, como puerto que consume C-15), cambiar estado, reprogramar (RN-AG-11), **ajustar duración** (RN-AG-12: recalcula `fin`, revalida RN-AG-01/03/04, múltiplos de 5), **editar nota interna** (`nota_interna`, máx. 500), crear y **eliminar** bloqueo.
-  - Deduplicación de paciente por teléfono E.164 (RN-RP-03): reutiliza sin sobrescribir y marca `requiere_revision` si nombre/apellido difieren.
+  - Deduplicación de paciente por DNI (RN-RP-03, DD-24): reutiliza sin sobrescribir y marca `requiere_revision` si nombre/apellido difieren (sin mayúsculas, acentos ni espacios), guardando lo informado y el turno de origen (DD-38).
   - Optimistic locking (409 `CONFLICTO_CONCURRENCIA`, RN-GL-02).
-  - Eventos de auditoría en la misma transacción, con valor anterior y nuevo: `TURNO_CREADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_REPROGRAMADO`, `TURNO_DURACION_CAMBIADA`, `TURNO_NOTA_CAMBIADA`, `BLOQUEO_CREADO`, `BLOQUEO_ELIMINADO` (RN-AD-01, RN-AD-04).
+  - Eventos de auditoría en la misma transacción, con valor anterior y nuevo: `TURNO_CREADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_REPROGRAMADO`, `TURNO_DURACION_CAMBIADA`, `TURNO_NOTA_CAMBIADA`, `BLOQUEO_CREADO`, `BLOQUEO_ELIMINADO`, `PACIENTE_CREADO`, `PACIENTE_MARCADO_PARA_REVISION` (RN-AD-01, RN-AD-04, RN-AD-05).
   - Tests de aplicación (Testcontainers): US-012, US-021 a US-025 a nivel caso de uso, dedupe con `requiere_revision`, concurrencia, rollback del cambio si falla la auditoría.
 - **Dependencias**: `C-10`
 - **Governance**: ALTO (concentra las invariantes de solapamiento y la auditoría de turnos que consumen la API, la reserva pública y la exportación)
