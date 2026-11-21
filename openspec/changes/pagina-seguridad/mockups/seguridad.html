@@ -74,10 +74,11 @@
       <li>Nombre, apellido y DNI. El DNI identifica a la persona dentro de tu consultorio.</li>
       <li>Un celular para contactarlo y, si quiere, un email.</li>
       <li>Sus turnos y el consentimiento que acepta al reservar, con la fecha.</li>
+      <li>Si alguien reserva con un DNI que tu consultorio ya tiene, pero con otro nombre, no cambiamos la ficha: guardamos lo que escribió hasta que el consultorio lo revisa, y después se borra.</li>
     </ul>
     <p><strong>No guardamos datos de salud</strong>: no hay historia clínica, odontograma ni diagnósticos.</p>
     <p class="nota">Los datos de tus pacientes no se escriben en los registros técnicos del sistema: se enmascaran.</p>
-    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Modelo de paciente en <code>04_modelo_de_datos.md</code> §Paciente, DNI por DD-24, consentimiento de LG-02.</li><li>PII enmascarada en logs (RN-GL-01, C-02: <code>EnmascaradorDePii</code>, test <code>LogsSinPiiTest</code>).</li><li>Sin datos clínicos en v1 (DD-16).</li></ul></div>
+    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Modelo de paciente en <code>04_modelo_de_datos.md</code> §Paciente, DNI por DD-24, consentimiento de LG-02.</li><li>Lo escrito en la reserva hasta revisar: DD-38 (#36), columnas <code>*_informado</code> que C-17 borra al revisar.</li><li>PII enmascarada en logs (RN-GL-01, C-02: <code>EnmascaradorDePii</code>, test <code>LogsSinPiiTest</code>).</li><li>Sin datos clínicos en v1 (DD-16).</li></ul></div>
   </section>
 
   <section class="seccion" id="aislamiento" aria-labelledby="ais-t">
@@ -104,14 +105,15 @@
   <section class="seccion" id="acceso" aria-labelledby="acc-t">
     <h2 id="acc-t"><svg aria-hidden="true"><use href="#i-lock"/></svg>Cómo cuidamos el acceso</h2>
     <ul>
-      <li>Nunca guardamos tu contraseña: guardamos una versión cifrada que no se puede revertir.</li>
+      <li>Nunca guardamos tu contraseña: guardamos una huella de ella que no se puede revertir.</li>
       <li>Después de varios intentos fallidos, el ingreso se pausa un rato.</li>
       <li>La sesión vence sola, y al cambiar la contraseña se cierra en todos tus dispositivos.</li>
       <li>La conexión con el sistema viaja cifrada (HTTPS).</li>
       <li>El link que recibe cada paciente para ver su turno es único y largo, imposible de adivinar, y no muestra su DNI ni su teléfono.</li>
     </ul>
     <p class="nota">Por ahora la cuenta se protege con contraseña. La verificación en dos pasos llega más adelante (ver <a href="#falta">Lo que todavía no está</a>).</p>
-    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>BCrypt, bloqueo por intentos y rate limit (C-04, C-05, RN-AU-*, <code>08_arquitectura_propuesta.md</code> §Seguridad).</li><li>Sesión de 15 min con refresh rotado; cierre en todos los dispositivos al cambiar la contraseña (C-04, C-05, RN-AU-05).</li><li>HSTS y TLS fuera de local (C-04, <code>CabecerasDeSeguridadTest</code>). Hay que confirmar TLS en el VPS antes de publicar.</li><li>Token de 256 bits guardado como hash y vista sin DNI ni teléfono (C-15, C-16).</li></ul></div>
+    <p>¿Encontraste un problema de seguridad? Escribinos a <span class="tbd">(TBD) email de seguridad</span>.</p>
+    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Email de seguridad: decidido por Maxi en #40, se define junto con el dominio (DD-34) y <strong>bloquea la publicación</strong> como PA-02.</li><li>BCrypt (hash, no cifrado reversible), bloqueo por intentos y rate limit (C-04, C-05, RN-AU-*, <code>08_arquitectura_propuesta.md</code> §Seguridad).</li><li>Sesión de 15 min con refresh rotado; cierre en todos los dispositivos al cambiar la contraseña (C-04, C-05, RN-AU-05).</li><li>HSTS y TLS fuera de local (C-04, <code>CabecerasDeSeguridadTest</code>). Hay que confirmar TLS en el VPS antes de publicar.</li><li>Token de 256 bits guardado como hash y vista sin DNI ni teléfono (C-15, C-16).</li></ul></div>
   </section>
 
   <section class="seccion" id="hosting" aria-labelledby="host-t">

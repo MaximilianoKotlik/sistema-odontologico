@@ -10,7 +10,7 @@
 
 ## Decisions
 
-Las decisiones de UI y de contenido están en `mockups/README.md` §Decisiones para revisar. La principal para la implementación:
+Las decisiones de UI y de contenido están en `mockups/README.md` §Decisiones, aprobadas por Maxi en la revisión de #40 (2026-11-20). La principal para la implementación:
 
 - **Contenido en una fuente versionada compilada con la página**: Markdown o YAML en el repo, convertido al compilar. Sin endpoint ni estados de carga; cada cambio de texto pasa por un PR.
 
@@ -18,8 +18,7 @@ Las decisiones de UI y de contenido están en `mockups/README.md` §Decisiones p
 
 - PA-02 (proveedor y país del VPS, backups) y el proveedor SMTP: aparecen como `(TBD)` y **bloquean la publicación**.
 - Confirmar TLS en el VPS antes de afirmar "conexión cifrada".
-- ¿Email de contacto para reportar problemas de seguridad?
-- `08_arquitectura_propuesta.md` §Seguridad todavía dice "sin DNI"; DD-24 lo agregó.
+- Email de seguridad (sí, decidido por Maxi): `(TBD)` hasta definir el dominio (DD-34); bloquea la publicación como PA-02.
 
 ## UI Mockups
 
@@ -27,5 +26,5 @@ Las decisiones de UI y de contenido están en `mockups/README.md` §Decisiones p
 - Decision: yes (2026-11-20)
 - Mockups: openspec/changes/pagina-seguridad/mockups/ (`seguridad.html`, más `seguridad.css` y `mockup.js`)
 - Approval: pending
-- Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
+- Preview: rendered (2026-11-20, segunda versión con la revisión de #40); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
