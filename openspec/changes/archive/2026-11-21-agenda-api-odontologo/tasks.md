@@ -42,7 +42,7 @@
 
 - [x] 5.1 OpenAPI con las 13 operaciones y `npm run api:types` regenerado y commiteado (verificación: `ContratoOpenApiTest` y el CI de frontend)
 - [x] 5.2 `./gradlew test` completo en verde, `ArchitectureTest` en verde y cobertura ≥ 80 % en `agenda.application` y `agenda.web` (verificación: CI del PR)
-- [ ] 5.3 PR listo con la evidencia y la revisión de Maxi. Avisar a Nacho (C-13 y C-14) del contrato final y de los puntos "a acordar con C-12" que se cerraron: `novedadPacienteAt` en el visto, y que los huecos sugeridos no cuentan los sobreturnos ni el pasado (verificación: PR con revisor asignado)
+- [x] 5.3 PR listo con la evidencia y la revisión de Maxi. Avisar a Nacho (C-13 y C-14) del contrato final y de los puntos "a acordar con C-12" que se cerraron: `novedadPacienteAt` en el visto, y que los huecos sugeridos no cuentan los sobreturnos ni el pasado (verificación: PR con revisor asignado)
 
 ## Workflow follow-up
 

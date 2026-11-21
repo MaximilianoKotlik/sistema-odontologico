@@ -330,7 +330,7 @@ Reglas de coordinación del paralelismo:
   - `openspec/changes/archive/*-agenda-esquema-dominio/design.md` §Risks: **serializar las escrituras de agenda por consultorio** con el mismo bloqueo que C-08 usa en la grilla (`SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`), no con un lock consultivo aparte. Así turnos, bloqueos, reservas (C-15) y cambios de grilla quedan en una sola cola (revisión de Maxi en #18). La exclusión GiST no cruza tablas: sin ese bloqueo, un turno y un bloqueo concurrentes podrían pasar las dos validaciones.
 
 ### [C-12] `agenda-api-odontologo`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #48, 2026-11-21)
 - **Scope**:
   - `GET /api/v1/agenda?desde&hasta` (turnos, sobreturnos marcados, bloqueos, cancelados filtrables; indicador de "nuevos" por reservas/cambios de pacientes).
   - `POST /api/v1/turnos` (manual y `esSobreturno`), `PATCH /api/v1/turnos/{id}/estado`, `POST /api/v1/turnos/{id}/reprogramar` (sin anticipación mínima para el odontólogo; conserva el token de gestión), `PATCH /api/v1/turnos/{id}/duracion` (RN-AG-12), `PATCH /api/v1/turnos/{id}/nota` (RN-AD-01), `POST/DELETE /api/v1/bloqueos` (el `DELETE` audita `BLOQUEO_ELIMINADO`).
