@@ -1,0 +1,118 @@
+/* Mockup C-14 · formularios y diálogos de turnos y bloqueos. Solo tokens del sistema de diseño rev. 1 (sin tokens nuevos). */
+
+/* Diálogo grande: hoja a pantalla completa en mobile, centrado de hasta 560 px en desktop */
+.dialog.lg{top:0;bottom:0;max-height:none;border-radius:0;padding:0;display:flex;flex-direction:column}
+.dialog.lg .d-head{position:sticky;top:0;z-index:1;margin:0;padding:var(--space-3) var(--space-4);background:var(--color-surface);border-bottom:1px solid var(--color-border)}
+.dialog.lg .d-head h2{font-size:var(--text-lg);line-height:var(--lh-lg)}
+.dialog.lg .d-body{flex:1;overflow:auto;padding:var(--space-4)}
+.dialog.lg .d-foot{position:sticky;bottom:0;display:flex;gap:var(--space-2);padding:var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));background:var(--color-surface);border-top:1px solid var(--color-border)}
+.dialog.lg .d-foot .btn-primary{flex:1}
+@media (min-width:768px){
+  .dialog.lg{top:50%;bottom:auto;max-height:calc(100vh - 64px);width:min(560px,calc(100% - var(--space-7)));border-radius:var(--radius-lg);overflow:hidden}
+  .dialog.lg .d-foot{justify-content:flex-end}
+  .dialog.lg .d-foot .btn-primary{flex:none}
+}
+.dialog .d-foot .spacer{flex:1}
+
+/* Fecha y hora con el mismo alto que el resto de los campos */
+.input[type=date],.input[type=time]{height:var(--touch-min);min-height:var(--touch-min);padding-top:0;padding-bottom:0}
+
+/* Bloques del formulario */
+.fs{border:0;margin:0 0 var(--space-5);padding:0}
+.fs legend,.fs .legend{font-weight:var(--weight-bold);font-size:var(--text-base);margin-bottom:var(--space-2);padding:0}
+.row-dt{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:var(--space-3)}
+.fin{display:flex;align-items:center;gap:var(--space-2);margin:var(--space-1) 0 0;font-size:var(--text-sm);color:var(--color-text-muted);font-variant-numeric:tabular-nums}
+.fin svg{width:16px;height:16px;flex:none}
+.fin b{color:var(--color-text)}
+
+/* Buscador y resultados de pacientes */
+.search{position:relative}
+.search svg.lupa{position:absolute;left:var(--space-3);top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--color-text-muted)}
+.search .input{padding-left:calc(var(--space-3) + 26px)}
+.res{list-style:none;margin:var(--space-2) 0 0;padding:0;border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;background:var(--color-surface)}
+.res li+li{border-top:1px solid var(--color-border)}
+.res button{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);width:100%;min-height:52px;padding:var(--space-2) var(--space-3);border:0;background:none;font:inherit;color:var(--color-text);text-align:left;cursor:pointer}
+.res button:hover{background:var(--color-surface-muted)}
+.res .n{font-weight:var(--weight-semibold)}
+.res small{display:block;color:var(--color-text-muted);font-size:var(--text-sm)}
+.res .nuevo-pac{color:var(--color-primary);font-weight:var(--weight-semibold);justify-content:flex-start}
+.res .nuevo-pac svg{width:18px;height:18px}
+.res mark{background:var(--state-sobreturno-bg);color:inherit;padding:0 1px;border-radius:2px}
+.pac-sel{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-3);border:1.5px solid var(--color-primary);border-radius:var(--radius-md);background:var(--color-primary-tint)}
+.pac-sel .who{flex:1;min-width:0}
+.pac-sel .n{font-weight:var(--weight-semibold);display:block}
+.pac-sel small{color:var(--color-text-muted);font-size:var(--text-sm)}
+.alta{border:1px dashed var(--color-border-strong);border-radius:var(--radius-md);padding:var(--space-3) var(--space-3) var(--space-1);margin-top:var(--space-2)}
+.alta .alta-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);font-weight:var(--weight-semibold)}
+
+/* Prestaciones como opciones */
+.opts{display:grid;gap:var(--space-2)}
+@media (min-width:480px){.opts{grid-template-columns:1fr 1fr}}
+.popt{display:flex;justify-content:space-between;align-items:center;gap:var(--space-2);min-height:var(--touch-min);padding:var(--space-2) var(--space-3);border:1.5px solid var(--color-border-strong);border-radius:var(--radius-md);background:var(--color-surface);font:inherit;color:var(--color-text);cursor:pointer;text-align:left}
+.popt small{color:var(--color-text-muted)}
+.popt[aria-pressed=true]{border-color:var(--color-primary);background:var(--color-primary-tint);box-shadow:inset 0 0 0 1px var(--color-primary);font-weight:var(--weight-semibold)}
+
+/* Casilla de sobreturno destacada */
+.sob-box{border:2px dashed var(--state-sobreturno-bd);border-radius:var(--radius-md);background:var(--color-surface);padding:var(--space-1) var(--space-2)}
+.sob-box.on{background:var(--state-sobreturno-bg)}
+.sob-box .check{margin:0}
+
+/* Turno de referencia arriba del diálogo */
+.ref{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3);border-radius:var(--radius-md);background:var(--color-surface-muted);margin-bottom:var(--space-4);font-size:var(--text-sm)}
+.ref b{display:block;font-size:var(--text-base)}
+.ref svg{width:20px;height:20px;color:var(--color-text-muted);flex:none}
+
+/* Huecos libres */
+.huecos{display:flex;flex-wrap:wrap;gap:var(--space-2);list-style:none;margin:var(--space-2) 0 0;padding:0}
+.huecos .chip-h{min-width:76px;min-height:var(--touch-min);justify-content:center;font-variant-numeric:tabular-nums}
+.nuevo-h{display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-3);padding:var(--space-3);border-radius:var(--radius-md);background:var(--state-confirmado-bg);border:1px solid var(--state-confirmado-bd);color:var(--state-confirmado-fg);font-weight:var(--weight-semibold);font-variant-numeric:tabular-nums}
+.nuevo-h svg{width:18px;height:18px}
+
+/* Selector de duración */
+.stepper{display:grid;grid-template-columns:var(--touch-min) 1fr var(--touch-min);align-items:center;gap:var(--space-3);max-width:320px;margin:0 auto}
+.stepper .btn{font-size:var(--text-xl);padding:0}
+.stepper output{text-align:center;font-size:var(--text-2xl);line-height:var(--lh-2xl);font-weight:var(--weight-bold);font-variant-numeric:tabular-nums}
+.stepper output small{display:block;font-size:var(--text-sm);font-weight:var(--weight-regular);color:var(--color-text-muted);line-height:var(--lh-sm)}
+.stepper-chips{justify-content:center;margin-top:var(--space-3)}
+
+/* Nota interna */
+textarea.input{min-height:140px;padding:var(--space-2) var(--space-3);resize:vertical;line-height:var(--lh-base)}
+.counter{display:flex;justify-content:space-between;gap:var(--space-2);font-size:var(--text-sm);color:var(--color-text-muted);margin:var(--space-1) 0 0}
+.counter .c{font-variant-numeric:tabular-nums}
+.counter.over .c{color:var(--color-danger);font-weight:var(--weight-semibold)}
+
+/* Avisos dentro del diálogo */
+.dialog .notice{margin-bottom:var(--space-4)}
+.notice .actions .btn{min-height:var(--touch-min)}
+
+/* Lista de turnos en conflicto */
+.conflictos{list-style:none;margin:var(--space-2) 0 0;padding:0;display:grid;gap:var(--space-1)}
+.conflictos li{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);padding:var(--space-1) var(--space-2);background:var(--color-surface);border-radius:var(--radius-sm);color:var(--color-text);font-variant-numeric:tabular-nums}
+.conflictos a{font-weight:var(--weight-semibold);min-height:var(--touch-min);display:inline-flex;align-items:center}
+
+/* Bloqueos */
+.bl-list{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-3);max-width:760px}
+.bl{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-3) var(--space-3) var(--space-4);border:1px solid var(--state-bloqueo-bd);border-left-width:5px;border-radius:var(--radius-md);background:repeating-linear-gradient(135deg,var(--state-bloqueo-bg) 0 8px,var(--color-surface-muted) 8px 16px);color:var(--state-bloqueo-fg)}
+.bl .info{flex:1;min-width:0}
+.bl .t{display:block;font-weight:var(--weight-bold);color:var(--color-text)}
+.bl .r{display:block;font-size:var(--text-sm);color:var(--color-text);font-variant-numeric:tabular-nums}
+.bl .btn{background:var(--color-surface)}
+.bl-h{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap;margin-bottom:var(--space-4);max-width:760px}
+.bl-h p{margin:0;color:var(--color-text-muted);font-size:var(--text-sm)}
+.bl-sec{font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--color-text-muted);margin:var(--space-5) 0 var(--space-2);text-transform:none}
+
+/* Fondo de los diálogos: la agenda o el detalle de C-13 */
+.fondo{pointer-events:none}
+
+/* Objetivos táctiles de 44 px en chips de duración y de huecos (el .chip de agenda.css es de 24 px, solo para etiquetas) */
+.stepper-chips .chip,.huecos .chip{min-height:var(--touch-min);min-width:var(--touch-min);justify-content:center;font-size:var(--text-sm);padding:0 var(--space-3);cursor:pointer}
+.stepper-chips .chip[aria-pressed=true],.huecos .chip[aria-pressed=true]{border-color:var(--color-primary);background:var(--color-primary-tint);color:var(--color-primary);box-shadow:inset 0 0 0 1px var(--color-primary)}
+.alta .row-2 .field{margin-bottom:var(--space-4)}
+
+/* Campos en fila alineados arriba: sin esto, el campo más bajo se estira y reparte el sobrante entre su etiqueta y su input (revisión de Maxi en #31) */
+.row-2>.field,.row-dt>.field{align-content:start}
+
+/* Lista de turnos dentro de un aviso: sin la sangría de las listas del aviso y con "Ver turno" en una línea */
+.notice .conflictos{padding-left:0;margin-top:var(--space-2)}
+.conflictos a{white-space:nowrap;flex:none}
+.conflictos li>span{min-width:0}

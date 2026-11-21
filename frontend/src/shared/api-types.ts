@@ -3,6 +3,102 @@
  * Fuente: contrato OpenAPI del backend (/v3/api-docs). Regenerar con `npm run api:types`.
  */
 export interface paths {
+    "/api/v1/prestaciones/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["consultar"];
+        put: operations["editar"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/disponibilidad": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["consultar_1"];
+        put: operations["reemplazar"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/consultorio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["consultar_2"];
+        put: operations["editar_1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prestaciones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listar"];
+        put?: never;
+        post: operations["crear"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prestaciones/{id}/desactivar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["desactivar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prestaciones/{id}/activar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["activar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/registro": {
         parameters: {
             query?: never;
@@ -115,10 +211,98 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/public/planes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["planes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        PrestacionRequest: {
+            nombre: string;
+            /** Format: int32 */
+            duracionMin: number;
+            visiblePublica?: boolean;
+            /** Format: int32 */
+            orden?: number;
+        };
+        PrestacionResponse: {
+            /** Format: uuid */
+            id?: string;
+            nombre?: string;
+            /** Format: int32 */
+            duracionMin?: number;
+            activa?: boolean;
+            visiblePublica?: boolean;
+            /** Format: int32 */
+            orden?: number;
+        };
+        FranjaDto: {
+            /** Format: int32 */
+            diaSemana: number;
+            horaInicio: string;
+            horaFin: string;
+        };
+        GrillaRequest: {
+            franjas: components["schemas"]["FranjaDto"][];
+        };
+        FranjaResponse: {
+            /** Format: int32 */
+            diaSemana?: number;
+            horaInicio?: string;
+            horaFin?: string;
+        };
+        GrillaResponse: {
+            franjas?: components["schemas"]["FranjaResponse"][];
+        };
+        ConfiguracionRequest: {
+            nombre: string;
+            slug: string;
+            direccion?: string;
+            telefonoContacto: string;
+            zonaHoraria: string;
+            /** Format: int32 */
+            anticipacionCancelacionMin: number;
+            /** Format: int32 */
+            anticipacionReservaMin: number;
+            /** Format: int32 */
+            horizonteReservaDias: number;
+            /** Format: int32 */
+            pasoHuecosMin: number;
+            reservaPublicaActiva: boolean;
+        };
+        ConfiguracionResponse: {
+            nombre?: string;
+            slug?: string;
+            direccion?: string;
+            telefonoContacto?: string;
+            zonaHoraria?: string;
+            /** Format: int32 */
+            anticipacionCancelacionMin?: number;
+            /** Format: int32 */
+            anticipacionReservaMin?: number;
+            /** Format: int32 */
+            horizonteReservaDias?: number;
+            /** Format: int32 */
+            pasoHuecosMin?: number;
+            reservaPublicaActiva?: boolean;
+            plan?: string;
+            /** Format: date */
+            pruebaHasta?: string;
+        };
         RegistroRequest: {
             nombre: string;
             apellido: string;
@@ -155,6 +339,26 @@ export interface components {
             passwordActual?: string;
             passwordNueva?: string;
         };
+        PlanPublicoResponse: {
+            id: string;
+            nombre: string;
+            descripcion?: string;
+            incluye: string[];
+            importeARS: string;
+            moneda: string;
+            impuestosIncluidos: boolean;
+        };
+        PlanesPublicosResponse: {
+            planes: components["schemas"]["PlanPublicoResponse"][];
+            prueba: components["schemas"]["PruebaResponse"];
+            /** Format: date-time */
+            actualizadoEn: string;
+        };
+        PruebaResponse: {
+            /** Format: int32 */
+            dias: number;
+            requiereMedioDePago: boolean;
+        };
     };
     responses: never;
     parameters: never;
@@ -164,6 +368,232 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    consultar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrestacionResponse"];
+                };
+            };
+        };
+    };
+    editar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrestacionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrestacionResponse"];
+                };
+            };
+        };
+    };
+    consultar_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GrillaResponse"];
+                };
+            };
+        };
+    };
+    reemplazar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrillaRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GrillaResponse"];
+                };
+            };
+        };
+    };
+    consultar_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConfiguracionResponse"];
+                };
+            };
+        };
+    };
+    editar_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfiguracionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ConfiguracionResponse"];
+                };
+            };
+        };
+    };
+    listar: {
+        parameters: {
+            query?: {
+                incluirInactivas?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrestacionResponse"][];
+                };
+            };
+        };
+    };
+    crear: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrestacionRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrestacionResponse"];
+                };
+            };
+        };
+    };
+    desactivar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrestacionResponse"];
+                };
+            };
+        };
+    };
+    activar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrestacionResponse"];
+                };
+            };
+        };
+    };
     registrar: {
         parameters: {
             query?: never;
@@ -317,6 +747,26 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    planes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PlanesPublicosResponse"];
+                };
             };
         };
     };

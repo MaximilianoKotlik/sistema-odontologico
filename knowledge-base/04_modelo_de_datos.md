@@ -88,10 +88,11 @@ erDiagram
 ## Entidades
 
 ### Consultorio (tenant)
-- `id UUID PK`, `nombre VARCHAR(120) NOT NULL`, `slug VARCHAR(40) UNIQUE NOT NULL`, `direccion VARCHAR(200)`, `telefono_contacto VARCHAR(20)` (se muestra al paciente cuando no puede cancelar online).
+- `id UUID PK`, `nombre VARCHAR(120) NOT NULL`, `slug VARCHAR(40) UNIQUE NOT NULL`, `direccion VARCHAR(200)`, `telefono_contacto VARCHAR(20)` (E.164; se muestra al paciente cuando no puede cancelar online). Es nulo en la base porque el registro crea el consultorio sin teléfono, pero guardar la configuración lo exige ([RN-TE-06](05_reglas_de_negocio.md)).
 - `zona_horaria VARCHAR(50) NOT NULL DEFAULT 'America/Argentina/Buenos_Aires'`.
 - `anticipacion_cancelacion_min INT NOT NULL DEFAULT 1440` (24 h) — `CHECK (0..10080)`.
 - `anticipacion_reserva_min INT NOT NULL DEFAULT 120`, `horizonte_reserva_dias INT NOT NULL DEFAULT 60`, `paso_huecos_min INT NOT NULL DEFAULT 15` (`CHECK IN (5,10,15,20,30)`).
+  - La base exige `horizonte_reserva_dias > 0`; la aplicación además lo topea en **365 días** y exige `anticipacion_reserva_min < horizonte_reserva_dias × 1440` ([RN-TE-06](05_reglas_de_negocio.md), C-08).
 - `reserva_publica_activa BOOLEAN NOT NULL DEFAULT true`.
 - `plan VARCHAR(10) NOT NULL CHECK (plan IN ('PRUEBA','ACTIVO','VENCIDO'))`, `prueba_hasta DATE`.
 - Constraint: `slug ~ '^([a-z0-9])(-?[a-z0-9])+$'`, palabras reservadas validadas en aplicación ([RN-TE-03](05_reglas_de_negocio.md)).
@@ -113,7 +114,7 @@ erDiagram
 - Unique: `(consultorio_id, lower(nombre))`. No se borra si tiene turnos: se desactiva.
 
 ### Disponibilidad (franjas semanales)
-- `id`, `consultorio_id`, `dia_semana SMALLINT CHECK (1..7)` (ISO, 1 = lunes), `hora_inicio TIME`, `hora_fin TIME`, `CHECK (hora_fin > hora_inicio)`.
+- `id`, `consultorio_id`, `dia_semana SMALLINT CHECK (1..7)` (ISO, 1 = lunes), `hora_inicio TIME`, `hora_fin TIME`, `CHECK (hora_fin > hora_inicio)`, horas en múltiplos de 5 minutos (`ck_disponibilidad_multiplo_5`, [RN-AG-08](05_reglas_de_negocio.md)).
 - Exclusión: no se solapan dos franjas del mismo día del mismo consultorio (`EXCLUDE USING gist (consultorio_id WITH =, dia_semana WITH =, tsrange(...) WITH &&)` sobre una fecha ancla).
 
 ### Bloqueo
@@ -121,7 +122,8 @@ erDiagram
 - Índice GiST: `(consultorio_id, tstzrange(inicio, fin))`.
 
 ### Paciente (datos mínimos)
-- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(10) NULL`, `created_at`, `updated_at`.
+- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(40) NULL` (como `usuario.terminos_version`; la versión vigente `2026-11-borrador` no entra en 10), `created_at`, `updated_at`.
+- Datos informados en la reserva que disparó la revisión ([DD-38](09_decisiones_y_supuestos.md)): `nombre_informado VARCHAR(80) NULL`, `apellido_informado VARCHAR(80) NULL`, `email_informado CITEXT NULL`, `informado_at TIMESTAMPTZ NULL` y `informado_turno_id UUID NULL` (FK compuesta `(consultorio_id, informado_turno_id)` → `turno`). Solo tienen valor mientras `requiere_revision = true`: los llena la deduplicación (queda la última reserva) y vuelven a `NULL` al revisar. `ck_paciente_informado CHECK (requiere_revision OR num_nonnulls(<las cinco>) = 0)`: sin revisión pendiente, las cinco son `NULL` (incluye `informado_at IS NULL`).
 - Unique: `(consultorio_id, dni)` — clave de deduplicación ([DD-24](09_decisiones_y_supuestos.md)). El teléfono es contacto obligatorio, no único.
 - Sin datos clínicos en v1 (minimización, [11](11_marco_legal_argentino.md)).
 
@@ -133,11 +135,12 @@ erDiagram
 - Constraint clave ([RN-AG-01](05_reglas_de_negocio.md)):
   ```sql
   CREATE EXTENSION IF NOT EXISTS btree_gist;
-  ALTER TABLE turno ADD CONSTRAINT turno_sin_solapamiento
+  ALTER TABLE turno ADD CONSTRAINT ex_turno_sin_solapamiento
     EXCLUDE USING gist (consultorio_id WITH =, tstzrange(inicio, fin, '[)') WITH &&)
     WHERE (NOT es_sobreturno AND estado IN ('RESERVADO','CONFIRMADO'));
   ```
 - Índices: `(consultorio_id, inicio)`, `(consultorio_id, paciente_id, inicio)`.
+- CHECKs (C-10, `V6`): `ck_turno_duracion` (5 a 480, múltiplo de 5), `ck_turno_fin` (`fin = inicio + duracion_min`, comparando epochs), `ck_turno_grilla` (inicio en múltiplos de 5 minutos, `extract(epoch FROM inicio) % 300 = 0` en `numeric`), `ck_turno_estado`, `ck_turno_origen`, `ck_turno_sobreturno_manual` (`NOT es_sobreturno OR origen = 'MANUAL'`) y `ck_turno_cancelacion` (`cancelado_por` y `motivo_cancelacion` solo en un turno `CANCELADO`). FKs compuestas `fk_turno_paciente` y `fk_turno_tipo_prestacion`. Sin `DELETE` para el rol de la aplicación.
 
 ### TokenGestionTurno
 - `id`, `consultorio_id`, `turno_id UNIQUE`, `token_hash CHAR(64) UNIQUE`, `expira_at` (= `fin` del turno), `revocado_at NULL`, `created_at`.

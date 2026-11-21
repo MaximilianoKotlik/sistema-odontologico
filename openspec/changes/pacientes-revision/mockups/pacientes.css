@@ -1,0 +1,83 @@
+/* Mockup C-17 · pacientes-revision. Estilos propios de la lista y la revisión de pacientes.
+   Solo variables del sistema de diseño rev. 1 (sin tokens nuevos), sobre base.css. */
+
+/* Contador de "para revisar" en la navegación (número + texto oculto, no solo color) */
+.count{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:var(--radius-full);background:var(--state-sobreturno-bg);border:1px solid var(--state-sobreturno-bd);color:var(--state-sobreturno-fg);font-size:var(--text-xs);font-weight:var(--weight-bold);line-height:1}
+.sidelink .count{margin-left:auto}
+.navlink .ico{position:relative}
+.navlink .count{position:absolute;top:-4px;right:6px}
+
+/* Hoja "Más" (mobile), igual a la aprobada en C-07 */
+.sheet{position:fixed;z-index:7;left:0;right:0;bottom:0;background:var(--color-surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;box-shadow:var(--shadow-lg);padding:var(--space-3) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom))}
+.sheet .grab{width:40px;height:4px;border-radius:var(--radius-full);background:var(--color-border-strong);margin:0 auto var(--space-3)}
+.sheet h2{font-size:var(--text-lg);line-height:var(--lh-lg);margin:0 0 var(--space-2)}
+.sheet ul{list-style:none;margin:0;padding:0}
+.sheet a{display:flex;align-items:center;gap:var(--space-3);min-height:var(--touch-min);color:var(--color-text);text-decoration:none;font-weight:var(--weight-medium)}
+.sheet a svg{width:20px;height:20px;flex:none;color:var(--color-text-muted)}
+.sheet a .count{margin-left:auto}
+.sheet a[aria-current=page]{color:var(--color-primary);font-weight:var(--weight-bold)}
+.sheet a[aria-current=page] svg{color:var(--color-primary)}
+.sheet hr{border:0;border-top:1px solid var(--color-border);margin:var(--space-2) 0}
+.sheet .account{margin:var(--space-2) 0;font-size:var(--text-sm);color:var(--color-text-muted)}
+@media (min-width:768px){.sheet,.scrim.mas{display:none}}
+
+/* Filtro de la lista */
+.filtro{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2);margin:0 0 var(--space-4)}
+.filtro .chip .count{margin-left:var(--space-1)}
+.resumen{margin:0 0 var(--space-3);color:var(--color-text-muted);font-size:var(--text-sm)}
+
+/* Lista de pacientes */
+.plista{list-style:none;margin:0;padding:0;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg)}
+.plista li{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2) var(--space-3);padding:var(--space-3) var(--space-4);border-top:1px solid var(--color-border)}
+.plista li:first-child{border-top:0}
+.plista .quien{flex:1 1 220px;min-width:0}
+.plista .nombre{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2);font-weight:var(--weight-semibold)}
+.plista .datos{display:flex;flex-wrap:wrap;gap:var(--space-1) var(--space-3);margin-top:var(--space-1);font-size:var(--text-sm);color:var(--color-text-muted)}
+.plista .datos span{display:inline-flex;align-items:center;gap:var(--space-1);overflow-wrap:anywhere}
+.plista .datos svg{width:14px;height:14px;flex:none}
+.plista .btn{flex:none}
+@media (max-width:519px){.plista .btn{width:100%}}
+.badge.revisar{background:var(--state-sobreturno-bg);border-color:var(--state-sobreturno-bd);color:var(--state-sobreturno-fg)}
+.badge.ok{background:var(--state-confirmado-bg);border-color:var(--state-confirmado-bd);color:var(--state-confirmado-fg)}
+.mas-resultados{display:flex;justify-content:center;margin-top:var(--space-4)}
+
+/* Revisión: comparación de lo guardado con lo escrito en la reserva */
+.volver{display:inline-flex;align-items:center;gap:var(--space-1);min-height:var(--touch-min);color:var(--color-primary);font-weight:var(--weight-semibold);text-decoration:none;margin:calc(var(--space-2) * -1) 0 var(--space-2)}
+.volver svg{width:18px;height:18px}
+.ficha-titulo{font-size:var(--text-xl);line-height:var(--lh-xl);font-weight:var(--weight-bold);margin:0 0 var(--space-1)}
+.ficha-sub{margin:0 0 var(--space-4);color:var(--color-text-muted)}
+.comparar{width:100%;border-collapse:collapse;font-size:var(--text-base)}
+.comparar caption{text-align:left;font-weight:var(--weight-bold);font-size:var(--text-lg);line-height:var(--lh-lg);margin-bottom:var(--space-3)}
+.comparar th,.comparar td{text-align:left;vertical-align:top;padding:var(--space-3) var(--space-2);border-top:1px solid var(--color-border);overflow-wrap:anywhere}
+.comparar thead th{border-top:0;font-size:var(--text-sm);color:var(--color-text-muted);font-weight:var(--weight-semibold);padding-top:0}
+.comparar tbody th{font-weight:var(--weight-medium);color:var(--color-text-muted);width:26%}
+.comparar td{width:37%}
+.comparar tr.difiere td{font-weight:var(--weight-semibold)}
+.comparar tr.difiere td.reserva{background:var(--state-sobreturno-bg);color:var(--state-sobreturno-fg)}
+.comparar .marca{display:flex;align-items:center;gap:4px;margin-top:var(--space-1);font-size:var(--text-xs);font-weight:var(--weight-semibold)}
+.comparar .marca svg{width:13px;height:13px}
+.comparar .igual{color:var(--color-text-muted);font-weight:var(--weight-regular)}
+.coinciden{display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-3)}
+.coinciden svg{width:16px;height:16px;flex:none;color:var(--color-success)}
+@media (max-width:519px){
+  .comparar caption{display:block}
+  .comparar thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .comparar,.comparar tbody,.comparar tr,.comparar th,.comparar td{display:block;width:auto}
+  .comparar tbody tr{border-top:1px solid var(--color-border);padding:var(--space-3) 0}
+  .comparar tbody th,.comparar td{border:0;padding:var(--space-1) 0}
+  .comparar td::before{content:attr(data-col);display:block;font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--color-text-muted)}
+  .comparar tr.difiere td.reserva{padding:var(--space-2);border-radius:var(--radius-md)}
+}
+.acciones{display:flex;flex-direction:column;gap:var(--space-2);margin-top:var(--space-5)}
+.acciones .btn{width:100%}
+@media (min-width:768px){.acciones{flex-direction:row;flex-wrap:wrap}.acciones .btn{width:auto}}
+.acciones-nota{margin:var(--space-3) 0 0}
+.solo-lectura{display:flex;align-items:center;min-height:var(--touch-min);padding:0 var(--space-3);border:1px dashed var(--color-border-strong);border-radius:var(--radius-md);background:var(--color-surface-muted);color:var(--color-text)}
+.cols-ficha{display:grid;gap:var(--space-5)}
+@media (min-width:1024px){.cols-ficha{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start}}
+/* La base anula el margen del último campo; dentro de una fila de dos (que en mobile se apila) hace falta. */
+form .row-2 > .field{margin-bottom:var(--space-4)}
+
+/* Agenda: el aviso de pacientes va pegado al de cambios de DD-30, con la misma jerarquía (revisión de #36). */
+.notice.pegado{margin-bottom:var(--space-2)}
+.notice strong.inline{display:inline;font-size:inherit;line-height:inherit}

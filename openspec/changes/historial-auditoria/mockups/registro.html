@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Registro de cambios · {brand} (mockup C-18)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="agenda.css">
+<link rel="stylesheet" href="auditoria.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="normal:Todos los cambios|turno:Filtrado por un turno|accion:Filtrado por accesos|rango-invalido:Rango de fechas invertido|sin-resultados:Sin resultados para los filtros|vacio:Consultorio sin cambios todavía|cargando:Cargando|error:Error al cargar|offline:Sin conexión">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 11-2.2-5.3L19.5 9M19.5 4.5V9H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 017 0M5 13a10 10 0 015.5-2.8M19 13a10 10 0 00-2.5-1.8M2 9.5a15 15 0 015-3M22 9.5A15 15 0 0012 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="14" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 11l8.5-8.5M16 6l2.5 2.5M14 8l2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5l1-4L15.8 5.2a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8.5 18.5l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-18</span>
+    <ul>
+      <li><a class="sidelink" href="turno-historial.html"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="registro.html" aria-current="page"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo Sur</p>
+      <a class="sidelink" href="#"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar"><h1 class="page-title">Registro de cambios</h1></header>
+
+    <main class="content" id="contenido" tabindex="-1">
+      <div class="registro">
+        <p class="hint" style="margin-bottom:var(--space-4)">Todo lo que se cambió en tu consultorio, quién lo hizo y cuándo. Nadie puede editarlo ni borrarlo, ni siquiera vos.</p>
+
+        <div class="notice warn" role="status" data-solo="offline">
+          <svg aria-hidden="true"><use href="#i-wifioff"/></svg>
+          <div><strong>No tenés conexión</strong><p>El registro se consulta en línea. Volvé a intentar cuando tengas internet.</p></div>
+        </div>
+
+        <form class="filtros" role="search" aria-label="Filtrar el registro" data-no="offline vacio">
+          <ul class="fchips" data-solo="turno sin-resultados" aria-label="Filtros activos">
+            <li class="fchip">Turno de Hernán Muestra · vie 20/11 18:00<button type="button" aria-label="Quitar el filtro del turno"><svg aria-hidden="true"><use href="#i-x"/></svg></button></li>
+          </ul>
+          <div class="row">
+            <div class="field">
+              <label for="desde">Desde</label>
+              <input class="input" id="desde" type="date" data-valor="*=|accion=2026-11-01|rango-invalido=2026-11-20|sin-resultados=2026-11-01">
+            </div>
+            <div class="field">
+              <label for="hasta">Hasta</label>
+              <input class="input" id="hasta" type="date" aria-describedby="hasta-err" data-invalido="rango-invalido" data-valor="*=|accion=2026-11-20|rango-invalido=2026-11-10|sin-resultados=2026-11-05">
+              <p class="error-msg" id="hasta-err" data-solo="rango-invalido"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Tiene que ser igual o posterior a "Desde".</span></p>
+            </div>
+            <div class="field accion">
+              <label for="accion">Tipo de cambio</label>
+              <select class="input" id="accion" data-valor="*=Todos|accion=Inicios de sesión y contraseña">
+                <option>Todos</option>
+                <optgroup label="Turnos"><option>Reservas y altas</option><option>Reprogramaciones</option><option>Cambios de estado</option><option>Duración</option><option>Notas</option></optgroup>
+                <optgroup label="Bloqueos"><option>Bloqueos creados</option><option>Bloqueos eliminados</option></optgroup>
+                <optgroup label="Configuración"><option>Datos del consultorio</option><option>Prestaciones</option><option>Horarios</option></optgroup>
+                <optgroup label="Pacientes"><option>Pacientes nuevos</option><option>Pacientes a revisar</option></optgroup>
+                <optgroup label="Accesos"><option>Inicios de sesión y contraseña</option></optgroup>
+                <optgroup label="Exportaciones"><option>Exportaciones</option></optgroup>
+              </select>
+            </div>
+            <button class="btn btn-ghost limpiar" type="button" data-solo="turno accion sin-resultados rango-invalido"><svg aria-hidden="true"><use href="#i-x"/></svg>Quitar filtros</button>
+          </div>
+        </form>
+
+        <!-- Cargando -->
+        <div data-solo="cargando" aria-busy="true" aria-label="Cargando el registro">
+          <span class="skel w40"></span>
+          <div class="card"><span class="skel"></span><span class="skel w60"></span><span class="skel"></span></div>
+          <div class="card" style="margin-top:var(--space-2)"><span class="skel"></span><span class="skel w60"></span></div>
+        </div>
+
+        <!-- Error -->
+        <div class="notice danger" role="alert" data-solo="error">
+          <svg aria-hidden="true"><use href="#i-alert"/></svg>
+          <div><strong>No pudimos cargar el registro</strong><p>Puede ser un problema momentáneo.</p>
+            <div class="actions"><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-refresh"/></svg>Reintentar</button></div>
+          </div>
+        </div>
+
+        <!-- Vacío -->
+        <div class="card" data-solo="vacio" style="text-align:center">
+          <p style="margin:0 0 var(--space-2);font-weight:var(--weight-semibold)">Todavía no hay cambios</p>
+          <p class="hint">Cuando cargues tu consultorio, recibas reservas o muevas turnos, cada cambio va a quedar acá.</p>
+        </div>
+
+        <!-- Sin resultados -->
+        <div class="card" data-solo="sin-resultados" style="text-align:center">
+          <p style="margin:0 0 var(--space-2);font-weight:var(--weight-semibold)">No hay cambios con estos filtros</p>
+          <p class="hint" style="margin-bottom:var(--space-3)">Probá con otras fechas o con otro tipo de cambio.</p>
+          <button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-x"/></svg>Quitar filtros</button>
+        </div>
+
+        <!-- Lista: todos -->
+        <div data-solo="normal">
+          <section class="dia-grupo" aria-labelledby="d-hoy">
+            <h2 id="d-hoy">Hoy · viernes 20 de noviembre</h2>
+            <ul class="eventos">
+              <li class="ev">
+                <span class="ico odo" aria-hidden="true"><svg><use href="#i-repeat"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Reprogramaste un turno</span><span class="hora">11:42</span></div>
+                  <span class="quien"><span class="actor">Vos</span> Dra. Ejemplo</span>
+                  <p class="ctx">Turno de <a href="turno-historial.html">Carla Ficticia</a> · lun 23/11 11:00</p>
+                  <dl class="cambios"><dt>Inicio</dt><dd><span class="sr">antes </span><span class="antes">lun 23/11 10:00</span><svg class="flecha" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr">, después </span><span class="despues">lun 23/11 11:00</span></dd></dl>
+                </div>
+              </li>
+              <li class="ev">
+                <span class="ico pac" aria-hidden="true"><svg><use href="#i-link"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Canceló por el link</span><span class="hora">09:15</span></div>
+                  <span class="quien"><span class="actor">Paciente</span> Elena Demo</span>
+                  <p class="ctx">Turno de <a href="#">Elena Demo</a> · mar 24/11 16:30</p>
+                  <dl class="cambios"><dt>Estado</dt><dd><span class="sr">antes </span><span class="antes">Reservado</span><svg class="flecha" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr">, después </span><span class="despues">Cancelado</span></dd></dl>
+                </div>
+              </li>
+            </ul>
+          </section>
+          <section class="dia-grupo" aria-labelledby="d-ayer">
+            <h2 id="d-ayer">Ayer · jueves 19 de noviembre</h2>
+            <ul class="eventos">
+              <li class="ev">
+                <span class="ico pac" aria-hidden="true"><svg><use href="#i-link"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Reprogramó por el link</span><span class="hora">21:40</span></div>
+                  <span class="quien"><span class="actor">Paciente</span> Hernán Muestra</span>
+                  <p class="ctx">Turno de <a href="turno-historial.html">Hernán Muestra</a> · vie 20/11 18:00</p>
+                  <dl class="cambios"><dt>Inicio</dt><dd><span class="sr">antes </span><span class="antes">jue 19/11 16:30</span><svg class="flecha" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr">, después </span><span class="despues">vie 20/11 18:00</span></dd></dl>
+                </div>
+              </li>
+              <li class="ev">
+                <span class="ico odo" aria-hidden="true"><svg><use href="#i-gear"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Cambiaste la configuración</span><span class="hora">18:05</span></div>
+                  <span class="quien"><span class="actor">Vos</span> Dra. Ejemplo</span>
+                  <dl class="cambios"><dt>Anticipación para cancelar</dt><dd><span class="sr">antes </span><span class="antes">24 h</span><svg class="flecha" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr">, después </span><span class="despues">48 h</span></dd></dl>
+                </div>
+              </li>
+              <li class="ev">
+                <span class="ico alerta" aria-hidden="true"><svg><use href="#i-key"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Intento fallido de iniciar sesión con tu email</span><span class="hora">08:02</span></div>
+                  <span class="quien"><span class="actor">Sin sesión</span> Contraseña incorrecta · 1 de 5 intentos <span class="ip">IP 203.0.113.24</span></span>
+                </div>
+              </li>
+            </ul>
+          </section>
+          <div class="mas"><button class="btn btn-secondary" type="button">Cargar más</button></div>
+        </div>
+
+        <!-- Lista: filtrada por turno -->
+        <div data-solo="turno">
+          <p class="conteo">2 cambios de este turno</p>
+          <section class="dia-grupo" aria-labelledby="t-ayer">
+            <h2 id="t-ayer">Ayer · jueves 19 de noviembre</h2>
+            <ul class="eventos">
+              <li class="ev">
+                <span class="ico pac" aria-hidden="true"><svg><use href="#i-link"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Reprogramó por el link</span><span class="hora">21:40</span></div>
+                  <span class="quien"><span class="actor">Paciente</span> Hernán Muestra</span>
+                  <dl class="cambios"><dt>Inicio</dt><dd><span class="sr">antes </span><span class="antes">jue 19/11 16:30</span><svg class="flecha" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr">, después </span><span class="despues">vie 20/11 18:00</span></dd></dl>
+                </div>
+              </li>
+            </ul>
+          </section>
+          <section class="dia-grupo" aria-labelledby="t-lun">
+            <h2 id="t-lun">Lunes 16 de noviembre</h2>
+            <ul class="eventos">
+              <li class="ev">
+                <span class="ico pac" aria-hidden="true"><svg><use href="#i-link"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Reservó por tu link</span><span class="hora">10:12</span></div>
+                  <span class="quien"><span class="actor">Paciente</span> Hernán Muestra</span>
+                  <dl class="cambios"><dt>Turno</dt><dd><span class="despues">jue 19/11 16:30 · Consulta · 30 min</span></dd></dl>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <!-- Lista: filtrada por accesos -->
+        <div data-solo="accion">
+          <p class="conteo">3 cambios entre el 1 y el 20 de noviembre</p>
+          <section class="dia-grupo" aria-labelledby="a-ayer">
+            <h2 id="a-ayer">Ayer · jueves 19 de noviembre</h2>
+            <ul class="eventos">
+              <li class="ev">
+                <span class="ico alerta" aria-hidden="true"><svg><use href="#i-key"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Intento fallido de iniciar sesión con tu email</span><span class="hora">08:02</span></div>
+                  <span class="quien"><span class="actor">Sin sesión</span> Contraseña incorrecta · 1 de 5 intentos <span class="ip">IP 203.0.113.24</span></span>
+                </div>
+              </li>
+            </ul>
+          </section>
+          <section class="dia-grupo" aria-labelledby="a-10">
+            <h2 id="a-10">Martes 10 de noviembre</h2>
+            <ul class="eventos">
+              <li class="ev">
+                <span class="ico odo" aria-hidden="true"><svg><use href="#i-key"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Cambiaste tu contraseña</span><span class="hora">19:30</span></div>
+                  <span class="quien"><span class="actor">Vos</span> Dra. Ejemplo <span class="ip">IP 198.51.100.7</span></span>
+                </div>
+              </li>
+              <li class="ev">
+                <span class="ico odo" aria-hidden="true"><svg><use href="#i-key"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Iniciaste sesión</span><span class="hora">19:28</span></div>
+                  <span class="quien"><span class="actor">Vos</span> Dra. Ejemplo <span class="ip">IP 198.51.100.7</span></span>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <section class="review" aria-labelledby="rev-t">
+        <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+        <ul id="estados"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="turno-historial.html"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false" aria-current="page"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+</body>
+</html>

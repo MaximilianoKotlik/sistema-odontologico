@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exportar mis datos · {brand} (mockup C-19)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="exportar.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="inicial:Lista para exportar|generando:Preparando el archivo|listo:Archivo descargado|reciente:Exportación reciente (429)|sin-conexion:Sin conexión|error:Se cortó la descarga|vencido:Plan vencido">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6.5 3.5h7l4 4v13h-11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.5 3.5v4h4M9 12.5h6M9 16h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="5" cy="6.5" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="17.5" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M4 4l16 16M8.5 12.5a5 5 0 016.2-.6M5 9.3a10 10 0 014.3-2.4M19 9.3a10 10 0 00-5-2.7M12 18.5v.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="#" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-19</span>
+    <ul>
+      <li><a class="sidelink" href="#"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="exportar.html" aria-current="page"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo Sur</p>
+      <a class="sidelink" href="#"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar"><h1 class="page-title">Exportar mis datos</h1></header>
+
+    <main class="content" id="contenido" tabindex="-1">
+      <div class="export">
+        <div class="notice info" data-solo="vencido">
+          <svg aria-hidden="true"><use href="#i-info"/></svg>
+          <div><strong>Tu prueba terminó, pero tus datos siguen siendo tuyos</strong>
+            <p>La agenda quedó en solo lectura. La exportación funciona igual que siempre.</p>
+          </div>
+        </div>
+
+        <section class="card" aria-labelledby="t-exportar">
+          <div class="card-head"><div><h2 id="t-exportar">Descargá todos tus datos</h2><p class="sub">Todo lo que cargaste en <span data-brand-name>Muelas Felices</span>, en un archivo para guardarlo, revisarlo o llevarlo a otro sistema.</p></div></div>
+          <div class="action">
+            <button class="btn btn-primary" type="button" aria-describedby="export-hint" data-solo="inicial listo reciente sin-conexion error vencido"><svg aria-hidden="true"><use href="#i-download"/></svg>Exportar mis datos</button>
+            <button class="btn btn-primary" type="button" disabled aria-describedby="export-hint" data-solo="generando"><span class="spin" aria-hidden="true"></span>Preparando tu archivo…</button>
+            <p class="hint" id="export-hint">Puede tardar unos segundos. El archivo tiene datos de tus pacientes: guardalo en un lugar seguro.</p>
+          </div>
+
+          <!-- Región anunciada: progreso, éxito y errores -->
+          <div class="result" role="status" aria-live="polite">
+            <p class="sr" data-solo="generando">Preparando tu archivo…</p>
+            <div class="notice success" data-solo="listo">
+              <svg aria-hidden="true"><use href="#i-check"/></svg>
+              <div><strong>Listo, descargamos tu archivo</strong>
+                <p><code>export-consultorio-demo-sur-2026-11-20.zip</code> está en tu carpeta de descargas.</p>
+              </div>
+            </div>
+            <div class="notice warn" data-solo="reciente">
+              <svg aria-hidden="true"><use href="#i-clock"/></svg>
+              <div><strong>Ya generaste una exportación hace poco</strong>
+                <p>Vas a poder pedir otra en 3 minutos.</p>
+              </div>
+            </div>
+            <div class="notice danger" data-solo="sin-conexion">
+              <svg aria-hidden="true"><use href="#i-wifi-off"/></svg>
+              <div><strong>No tenés conexión</strong>
+                <p>Revisá tu internet y volvé a tocar "Exportar mis datos".</p>
+              </div>
+            </div>
+            <div class="notice danger" data-solo="error">
+              <svg aria-hidden="true"><use href="#i-alert"/></svg>
+              <div><strong>No pudimos completar la exportación</strong>
+                <p>No se guardó ningún archivo incompleto. Probá de nuevo.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="t-incluye">
+          <div class="card-head"><div><h2 id="t-incluye">Qué incluye el archivo</h2><p class="sub">Un ZIP con tu consultorio, prestaciones, horarios, bloqueos, pacientes, turnos y registro de cambios.</p></div></div>
+          <ul class="files">
+            <li><span class="ficon" aria-hidden="true"><svg><use href="#i-table"/></svg></span><div><strong>Planillas CSV y archivos JSON</strong><span>Uno por cada tipo de dato. Los CSV se abren con Excel o Google Sheets.</span></div></li>
+            <li><span class="ficon" aria-hidden="true"><svg><use href="#i-doc"/></svg></span><div><strong>Un resumen en PDF</strong><span>Para leer o imprimir: datos del consultorio, prestaciones, pacientes, turnos y un resumen de los cambios.</span></div></li>
+            <li><span class="ficon" aria-hidden="true"><svg><use href="#i-list"/></svg></span><div><strong>Un índice del contenido</strong><span><code>manifest.json</code>, con cuántos registros hay de cada tipo, para comprobar que no falta nada.</span></div></li>
+          </ul>
+          <ul class="facts">
+            <li class="lock"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>No incluye tu contraseña ni los links privados de tus pacientes.</span></li>
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg><span>Podés exportar siempre, también si tu plan venció.</span></li>
+            <li><svg aria-hidden="true"><use href="#i-clock"/></svg><span>Podés pedir una exportación cada 5 minutos.</span></li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="review" aria-labelledby="rev-t">
+        <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+        <ul id="estados"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false" aria-current="page"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+</body>
+</html>
