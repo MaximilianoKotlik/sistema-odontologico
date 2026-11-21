@@ -11,25 +11,25 @@
 
 ## 2. Dominio y cursor
 
-- [ ] 2.1 `FiltrosDeAuditoria`: `turnoId`, `desde`, `hasta` y acciones, con la validación del spec ("Rango invertido", formato de acción) (verificación: tests unitarios)
-- [ ] 2.2 `CursorDeAuditoria`: codifica `(ocurridoAt, id, consultorio)`, lo firma con HMAC y rechaza firmas alteradas o de otro consultorio (verificación: tests unitarios del escenario "Cursor inválido o de otro consultorio")
-- [ ] 2.3 Conversión del rango de fechas locales a instantes con la zona del consultorio (design D7) (verificación: escenario "Filtro por rango de fechas en la zona del consultorio" a nivel unitario)
+- [x] 2.1 `FiltrosDeAuditoria`: `turnoId`, `desde`, `hasta` y acciones, con la validación del spec ("Rango invertido", formato de acción) (verificación: tests unitarios)
+- [x] 2.2 `CursorDeAuditoria`: codifica `(ocurridoAt, id, consultorio)`, lo firma con HMAC y rechaza firmas alteradas o de otro consultorio (verificación: tests unitarios del escenario "Cursor inválido o de otro consultorio")
+- [x] 2.3 Conversión del rango de fechas locales a instantes con la zona del consultorio (design D7) (verificación: escenario "Filtro por rango de fechas en la zona del consultorio" a nivel unitario)
 
 ## 3. Lectura
 
-- [ ] 3.1 `LecturaDeAuditoriaJdbc` con la consulta de design D3, filtros y keyset (verificación: escenarios "Registro sin filtros", "Filtro por turno", "Filtro por acción" y "Filtros combinados sin coincidencias" en integración, con eventos insertados por SQL)
-- [ ] 3.2 Actor y contexto con joins que repiten el consultorio (verificación: escenarios "Evento de un paciente" y "Evento del sistema", más un caso con un `actor_id` que apunta a un usuario de otro consultorio y no trae nombre)
+- [x] 3.1 `LecturaDeAuditoriaJdbc` con la consulta de design D3, filtros y keyset (verificación: escenarios "Registro sin filtros", "Filtro por turno", "Filtro por acción" y "Filtros combinados sin coincidencias" en integración, con eventos insertados por SQL)
+- [x] 3.2 Actor y contexto con joins que repiten el consultorio (verificación: escenarios "Evento de un paciente" y "Evento del sistema", más un caso con un `actor_id` que apunta a un usuario de otro consultorio y no trae nombre)
 - [x] 3.2b Marca `actor.identidadEnRevision` en la consulta de design D3, sin el nombre del actor cuando es `true` (verificación: escenarios "Revisión pendiente", "Revisión resuelta" y "Otro turno del mismo paciente" de `consulta-auditoria`)
-- [ ] 3.3 Paginación estable (verificación: escenarios "Dos páginas" y "Evento nuevo entre páginas")
-- [ ] 3.4 Medición con 50 000 eventos y `EXPLAIN` de las tres variantes (sin filtros, por turno y por acción), con la salida en el PR. Si alguna supera 100 ms, se agrega el índice de design D4 (verificación: test etiquetado `@Tag("volumen")`)
+- [x] 3.3 Paginación estable (verificación: escenarios "Dos páginas" y "Evento nuevo entre páginas")
+- [x] 3.4 Medición con 50 000 eventos y `EXPLAIN` de las tres variantes (sin filtros, por turno y por acción), con la salida en el PR. Si alguna supera 100 ms, se agrega el índice de design D4 (verificación: test etiquetado `@Tag("volumen")`)
 
 ## 4. Casos de uso y API
 
-- [ ] 4.1 `ConsultarAuditoria.historialDeTurno` con el 404 de design D2 (verificación: escenarios "Turno reservado por link y reprogramado", "Turno de otro consultorio" y "Turno inexistente")
-- [ ] 4.2 `GET /api/v1/turnos/{id}/historial` y `GET /api/v1/auditoria` en `ControladorDeAuditoria`, con 400 `VALIDACION` por campo y `tamano` de 1 a 100 (verificación: escenarios de "Validación de los filtros" y "Paginación por cursor" en MockMvc + Testcontainers)
-- [ ] 4.3 Aislamiento por tenant en los dos endpoints (verificación: escenarios "Consultorio sin eventos de otro" y "Turno de otro consultorio en el filtro", regla dura 6)
-- [ ] 4.4 Solo lectura y plan `VENCIDO` (verificación: escenario "Plan vencido", contando los eventos antes y después)
-- [ ] 4.5 Anotar los endpoints con springdoc y regenerar `frontend/src/shared/api-types.ts` (verificación: job "api-types" de CI sin diferencias)
+- [x] 4.1 `ConsultarAuditoria.historialDeTurno` con el 404 de design D2 (verificación: escenarios "Turno reservado por link y reprogramado", "Turno de otro consultorio" y "Turno inexistente")
+- [x] 4.2 `GET /api/v1/turnos/{id}/historial` y `GET /api/v1/auditoria` en `ControladorDeAuditoria`, con 400 `VALIDACION` por campo y `tamano` de 1 a 100 (verificación: escenarios de "Validación de los filtros" y "Paginación por cursor" en MockMvc + Testcontainers)
+- [x] 4.3 Aislamiento por tenant en los dos endpoints (verificación: escenarios "Consultorio sin eventos de otro" y "Turno de otro consultorio en el filtro", regla dura 6)
+- [x] 4.4 Solo lectura y plan `VENCIDO` (verificación: escenario "Plan vencido", contando los eventos antes y después)
+- [x] 4.5 Anotar los endpoints con springdoc y regenerar `frontend/src/shared/api-types.ts` (verificación: job "api-types" de CI sin diferencias)
 
 ## 5. Frontend (requiere mockups aprobados)
 

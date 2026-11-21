@@ -2,7 +2,9 @@ package ar.sistemaodontologico.auditoria.application;
 
 import ar.sistemaodontologico.compartido.domain.ConsultorioId;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -23,9 +25,25 @@ public interface LecturaDeAuditoria {
     }
 
     /** Un evento con su actor y, si es de un turno que existe, su contexto. */
-    record EventoLeido(UUID id, Instant ocurridoAt, ActorLeido actor, String accion, ContextoDeTurno contexto) {
+    record EventoLeido(UUID id, Instant ocurridoAt, ActorLeido actor, String accion, String entidad, UUID entidadId,
+            Map<String, Object> valorAnterior, Map<String, Object> valorNuevo, String ip, ContextoDeTurno contexto) {
+    }
+
+    /**
+     * Qué página del registro leer (design D3 y D5). Los campos nulos no filtran; {@code antesDe} y {@code antesDeId} son
+     * la posición del cursor.
+     */
+    record CriteriosDeRegistro(UUID turnoId, Instant inicio, Instant finExclusivo, List<String> acciones,
+            Instant antesDe, UUID antesDeId, int limite) {
     }
 
     /** Eventos del turno en orden cronológico; vacío si el turno no tiene eventos en este consultorio. */
     List<EventoLeido> listarDeTurno(ConsultorioId consultorio, UUID turnoId);
+
+    /** Eventos del consultorio, del más nuevo al más viejo. */
+    List<EventoLeido> listarRegistro(ConsultorioId consultorio, CriteriosDeRegistro criterios);
+
+    boolean existeTurno(ConsultorioId consultorio, UUID turnoId);
+
+    ZoneId zonaHoraria(ConsultorioId consultorio);
 }

@@ -2,10 +2,16 @@ package ar.sistemaodontologico.auditoria.infrastructure;
 
 import ar.sistemaodontologico.auditoria.application.LecturaDeAuditoria;
 import ar.sistemaodontologico.compartido.domain.ConsultorioId;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -18,40 +24,98 @@ import org.springframework.stereotype.Repository;
 @Repository
 class LecturaDeAuditoriaJdbc implements LecturaDeAuditoria {
 
-    private final JdbcClient jdbc;
+    private static final TypeReference<Map<String, Object>> MAPA = new TypeReference<>() {
+    };
 
-    LecturaDeAuditoriaJdbc(JdbcClient jdbc) {
+    private static final String CONSULTA = """
+            SELECT e.id, e.ocurrido_at, e.actor_tipo, e.actor_id, e.entidad, e.entidad_id, e.accion,
+                   e.valor_anterior::text AS anterior, e.valor_nuevo::text AS nuevo, host(e.ip) AS ip,
+                   u.nombre AS u_nombre, u.apellido AS u_apellido,
+                   pa.nombre AS pa_nombre, pa.apellido AS pa_apellido,
+                   t.inicio AS t_inicio, pt.nombre AS pt_nombre, pt.apellido AS pt_apellido,
+                   (e.actor_tipo = 'PACIENTE' AND e.entidad = 'turno' AND pa.requiere_revision
+                    AND pa.informado_turno_id = e.entidad_id) IS TRUE AS actor_en_revision
+              FROM evento_auditoria e
+              LEFT JOIN usuario u   ON e.actor_tipo = 'ODONTOLOGO' AND u.id = e.actor_id
+                                   AND u.consultorio_id = e.consultorio_id
+              LEFT JOIN paciente pa ON e.actor_tipo = 'PACIENTE' AND pa.id = e.actor_id
+                                   AND pa.consultorio_id = e.consultorio_id
+              LEFT JOIN turno t     ON e.entidad = 'turno' AND t.id = e.entidad_id
+                                   AND t.consultorio_id = e.consultorio_id
+              LEFT JOIN paciente pt ON pt.id = t.paciente_id AND pt.consultorio_id = e.consultorio_id
+             WHERE e.consultorio_id = :consultorio
+            """;
+
+    private final JdbcClient jdbc;
+    private final ObjectMapper json;
+
+    LecturaDeAuditoriaJdbc(JdbcClient jdbc, ObjectMapper json) {
         this.jdbc = jdbc;
+        this.json = json;
     }
 
     @Override
     public List<EventoLeido> listarDeTurno(ConsultorioId consultorio, UUID turnoId) {
-        return jdbc.sql("""
-                SELECT e.id, e.ocurrido_at, e.actor_tipo, e.actor_id, e.accion,
-                       u.nombre AS u_nombre, u.apellido AS u_apellido,
-                       pa.nombre AS pa_nombre, pa.apellido AS pa_apellido,
-                       t.inicio AS t_inicio, pt.nombre AS pt_nombre, pt.apellido AS pt_apellido,
-                       (e.actor_tipo = 'PACIENTE' AND e.entidad = 'turno' AND pa.requiere_revision
-                        AND pa.informado_turno_id = e.entidad_id) IS TRUE AS actor_en_revision
-                  FROM evento_auditoria e
-                  LEFT JOIN usuario u   ON e.actor_tipo = 'ODONTOLOGO' AND u.id = e.actor_id
-                                       AND u.consultorio_id = e.consultorio_id
-                  LEFT JOIN paciente pa ON e.actor_tipo = 'PACIENTE' AND pa.id = e.actor_id
-                                       AND pa.consultorio_id = e.consultorio_id
-                  LEFT JOIN turno t     ON e.entidad = 'turno' AND t.id = e.entidad_id
-                                       AND t.consultorio_id = e.consultorio_id
-                  LEFT JOIN paciente pt ON pt.id = t.paciente_id AND pt.consultorio_id = e.consultorio_id
-                 WHERE e.consultorio_id = :consultorio AND e.entidad = 'turno' AND e.entidad_id = :turno
-                 ORDER BY e.ocurrido_at, e.id""")
+        return jdbc.sql(CONSULTA + " AND e.entidad = 'turno' AND e.entidad_id = :turno ORDER BY e.ocurrido_at, e.id")
                 .param("consultorio", consultorio.valor())
                 .param("turno", turnoId)
                 .query((fila, numero) -> evento(fila))
                 .list();
     }
 
-    private static EventoLeido evento(ResultSet fila) throws SQLException {
+    @Override
+    public List<EventoLeido> listarRegistro(ConsultorioId consultorio, CriteriosDeRegistro criterios) {
+        StringBuilder consulta = new StringBuilder(CONSULTA);
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("consultorio", consultorio.valor());
+        parametros.put("limite", criterios.limite());
+        if (criterios.turnoId() != null) {
+            consulta.append(" AND e.entidad = 'turno' AND e.entidad_id = :turno");
+            parametros.put("turno", criterios.turnoId());
+        }
+        if (criterios.inicio() != null) {
+            consulta.append(" AND e.ocurrido_at >= :inicio");
+            parametros.put("inicio", Timestamp.from(criterios.inicio()));
+        }
+        if (criterios.finExclusivo() != null) {
+            consulta.append(" AND e.ocurrido_at < :fin");
+            parametros.put("fin", Timestamp.from(criterios.finExclusivo()));
+        }
+        if (!criterios.acciones().isEmpty()) {
+            consulta.append(" AND e.accion IN (:acciones)");
+            parametros.put("acciones", criterios.acciones());
+        }
+        if (criterios.antesDe() != null) {
+            consulta.append(" AND (e.ocurrido_at, e.id) < (CAST(:antesDe AS timestamptz), CAST(:antesDeId AS uuid))");
+            parametros.put("antesDe", Timestamp.from(criterios.antesDe()));
+            parametros.put("antesDeId", criterios.antesDeId());
+        }
+        consulta.append(" ORDER BY e.ocurrido_at DESC, e.id DESC LIMIT :limite");
+        return jdbc.sql(consulta.toString()).params(parametros).query((fila, numero) -> evento(fila)).list();
+    }
+
+    @Override
+    public boolean existeTurno(ConsultorioId consultorio, UUID turnoId) {
+        return jdbc.sql("SELECT EXISTS (SELECT 1 FROM turno WHERE consultorio_id = :consultorio AND id = :turno)")
+                .param("consultorio", consultorio.valor())
+                .param("turno", turnoId)
+                .query(Boolean.class)
+                .single();
+    }
+
+    @Override
+    public ZoneId zonaHoraria(ConsultorioId consultorio) {
+        return ZoneId.of(jdbc.sql("SELECT zona_horaria FROM consultorio WHERE id = :consultorio")
+                .param("consultorio", consultorio.valor())
+                .query(String.class)
+                .single());
+    }
+
+    private EventoLeido evento(ResultSet fila) throws SQLException {
         return new EventoLeido(fila.getObject("id", UUID.class), fila.getTimestamp("ocurrido_at").toInstant(),
-                actor(fila), fila.getString("accion"), contexto(fila));
+                actor(fila), fila.getString("accion"), fila.getString("entidad"),
+                fila.getObject("entidad_id", UUID.class), mapa(fila.getString("anterior")),
+                mapa(fila.getString("nuevo")), fila.getString("ip"), contexto(fila));
     }
 
     private static ActorLeido actor(ResultSet fila) throws SQLException {
@@ -80,5 +144,17 @@ class LecturaDeAuditoriaJdbc implements LecturaDeAuditoria {
 
     private static String nombreCompleto(String nombre, String apellido) {
         return nombre == null ? null : nombre + " " + apellido;
+    }
+
+    private Map<String, Object> mapa(String valor) {
+        if (valor == null) {
+            return null;
+        }
+        try {
+            return json.readValue(valor, MAPA);
+        } catch (JsonProcessingException e) {
+            // Sin la causa ni el valor: puede contener datos personales.
+            throw new IllegalStateException("No se pudieron leer los valores de un evento de auditoría");
+        }
     }
 }
