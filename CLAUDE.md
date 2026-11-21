@@ -52,7 +52,7 @@ La fuente de verdad del dominio vive en `knowledge-base/` ([README](knowledge-ba
 
 **Sistema de diseño**: [design-system/README.md](design-system/README.md) (modo `system-and-mockups`, rev. 1 aprobada). Todo change con pantallas necesita un mockup revisado y aprobado antes de implementar; el sistema de diseño aprobado es la base visual.
 
-> Antes de arrancar los changes afectados, resolver las preguntas **Alta** abiertas: hoy solo queda **PA-02** acotada a país del VPS y backups (DD-25). PA-01 → DD-24, PA-03 → DD-22, PA-04..PA-06 → DD-26..DD-28 de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
+> No quedan preguntas **Alta** abiertas. PA-02 → DD-40: VPS y backups en Argentina, con requisitos de infraestructura que bloquean el lanzamiento (criterio de salida de C-23). PA-01 → DD-24, PA-03 → DD-22, PA-04..PA-06 → DD-26..DD-28 de [10_preguntas_abiertas.md](knowledge-base/10_preguntas_abiertas.md). Las inconsistencias IN-01..IN-03 están **resueltas** (DD-19, DD-20, DD-21 en [09_decisiones_y_supuestos.md](knowledge-base/09_decisiones_y_supuestos.md)).
 
 **Discovery**: [docs/discovery/](docs/discovery/) (`discovery.md` e `informe-discovery.md`).
 
@@ -109,8 +109,10 @@ Qué responde el agente al identificar a alguien:
 3. Recordarle el ciclo del PR:
    - Rama `feat/C-NN-nombre` creada desde `main` actualizado.
    - Si el change es CRITICO/ALTO o tiene pantallas: primero propuesta y/o mockup en un **PR en borrador**; no se escribe código de producción hasta que Maxi lo apruebe.
-   - Implementar con Strict TDD, marcar el PR como listo y pedir la revisión a Maxi.
-   - Cuando Maxi aprueba el PR (o confirma que no quedan cambios pedidos), el autor suma el commit de cierre en el mismo PR: marca `[x]` completado (PR #N, fecha) en CHANGES.md y archiva el change (`openspec archive <change>`), p. ej. `docs: cierre de C-NN (C-NN)`. Nunca antes de la aprobación ni en un PR aparte, y nunca en PRs de solo propuesta o mockup. Como `main` descarta las aprobaciones viejas al recibir commits nuevos, Maxi vuelve a aprobar ese último commit y mergea.
+   - Implementar con Strict TDD.
+   - **Antes de pedir la revisión**, con todo en verde, el autor suma el commit de cierre en el mismo PR: marca `[x]` completado (PR #N, fecha) en CHANGES.md y archiva el change (`openspec archive <change>`), p. ej. `docs: cierre de C-NN (C-NN)`. Después marca el PR como listo y pide la revisión a Maxi. El `[x]` llega a `main` solo con el merge, y el merge exige la aprobación de Maxi.
+   - Si Maxi pide cambios, el autor los hace en commits nuevos sobre la misma rama y deja el `[x]`. Los cambios a las specs se hacen en `openspec/specs/` y en `openspec/changes/archive/`, porque el change ya está archivado. Si el PR se cierra sin mergear, el `[x]` se va con él.
+   - Cuando Maxi aprueba, se mergea sin otra vuelta. Nunca se cierra en un PR aparte, y nunca en PRs de solo propuesta o mockup.
 4. Si la persona pide un change que no es suyo, avisarle a quién está asignado y no empezarlo sin el OK de Maxi.
 
 ---

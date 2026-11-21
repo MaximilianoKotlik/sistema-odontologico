@@ -12,7 +12,7 @@
 2. Leer los docs de la knowledge-base indicados en "Leer antes". En los changes de frontend, leer además el sistema de diseño aprobado (`design-system/README.md`, `tokens.css`, `components.html`).
 3. Acordar el alcance y los criterios de aceptación del item (los Given/When/Then de `06_funcionalidades.md` son la base; Strict TDD: cada criterio se escribe primero como test en rojo).
 4. Implementar, verificar los criterios acordados y registrar la evidencia en el PR.
-5. Cerrar el change en el mismo PR de implementación: cuando el PR está aprobado (o el líder confirma que no quedan cambios pedidos), el autor suma un último commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). No hace falta un PR aparte para el cierre.
+5. Cerrar el change en el mismo PR de implementación, **antes de pedir la revisión**: con todo en verde, el autor suma un commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). El `[x]` llega a `main` solo con el merge, que exige la aprobación del líder. Si el líder pide cambios, se hacen en commits nuevos y el `[x]` queda puesto. No hace falta un PR aparte para el cierre.
 
 Reglas del equipo:
 - **Governance**: CRITICO = solo análisis hasta aprobación humana explícita; ALTO = proponer y esperar revisión antes de escribir; MEDIO = implementar con checkpoints; BAJO = autonomía si los tests pasan.
@@ -138,7 +138,7 @@ Reglas de coordinación del paralelismo:
 - **Propuestas un paso antes**: los changes CRITICO y ALTO preparan su propuesta en el paso previo, para que la aprobación del líder no frene el change.
 - **Prioridad de revisión**: los PRs del camino crítico (C-02, C-04, C-08, C-10, C-11, C-12, C-13, C-14/C-18) se revisan antes que el resto.
 - **Migraciones Flyway**: cada change numera su migración provisoriamente y, al rebasar sobre `main` antes del merge, la pasa al siguiente número libre (una migración no mergeada todavía se puede renumerar; una mergeada nunca se edita).
-- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, recién con la aprobación del líder (paso 5). Los PRs de solo propuesta o mockups no marcan `[x]`.
+- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, antes de pedir la revisión (paso 5); llega a `main` solo con el merge aprobado. Los PRs de solo propuesta o mockups no marcan `[x]`.
 - **Trabajo anticipado**: se pueden preparar mockups, tests y propuestas antes de que se habilite un change, pero su PR se abre recién con las dependencias en `[x]`.
 
 ---
@@ -297,7 +297,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 3 — Agenda del odontólogo
 
 ### [C-10] `agenda-esquema-dominio`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #18, 2026-11-21)
 - **Scope**:
   - Migración: `paciente` (único `(consultorio_id, dni)` por DD-24, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
   - Dominio puro (sin Spring/JPA): entidades y value objects (`Intervalo` semiabierto, `Duracion` múltiplo de 5), `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento`, `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), derivación `fin = inicio + duracion_min` (RN-AG-12), reglas de bloqueo (rechazo con lista de conflictos), invariantes de sobreturno.
@@ -313,12 +313,12 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/08_arquitectura_propuesta.md` §Patrones aplicados, §Estrategia de tests
 
 ### [C-11] `agenda-casos-de-uso`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #46, 2026-11-21)
 - **Scope**:
   - Casos de uso de aplicación sobre el dominio de C-10: crear turno (manual, sobreturno y desde reserva pública, como puerto que consume C-15), cambiar estado, reprogramar (RN-AG-11), **ajustar duración** (RN-AG-12: recalcula `fin`, revalida RN-AG-01/03/04, múltiplos de 5), **editar nota interna** (`nota_interna`, máx. 500), crear y **eliminar** bloqueo.
-  - Deduplicación de paciente por teléfono E.164 (RN-RP-03): reutiliza sin sobrescribir y marca `requiere_revision` si nombre/apellido difieren.
+  - Deduplicación de paciente por DNI (RN-RP-03, DD-24): reutiliza sin sobrescribir y marca `requiere_revision` si nombre/apellido difieren (sin mayúsculas, acentos ni espacios), guardando lo informado y el turno de origen (DD-38).
   - Optimistic locking (409 `CONFLICTO_CONCURRENCIA`, RN-GL-02).
-  - Eventos de auditoría en la misma transacción, con valor anterior y nuevo: `TURNO_CREADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_REPROGRAMADO`, `TURNO_DURACION_CAMBIADA`, `TURNO_NOTA_CAMBIADA`, `BLOQUEO_CREADO`, `BLOQUEO_ELIMINADO` (RN-AD-01, RN-AD-04).
+  - Eventos de auditoría en la misma transacción, con valor anterior y nuevo: `TURNO_CREADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_REPROGRAMADO`, `TURNO_DURACION_CAMBIADA`, `TURNO_NOTA_CAMBIADA`, `BLOQUEO_CREADO`, `BLOQUEO_ELIMINADO`, `PACIENTE_CREADO`, `PACIENTE_MARCADO_PARA_REVISION` (RN-AD-01, RN-AD-04, RN-AD-05).
   - Tests de aplicación (Testcontainers): US-012, US-021 a US-025 a nivel caso de uso, dedupe con `requiere_revision`, concurrencia, rollback del cambio si falla la auditoría.
 - **Dependencias**: `C-10`
 - **Governance**: ALTO (concentra las invariantes de solapamiento y la auditoría de turnos que consumen la API, la reserva pública y la exportación)
@@ -326,7 +326,8 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG), RN-RP-03, §Auditoría (RN-AD-01, RN-AD-04, RN-AD-05), RN-GL-02
   - `knowledge-base/06_funcionalidades.md` §US-012, US-021 a US-025
   - `knowledge-base/07_flujos_principales.md` §FL-03
-  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-17
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-17, DD-24 (paciente por DNI; DD-09 quedó reemplazada)
+  - `openspec/changes/archive/*-agenda-esquema-dominio/design.md` §Risks: **serializar las escrituras de agenda por consultorio** con el mismo bloqueo que C-08 usa en la grilla (`SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`), no con un lock consultivo aparte. Así turnos, bloqueos, reservas (C-15) y cambios de grilla quedan en una sola cola (revisión de Maxi en #18). La exclusión GiST no cruza tablas: sin ese bloqueo, un turno y un bloqueo concurrentes podrían pasar las dos validaciones.
 
 ### [C-12] `agenda-api-odontologo`
 - **Estado**: `[ ]` pendiente
@@ -534,13 +535,20 @@ Reglas de coordinación del paralelismo:
   - Revisión de seguridad: CSP/cabeceras, rate limits, enmascarado de PII en logs, ausencia de tokens en `Referer`/caché, secretos solo por entorno; aislamiento entre tenants en toda la API; matriz completa de escrituras bloqueadas en plan `VENCIDO` (incluidos los endpoints de C-17).
   - Revisión de `/seguridad` contra el código (RN-PL-06) antes del release.
   - Seed local completo para demo; README de arranque (`docker compose up --build`); textos de privacidad y términos como borrador marcado "pendiente de revisión legal" (PA-06), sin declarar cumplimiento no verificado.
-  - Checklist previo al lanzamiento (PA-02 país del VPS y backups, revisión legal de DD-28, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
+  - Checklist previo al lanzamiento documentado, sin resolverlo en código: revisión legal de DD-28 y validación de valores por defecto con odontólogos.
+  - **Criterio de salida de la v1 (DD-40)**: no se cargan pacientes reales ni se publica `/seguridad` hasta cumplir:
+    - VPS contratado con los datos en Argentina;
+    - backup diario cifrado de Postgres en Argentina, retención de 30 días y una restauración de prueba hecha;
+    - TLS activo en el dominio de producción;
+    - proveedor SMTP elegido y declarado en la política de privacidad;
+    - email de seguridad de `/seguridad` definido.
   - Checklist de despliegue, IP real detrás del reverse proxy (viene de C-05): el rate limit por IP usa `getRemoteAddr()`, y detrás del proxy del VPS todos los consultorios compartirían un mismo cupo (10 logins por minuto y 5 registros por hora). Configurar `server.forward-headers-strategy` (`native` o `framework`, según el proxy) y un proxy que **reemplace** `X-Forwarded-For` en vez de concatenarlo, y verificar con un test de humo que dos IPs distintas tengan cupos separados. Detalle en `backend/README.md`.
 - **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
 - **Leer antes**:
   - `knowledge-base/08_arquitectura_propuesta.md` §Seguridad, §Estrategia de tests
-  - `knowledge-base/10_preguntas_abiertas.md` §PA-02, PA-05, PA-06
+  - `knowledge-base/10_preguntas_abiertas.md` §PA-05, PA-06
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-40 (requisitos de infraestructura antes del lanzamiento)
   - `knowledge-base/11_marco_legal_argentino.md`
   - `knowledge-base/01_vision_y_objetivos.md` (métricas del piloto)
 

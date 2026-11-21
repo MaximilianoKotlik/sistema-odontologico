@@ -67,6 +67,15 @@ class ManejadorGlobalDeErroresTest {
     }
 
     @Test
+    void turnoSolapadoFrenadoPorLaBase() throws Exception {
+        // C-11 (design D5): la exclusión de la base es la red de seguridad; sin turnosEnConflicto.
+        mvc.perform(get("/api/v1/pruebas/turno-solapado-en-la-base"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.codigo").value("TURNO_SOLAPADO"))
+                .andExpect(jsonPath("$.turnosEnConflicto").doesNotExist());
+    }
+
+    @Test
     void validacionConUnErrorPorCampo() throws Exception {
         mvc.perform(post("/api/v1/pruebas/alta")
                         .contentType(MediaType.APPLICATION_JSON)

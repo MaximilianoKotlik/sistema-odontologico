@@ -41,6 +41,12 @@ public class ControladorDeErroresDePrueba {
                 "conflicting key value violates exclusion constraint \"ex_disponibilidad_sin_solape\"");
     }
 
+    @GetMapping("/api/v1/pruebas/turno-solapado-en-la-base")
+    public void turnoSolapadoEnLaBase() {
+        throw new org.springframework.dao.DataIntegrityViolationException(
+                "conflicting key value violates exclusion constraint \"ex_turno_sin_solapamiento\"");
+    }
+
     @GetMapping("/api/v1/pruebas/prestacion-duplicada-en-la-base")
     public void prestacionDuplicadaEnLaBase() {
         throw new org.springframework.dao.DataIntegrityViolationException(

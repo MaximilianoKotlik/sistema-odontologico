@@ -1,0 +1,83 @@
+/* Mockup C-22 · pagina-seguridad. Misma estructura que la página pública /precios implementada en C-21
+   (cabecera de marca, columna de 672 px, tarjetas). Solo variables del sistema de diseño rev. 1. */
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font:var(--weight-regular) var(--text-base)/var(--lh-base) var(--font-sans)}
+a{color:var(--color-primary)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:var(--space-2);top:-100px;background:var(--color-surface);color:var(--color-primary);padding:var(--space-2) var(--space-3);border-radius:var(--radius-md);box-shadow:var(--shadow-md);z-index:9}
+.skip:focus{top:var(--space-2)}
+
+.col{margin:0 auto;width:100%;max-width:672px;padding:0 var(--space-4)}
+header.top{padding:var(--space-5) 0}
+.brand{display:inline-flex;align-items:center;gap:var(--space-2);color:var(--color-text);text-decoration:none}
+.brand-mark{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:var(--radius-md);background:var(--color-primary);color:var(--color-on-primary)}
+.brand-mark svg{width:18px;height:18px}
+.brand-name{font-weight:var(--weight-bold)}
+.prov{display:inline-block;margin-left:var(--space-2);font-size:var(--text-xs);font-weight:var(--weight-semibold);color:var(--state-sobreturno-fg);background:var(--state-sobreturno-bg);border:1px solid var(--state-sobreturno-bd);padding:2px var(--space-2);border-radius:var(--radius-full)}
+
+main{padding-bottom:var(--space-7)}
+h1{font-size:var(--text-2xl);line-height:var(--lh-2xl);font-weight:var(--weight-bold);margin:0 0 var(--space-2)}
+.lede{font-size:var(--text-lg);line-height:var(--lh-lg);color:var(--color-text-muted);margin:0 0 var(--space-5)}
+.actualizado{font-size:var(--text-sm);color:var(--color-text-muted);margin:0 0 var(--space-5)}
+
+/* Aviso honesto arriba de todo: lo que todavía no está */
+.aviso{display:flex;gap:var(--space-3);align-items:flex-start;padding:var(--space-4);border-radius:var(--radius-lg);border:1px solid var(--state-sobreturno-bd);background:var(--state-sobreturno-bg);color:var(--state-sobreturno-fg);margin:0 0 var(--space-5)}
+.aviso svg{flex:none;width:22px;height:22px;margin-top:2px}
+.aviso p{margin:0}
+.aviso a{color:inherit;font-weight:var(--weight-semibold)}
+
+/* Índice */
+.indice{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4) var(--space-5);margin:0 0 var(--space-6)}
+.indice h2{font-size:var(--text-base);line-height:var(--lh-base);margin:0 0 var(--space-1)}
+.indice ol{margin:0;padding-left:var(--space-5);display:grid;gap:0}
+.indice li a{display:inline-flex;align-items:center;min-height:var(--touch-min)}
+
+/* Secciones */
+.seccion{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:var(--space-5);margin:0 0 var(--space-5);scroll-margin-top:var(--space-4)}
+.seccion h2{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xl);line-height:var(--lh-xl);font-weight:var(--weight-bold);margin:0 0 var(--space-3)}
+.seccion h2 svg{flex:none;width:24px;height:24px;color:var(--color-primary)}
+.seccion p{margin:0 0 var(--space-3)}
+.seccion p:last-child{margin-bottom:0}
+.seccion ul{margin:0 0 var(--space-3);padding-left:var(--space-5);display:grid;gap:var(--space-2)}
+.seccion ul:last-child{margin-bottom:0}
+.seccion .nota{font-size:var(--text-sm);color:var(--color-text-muted)}
+.roles{width:100%;border-collapse:collapse;margin:0 0 var(--space-3);font-size:var(--text-base)}
+.roles th,.roles td{text-align:left;vertical-align:top;padding:var(--space-3) var(--space-2);border-top:1px solid var(--color-border)}
+.roles thead th{border-top:0;font-size:var(--text-sm);color:var(--color-text-muted);font-weight:var(--weight-semibold);padding-top:0}
+.roles tbody th{font-weight:var(--weight-semibold);width:38%}
+@media (max-width:519px){
+  .roles thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .roles,.roles tbody,.roles tr,.roles th,.roles td{display:block;width:auto}
+  .roles tbody tr{border-top:1px solid var(--color-border);padding:var(--space-3) 0}
+  .roles tbody th,.roles td{border:0;padding:0}
+  .roles td{color:var(--color-text-muted)}
+}
+
+/* "Lo que todavía no está": cada ítem con ícono y texto, no solo color */
+.falta{background:var(--state-sobreturno-bg);border-color:var(--state-sobreturno-bd)}
+.falta h2 svg{color:var(--state-sobreturno-fg)}
+.faltan{list-style:none;padding:0!important}
+.faltan li{display:flex;gap:var(--space-3);align-items:flex-start}
+.faltan li svg{flex:none;width:20px;height:20px;margin-top:3px;color:var(--state-sobreturno-fg)}
+.faltan strong{display:block}
+
+.tbd{display:inline-block;font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--state-sobreturno-fg);background:var(--state-sobreturno-bg);border:1px dashed var(--state-sobreturno-bd);border-radius:var(--radius-sm);padding:0 var(--space-1)}
+
+/* Solo revisión: respaldo de cada afirmación (RN-PL-06) */
+.respaldo{margin:var(--space-4) 0 0;padding:var(--space-3);border:1px dashed var(--color-border-strong);border-radius:var(--radius-md);background:var(--color-surface-muted);font-size:var(--text-sm);color:var(--color-text)}
+.respaldo b{display:block;margin-bottom:var(--space-1)}
+.respaldo ul{margin:0;padding-left:var(--space-4);gap:var(--space-1)}
+
+footer.pie{border-top:1px solid var(--color-border);padding:var(--space-5) 0 var(--space-6);font-size:var(--text-sm);color:var(--color-text-muted)}
+footer.pie nav{display:flex;flex-wrap:wrap;gap:0 var(--space-4)}
+footer.pie a{display:inline-flex;align-items:center;min-height:var(--touch-min)}
+
+/* Franja de estados del mockup (igual que en C-17) */
+.review{margin-top:var(--space-6);border-top:1px dashed var(--color-border-strong);padding-top:var(--space-4)}
+.review h2{font-size:var(--text-sm);margin:0 0 var(--space-2)}
+.review ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.review a{display:inline-flex;align-items:center;min-height:32px;padding:0 var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-full);color:var(--color-text-muted);text-decoration:none;font-size:var(--text-sm)}
+.review a[aria-current]{border-color:var(--color-primary);color:var(--color-primary);font-weight:var(--weight-semibold)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
