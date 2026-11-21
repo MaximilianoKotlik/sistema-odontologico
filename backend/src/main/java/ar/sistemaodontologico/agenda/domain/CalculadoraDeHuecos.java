@@ -27,10 +27,20 @@ public final class CalculadoraDeHuecos {
     }
 
     /**
+     * Los inicios libres entre {@code desde} y {@code hasta}, en orden cronológico.
+     *
+     * <p><strong>Qué ocupa según quién pide</strong> (revisión de Maxi en #18, lo decide C-12): para la reserva pública
+     * los sobreturnos ocupan (RN-RP-01) y se pasa {@link #ocupados}. El odontólogo, en cambio, puede crear un turno
+     * normal encima de un sobreturno ({@code ValidadorDeSolapamiento} los ignora), así que para él hay que pasar los
+     * ocupados sin los sobreturnos: si no, el diálogo de reprogramar de C-14 escondería horarios que sí se pueden usar.
+     *
+     * <p><strong>Huecos en el pasado</strong>: sin límites, se devuelven también los inicios de hoy que ya pasaron.
+     * Para el odontólogo conviene pasar límites con anticipación 0 en vez de {@code Optional.empty()}.
+     *
      * @param paso minutos entre inicios, positivo y múltiplo de 5 (RN-AG-08); los valores que admite cada consultorio
      *     (5 a 30) los valida su configuración en C-08
-     * @param ocupados bloqueos y turnos activos, sobreturnos incluidos ({@link #ocupados})
-     * @param limites los de la reserva pública; vacío para el odontólogo
+     * @param ocupados bloqueos y turnos activos; con o sin sobreturnos según quién pide (ver arriba)
+     * @param limites los de la reserva pública; para el odontólogo, anticipación 0 para no ofrecer el pasado
      */
     public static List<Instant> calcular(DisponibilidadSemanal disponibilidad, LocalDate desde, LocalDate hasta,
             Duracion duracion, int paso, Collection<Intervalo> ocupados, Optional<LimitesDeReserva> limites) {

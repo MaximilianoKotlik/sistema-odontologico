@@ -1,10 +1,9 @@
-# Spec Delta
+# gestion-de-turnos Specification
 
 ## Purpose
-
 Define las operaciones que modifican la agenda de turnos del consultorio: crear, cambiar de estado, reprogramar, ajustar la duración y anotar. Cada una valida contra la agenda, se serializa por consultorio, se audita en la misma transacción y detecta ediciones concurrentes (US-021 a US-025, RN-AG-01 a 12, RN-AD-01, RN-GL-02).
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Crear un turno
 El sistema SHALL crear un turno `RESERVADO` con la duración vigente de su prestación, salvo que el odontólogo pida otra en múltiplos de 5 minutos. El origen es `MANUAL` si lo crea el odontólogo y `LINK` si lo crea el paciente. La creación MUST rechazarse con el error del dominio si el turno pisa un bloqueo, queda fuera de la disponibilidad o se solapa con un turno activo (RN-AG-01, RN-AG-03). Una prestación inactiva MUST NOT usarse para un turno nuevo.
@@ -51,7 +50,7 @@ Solo el odontólogo SHALL poder crear un sobreturno. Un sobreturno MAY solaparse
 - **THEN** se rechaza con código `ACCION_NO_PERMITIDA`
 
 ### Requirement: Cambiar el estado de un turno
-El sistema SHALL confirmar, cancelar o marcar como ausente un turno según la máquina de estados de RN-AG-06. Cancelar MUST registrar quién canceló: el odontólogo o el paciente, según el actor. Una transición inválida MUST rechazarse con código `TRANSICION_INVALIDA` sin cambiar el turno.
+El sistema SHALL confirmar, cancelar o marcar como ausente un turno según la máquina de estados de RN-AG-06. Confirmar y marcar ausente MUST ser solo del odontólogo; si los pide un paciente, MUST rechazarse con código `ACCION_NO_PERMITIDA`. Cancelar MUST registrar quién canceló: el odontólogo o el paciente, según el actor. Una transición inválida MUST rechazarse con código `TRANSICION_INVALIDA` sin cambiar el turno.
 
 #### Scenario: Confirmar un turno reservado
 - **GIVEN** un turno `RESERVADO`
@@ -62,6 +61,11 @@ El sistema SHALL confirmar, cancelar o marcar como ausente un turno según la m�
 - **GIVEN** un turno `CONFIRMADO`
 - **WHEN** el paciente lo cancela desde su link
 - **THEN** el turno queda `CANCELADO`, con cancelado por `PACIENTE`, y su horario queda libre (RN-AG-09)
+
+#### Scenario: El paciente no confirma
+- **GIVEN** un turno `RESERVADO`
+- **WHEN** el paciente pide confirmarlo o marcarlo como ausente
+- **THEN** se rechaza con código `ACCION_NO_PERMITIDA` y el turno no cambia
 
 #### Scenario: Ausente antes de tiempo
 - **GIVEN** un turno que empieza dentro de una hora
