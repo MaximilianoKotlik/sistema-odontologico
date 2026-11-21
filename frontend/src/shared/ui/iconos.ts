@@ -47,6 +47,13 @@ const TRAZOS = {
   // Trazos del mockup aprobado de C-19 (#32).
   tabla: `<rect x="3.5" y="4.5" width="17" height="15" rx="2.5" ${L}/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10" ${L}/>`,
   documento: `<path d="M6.5 3.5h7l4 4v13h-11z" ${L}/><path d="M13.5 3.5v4h4M9 12.5h6M9 16h6" ${L}/>`,
+  // Trazos del mockup aprobado de C-13 (#27).
+  ausente: `<circle cx="10" cy="8" r="3.5" ${L}/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.3 0 2.5.3 3.5 1M16 15l5 5M21 15l-5 5" ${L}/>`,
+  nota: `<path d="M6 3.5h8.5L19 8v12.5H6z" ${L}/><path d="M14 3.5V8.5h5M9 12.5h6M9 16h4" ${L}/>`,
+  telefono: `<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 006 6l1.5-2 4 1.5v3a2 2 0 01-2 2A16.5 16.5 0 014.5 5.5a2 2 0 012-2z" ${L}/>`,
+  repetir: `<path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" ${L}/>`,
+  'reloj-arena': `<path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5" ${L}/>`,
+  luna: `<path d="M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z" ${L}/>`,
 } as const satisfies Record<string, string>;
 
 export type NombreIcono = keyof typeof TRAZOS;

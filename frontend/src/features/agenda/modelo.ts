@@ -203,3 +203,71 @@ export function rangoDeHoras(franjas: readonly FranjaDisponible[], turnos: reado
   const fines = [20 * 60, ...franjas.map((f) => minutosDeHora(f.horaFin)), ...turnos.map((t) => minutosLocales(t.fin, zona))];
   return { desde: Math.floor(Math.min(...inicios) / 60) * 60, hasta: Math.min(MINUTOS_DEL_DIA, Math.ceil(Math.max(...fines) / 60) * 60) };
 }
+
+/** Turnos visibles con un cambio del paciente sin ver (DD-30): los que llevan la etiqueta "Nuevo" y cuenta el aviso. */
+export function nuevosVisibles(turnos: readonly TurnoAgenda[], mostrarCancelados: boolean): TurnoAgenda[] {
+  return turnos.filter((t) => t.cambioPaciente !== null && (mostrarCancelados || t.estado !== 'CANCELADO'));
+}
+
+/** Tramos atendidos del día, en minutos locales y en orden. */
+export function franjasDelDia(dia: string, franjas: readonly FranjaDisponible[]): Tramo[] {
+  return franjas
+    .filter((f) => f.diaSemana === diaDeSemana(dia))
+    .map((f) => ({ desde: minutosDeHora(f.horaInicio), hasta: minutosDeHora(f.horaFin) }))
+    .sort((a, b) => a.desde - b.desde);
+}
+
+export type BloqueDeGrilla =
+  | { readonly tipo: 'turno'; readonly turno: TurnoAgenda; readonly desde: number; readonly hasta: number; readonly superpuesto: boolean }
+  | { readonly tipo: 'bloqueo'; readonly bloqueo: BloqueoAgenda; readonly desde: number; readonly hasta: number; readonly superpuesto: false };
+
+/**
+ * Bloques de un día de la grilla semanal (D4), en minutos locales. Con un solo sillón (DD-36) lo único que se
+ * superpone es un sobreturno: el turno base ocupa todo el ancho y el sobreturno que se cruza con él va a la derecha.
+ */
+export function bloquesDelDia(entrada: Omit<EntradaDelDia, 'franjas' | 'ahora'>): BloqueDeGrilla[] {
+  const { dia, zona } = entrada;
+  const turnos = entrada.turnos
+    .filter((t) => entrada.mostrarCancelados || t.estado !== 'CANCELADO')
+    .flatMap((turno) => {
+      const tramo = tramoEnElDia(turno.inicio, turno.fin, dia, zona);
+      return tramo === null ? [] : [{ turno, ...tramo }];
+    });
+  const ocupanSillon = turnos.filter((t) => !t.turno.esSobreturno && t.turno.estado !== 'CANCELADO');
+  const deTurnos: BloqueDeGrilla[] = turnos.map((t) => ({
+    tipo: 'turno',
+    turno: t.turno,
+    desde: t.desde,
+    hasta: t.hasta,
+    superpuesto: t.turno.esSobreturno && ocupanSillon.some((o) => o.desde < t.hasta && t.desde < o.hasta),
+  }));
+  const deBloqueos: BloqueDeGrilla[] = entrada.bloqueos.flatMap((bloqueo) => {
+    const tramo = tramoEnElDia(bloqueo.inicio, bloqueo.fin, dia, zona);
+    return tramo === null ? [] : [{ tipo: 'bloqueo' as const, bloqueo, ...tramo, superpuesto: false as const }];
+  });
+  return [...deTurnos, ...deBloqueos].sort((a, b) => a.desde - b.desde || Number(a.superpuesto) - Number(b.superpuesto));
+}
+
+export type AccionTurno = 'CONFIRMAR' | 'REPROGRAMAR' | 'AJUSTAR_DURACION' | 'MARCAR_AUSENTE' | 'EDITAR_NOTA' | 'CANCELAR';
+
+/** Acciones válidas según el estado (spec detalle-turno, US-023): "Marcar ausente" recién cuando el turno empezó. */
+export function accionesDelTurno(estado: EstadoTurno, inicio: string, ahora: Date): AccionTurno[] {
+  if (estado === 'CANCELADO' || estado === 'AUSENTE') return ['EDITAR_NOTA'];
+  const empezo = Date.parse(inicio) <= ahora.getTime();
+  return [...(estado === 'RESERVADO' ? (['CONFIRMAR'] as const) : []), 'REPROGRAMAR', 'AJUSTAR_DURACION', ...(empezo ? (['MARCAR_AUSENTE'] as const) : []), 'EDITAR_NOTA', 'CANCELAR'];
+}
+
+export type Vista = 'dia' | 'semana';
+
+const FECHA_ISO = /^\d{4}-\d{2}-\d{2}$/;
+const esFechaValida = (valor: string | null): valor is string =>
+  valor !== null && FECHA_ISO.test(valor) && !Number.isNaN(Date.parse(`${valor}T12:00:00Z`)) && sumarDias(valor, 0) === valor;
+
+/** Vista y fecha de la agenda desde la URL (D6). Sin parámetros: día de hoy en mobile y semana actual desde 768 px. */
+export function vistaDeLaUrl(query: URLSearchParams, esAncho: boolean, hoy: string): { readonly vista: Vista; readonly fecha: string } {
+  const pedida = query.get('vista');
+  const vista: Vista = pedida === 'dia' || pedida === 'semana' ? pedida : esAncho ? 'semana' : 'dia';
+  const fecha = query.get('fecha');
+  const dia = esFechaValida(fecha) ? fecha : hoy;
+  return { vista, fecha: vista === 'semana' ? sumarDias(dia, 1 - diaDeSemana(dia)) : dia };
+}
