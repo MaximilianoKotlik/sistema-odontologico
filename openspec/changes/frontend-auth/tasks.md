@@ -7,7 +7,7 @@
 ## 0. Propuesta
 
 - [x] 0.1 Mockups aprobados por Maxi (#14, preparados por Octi)
-- [ ] 0.2 Aprobación de Maxi de la propuesta, en especial D3 a D7, D9 y D11
+- [x] 0.2 Aprobación de Maxi de la propuesta, en especial D3 a D7, D9 y D11 (#37, 2026-11-21)
 
 ## 1. Lógica pura
 
