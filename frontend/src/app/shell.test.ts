@@ -58,7 +58,7 @@ describe('shell: estructura y accesibilidad', () => {
     }
   });
 
-  it('desktop: barra lateral con las cinco secciones y "Cerrar sesión", visible solo desde md', () => {
+  it('desktop: barra lateral con las cinco secciones, "Cambiar contraseña" y "Cerrar sesión", visible solo desde md', () => {
     preparar();
     const nav = navLateral();
     expect(nav?.className).toMatch(/(^|\s)hidden(\s|$)/);
@@ -69,6 +69,7 @@ describe('shell: estructura y accesibilidad', () => {
       'Configuración',
       'Registro de cambios',
       'Exportar mis datos',
+      'Cambiar contraseña',
       'Cerrar sesión',
     ]);
   });
@@ -76,7 +77,7 @@ describe('shell: estructura y accesibilidad', () => {
   it('los destinos usan rutas /app/* que intercepta el router', () => {
     preparar();
     const hrefs = [...(navLateral()?.querySelectorAll('a[data-destino]') ?? [])].map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual(['/app/agenda', '/app/bloqueos', '/app/configuracion', '/app/auditoria', '/app/exportar']);
+    expect(hrefs).toEqual(['/app/agenda', '/app/bloqueos', '/app/configuracion', '/app/auditoria', '/app/exportar', '/app/cuenta/contrasena']);
   });
 });
 
@@ -105,6 +106,13 @@ describe('shell: sección activa', () => {
     shell.mostrar({ titulo: 'Agenda', seccion: 'agenda' });
     shell.mostrar({ titulo: 'Página no encontrada', seccion: null });
     expect(document.querySelectorAll('[aria-current="page"]')).toHaveLength(0);
+  });
+
+  it('"Cambiar contraseña" queda marcado como página actual en la barra lateral (C-07)', () => {
+    const { shell } = preparar();
+    shell.mostrar({ titulo: 'Cambiar contraseña', seccion: 'cuenta' });
+    const actuales = [...document.querySelectorAll('[aria-current="page"]')];
+    expect(actuales.map((e) => e.getAttribute('href'))).toEqual(['/app/cuenta/contrasena']);
   });
 
   it('muestra el título de la página y lo usa en el título del documento con la marca', () => {

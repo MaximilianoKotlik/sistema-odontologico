@@ -15,7 +15,8 @@ export type Seccion = 'agenda' | 'bloqueos' | 'configuracion' | 'auditoria' | 'e
 
 export interface EncabezadoPagina {
   readonly titulo: string;
-  readonly seccion: Seccion | null;
+  /** `cuenta`: páginas del bloque de cuenta (C-07), que no son secciones de la navegación principal. */
+  readonly seccion: Seccion | 'cuenta' | null;
 }
 
 export interface OpcionesShell {
@@ -124,7 +125,12 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
     el('div', { class: 'flex-1' }),
   );
   // Bloque de cuenta (C-07, decisión de Maxi en #14): "Cambiar contraseña" arriba de "Cerrar sesión".
-  const contrasenaLateral = el('a', { href: RUTA_CAMBIAR_CONTRASENA, 'data-link': true, class: CLASE_DESTINO_LATERAL }, icono('llave'), 'Cambiar contraseña');
+  const contrasenaLateral = el(
+    'a',
+    { href: RUTA_CAMBIAR_CONTRASENA, 'data-link': true, 'data-destino': 'cuenta', class: CLASE_DESTINO_LATERAL },
+    icono('llave'),
+    'Cambiar contraseña',
+  );
   const salirLateral = el('button', { type: 'button', class: CLASE_DESTINO_LATERAL }, icono('salir'), 'Cerrar sesión');
   salirLateral.addEventListener('click', () => opciones.alCerrarSesion());
   lateral.append(el('div', { 'data-cuenta': true, class: 'grid gap-1 border-t border-borde pt-3 mt-3' }, contrasenaLateral, salirLateral));

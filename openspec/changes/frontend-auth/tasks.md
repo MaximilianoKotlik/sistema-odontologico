@@ -36,6 +36,6 @@
 ## 4. Seguridad y verificación
 
 - [x] 4.1 Test de no-persistencia de D4: ni el token ni las contraseñas en storage, IndexedDB, cookies legibles, URL ni historial
-- [ ] 4.2 `npm run typecheck`, `lint`, `test` y `build` en verde, con los tests de C-06 intactos
-- [ ] 4.3 Verificación visual contra los mockups aprobados a 360×780, 390×844 y 1440×900 (capturas en `mockups/verify/`), consola sin errores y accesibilidad
+- [x] 4.2 `npm run typecheck`, `lint`, `test` y `build` en verde, con los tests de C-06 intactos
+- [x] 4.3 Verificación visual contra los mockups aprobados a 360×780, 390×844 y 1440×900 (capturas en `mockups/verify/`), consola sin errores y accesibilidad
 - [ ] 4.4 Flujo FL-01 completo contra el backend local (registro, login automático, recarga con restauración, dos pestañas, cambio de contraseña, recuperación con Mailpit, logout), incluido el cierre entre pestañas de D11: con la agenda abierta en dos pestañas, cerrar sesión en una lleva a la otra a `/login` con "Cerraste sesión", y cambiar la contraseña lleva a las dos a `/login` con "Cambiamos tu contraseña"

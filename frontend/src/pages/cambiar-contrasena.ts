@@ -14,7 +14,7 @@ import type { Pagina } from './pagina';
 
 export const pagina: Pagina = {
   titulo: 'Cambiar contraseña',
-  seccion: null,
+  seccion: 'cuenta',
   montar({ contenedor, http, cuenta }) {
     const actual = campoAuth({
       etiqueta: 'Contraseña actual',

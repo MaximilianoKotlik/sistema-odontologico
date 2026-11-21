@@ -143,7 +143,7 @@ export const pagina: PaginaAuth = {
       resumen.lastElementChild?.append(
         el(
           'ul',
-          { class: 'mt-1 mb-0 pl-5' },
+          { class: 'mt-1 mb-0 pl-5 list-disc' },
           ...errores.map((e) => el('li', {}, el('a', { href: `#${inputDe[e.campo].id}`, class: 'font-semibold underline text-current' }, e.mensaje))),
         ),
       );
