@@ -109,8 +109,10 @@ Qué responde el agente al identificar a alguien:
 3. Recordarle el ciclo del PR:
    - Rama `feat/C-NN-nombre` creada desde `main` actualizado.
    - Si el change es CRITICO/ALTO o tiene pantallas: primero propuesta y/o mockup en un **PR en borrador**; no se escribe código de producción hasta que Maxi lo apruebe.
-   - Implementar con Strict TDD, marcar el PR como listo y pedir la revisión a Maxi.
-   - Cuando Maxi aprueba el PR (o confirma que no quedan cambios pedidos), el autor suma el commit de cierre en el mismo PR: marca `[x]` completado (PR #N, fecha) en CHANGES.md y archiva el change (`openspec archive <change>`), p. ej. `docs: cierre de C-NN (C-NN)`. Nunca antes de la aprobación ni en un PR aparte, y nunca en PRs de solo propuesta o mockup. Como `main` descarta las aprobaciones viejas al recibir commits nuevos, Maxi vuelve a aprobar ese último commit y mergea.
+   - Implementar con Strict TDD.
+   - **Antes de pedir la revisión**, con todo en verde, el autor suma el commit de cierre en el mismo PR: marca `[x]` completado (PR #N, fecha) en CHANGES.md y archiva el change (`openspec archive <change>`), p. ej. `docs: cierre de C-NN (C-NN)`. Después marca el PR como listo y pide la revisión a Maxi. El `[x]` llega a `main` solo con el merge, y el merge exige la aprobación de Maxi.
+   - Si Maxi pide cambios, el autor los hace en commits nuevos sobre la misma rama y deja el `[x]`. Los cambios a las specs se hacen en `openspec/specs/` y en `openspec/changes/archive/`, porque el change ya está archivado. Si el PR se cierra sin mergear, el `[x]` se va con él.
+   - Cuando Maxi aprueba, se mergea sin otra vuelta. Nunca se cierra en un PR aparte, y nunca en PRs de solo propuesta o mockup.
 4. Si la persona pide un change que no es suyo, avisarle a quién está asignado y no empezarlo sin el OK de Maxi.
 
 ---
