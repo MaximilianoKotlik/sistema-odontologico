@@ -1,6 +1,6 @@
 # Mockups de C-07 · `frontend-auth`
 
-`Approval: pending`
+`Approval: approved (2026-11-20, by Maxi)`, versión `3ffa2f7` (#14)
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20) · 390×844 y 1440×900, página completa

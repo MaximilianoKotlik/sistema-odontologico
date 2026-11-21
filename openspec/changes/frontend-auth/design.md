@@ -32,6 +32,6 @@ En la segunda revisión (PR #14, 2026-11-20) Maxi pidió además:
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: openspec/changes/frontend-auth/mockups/ (`login.html`, `registro.html`, `recuperar.html`, `recuperar-confirmar.html`, `cambiar-contrasena.html`, más `auth.css` y `mockup.js`)
-- Approval: pending
+- Approval: approved (2026-11-20, by Maxi), versión `3ffa2f7` (#14)
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
