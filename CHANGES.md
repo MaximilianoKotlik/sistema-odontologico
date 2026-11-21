@@ -333,9 +333,11 @@ Reglas de coordinación del paralelismo:
 - **Scope**:
   - `GET /api/v1/agenda?desde&hasta` (turnos, sobreturnos marcados, bloqueos, cancelados filtrables; indicador de "nuevos" por reservas/cambios de pacientes).
   - `POST /api/v1/turnos` (manual y `esSobreturno`), `PATCH /api/v1/turnos/{id}/estado`, `POST /api/v1/turnos/{id}/reprogramar` (sin anticipación mínima para el odontólogo; conserva el token de gestión), `PATCH /api/v1/turnos/{id}/duracion` (RN-AG-12), `PATCH /api/v1/turnos/{id}/nota` (RN-AD-01), `POST/DELETE /api/v1/bloqueos` (el `DELETE` audita `BLOQUEO_ELIMINADO`).
+  - `GET /api/v1/turnos/{id}`: detalle completo del turno para la pantalla de C-13 (paciente con DNI, teléfono y email, nota interna, motivo y autor de la cancelación, horario anterior si el paciente lo reprogramó). `GET /agenda` sigue liviano (sin DNI, teléfono, email ni texto de la nota) para no cargar datos personales de más en la caché offline. Decisión de Maxi en la revisión de #27.
+  - `POST /api/v1/turnos/{id}/visto`: marca como visto el cambio hecho por el paciente desde el link (DD-30). Es idempotente. Dónde se guarda la marca y si genera evento de auditoría (regla dura 7) lo define la propuesta de C-12.
   - Errores con código estable: 409 `TURNO_SOLAPADO`, `HORARIO_BLOQUEADO`, `FUERA_DE_DISPONIBILIDAD`, `BLOQUEO_CON_TURNOS` (con lista), `TRANSICION_INVALIDA`, `CONFLICTO_CONCURRENCIA`; 400 por duración no múltiplo de 5 o nota > 500.
   - OpenAPI actualizado y `api-types.ts` regenerado.
-  - Tests API/seguridad (MockMvc + Testcontainers) de US-012, US-021 a US-025 y aislamiento por tenant.
+  - Tests API/seguridad (MockMvc + Testcontainers) de US-012, US-021 a US-025 y aislamiento por tenant, incluidos el detalle y el visto (turno de otro consultorio = 404).
 - **Dependencias**: `C-11`
 - **Governance**: MEDIO
 - **Leer antes**:
