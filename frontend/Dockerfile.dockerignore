@@ -1,0 +1,9 @@
+# Contexto de build = raíz del repo. Solo entran frontend/ y design-system/ (C-06).
+*
+!frontend/
+!design-system/
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/.openapi/
+design-system/previews/

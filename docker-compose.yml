@@ -42,7 +42,9 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      # Contexto en la raíz: el frontend importa design-system/ (C-06).
+      context: .
+      dockerfile: frontend/Dockerfile
       target: dev
     environment:
       VITE_PROXY_TARGET: http://backend:8080

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Ícono provisorio (TBD)">
+  <title>Ícono provisorio (TBD)</title>
+  <!-- Fuente de icono-192.png e icono-512.png. Colores: color-primary, color-on-primary y sobreturno de tokens.css rev. 1. -->
+  <rect width="512" height="512" fill="#0B5E73"/>
+  <path d="M256 104c-80 0-140 32-140 112 0 48 16 80 32 144s16 104 40 104c32 0 32-80 68-80s36 80 68 80c24 0 24-40 40-104s32-96 32-144c0-80-60-112-140-112z" fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linejoin="round" transform="translate(56 -21) scale(0.78)"/>
+  <rect x="166" y="370" width="180" height="56" rx="28" fill="#FFF1DC"/>
+  <text x="256" y="410" text-anchor="middle" font-family="system-ui, 'Segoe UI', Roboto, Arial, sans-serif" font-size="36" font-weight="700" fill="#8A4B00" letter-spacing="3">TBD</text>
+</svg>
