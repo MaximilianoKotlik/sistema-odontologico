@@ -98,4 +98,9 @@ Los cancelados se atenúan **sin opacidad** (fondo `surface-muted`, texto `text-
 - Mockups: `openspec/changes/frontend-agenda/mockups/` (`agenda.html`, `turno.html`, más `agenda.css` y `mockup.js`)
 - Approval: approved (2026-11-20, by Maxi), versión `ffad4d0` (#27)
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
-- Visual verify: pending
+- Visual verify: passed (2026-11-21), con diferencias menores anotadas; capturas en `mockups/verify/` (desktop 1440×900, mobile 390×844 y 360×780, sin conexión)
+  - Sin scroll horizontal a 360 px; consola sin errores propios de C-13 (el único error, `GET /api/v1/plan` 404, viene de un contenedor de backend anterior a C-20).
+  - **Desvío 1 (para que lo apruebe Maxi)**: el detalle sin conexión muestra "Necesitás conexión para ver este turno" en lugar de los datos guardados del mockup `turno.html?estado=offline`. `GET /api/v1/turnos/{id}` no se guarda en el dispositivo por D2 (la caché offline no guarda DNI, teléfono ni nota), así que no hay datos para mostrar.
+  - **Desvío 2**: sin conexión y tras recargar, la vista diaria no muestra los huecos libres (el horario de `GET /api/v1/disponibilidad` vive en memoria, D2). Con la memoria de la sesión sí aparecen, deshabilitados.
+  - Menores: el teléfono se muestra como lo guarda el backend (`+5491100000003`), sin el formato `+54 9 11 0000-0003` del mockup; en mobile la barra superior muestra la marca del shell de C-06 y el botón dice "Nuevo turno" completo; el título de la semana puede ir en dos líneas a 360 px.
+  - Arreglado en la verificación: el botón secundario compartido (`boton()`, C-06) no mostraba su borde porque `border-transparent` le ganaba a `border-primario`; "Cancelar turno" usa la variante nueva `peligro-secundario` (contorno rojo, como el mockup).

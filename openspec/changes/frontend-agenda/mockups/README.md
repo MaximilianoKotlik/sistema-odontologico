@@ -3,6 +3,7 @@
 `Approval: approved (2026-11-20, by Maxi)`, versión `ffad4d0` (#27)
 
 - Design system revision: 1
+- Visual verify: passed (2026-11-21) contra la implementación con el backend real; capturas en `verify/` y diferencias en `design.md` §UI Mockups.
 - Preview: rendered (2026-11-20) · capturas de página completa a 390×844 y 1440×900. Sin desborde horizontal en 360, 390 y 1440 px, y sin errores de consola.
 - Preparado e implementa: Nacho (trabajo anticipado, paso 3 del plan). El código se escribe cuando C-07 y C-12 estén `[x]` y Maxi apruebe estos mockups.
 

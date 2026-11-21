@@ -13,25 +13,25 @@
 
 ## 1. Base
 
-- [ ] 1.1 Rebasar sobre `main` con C-07 y C-12; regenerar `api-types.ts` y ajustar D2 al contrato publicado
-- [ ] 1.2 `features/agenda/api.ts` tipado, con tests sobre dobles de `fetch`, incluido el modo sin conexión con la caché
+- [x] 1.1 Rebasar sobre `main` con C-07 y C-12; regenerar `api-types.ts` y ajustar D2 al contrato publicado. `main` ya traía `api-types.ts` regenerado con C-12 y C-20; D2 se ajustó en `api.ts` (`prestacion` es un objeto, el visto manda `novedadAt`, el detalle trae `version`)
+- [x] 1.2 `features/agenda/api.ts` tipado, con tests sobre dobles de `fetch`, incluido el modo sin conexión con la caché
 
 ## 2. Lógica pura
 
-- [ ] 2.1 `modelo.ts`: línea de tiempo del día (turnos, bloqueos, libres, fuera de horario, ahora) en la zona del consultorio, con tests en otra TZ
-- [ ] 2.2 `modelo.ts`: distribución de superpuestos en columnas y rango de horas de la semana
-- [ ] 2.3 `modelo.ts`: filtro de cancelados, conteos del resumen y de la tira de días, y nuevos
+- [x] 2.1 `modelo.ts`: línea de tiempo del día (turnos, bloqueos, libres, fuera de horario, ahora) en la zona del consultorio, con tests en otra TZ
+- [x] 2.2 `modelo.ts`: distribución de superpuestos en columnas y rango de horas de la semana
+- [x] 2.3 `modelo.ts`: filtro de cancelados, conteos del resumen y de la tira de días, y nuevos
 
 ## 3. Vistas
 
-- [ ] 3.1 Tarjeta de turno y bloqueo por estado y marca (D5), con nombre accesible (D9)
-- [ ] 3.2 Vista diaria: línea de tiempo, tira de días, navegación y URL (D6)
-- [ ] 3.3 Vista semanal: grilla en desktop y lista en mobile (D4). Nota de la aprobación (#27): en los bloques que no tienen lugar para dos líneas (turnos de 20 min, prestación del turno base tapado por un sobreturno), mostrar una sola línea con elipsis y dejar el resto en el `title` y el nombre accesible
-- [ ] 3.4 Estados de pantalla: cargando, sin turnos, sin horario, error, sin conexión con y sin caché (D8)
-- [ ] 3.5 Detalle de turno con acciones según el estado y 404 (D7)
+- [x] 3.1 Tarjeta de turno y bloqueo por estado y marca (D5), con nombre accesible (D9)
+- [x] 3.2 Vista diaria: línea de tiempo, tira de días, navegación y URL (D6)
+- [x] 3.3 Vista semanal: grilla en desktop y lista en mobile (D4). Nota de la aprobación (#27): en los bloques que no tienen lugar para dos líneas (turnos de 20 min, prestación del turno base tapado por un sobreturno), mostrar una sola línea con elipsis y dejar el resto en el `title` y el nombre accesible
+- [x] 3.4 Estados de pantalla: cargando, sin turnos, sin horario, error, sin conexión con y sin caché (D8)
+- [x] 3.5 Detalle de turno con acciones según el estado y 404 (D7)
 
 ## 4. Verificación
 
-- [ ] 4.1 `npm run typecheck`, `lint`, `test` y `build` en verde
-- [ ] 4.2 Verificación visual contra los mockups aprobados a 360×780, 390×844 y 1440×900 (capturas en `mockups/verify/`), consola sin errores y accesibilidad
-- [ ] 4.3 Tarea 9.3 heredada de C-06: verificación offline con una agenda real (ver agenda con conexión, cortar la red, recargar)
+- [x] 4.1 `npm run typecheck`, `lint`, `test` y `build` en verde
+- [x] 4.2 Verificación visual contra los mockups aprobados a 360×780, 390×844 y 1440×900 (capturas en `mockups/verify/`), consola sin errores y accesibilidad
+- [x] 4.3 Tarea 9.3 heredada de C-06: verificación offline con una agenda real (ver agenda con conexión, cortar la red, recargar). Hecha con `vite build` + `vite preview` y el backend real: con conexión se guardó la semana en `agenda-v1`; con el servidor caído, la recarga mostró la agenda guardada con "Mostrando tu agenda de las 18:45" y "Nuevo turno" deshabilitado; una fecha nunca abierta mostró "No tenés guardada la agenda de esta fecha". El modo offline de Playwright no alcanza al Service Worker en Chromium: el corte se simuló frenando el servidor
