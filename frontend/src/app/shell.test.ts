@@ -115,6 +115,17 @@ describe('shell: sección activa', () => {
     expect(actuales.map((e) => e.getAttribute('href'))).toEqual(['/app/cuenta/contrasena']);
   });
 
+  it('una sección de la hoja "Más" marca "Más" en la barra inferior (C-19)', () => {
+    const { shell } = preparar();
+    const mas = () => [...(navInferior()?.querySelectorAll('button') ?? [])].find((b) => nombre(b) === 'Más');
+
+    shell.mostrar({ titulo: 'Exportar mis datos', seccion: 'exportar' });
+    expect(mas()?.getAttribute('aria-current')).toBe('page');
+
+    shell.mostrar({ titulo: 'Agenda', seccion: 'agenda' });
+    expect(mas()?.hasAttribute('aria-current')).toBe(false);
+  });
+
   it('muestra el título de la página y lo usa en el título del documento con la marca', () => {
     const { shell } = preparar();
     shell.mostrar({ titulo: 'Bloqueos', seccion: 'bloqueos' });

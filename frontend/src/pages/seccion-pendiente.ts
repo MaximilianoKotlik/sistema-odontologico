@@ -5,7 +5,7 @@ import type { Pagina } from './pagina';
 
 /**
  * Página provisoria de una sección cuyo contenido llega en otro change
- * (agenda C-13, bloqueos C-11/C-13, configuración C-09, registro de cambios C-19, exportar C-18).
+ * (agenda C-13, bloqueos C-11/C-13, registro de cambios C-18).
  */
 export function seccionPendiente(titulo: string, seccion: Seccion, nombreIcono: NombreIcono): Pagina {
   return {

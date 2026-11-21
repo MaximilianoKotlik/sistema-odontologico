@@ -29,6 +29,90 @@ const problema = (status: number, cuerpo: Record<string, unknown>) =>
 const noAutorizado = () => problema(401, { codigo: 'NO_AUTENTICADO', detail: 'Token vencido' });
 const encabezado = (l: Llamada | undefined, nombre: string) => new Headers(l?.init.headers).get(nombre);
 
+describe('cliente HTTP: descarga de archivos (C-19)', () => {
+  const RUTA = '/api/v1/exportacion';
+  const zip = (extra: HeadersInit = {}) =>
+    new Response(new Uint8Array([80, 75, 5, 6]), {
+      status: 200,
+      headers: { 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="export-demo-2026-11-20.zip"', ...extra },
+    });
+
+  it('devuelve el contenido binario y el nombre de Content-Disposition', async () => {
+    const { falso, llamadas } = crearFetchFalso({ [RUTA]: [zip()] });
+    const http = crearClienteHttp({ fetch: falso });
+    http.establecerToken('token-ficticio');
+
+    const archivo = await http.descargar(RUTA, { metodo: 'POST' });
+
+    expect(archivo.nombre).toBe('export-demo-2026-11-20.zip');
+    // El Blob de jsdom no tiene arrayBuffer().
+    const bytes = await new Promise<ArrayBuffer>((resolver, rechazar) => {
+      const lector = new FileReader();
+      lector.onload = () => resolver(lector.result as ArrayBuffer);
+      lector.onerror = () => rechazar(new Error('No se pudo leer el archivo'));
+      lector.readAsArrayBuffer(archivo.contenido);
+    });
+    expect([...new Uint8Array(bytes)]).toEqual([80, 75, 5, 6]);
+    expect(llamadas[0]?.init.method).toBe('POST');
+    expect(encabezado(llamadas[0], 'Authorization')).toBe('Bearer token-ficticio');
+    expect(encabezado(llamadas[0], 'Accept')).toContain('application/zip');
+    expect(encabezado(llamadas[0], 'Accept')).toContain('application/problem+json');
+  });
+
+  it('sin filename usa un nombre genérico', async () => {
+    const sinNombre = new Response(new Uint8Array([1]), { status: 200, headers: { 'Content-Type': 'application/zip' } });
+    const { falso } = crearFetchFalso({ [RUTA]: [sinNombre] });
+
+    const archivo = await crearClienteHttp({ fetch: falso }).descargar(RUTA, { metodo: 'POST' });
+
+    expect(archivo.nombre).toBe('descarga');
+  });
+
+  it('un 429 rechaza con el código y el Retry-After', async () => {
+    const reciente = new Response(JSON.stringify({ status: 429, codigo: 'EXPORTACION_RECIENTE', detail: 'Reciente' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/problem+json', 'Retry-After': '180' },
+    });
+    const { falso } = crearFetchFalso({ [RUTA]: [reciente] });
+
+    const error = await crearClienteHttp({ fetch: falso }).descargar(RUTA, { metodo: 'POST' }).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ status: 429, codigo: 'EXPORTACION_RECIENTE', retryAfter: '180' });
+  });
+
+  it('con el access token vencido renueva una vez y repite el pedido', async () => {
+    const { falso, llamadas } = crearFetchFalso({
+      [RUTA]: [noAutorizado(), zip()],
+      '/api/v1/auth/refresh': [json({ accessToken: 'token-nuevo' })],
+    });
+    const http = crearClienteHttp({ fetch: falso });
+    http.establecerToken('token-vencido');
+
+    const archivo = await http.descargar(RUTA, { metodo: 'POST' });
+
+    expect(archivo.nombre).toBe('export-demo-2026-11-20.zip');
+    expect(llamadas.filter((l) => l.url === '/api/v1/auth/refresh')).toHaveLength(1);
+    expect(encabezado(llamadas.at(-1), 'Authorization')).toBe('Bearer token-nuevo');
+  });
+
+  it('si el cuerpo se corta rechaza con DESCARGA_INTERRUMPIDA', async () => {
+    const cortado = new Response(
+      new ReadableStream<Uint8Array>({
+        pull(control) {
+          control.error(new Error('conexión cortada'));
+        },
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/zip' } },
+    );
+    const { falso } = crearFetchFalso({ [RUTA]: [cortado] });
+
+    await expect(crearClienteHttp({ fetch: falso }).descargar(RUTA, { metodo: 'POST' })).rejects.toMatchObject({
+      codigo: 'DESCARGA_INTERRUMPIDA',
+    });
+  });
+});
+
 describe('cliente HTTP: errores Problem Details', () => {
   it('convierte un problem+json en ApiError con status, codigo y detail', async () => {
     const { falso } = crearFetchFalso({ '/api/v1/cuenta': [problema(409, { codigo: 'EMAIL_EN_USO', detail: 'Ese email ya tiene cuenta.' })] });

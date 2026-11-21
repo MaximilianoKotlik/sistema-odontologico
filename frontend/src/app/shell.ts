@@ -331,6 +331,9 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
         if (enlace.dataset['destino'] === pagina.seccion) enlace.setAttribute('aria-current', 'page');
         else enlace.removeAttribute('aria-current');
       }
+      // En mobile, las secciones de la hoja se ubican por "Más" (mockup de C-19).
+      if (EN_HOJA_MAS.some((seccion) => seccion === pagina.seccion)) botonMas.setAttribute('aria-current', 'page');
+      else botonMas.removeAttribute('aria-current');
       contenido.replaceChildren();
       acciones.replaceChildren();
       if (enfocar) contenido.focus({ preventScroll: true });
