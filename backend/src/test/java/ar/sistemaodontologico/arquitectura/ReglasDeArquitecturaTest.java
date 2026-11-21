@@ -117,4 +117,27 @@ class ReglasDeArquitecturaTest {
                 .anyMatch(detalle -> detalle.contains("ServicioDePagos") && detalle.contains("TurnoRepositorioJpa"))
                 .noneMatch(detalle -> detalle.contains("ServicioDeTurnos"));
     }
+
+    @Test
+    void elDominioDeAgendaQueUsaElDeConsultorioViolaLaRegla() {
+        // C-10, design D2: la disponibilidad entra a agenda como un value object propio.
+        EvaluationResult resultado = ReglasDeArquitectura.agendaSinDominioDeConsultorio().evaluate(fixtures);
+
+        assertThat(resultado.hasViolation()).isTrue();
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("AgendaQueUsaConsultorio"))
+                .noneMatch(detalle -> detalle.contains("AgendaPura"));
+    }
+
+    @Test
+    void laReservaQueUsaDominioDeAgendaOInfraestructuraDeConsultorioViolaLaRegla() {
+        // C-15, design D1: reserva habla con agenda y consultorio por su capa application.
+        EvaluationResult resultado = ReglasDeArquitectura.reservaSoloPorApplication().evaluate(fixtures);
+
+        assertThat(resultado.hasViolation()).isTrue();
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("ReservaQueUsaDominioDeAgenda"))
+                .anyMatch(detalle -> detalle.contains("ReservaQueUsaInfraestructuraDeConsultorio"))
+                .noneMatch(detalle -> detalle.contains("ReservaPura"));
+    }
 }

@@ -1,0 +1,11 @@
+# Perfil de operaciones internas (C-20, design D3): arranca sin servidor web, corre el ApplicationRunner pedido y
+# termina. Runbook en backend/README.md.
+spring:
+  main:
+    web-application-type: none
+
+app:
+  # Sin tareas programadas: el proceso termina al terminar la operación.
+  plan:
+    vencimiento:
+      cron: "-"

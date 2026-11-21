@@ -1,8 +1,8 @@
 package ar.sistemaodontologico.auth.infrastructure;
 
-import ar.sistemaodontologico.auth.application.EnviadorDeEmails;
-import ar.sistemaodontologico.auth.application.EnvioDeEmailFallido;
 import ar.sistemaodontologico.auth.application.RecuperacionSolicitada;
+import ar.sistemaodontologico.compartido.application.EnviadorDeEmails;
+import ar.sistemaodontologico.compartido.application.EnvioDeEmailFallido;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;

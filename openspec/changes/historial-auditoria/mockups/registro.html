@@ -12,7 +12,7 @@
 <script src="../../../../design-system/brand.js" defer></script>
 <script src="mockup.js" defer></script>
 </head>
-<body data-estados="normal:Todos los cambios|turno:Filtrado por un turno|accion:Filtrado por accesos|rango-invalido:Rango de fechas invertido|sin-resultados:Sin resultados para los filtros|vacio:Consultorio sin cambios todavía|cargando:Cargando|error:Error al cargar|offline:Sin conexión">
+<body data-estados="normal:Todos los cambios|turno:Filtrado por un turno|accion:Filtrado por accesos|rango-invalido:Rango de fechas invertido|sin-resultados:Sin resultados para los filtros|vacio:Consultorio sin cambios todavía|cargando:Cargando|error:Error al cargar|offline:Sin conexión|dni-repetido:Reserva con DNI repetido">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
@@ -67,7 +67,7 @@
         </div>
 
         <form class="filtros" role="search" aria-label="Filtrar el registro" data-no="offline vacio">
-          <ul class="fchips" data-solo="turno sin-resultados" aria-label="Filtros activos">
+          <ul class="fchips" data-solo="turno dni-repetido sin-resultados" aria-label="Filtros activos">
             <li class="fchip">Turno de Hernán Muestra · vie 20/11 18:00<button type="button" aria-label="Quitar el filtro del turno"><svg aria-hidden="true"><use href="#i-x"/></svg></button></li>
           </ul>
           <div class="row">
@@ -92,7 +92,7 @@
                 <optgroup label="Exportaciones"><option>Exportaciones</option></optgroup>
               </select>
             </div>
-            <button class="btn btn-ghost limpiar" type="button" data-solo="turno accion sin-resultados rango-invalido"><svg aria-hidden="true"><use href="#i-x"/></svg>Quitar filtros</button>
+            <button class="btn btn-ghost limpiar" type="button" data-solo="turno dni-repetido accion sin-resultados rango-invalido"><svg aria-hidden="true"><use href="#i-x"/></svg>Quitar filtros</button>
           </div>
         </form>
 
@@ -205,6 +205,37 @@
                 <div>
                   <div class="linea"><span class="que">Reservó por tu link</span><span class="hora">10:12</span></div>
                   <span class="quien"><span class="actor">Paciente</span> Hernán Muestra</span>
+                  <dl class="cambios"><dt>Turno</dt><dd><span class="despues">jue 19/11 16:30 · Consulta · 30 min</span></dd></dl>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <!-- Lista: turno de origen con la revisión pendiente (#51) -->
+        <div data-solo="dni-repetido">
+          <p class="conteo">2 cambios de este turno</p>
+          <section class="dia-grupo" aria-labelledby="r-ayer">
+            <h2 id="r-ayer">Ayer · jueves 19 de noviembre</h2>
+            <ul class="eventos">
+              <li class="ev">
+                <span class="ico pac" aria-hidden="true"><svg><use href="#i-link"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Reprogramó por el link</span><span class="hora">21:40</span></div>
+                  <span class="quien"><span class="actor">Reserva con este DNI</span></span>
+                  <dl class="cambios"><dt>Inicio</dt><dd><span class="sr">antes </span><span class="antes">jue 19/11 16:30</span><svg class="flecha" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr">, después </span><span class="despues">vie 20/11 18:00</span></dd></dl>
+                </div>
+              </li>
+            </ul>
+          </section>
+          <section class="dia-grupo" aria-labelledby="r-lun">
+            <h2 id="r-lun">Lunes 16 de noviembre</h2>
+            <ul class="eventos">
+              <li class="ev">
+                <span class="ico pac" aria-hidden="true"><svg><use href="#i-link"/></svg></span>
+                <div>
+                  <div class="linea"><span class="que">Reservó por tu link</span><span class="hora">10:12</span></div>
+                  <span class="quien"><span class="actor">Reserva con este DNI</span></span>
                   <dl class="cambios"><dt>Turno</dt><dd><span class="despues">jue 19/11 16:30 · Consulta · 30 min</span></dd></dl>
                 </div>
               </li>

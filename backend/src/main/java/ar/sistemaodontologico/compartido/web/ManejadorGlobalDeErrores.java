@@ -1,6 +1,7 @@
 package ar.sistemaodontologico.compartido.web;
 
 import ar.sistemaodontologico.compartido.domain.EnmascaradorDePii;
+import ar.sistemaodontologico.compartido.domain.PatronDeRutaSensible;
 import ar.sistemaodontologico.compartido.domain.error.ErrorDeNegocio;
 import java.net.URI;
 import java.util.List;
@@ -48,7 +49,9 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
             "uk_usuario_email", new ErrorDeConstraint(HttpStatus.CONFLICT, "EMAIL_EN_USO"),
             // C-08 (design D5 y D8): carreras que el chequeo previo de la aplicación no ve.
             "uk_tipo_prestacion_nombre", new ErrorDeConstraint(HttpStatus.CONFLICT, "PRESTACION_DUPLICADA"),
-            "ex_disponibilidad_sin_solape", new ErrorDeConstraint(HttpStatus.BAD_REQUEST, "FRANJAS_SOLAPADAS"));
+            "ex_disponibilidad_sin_solape", new ErrorDeConstraint(HttpStatus.BAD_REQUEST, "FRANJAS_SOLAPADAS"),
+            // C-11 (design D5): red de seguridad si una carrera saltea la validación; no dice con qué turno chocó.
+            "ex_turno_sin_solapamiento", new ErrorDeConstraint(HttpStatus.CONFLICT, "TURNO_SOLAPADO"));
 
     private static final Map<Integer, String> CODIGOS_POR_ESTADO = Map.of(
             400, "SOLICITUD_INVALIDA",
@@ -147,7 +150,7 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
         problema.setType(URI.create(PREFIJO_TYPE + codigo.toLowerCase(Locale.ROOT).replace('_', '-')));
         problema.setProperty(PROPIEDAD_CODIGO, codigo);
         if (peticion instanceof ServletWebRequest servlet) {
-            problema.setInstance(URI.create(servlet.getRequest().getRequestURI()));
+            problema.setInstance(URI.create(PatronDeRutaSensible.enmascarar(servlet.getRequest().getRequestURI())));
         }
     }
 
@@ -160,7 +163,7 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
         problema.setTitle(estado.getReasonPhrase());
         problema.setType(URI.create(PREFIJO_TYPE + codigo.toLowerCase(Locale.ROOT).replace('_', '-')));
         problema.setProperty(PROPIEDAD_CODIGO, codigo);
-        problema.setInstance(URI.create(rutaPedida));
+        problema.setInstance(URI.create(PatronDeRutaSensible.enmascarar(rutaPedida)));
         return problema;
     }
 

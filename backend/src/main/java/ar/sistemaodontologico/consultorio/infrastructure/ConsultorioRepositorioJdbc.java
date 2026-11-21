@@ -6,7 +6,10 @@ import ar.sistemaodontologico.consultorio.domain.ConfiguracionDelConsultorio;
 import ar.sistemaodontologico.consultorio.domain.DatosDelConsultorio;
 import ar.sistemaodontologico.consultorio.domain.NuevoConsultorio;
 import ar.sistemaodontologico.consultorio.domain.ReglasDeReserva;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -66,6 +69,56 @@ class ConsultorioRepositorioJdbc implements ConsultorioRepositorio {
                                 fila.getBoolean("reserva_publica_activa")),
                         fila.getString("plan"), fila.getObject("prueba_hasta", LocalDate.class),
                         fila.getLong("version")))
+                .optional();
+    }
+
+    @Override
+    public Optional<PlanGuardado> buscarPlan(ConsultorioId id) {
+        return jdbc.sql("SELECT plan, prueba_hasta, zona_horaria FROM consultorio WHERE id = :id")
+                .param("id", id.valor())
+                .query((fila, numero) -> new PlanGuardado(fila.getString("plan"),
+                        fila.getObject("prueba_hasta", LocalDate.class), fila.getString("zona_horaria")))
+                .optional();
+    }
+
+    @Override
+    public List<ConsultorioId> vencerPruebas(Instant ahora) {
+        return jdbc.sql("""
+                UPDATE consultorio SET plan = 'VENCIDO', updated_at = now()
+                 WHERE plan = 'PRUEBA'
+                   AND prueba_hasta < (CAST(:ahora AS timestamptz) AT TIME ZONE zona_horaria)::date
+                RETURNING id""")
+                .param("ahora", Timestamp.from(ahora))
+                .query((fila, numero) -> new ConsultorioId(fila.getObject("id", java.util.UUID.class)))
+                .list();
+    }
+
+    @Override
+    public Optional<String> activarPlan(ConsultorioId id) {
+        // El FOR UPDATE de la subconsulta da el plan anterior y serializa dos activaciones a la vez.
+        return jdbc.sql("""
+                UPDATE consultorio c SET plan = 'ACTIVO', updated_at = now()
+                  FROM (SELECT id, plan FROM consultorio WHERE id = :id FOR UPDATE) anterior
+                 WHERE c.id = anterior.id AND anterior.plan <> 'ACTIVO'
+                RETURNING anterior.plan""")
+                .param("id", id.valor())
+                .query(String.class)
+                .optional();
+    }
+
+    @Override
+    public boolean existe(ConsultorioId id) {
+        return jdbc.sql("SELECT EXISTS (SELECT 1 FROM consultorio WHERE id = :id)")
+                .param("id", id.valor())
+                .query(Boolean.class)
+                .single();
+    }
+
+    @Override
+    public Optional<ConsultorioId> buscarIdPorSlug(String slug) {
+        return jdbc.sql("SELECT id FROM consultorio WHERE slug = :slug")
+                .param("slug", slug)
+                .query((fila, numero) -> new ConsultorioId(fila.getObject("id", java.util.UUID.class)))
                 .optional();
     }
 

@@ -103,6 +103,24 @@ Cada evento SHALL traer el nombre del actor: nombre y apellido del odontólogo s
 - **WHEN** se lee un evento con actor `SISTEMA`
 - **THEN** el actor no trae nombre
 
+### Requirement: Actor de una reserva con identidad en revisión
+Mientras un paciente tenga `requiere_revision = true`, los eventos con actor `PACIENTE` cuya entidad sea su turno `informado_turno_id` SHALL traer `actor.identidadEnRevision: true` y MUST NOT traer el nombre del paciente como actor. En cualquier otro evento, `actor.identidadEnRevision` MUST ser `false`.
+
+#### Scenario: Revisión pendiente
+- **GIVEN** un paciente `Paciente Uno Prueba` con la revisión pendiente por una reserva hecha con su DNI y otro nombre
+- **WHEN** se lee el `TURNO_CREADO` de ese turno de origen
+- **THEN** el actor es `PACIENTE`, con `identidadEnRevision: true` y sin nombre, y el contexto sigue indicando el turno y el paciente asignado
+
+#### Scenario: Revisión resuelta
+- **GIVEN** la revisión de ese paciente ya resuelta
+- **WHEN** se lee el mismo evento
+- **THEN** el actor trae `identidadEnRevision: false` y el nombre que quedó en la ficha
+
+#### Scenario: Otro turno del mismo paciente
+- **GIVEN** un paciente con la revisión pendiente y otro turno que no es el de origen
+- **WHEN** se lee un evento de ese otro turno
+- **THEN** el actor trae `identidadEnRevision: false` y el nombre de la ficha
+
 ### Requirement: Solo lectura
 La consulta del registro MUST NOT modificar ni agregar eventos, y MUST funcionar en cualquier estado del plan, incluido `VENCIDO`.
 

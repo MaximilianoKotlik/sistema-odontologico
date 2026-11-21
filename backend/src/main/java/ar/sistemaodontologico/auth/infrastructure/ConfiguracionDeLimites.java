@@ -1,7 +1,7 @@
 package ar.sistemaodontologico.auth.infrastructure;
 
-import ar.sistemaodontologico.auth.application.LimitadorDeSolicitudes;
 import ar.sistemaodontologico.auth.application.LimitesPorCuenta;
+import ar.sistemaodontologico.compartido.application.LimitadorDeSolicitudes;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -21,11 +21,22 @@ export class ApiError extends Error {
     readonly status: number,
     readonly codigo: string,
     readonly detail: string,
+    /** Propiedades extra del Problem Details (p. ej. `minutosRestantes` de `CUENTA_BLOQUEADA`). */
+    readonly datos: Readonly<Record<string, unknown>> = {},
+    /** Valor crudo de `Retry-After` en un 429, o null. */
+    readonly retryAfter: string | null = null,
   ) {
     super(detail);
     this.name = 'ApiError';
   }
 }
+
+/**
+ * Mensaje propio del 403 `PLAN_VENCIDO` (C-20, spec aviso-de-plan): reemplaza el `detail` del servidor, que es para
+ * desarrolladores y no está en el registro de la UI.
+ */
+export const MENSAJE_PLAN_VENCIDO =
+  'No se guardó: tu prueba terminó y la agenda pasó a solo lectura. No se perdió nada de lo que ya tenías.';
 
 export type Metodo = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -37,6 +48,18 @@ export interface OpcionesCliente {
   readonly alResponder?: (ruta: string, respuesta: Response) => void;
   /** Se llama cuando un pedido no llega al servidor por falta de red (navigator.onLine no es confiable). */
   readonly alFallarRed?: () => void;
+  /** Se llama cuando una escritura responde 403 `PLAN_VENCIDO`: la app vuelve a pedir el plan (C-20). No se reintenta. */
+  readonly alPlanVencido?: () => void;
+  /**
+   * Serializa el refresh entre pestañas (C-07, D6). Recibe la tarea completa y la corre bajo el lock; la tarea
+   * termina recién con la respuesta leída, así el lock no se libera antes de guardar la cookie rotada.
+   */
+  readonly coordinarRefresh?: <T>(tarea: () => Promise<T>) => Promise<T>;
+}
+
+export interface OpcionesRenovacion {
+  /** false en la restauración al recargar (D3): un 401 es el caso normal de alguien sin sesión, no un aviso. */
+  readonly avisarSiVence?: boolean;
 }
 
 export interface ClienteHttp {
@@ -47,7 +70,7 @@ export interface ClienteHttp {
   patch<T>(ruta: string, cuerpo?: unknown): Promise<T>;
   delete<T>(ruta: string): Promise<T>;
   /** Pide un access token nuevo con la cookie de refresh. Devuelve false si la sesión no es renovable. */
-  renovarSesion(): Promise<boolean>;
+  renovarSesion(opciones?: OpcionesRenovacion): Promise<boolean>;
   establecerToken(token: string): void;
   borrarToken(): void;
   tieneToken(): boolean;
@@ -61,8 +84,12 @@ function tieneAccessToken(valor: unknown): valor is { accessToken: string } {
   return esObjeto(valor) && typeof valor['accessToken'] === 'string' && valor['accessToken'] !== '';
 }
 
+/** Rutas de auth que además exigen la sesión (Bearer): cambiar la contraseña con la sesión iniciada (US-005). */
+const RUTAS_AUTH_CON_SESION: readonly string[] = ['/api/v1/auth/cambiar-password'];
+
 const esRutaAuth = (ruta: string) => ruta.startsWith(PREFIJO_AUTH);
-const esRutaPrivada = (ruta: string) => ruta.startsWith('/api/v1/') && !esRutaAuth(ruta) && !ruta.startsWith(PREFIJO_PUBLICO);
+const esRutaPrivada = (ruta: string) =>
+  RUTAS_AUTH_CON_SESION.includes(ruta) || (ruta.startsWith('/api/v1/') && !esRutaAuth(ruta) && !ruta.startsWith(PREFIJO_PUBLICO));
 
 async function leerCuerpo(respuesta: Response): Promise<unknown> {
   if (respuesta.status === 204) return undefined;
@@ -77,22 +104,28 @@ async function leerCuerpo(respuesta: Response): Promise<unknown> {
   }
 }
 
+const CLAVES_ESTANDAR = new Set(['type', 'title', 'status', 'detail', 'instance', 'codigo']);
+
 async function aApiError(respuesta: Response): Promise<ApiError> {
   const tipo = respuesta.headers.get('Content-Type') ?? '';
+  const retryAfter = respuesta.headers.get('Retry-After');
   if (tipo.includes('application/problem+json') || tipo.includes('application/json')) {
     const cuerpo: unknown = await respuesta.json().catch(() => undefined);
     if (esObjeto(cuerpo) && typeof cuerpo['codigo'] === 'string') {
       const detail = typeof cuerpo['detail'] === 'string' ? cuerpo['detail'] : '';
-      return new ApiError(respuesta.status, cuerpo['codigo'], detail);
+      const datos = Object.fromEntries(Object.entries(cuerpo).filter(([clave]) => !CLAVES_ESTANDAR.has(clave)));
+      return new ApiError(respuesta.status, cuerpo['codigo'], detail, datos, retryAfter);
     }
   }
-  return new ApiError(respuesta.status, 'ERROR_INESPERADO', `Error HTTP ${respuesta.status}`);
+  return new ApiError(respuesta.status, 'ERROR_INESPERADO', `Error HTTP ${respuesta.status}`, {}, retryAfter);
 }
 
 export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
   const hacerFetch = opciones.fetch ?? ((entrada, init) => fetch(entrada, init));
+  const coordinar = opciones.coordinarRefresh ?? (<T,>(tarea: () => Promise<T>) => tarea());
   let tokenEnMemoria: string | null = null;
   let refreshEnCurso: Promise<boolean> | null = null;
+  let avisoEnCurso: Promise<boolean> | null = null;
 
   async function enviar(metodo: Metodo, ruta: string, cuerpo: unknown): Promise<Response> {
     const encabezados = new Headers({ Accept: 'application/json, application/problem+json' });
@@ -129,17 +162,34 @@ export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
     opciones.alVencerSesion?.();
   }
 
-  /** Un único refresh en vuelo; si falla, el aviso de sesión vencida se emite una sola vez. */
-  function renovarSesion(): Promise<boolean> {
-    refreshEnCurso ??= pedirRefresh()
+  /**
+   * Un único refresh en vuelo por pestaña, serializado entre pestañas por `coordinarRefresh` (D6). Sin
+   * AbortController ni timeout: abortarlo después de que el backend rotó la cookie perdería el Set-Cookie.
+   */
+  function refrescar(): Promise<boolean> {
+    refreshEnCurso ??= coordinar(pedirRefresh).finally(() => {
+      refreshEnCurso = null;
+    });
+    return refreshEnCurso;
+  }
+
+  /** Si la renovación falla, el aviso de sesión vencida se emite una sola vez aunque haya varios pedidos. */
+  function renovarSesion({ avisarSiVence = true }: OpcionesRenovacion = {}): Promise<boolean> {
+    if (!avisarSiVence) {
+      return refrescar().then((renovada) => {
+        if (!renovada) tokenEnMemoria = null;
+        return renovada;
+      });
+    }
+    avisoEnCurso ??= refrescar()
       .then((renovada) => {
         if (!renovada) vencerSesion();
         return renovada;
       })
       .finally(() => {
-        refreshEnCurso = null;
+        avisoEnCurso = null;
       });
-    return refreshEnCurso;
+    return avisoEnCurso;
   }
 
   const sesionVencida = () => new ApiError(401, 'SESION_VENCIDA', 'Tu sesión venció. Iniciá sesión de nuevo.');
@@ -156,7 +206,14 @@ export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
       }
     }
 
-    if (!respuesta.ok) throw await aApiError(respuesta);
+    if (!respuesta.ok) {
+      const error = await aApiError(respuesta);
+      if (error.status === 403 && error.codigo === 'PLAN_VENCIDO') {
+        opciones.alPlanVencido?.();
+        throw new ApiError(403, error.codigo, MENSAJE_PLAN_VENCIDO, {}, null);
+      }
+      throw error;
+    }
     opciones.alResponder?.(ruta, respuesta);
     // El tipo T lo fija quien llama a partir de api-types.ts; el cuerpo llega como JSON sin validar.
     return (await leerCuerpo(respuesta)) as T;

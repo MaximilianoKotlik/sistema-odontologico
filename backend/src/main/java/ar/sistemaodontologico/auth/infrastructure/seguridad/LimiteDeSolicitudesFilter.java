@@ -1,9 +1,9 @@
 package ar.sistemaodontologico.auth.infrastructure.seguridad;
 
-import ar.sistemaodontologico.auth.application.LimitadorDeSolicitudes;
-import ar.sistemaodontologico.auth.application.LimiteDeSolicitudes;
-import ar.sistemaodontologico.auth.application.ResultadoDeLimite;
 import ar.sistemaodontologico.auth.infrastructure.PropiedadesDeLimites;
+import ar.sistemaodontologico.compartido.application.LimitadorDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.LimiteDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.ResultadoDeLimite;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

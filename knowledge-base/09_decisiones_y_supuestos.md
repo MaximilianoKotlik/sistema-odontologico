@@ -260,6 +260,17 @@
 **Alternativas consideradas**: mostrar solo la ficha, el aviso y el turno de origen (el odontólogo no sabe qué difiere); guardar todas las variantes (más datos personales sin necesidad); sobrescribir la ficha con lo último (contradice RN-RP-03).
 **Trade-offs aceptados**: cinco columnas más en `paciente`, casi siempre en `NULL`; si dos reservas distintas llegan antes de revisar, la primera variante se pierde.
 
+### DD-39 — El visto de una novedad del paciente no se audita (aprobada en la revisión de la propuesta de C-12, 2026-11-21)
+**Estado**: aprobada por Maxi en la revisión de la propuesta de C-12 (#39).
+**Decisión**: marcar como vista una novedad del paciente (`POST /api/v1/turnos/{id}/visto`, C-12 D5) pone `turno.novedad_paciente_at = NULL` **sin** registrar un evento de auditoría. Es una excepción acotada a la regla dura 7:
+- `novedad_paciente_at` es una marca de lectura de la interfaz, no un dato del turno;
+- el cambio que la puso ya está auditado (`TURNO_CREADO`, `TURNO_REPROGRAMADO` o `TURNO_ESTADO_CAMBIADO` con actor `PACIENTE`, C-15 D14);
+- ninguna otra columna de `turno` cambia sin evento.
+
+**Carrera**: el visto indica qué novedad vio (`novedadAt`) y solo borra esa o una anterior (`… AND novedad_paciente_at <= :novedadAt`). Una reprogramación del paciente que llega mientras tanto no se pierde. La comparación trunca la columna a milisegundos (`date_trunc('milliseconds', novedad_paciente_at)`): Postgres guarda microsegundos y un cliente que pasa el valor por `Date` lo devuelve truncado (nota de Maxi en la aprobación de #39).
+**Contexto**: auditar cada apertura de un turno llenaría el registro de eventos sin valor para el odontólogo ni para la exportación (C-19), y la auditoría del cambio del paciente ya cuenta qué pasó y cuándo.
+**Alternativas consideradas**: un evento `TURNO_NOVEDAD_VISTA` con `{novedad_paciente_at}` anterior y nuevo (más ruido en el historial de C-18 sin información nueva).
+
 ### DD-40 — Datos en Argentina y requisitos de infraestructura antes del lanzamiento (resuelve PA-02) (confirmada por el usuario, 2026-11-20)
 **Estado**: **Confirmada por el usuario (2026-11-20)**; cierra [PA-02](10_preguntas_abiertas.md#preguntas-abiertas-priorizadas) y completa [DD-25](#dd-25--hosting-postgres-en-el-mismo-docker-compose-local-y-después-un-vps-resuelve-en-parte-pa-02-confirmada-por-el-usuario-2026-11-20).
 **Decisión**:

@@ -122,8 +122,8 @@ erDiagram
 - Índice GiST: `(consultorio_id, tstzrange(inicio, fin))`.
 
 ### Paciente (datos mínimos)
-- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(10) NULL`, `created_at`, `updated_at`.
-- Datos informados en la reserva que disparó la revisión ([DD-38](09_decisiones_y_supuestos.md)): `nombre_informado VARCHAR(80) NULL`, `apellido_informado VARCHAR(80) NULL`, `email_informado CITEXT NULL`, `informado_at TIMESTAMPTZ NULL` y `informado_turno_id UUID NULL` (FK compuesta `(consultorio_id, informado_turno_id)` → `turno`). Solo tienen valor mientras `requiere_revision = true`: los llena la deduplicación (queda la última reserva) y vuelven a `NULL` al revisar. `CHECK (requiere_revision OR informado_at IS NULL)`.
+- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(40) NULL` (como `usuario.terminos_version`; la versión vigente `2026-11-borrador` no entra en 10), `created_at`, `updated_at`.
+- Datos informados en la reserva que disparó la revisión ([DD-38](09_decisiones_y_supuestos.md)): `nombre_informado VARCHAR(80) NULL`, `apellido_informado VARCHAR(80) NULL`, `email_informado CITEXT NULL`, `informado_at TIMESTAMPTZ NULL` y `informado_turno_id UUID NULL` (FK compuesta `(consultorio_id, informado_turno_id)` → `turno`). Solo tienen valor mientras `requiere_revision = true`: los llena la deduplicación (queda la última reserva) y vuelven a `NULL` al revisar. `ck_paciente_informado CHECK (requiere_revision OR num_nonnulls(<las cinco>) = 0)`: sin revisión pendiente, las cinco son `NULL` (incluye `informado_at IS NULL`).
 - Unique: `(consultorio_id, dni)` — clave de deduplicación ([DD-24](09_decisiones_y_supuestos.md)). El teléfono es contacto obligatorio, no único.
 - Sin datos clínicos en v1 (minimización, [11](11_marco_legal_argentino.md)).
 
@@ -132,17 +132,19 @@ erDiagram
 - `estado VARCHAR(12) CHECK IN ('RESERVADO','CONFIRMADO','CANCELADO','AUSENTE')`.
 - `es_sobreturno BOOLEAN NOT NULL DEFAULT false` — el "sobreturno" del Discovery se modela como **marca**, no como estado, porque un sobreturno también se confirma, se cancela o queda ausente ([DD-10](09_decisiones_y_supuestos.md)).
 - `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `cancelado_por VARCHAR(12) NULL` (`ODONTOLOGO`/`PACIENTE`), `motivo_cancelacion VARCHAR(200)`, `nota_interna VARCHAR(500)`, `version BIGINT` (optimistic locking), `created_at`, `updated_at`.
+- `novedad_paciente_at TIMESTAMPTZ NULL` (`V7__token_gestion_turno`, C-15): cambio del paciente por el link que el odontólogo todavía no vio ([DD-30](09_decisiones_y_supuestos.md)). La escribe C-15 al reservar, reprogramar o cancelar por el link, y `POST /api/v1/turnos/{id}/visto` la limpia sin evento de auditoría ([DD-39](09_decisiones_y_supuestos.md)). No cambia la `version`.
 - Constraint clave ([RN-AG-01](05_reglas_de_negocio.md)):
   ```sql
   CREATE EXTENSION IF NOT EXISTS btree_gist;
-  ALTER TABLE turno ADD CONSTRAINT turno_sin_solapamiento
+  ALTER TABLE turno ADD CONSTRAINT ex_turno_sin_solapamiento
     EXCLUDE USING gist (consultorio_id WITH =, tstzrange(inicio, fin, '[)') WITH &&)
     WHERE (NOT es_sobreturno AND estado IN ('RESERVADO','CONFIRMADO'));
   ```
 - Índices: `(consultorio_id, inicio)`, `(consultorio_id, paciente_id, inicio)`.
+- CHECKs (C-10, `V6`): `ck_turno_duracion` (5 a 480, múltiplo de 5), `ck_turno_fin` (`fin = inicio + duracion_min`, comparando epochs), `ck_turno_grilla` (inicio en múltiplos de 5 minutos, `extract(epoch FROM inicio) % 300 = 0` en `numeric`), `ck_turno_estado`, `ck_turno_origen`, `ck_turno_sobreturno_manual` (`NOT es_sobreturno OR origen = 'MANUAL'`) y `ck_turno_cancelacion` (`cancelado_por` y `motivo_cancelacion` solo en un turno `CANCELADO`). FKs compuestas `fk_turno_paciente` y `fk_turno_tipo_prestacion`. Sin `DELETE` para el rol de la aplicación.
 
 ### TokenGestionTurno
-- `id`, `consultorio_id`, `turno_id UNIQUE`, `token_hash CHAR(64) UNIQUE`, `expira_at` (= `fin` del turno), `revocado_at NULL`, `created_at`.
+- `id`, `consultorio_id`, `turno_id UNIQUE`, `token_hash CHAR(64) UNIQUE`, `revocado_at NULL`, `created_at`. Sin `expira_at`: la vigencia se deriva del turno en cada consulta (C-15, design D3).
 - El token en claro (256 bits, base64url) se devuelve **una sola vez** al reservar ([RN-RP-06](05_reglas_de_negocio.md)).
 
 ### EventoAuditoria (append-only)

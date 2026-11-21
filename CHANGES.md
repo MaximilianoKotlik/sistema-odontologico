@@ -12,7 +12,7 @@
 2. Leer los docs de la knowledge-base indicados en "Leer antes". En los changes de frontend, leer además el sistema de diseño aprobado (`design-system/README.md`, `tokens.css`, `components.html`).
 3. Acordar el alcance y los criterios de aceptación del item (los Given/When/Then de `06_funcionalidades.md` son la base; Strict TDD: cada criterio se escribe primero como test en rojo).
 4. Implementar, verificar los criterios acordados y registrar la evidencia en el PR.
-5. Cerrar el change en el mismo PR de implementación: cuando el PR está aprobado (o el líder confirma que no quedan cambios pedidos), el autor suma un último commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). No hace falta un PR aparte para el cierre.
+5. Cerrar el change en el mismo PR de implementación, **antes de pedir la revisión**: con todo en verde, el autor suma un commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). El `[x]` llega a `main` solo con el merge, que exige la aprobación del líder. Si el líder pide cambios, se hacen en commits nuevos y el `[x]` queda puesto. No hace falta un PR aparte para el cierre.
 
 Reglas del equipo:
 - **Governance**: CRITICO = solo análisis hasta aprobación humana explícita; ALTO = proponer y esperar revisión antes de escribir; MEDIO = implementar con checkpoints; BAJO = autonomía si los tests pasan.
@@ -138,7 +138,7 @@ Reglas de coordinación del paralelismo:
 - **Propuestas un paso antes**: los changes CRITICO y ALTO preparan su propuesta en el paso previo, para que la aprobación del líder no frene el change.
 - **Prioridad de revisión**: los PRs del camino crítico (C-02, C-04, C-08, C-10, C-11, C-12, C-13, C-14/C-18) se revisan antes que el resto.
 - **Migraciones Flyway**: cada change numera su migración provisoriamente y, al rebasar sobre `main` antes del merge, la pasa al siguiente número libre (una migración no mergeada todavía se puede renumerar; una mergeada nunca se edita).
-- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, recién con la aprobación del líder (paso 5). Los PRs de solo propuesta o mockups no marcan `[x]`.
+- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, antes de pedir la revisión (paso 5); llega a `main` solo con el merge aprobado. Los PRs de solo propuesta o mockups no marcan `[x]`.
 - **Trabajo anticipado**: se pueden preparar mockups, tests y propuestas antes de que se habilite un change, pero su PR se abre recién con las dependencias en `[x]`.
 
 ---
@@ -243,7 +243,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-02, DD-11
 
 ### [C-07] `frontend-auth`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #57, 2026-11-21)
 - **Scope**:
   - Pantallas: registro (con aceptación de términos), login, recuperación y confirmación de recuperación, cambio de contraseña con sesión iniciada (US-005; al terminar fuerza nuevo login), cierre de sesión; manejo de `CUENTA_BLOQUEADA`, `EMAIL_EN_USO`, `PASSWORD_DEBIL`, `PASSWORD_ACTUAL_INVALIDA`, `TOKEN_INVALIDO`.
   - Guardas de ruta y restauración de sesión vía `/auth/refresh` al recargar.
@@ -279,7 +279,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/07_flujos_principales.md` §FL-02
 
 ### [C-09] `frontend-configuracion`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #58, 2026-11-21)
 - **Scope**:
   - Feature `configuracion/`: datos del consultorio y slug (con link público copiable `/c/{slug}`), prestaciones con duración, disponibilidad semanal, anticipaciones; onboarding guiado FL-02 tras el registro.
   - Mockup revisado de las pantallas y del onboarding antes de implementar.
@@ -297,7 +297,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 3 — Agenda del odontólogo
 
 ### [C-10] `agenda-esquema-dominio`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #18, 2026-11-21)
 - **Scope**:
   - Migración: `paciente` (único `(consultorio_id, dni)` por DD-24, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
   - Dominio puro (sin Spring/JPA): entidades y value objects (`Intervalo` semiabierto, `Duracion` múltiplo de 5), `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento`, `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), derivación `fin = inicio + duracion_min` (RN-AG-12), reglas de bloqueo (rechazo con lista de conflictos), invariantes de sobreturno.
@@ -313,12 +313,12 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/08_arquitectura_propuesta.md` §Patrones aplicados, §Estrategia de tests
 
 ### [C-11] `agenda-casos-de-uso`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #46, 2026-11-21)
 - **Scope**:
   - Casos de uso de aplicación sobre el dominio de C-10: crear turno (manual, sobreturno y desde reserva pública, como puerto que consume C-15), cambiar estado, reprogramar (RN-AG-11), **ajustar duración** (RN-AG-12: recalcula `fin`, revalida RN-AG-01/03/04, múltiplos de 5), **editar nota interna** (`nota_interna`, máx. 500), crear y **eliminar** bloqueo.
-  - Deduplicación de paciente por teléfono E.164 (RN-RP-03): reutiliza sin sobrescribir y marca `requiere_revision` si nombre/apellido difieren.
+  - Deduplicación de paciente por DNI (RN-RP-03, DD-24): reutiliza sin sobrescribir y marca `requiere_revision` si nombre/apellido difieren (sin mayúsculas, acentos ni espacios), guardando lo informado y el turno de origen (DD-38).
   - Optimistic locking (409 `CONFLICTO_CONCURRENCIA`, RN-GL-02).
-  - Eventos de auditoría en la misma transacción, con valor anterior y nuevo: `TURNO_CREADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_REPROGRAMADO`, `TURNO_DURACION_CAMBIADA`, `TURNO_NOTA_CAMBIADA`, `BLOQUEO_CREADO`, `BLOQUEO_ELIMINADO` (RN-AD-01, RN-AD-04).
+  - Eventos de auditoría en la misma transacción, con valor anterior y nuevo: `TURNO_CREADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_REPROGRAMADO`, `TURNO_DURACION_CAMBIADA`, `TURNO_NOTA_CAMBIADA`, `BLOQUEO_CREADO`, `BLOQUEO_ELIMINADO`, `PACIENTE_CREADO`, `PACIENTE_MARCADO_PARA_REVISION` (RN-AD-01, RN-AD-04, RN-AD-05).
   - Tests de aplicación (Testcontainers): US-012, US-021 a US-025 a nivel caso de uso, dedupe con `requiere_revision`, concurrencia, rollback del cambio si falla la auditoría.
 - **Dependencias**: `C-10`
 - **Governance**: ALTO (concentra las invariantes de solapamiento y la auditoría de turnos que consumen la API, la reserva pública y la exportación)
@@ -326,10 +326,11 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG), RN-RP-03, §Auditoría (RN-AD-01, RN-AD-04, RN-AD-05), RN-GL-02
   - `knowledge-base/06_funcionalidades.md` §US-012, US-021 a US-025
   - `knowledge-base/07_flujos_principales.md` §FL-03
-  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-17
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-17, DD-24 (paciente por DNI; DD-09 quedó reemplazada)
+  - `openspec/changes/archive/*-agenda-esquema-dominio/design.md` §Risks: **serializar las escrituras de agenda por consultorio** con el mismo bloqueo que C-08 usa en la grilla (`SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`), no con un lock consultivo aparte. Así turnos, bloqueos, reservas (C-15) y cambios de grilla quedan en una sola cola (revisión de Maxi en #18). La exclusión GiST no cruza tablas: sin ese bloqueo, un turno y un bloqueo concurrentes podrían pasar las dos validaciones.
 
 ### [C-12] `agenda-api-odontologo`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #48, 2026-11-21)
 - **Scope**:
   - `GET /api/v1/agenda?desde&hasta` (turnos, sobreturnos marcados, bloqueos, cancelados filtrables; indicador de "nuevos" por reservas/cambios de pacientes).
   - `POST /api/v1/turnos` (manual y `esSobreturno`), `PATCH /api/v1/turnos/{id}/estado`, `POST /api/v1/turnos/{id}/reprogramar` (sin anticipación mínima para el odontólogo; conserva el token de gestión), `PATCH /api/v1/turnos/{id}/duracion` (RN-AG-12), `PATCH /api/v1/turnos/{id}/nota` (RN-AD-01), `POST/DELETE /api/v1/bloqueos` (el `DELETE` audita `BLOQUEO_ELIMINADO`).
@@ -391,11 +392,11 @@ Reglas de coordinación del paralelismo:
 > C-15 se ejecuta en paralelo con C-12 apenas termina C-11. C-16 arranca apenas terminan C-06 y C-15; no espera a la agenda del odontólogo.
 
 ### [C-15] `reserva-publica-backend`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #47, 2026-11-21)
 - **Scope**:
   - Migración: `token_gestion_turno` (hash SHA-256, `expira_at = fin`, `revocado_at`).
   - Endpoints públicos sin cuenta: `GET /api/v1/public/consultorios/{slug}` (nombre, dirección, teléfono, prestaciones visibles), `GET .../huecos`, `POST .../turnos` (crea turno `origen = LINK` vía el caso de uso de C-11, devuelve el token una sola vez; consentimiento de privacidad; 409 `HUECO_NO_DISPONIBLE`, `LIMITE_TURNOS`), `GET/POST /api/v1/public/turnos/{token}` para ver, reprogramar y cancelar (409 `FUERA_DE_PLAZO` con teléfono del consultorio; 404 uniforme ante token inválido). La vista por token nunca expone `nota_interna`.
-  - Token de 256 bits (`SecureRandom`, base64url), reserva concurrente (exactamente una prospera), dedupe por teléfono (con `requiere_revision`), límite 2 turnos futuros activos, body máx. 64 KB, rate limiting por IP/token, `.ics` descargable (P1).
+  - Token de 256 bits (`SecureRandom`, base64url), reserva concurrente (exactamente una prospera), dedupe por DNI (DD-24) (con `requiere_revision`), límite 2 turnos futuros activos, body máx. 64 KB, rate limiting por IP/token.
   - Reserva desactivada si `reserva_publica_activa = false` o plan `VENCIDO`: la página informa que no toma turnos online y muestra el teléfono. **Criterio de aceptación explícito (RN-RP-11)**: en ese estado, los links de gestión existentes siguen permitiendo **cancelar** (dentro de RN-RP-04), pero no reservar ni reprogramar.
   - Auditoría con `actor_tipo = PACIENTE`.
   - Tests: US-030, US-031, US-032, RN-RP-11 (cancelar sí / reservar y reprogramar no, con reserva desactivada), concurrencia, enumeración de tokens, aislamiento por tenant.
@@ -411,6 +412,7 @@ Reglas de coordinación del paralelismo:
 ### [C-16] `frontend-reserva-publica`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
+  - `.ics` descargable generado en el cliente (P1; FL-04 paso 6).
   - Features `reserva-publica/` (`/c/{slug}`: elegir prestación, hueco, datos, consentimiento, confirmación con link `/t/{token}` para guardar; estado "no toma turnos online" con teléfono) y `gestion-turno/` (`/t/{token}`: ver, reprogramar, cancelar; mensaje con teléfono si está fuera de plazo; con reserva desactivada solo ofrece cancelar).
   - Mobile-first a 360 px, áreas táctiles >= 44 px, selector de horarios del sistema de diseño; sin cachear respuestas públicas en el Service Worker; objetivo de reserva < 90 s.
   - Mockup revisado de todo el flujo del paciente antes de implementar.
@@ -474,7 +476,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/11_marco_legal_argentino.md`
 
 ### [C-20] `plan-ciclo-de-vida`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #62, 2026-11-21)
 - **Scope**:
   - Lógica de `plan` (`PRUEBA`/`ACTIVO`/`VENCIDO`); tarea diaria programada (FL-07, idempotente) que pasa a `VENCIDO` al vencer `prueba_hasta` y audita `PLAN_VENCIDO` con `actor_tipo = SISTEMA`; pase a `ACTIVO` manual como operación interna auditada (`SISTEMA`).
   - Bloqueo de escrituras en `VENCIDO`: guarda transversal en backend (RN-GL-04) que rechaza con 403 `PLAN_VENCIDO` toda escritura privada (agenda, bloqueos, pacientes, configuración) salvo una lista explícita de permitidas (lectura, exportación, login/logout/cambio de contraseña); como es genérica, alcanza también a los endpoints que se agreguen después. La reserva pública deja de tomar reservas.

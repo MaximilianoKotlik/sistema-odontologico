@@ -1,6 +1,6 @@
 package ar.sistemaodontologico.auth.infrastructure;
 
-import ar.sistemaodontologico.auth.application.LimiteDeSolicitudes;
+import ar.sistemaodontologico.compartido.application.LimiteDeSolicitudes;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

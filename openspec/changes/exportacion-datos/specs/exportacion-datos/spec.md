@@ -35,6 +35,11 @@ El ZIP SHALL incluir, para cada entidad (`consultorio`, `odontologo`, `prestacio
 - **WHEN** se exporta
 - **THEN** también figuran en el ZIP, con su estado
 
+#### Scenario: Turno relacionado con su paciente
+- **GIVEN** un consultorio con dos pacientes y un turno de cada uno
+- **WHEN** se exporta
+- **THEN** cada fila de `turnos` lleva `paciente_id` y `tipo_prestacion_id`, y esos valores coinciden con el `id` de una fila de `pacientes` y de `prestaciones`
+
 ### Requirement: Manifest con cantidades consistentes
 El ZIP SHALL incluir un `manifest.json` con la versión del esquema de exportación, el instante de generación, la zona horaria del consultorio, la cantidad de registros por entidad y el SHA-256 de cada archivo. Las cantidades MUST coincidir con las filas de cada archivo y con la base en el instante de la foto, aunque haya escrituras concurrentes.
 

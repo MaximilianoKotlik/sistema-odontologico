@@ -1,6 +1,6 @@
 # Tasks
 
-> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que C-12 y C-13 estén `[x]`. Maxi ya aprobó esta propuesta y los mockups (PR #35).
+> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que C-12 y C-13 estén `[x]`. Maxi aprobó esta propuesta y los mockups en #35. El caso "Reserva con este DNI" (#51) necesita su aprobación antes de implementar la UI.
 >
 > Verificación base: `./gradlew test` y `npm run typecheck && npm run lint && npm test` en verde. Los tests de integración extienden `IntegracionPostgresTest` (Testcontainers, PostgreSQL 16) y usan solo datos ficticios evidentes (regla dura 17).
 
@@ -19,6 +19,7 @@
 
 - [ ] 3.1 `LecturaDeAuditoriaJdbc` con la consulta de design D3, filtros y keyset (verificación: escenarios "Registro sin filtros", "Filtro por turno", "Filtro por acción" y "Filtros combinados sin coincidencias" en integración, con eventos insertados por SQL)
 - [ ] 3.2 Actor y contexto con joins que repiten el consultorio (verificación: escenarios "Evento de un paciente" y "Evento del sistema", más un caso con un `actor_id` que apunta a un usuario de otro consultorio y no trae nombre)
+- [ ] 3.2b Marca `actor.identidadEnRevision` en la consulta de design D3, sin el nombre del actor cuando es `true` (verificación: escenarios "Revisión pendiente", "Revisión resuelta" y "Otro turno del mismo paciente" de `consulta-auditoria`)
 - [ ] 3.3 Paginación estable (verificación: escenarios "Dos páginas" y "Evento nuevo entre páginas")
 - [ ] 3.4 Medición con 50 000 eventos y `EXPLAIN` de las tres variantes (sin filtros, por turno y por acción), con la salida en el PR. Si alguna supera 100 ms, se agrega el índice de design D4 (verificación: test etiquetado `@Tag("volumen")`)
 
@@ -34,6 +35,7 @@
 
 - [ ] 5.1 `features/auditoria/catalogo.ts` y `formatearCambio` de design D6 (verificación: Vitest de etiquetas, verbos por actor, formato de instantes en la zona del consultorio, clave desconocida, y comparación con la lista de acciones de la tarea 1.1)
 - [ ] 5.2 Tarjeta "Historial" en `features/agenda/detalle.ts`, según `mockups/turno-historial.html` (verificación: escenarios "Turno reservado y reprogramado" y "Error al cargar el historial" en Vitest + jsdom)
+- [ ] 5.2b Actor "Reserva con este DNI" en el historial y en el registro, según los estados `historial-dni` y `dni-repetido` de los mockups, leyendo solo la marca de la respuesta (verificación: escenarios de "Reserva con un DNI en revisión" en Vitest + jsdom)
 - [ ] 5.3 Sección `/app/auditoria` según `mockups/registro.html`: filtros en la URL, chip del turno, agrupación por día, "Cargar más" con foco y estados (verificación: escenarios de "Sección Registro de cambios", "Filtros en la URL" y "Paginación y estados de la lista")
 - [ ] 5.4 Accesibilidad AA (verificación: escenario "Lector de pantalla en un cambio" y revisión con el checklist de `accessibility`)
 

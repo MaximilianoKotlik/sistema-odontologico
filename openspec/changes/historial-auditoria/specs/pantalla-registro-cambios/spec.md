@@ -53,11 +53,16 @@ La lista SHALL cargar 50 eventos y ofrecer "Cargar más" mientras haya cursor. M
 - **THEN** ve "No hay cambios con estos filtros" y un botón "Quitar filtros"
 
 ### Requirement: Cambios legibles
-Los valores anterior y nuevo MUST mostrarse con etiquetas en español y en el formato de la UI: instantes en la zona del consultorio, estados con su nombre, duraciones en minutos y booleanos como "Sí" o "No". Un campo sin etiqueta conocida MUST mostrarse con su nombre técnico, sin romper la fila.
+Los valores anterior y nuevo MUST mostrarse con etiquetas en español y en el formato de la UI: instantes en la zona del consultorio, estados con su nombre, duraciones en minutos y booleanos como "Sí" o "No". Los ids internos `paciente_id` y `tipo_prestacion_id` MUST NOT mostrarse. Cualquier otro campo sin etiqueta conocida MUST mostrarse con su nombre técnico, sin romper la fila.
 
 #### Scenario: Cambio de estado
 - **WHEN** se muestra un `TURNO_ESTADO_CAMBIADO` de `RESERVADO` a `CANCELADO` por el paciente
 - **THEN** la fila dice "Canceló por el link" con el paciente como actor, y "Reservado → Cancelado"
+
+#### Scenario: Turno creado sin ids internos
+- **GIVEN** un `TURNO_CREADO` con `paciente_id`, `tipo_prestacion_id`, `origen` y `es_sobreturno`
+- **WHEN** se muestra
+- **THEN** la fila muestra el origen y si es sobreturno con etiquetas en español, y no muestra ningún UUID
 
 #### Scenario: Campo desconocido
 - **GIVEN** un evento con un campo `campo_nuevo` que la UI no conoce
@@ -71,6 +76,19 @@ Un evento con `actor_id` nulo y tipo `ODONTOLOGO` o `PACIENTE` MUST mostrarse co
 - **GIVEN** un `LOGIN_FALLIDO` con actor `ODONTOLOGO` sin id, 1 intento fallido y la IP `203.0.113.24`
 - **WHEN** se muestra en el registro
 - **THEN** la fila dice "Intento fallido de iniciar sesión con tu email", con el actor "Sin sesión", "1 de 5 intentos" y la IP
+
+### Requirement: Reserva con un DNI en revisión
+Un evento con `actor.identidadEnRevision: true` MUST mostrar como actor "Reserva con este DNI", en el historial del turno y en el registro, y MUST NOT mostrar el nombre de la ficha como autor del cambio.
+
+#### Scenario: Revisión pendiente
+- **GIVEN** un turno reservado con el DNI de Hernán Muestra y otro nombre, con la revisión pendiente
+- **WHEN** el odontólogo abre su historial
+- **THEN** el evento dice "Reservó por tu link" con el actor "Reserva con este DNI", y no atribuye la reserva a Hernán Muestra
+
+#### Scenario: Revisión resuelta
+- **GIVEN** la revisión de ese paciente ya resuelta
+- **WHEN** el odontólogo abre el historial del mismo turno
+- **THEN** el evento muestra como actor el nombre que quedó en la ficha
 
 ### Requirement: Accesibilidad del registro
 La sección y la tarjeta MUST cumplir AA: la lista como lista semántica con encabezados por día, los "antes → después" leíbles por lectores de pantalla ("antes 10:00, después 11:00"), objetivos táctiles de al menos 44 px, foco visible, y estados de actor y acción con texto, no solo color.

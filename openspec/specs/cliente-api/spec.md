@@ -35,11 +35,24 @@ Ante un 401 en un pedido privado, el cliente SHALL llamar una sola vez a `POST /
 - **THEN** el cliente no vuelve a renovar y trata la sesión como vencida
 
 ### Requirement: Un solo refresh para pedidos concurrentes
-Si varios pedidos reciben 401 mientras hay una renovación en curso, el cliente SHALL esperar esa misma renovación y MUST NOT iniciar otra.
+Si varios pedidos reciben 401 mientras hay una renovación en curso, el cliente SHALL esperar esa misma renovación y MUST NOT iniciar otra. Entre pestañas del mismo navegador, las renovaciones MUST serializarse, para que ninguna presente un refresh que otra ya rotó (la detección de reuso de C-04 cerraría todas las sesiones).
 
 #### Scenario: Tres pedidos simultáneos
 - **WHEN** tres pedidos privados reciben 401 al mismo tiempo
 - **THEN** se hace exactamente un `POST /api/v1/auth/refresh` y los tres se reintentan con el token resultante
+
+#### Scenario: Dos pestañas a la vez
+- **GIVEN** la app abierta en dos pestañas con el access token vencido
+- **WHEN** las dos necesitan renovar al mismo tiempo
+- **THEN** los dos refresh se hacen uno después del otro, el segundo con la cookie ya rotada, y ninguna pestaña pierde la sesión
+
+### Requirement: Refresh sin timeout propio
+El pedido de refresh MUST NOT abortarse por un timeout propio, y la renovación MUST considerarse terminada recién cuando la respuesta terminó, para no perder el `Set-Cookie` de la cookie rotada (C-07, D6).
+
+#### Scenario: Refresh lento
+- **GIVEN** un refresh que tarda más de lo habitual en responder
+- **WHEN** la pestaña sigue esperando
+- **THEN** el cliente no aborta el pedido, y la otra pestaña empieza su refresh recién cuando este terminó
 
 ### Requirement: Sesión vencida
 Si el refresh falla, el cliente SHALL descartar el token en memoria y la app SHALL llevar al odontólogo a `/login` conservando la ruta a la que intentaba ir.

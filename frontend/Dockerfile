@@ -11,6 +11,8 @@ RUN npm ci
 
 FROM deps AS fuentes
 COPY design-system /app/design-system
+# /terminos y /privacidad importan el borrador legal en el build (C-07, design D9).
+COPY docs/legal /app/docs/legal
 COPY frontend/ ./
 
 FROM fuentes AS dev

@@ -36,6 +36,8 @@ class ArchitectureTest {
      *       es la credencial misma (C-04, design D9).</li>
      *   <li>{@code TokenDeRecuperacionRepositorio.buscarPorHashParaActualizar}: la confirmación de la recuperación llega
      *       sin sesión; el hash de 256 bits es la credencial misma (C-05, design D10).</li>
+     *   <li>{@code TokenDeGestionRepositorio.buscarConsultable} y {@code buscarModificable}: el link del paciente llega
+     *       sin sesión; el hash de 256 bits es la credencial y el consultorio sale de la fila (C-15, design D3).</li>
      * </ul>
      */
     static final java.util.Set<String> REPOSITORIOS_EXCEPTUADOS = java.util.Set.of(
@@ -43,11 +45,19 @@ class ArchitectureTest {
             "UsuarioRepositorio.buscarPorEmail",
             "UsuarioRepositorio.buscarPorEmailParaActualizar",
             "RefreshTokenRepositorio.buscarPorHashParaActualizar",
-            "TokenDeRecuperacionRepositorio.buscarPorHashParaActualizar");
+            "TokenDeRecuperacionRepositorio.buscarPorHashParaActualizar",
+            "TokenDeGestionRepositorio.buscarConsultable",
+            "TokenDeGestionRepositorio.buscarModificable");
 
     @ArchTest
     static final ArchRule repositoriosSiempreConTenant =
             ReglasDeArquitectura.repositoriosSiempreConTenant(REPOSITORIOS_EXCEPTUADOS);
+
+    @ArchTest
+    static final ArchRule agendaSinDominioDeConsultorio = ReglasDeArquitectura.agendaSinDominioDeConsultorio();
+
+    @ArchTest
+    static final ArchRule reservaSoloPorApplication = ReglasDeArquitectura.reservaSoloPorApplication();
 
     @ArchTest
     static final ArchRule springDataSoloEnInfraestructura = ReglasDeArquitectura.springDataSoloEnInfraestructura();
