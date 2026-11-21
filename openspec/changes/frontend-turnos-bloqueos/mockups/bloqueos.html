@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bloqueos · {brand} (mockup C-14)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../../../../design-system/tokens.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="agenda.css">
+<link rel="stylesheet" href="c14.css">
+<script src="../../../../design-system/brand.js" defer></script>
+<script src="mockup.js" defer></script>
+</head>
+<body data-estados="lista:Listado|vacio:Sin bloqueos|nuevo:Nuevo bloqueo por horas|nuevo-dias:Nuevo bloqueo de días completos|fin-invalido:Fin antes del inicio|con-turnos:Choca con turnos (409)|eliminar:Confirmar quitar|eliminado:Quitado|cargando:Cargando">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 102.2-5.3L4.5 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 4.5V9H9M12 8v4l2.8 1.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H7a2 2 0 00-2 2v11a2 2 0 002 2h7M17 8.5L20.5 12 17 15.5M20.5 12H10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-userx" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.3 0 2.5.3 3.5 1M16 15l5 5M21 15l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3.5h8.5L19 8v12.5H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 3.5V8.5h5M9 12.5h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 006 6l1.5-2 4 1.5v3a2 2 0 01-2 2A16.5 16.5 0 014.5 5.5a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5v5.5M12 16.2v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.5M12 7.8v.1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 11-2.2-5.3L19.5 9M19.5 4.5V9H15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 017 0M5 13a10 10 0 015.5-2.8M19 13a10 10 0 00-2.5-1.8M2 9.5a15 15 0 015-3M22 9.5A15 15 0 0012 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4.5 19.5l1-4L15.8 5.2a2 2 0 012.8 0l.2.2a2 2 0 010 2.8L8.5 18.5l-4 1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12.5h8L17 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-useradd" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.6 0 3 .4 4 1.2M18 14v6M15 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="shell">
+  <nav class="sidebar" aria-label="Secciones">
+    <a class="brand" href="agenda.html" aria-label="Ir a mi agenda"><span class="brand-mark"><svg><use href="#i-tooth"/></svg></span><span class="brand-name" data-brand-name>Muelas Felices</span></a>
+    <span class="prov" title="Pendiente de aprobación">Borrador C-14</span>
+    <ul>
+      <li><a class="sidelink" href="#"><svg><use href="#i-cal"/></svg>Agenda</a></li>
+      <li><a class="sidelink" href="bloqueos.html" aria-current="page"><svg><use href="#i-lock"/></svg>Bloqueos</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-gear"/></svg>Configuración</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-history"/></svg>Registro de cambios</a></li>
+      <li><a class="sidelink" href="#"><svg><use href="#i-download"/></svg>Exportar mis datos</a></li>
+    </ul>
+    <div class="grow"></div>
+    <div class="account">
+      <p>Dra. Ejemplo · Consultorio Demo Sur</p>
+      <a class="sidelink" href="#"><svg><use href="#i-logout"/></svg>Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar"><h1 class="page-title">Bloqueos</h1><span class="grow"></span></header>
+    <main class="content" id="contenido" tabindex="-1">
+<div class="bl-h"><p>Nadie puede reservar en estos horarios, ni vos podés cargar turnos ahí.</p><button class="btn btn-primary" type="button" data-no="vacio cargando"><svg aria-hidden="true"><use href="#i-plus"/></svg>Bloquear horario</button></div>
+<div data-no="vacio cargando">
+  <p class="bl-sec">Esta semana</p>
+  <ul class="bl-list" aria-label="Bloqueos de esta semana">
+    <li class="bl" data-no="eliminado"><div class="info"><span class="t">Reunión con el laboratorio</span><span class="r">Viernes 20 de noviembre · 15:00 a 16:00</span></div><button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar el bloqueo Reunión con el laboratorio"><svg aria-hidden="true"><use href="#i-trash"/></svg></button></li>
+  </ul>
+  <p class="bl-sec">Más adelante</p>
+  <ul class="bl-list" aria-label="Bloqueos futuros">
+    <li class="bl"><div class="info"><span class="t">Trámite en el banco</span><span class="r">Jueves 26 de noviembre · 09:00 a 10:30</span></div><button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar el bloqueo Trámite en el banco"><svg aria-hidden="true"><use href="#i-trash"/></svg></button></li>
+    <li class="bl"><div class="info"><span class="t">Vacaciones</span><span class="r">Lunes 4 de enero a viernes 15 de enero · todo el día</span></div><button class="btn btn-ghost btn-icon" type="button" aria-label="Quitar el bloqueo Vacaciones"><svg aria-hidden="true"><use href="#i-trash"/></svg></button></li>
+  </ul>
+</div>
+<div class="empty card" data-solo="vacio"><div class="ico" aria-hidden="true"><svg aria-hidden="true"><use href="#i-lock"/></svg></div><h2>No tenés horarios bloqueados</h2><p>Bloqueá vacaciones, congresos o trámites para que nadie reserve en ese período.</p><button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Bloquear horario</button></div>
+<div data-solo="cargando" aria-busy="true" aria-label="Cargando bloqueos" style="max-width:760px"><span class="skel lg"></span><span class="skel lg"></span><span class="skel lg"></span></div>
+      <section class="review" aria-labelledby="rev-t">
+        <h2 id="rev-t">Estados del mockup (solo para revisión)</h2>
+        <ul id="estados"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<nav class="bottomnav" aria-label="Secciones">
+  <ul>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-cal"/></svg></span>Agenda</a></li>
+    <li><a class="navlink" href="bloqueos.html" aria-current="page"><span class="ico"><svg><use href="#i-lock"/></svg></span>Bloqueos</a></li>
+    <li><a class="navlink" href="#"><span class="ico"><svg><use href="#i-gear"/></svg></span>Configuración</a></li>
+    <li><button class="navlink" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="ico"><svg><use href="#i-more"/></svg></span>Más</button></li>
+  </ul>
+</nav>
+
+<div class="scrim" data-solo="nuevo nuevo-dias fin-invalido con-turnos eliminar"></div>
+<div class="dialog lg" role="dialog" aria-modal="true" aria-labelledby="nb-t" data-solo="nuevo nuevo-dias fin-invalido con-turnos">
+  <div class="d-head"><h2 id="nb-t">Bloquear horario</h2><button class="btn btn-ghost btn-icon" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>
+  <div class="d-body"><div class="notice danger" role="alert" data-solo="con-turnos"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>Hay 2 turnos en ese horario</strong><p>Cancelalos o reprogramalos antes de bloquear. Después volvé a intentar.</p></div></div>
+<ul class="conflictos" data-solo="con-turnos" aria-label="Turnos en conflicto" style="margin:0 0 var(--space-4)">
+  <li><span><b>Vie 20 · 16:00</b> · Federico Ejemplo</span><a href="acciones-turno.html?estado=reprogramar">Ver turno</a></li>
+  <li><span><b>Vie 20 · 17:00</b> · Gabriela Prueba</span><a href="acciones-turno.html?estado=reprogramar">Ver turno</a></li>
+</ul>
+<div class="switch-row field">
+  <div class="txt"><strong id="td-l">Todo el día</strong><p class="hint">Para vacaciones o días completos.</p></div>
+  <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="td-l" data-no="nuevo-dias"><span class="track" aria-hidden="true"></span><span class="state">No</span></button>
+  <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="td-l" data-solo="nuevo-dias"><span class="track" aria-hidden="true"></span><span class="state">Sí</span></button>
+</div>
+<div data-no="nuevo-dias">
+  <div class="field"><label for="b-d">Día</label><input class="input" id="b-d" type="date" value="2026-11-20"></div>
+  <div class="row-2">
+    <div class="field"><label for="b-i">Desde</label><input class="input" id="b-i" type="time" step="300" data-valor="*=15:00|fin-invalido=18:00"></div>
+    <div class="field"><label for="b-f">Hasta</label><input class="input" id="b-f" type="time" step="300" aria-describedby="b-f-e" data-invalido="fin-invalido" data-valor="*=19:00|fin-invalido=17:00">
+      <p class="error-msg" id="b-f-e" data-solo="fin-invalido"><svg aria-hidden="true"><use href="#i-alert"/></svg><span>Tiene que terminar después de las 18:00.</span></p></div>
+  </div>
+</div>
+<div class="row-2" data-solo="nuevo-dias">
+  <div class="field"><label for="b-di">Desde el día</label><input class="input" id="b-di" type="date" value="2027-01-04"></div>
+  <div class="field"><label for="b-df">Hasta el día</label><input class="input" id="b-df" type="date" value="2027-01-15"></div>
+</div>
+<div class="field"><label for="b-m">Motivo <span class="opt">(opcional)</span></label><input class="input" id="b-m" maxlength="120" data-valor="*=Curso de actualización|nuevo-dias=Vacaciones"><p class="hint">Lo ves solo vos. Hasta 120 caracteres.</p></div>
+<p class="fin" data-no="fin-invalido con-turnos"><svg aria-hidden="true"><use href="#i-lock"/></svg><span data-texto="*=Bloquea el viernes 20 de 15:00 a 19:00|nuevo-dias=Bloquea del lunes 4 al viernes 15 de enero, días completos">Bloquea el viernes 20 de 15:00 a 19:00</span></p></div>
+  <div class="d-foot"><button class="btn btn-ghost" type="button">Cancelar</button><button class="btn btn-primary" type="button" data-desactivar="fin-invalido"><svg aria-hidden="true"><use href="#i-lock"/></svg>Bloquear</button></div>
+</div>
+<div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="de-t" aria-describedby="de-p" data-solo="eliminar">
+  <div class="d-head"><h2 id="de-t">¿Quitar el bloqueo “Reunión con el laboratorio”?</h2></div>
+  <p id="de-p">Viernes 20 de 15:00 a 16:00. Ese horario vuelve a quedar disponible para reservar.</p>
+  <div class="d-actions"><button class="btn btn-ghost" type="button" autofocus>No, dejarlo</button><button class="btn btn-danger" type="button"><svg aria-hidden="true"><use href="#i-trash"/></svg>Quitar bloqueo</button></div>
+</div>
+<div class="toast" role="status" data-solo="eliminado"><svg aria-hidden="true"><use href="#i-check"/></svg>Quitamos el bloqueo “Reunión con el laboratorio”</div>
+</body>
+</html>
