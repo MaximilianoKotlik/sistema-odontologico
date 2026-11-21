@@ -62,6 +62,7 @@ const valido: FormularioConsultorio = {
   horizonteReservaDias: 60,
   pasoHuecosMin: 15,
   reservaPublicaActiva: true,
+  version: 0,
 };
 
 const campos = (formulario: FormularioConsultorio) => validarConsultorio(formulario).map((e) => e.campo);

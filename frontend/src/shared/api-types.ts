@@ -610,6 +610,8 @@ export interface components {
             /** Format: int32 */
             pasoHuecosMin: number;
             reservaPublicaActiva: boolean;
+            /** Format: int64 */
+            version: number;
         };
         ConfiguracionResponse: {
             nombre?: string;
@@ -629,6 +631,8 @@ export interface components {
             plan?: string;
             /** Format: date */
             pruebaHasta?: string;
+            /** Format: int64 */
+            version?: number;
         };
         CrearTurnoRequest: {
             /** Format: uuid */

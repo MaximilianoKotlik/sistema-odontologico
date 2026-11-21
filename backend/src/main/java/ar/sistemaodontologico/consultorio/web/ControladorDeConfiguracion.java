@@ -36,12 +36,14 @@ class ControladorDeConfiguracion {
             @NotNull @Min(0) Integer anticipacionReservaMin,
             @NotNull @Min(1) @Max(365) Integer horizonteReservaDias,
             @NotNull @PasoDeHuecos Integer pasoHuecosMin,
-            @NotNull Boolean reservaPublicaActiva) {
+            @NotNull Boolean reservaPublicaActiva,
+            // La versión leída: con otra más nueva responde 409 CONFLICTO_CONCURRENCIA (issue #59).
+            @NotNull Long version) {
     }
 
     record ConfiguracionResponse(String nombre, String slug, String direccion, String telefonoContacto,
             String zonaHoraria, int anticipacionCancelacionMin, int anticipacionReservaMin, int horizonteReservaDias,
-            int pasoHuecosMin, boolean reservaPublicaActiva, String plan, LocalDate pruebaHasta) {
+            int pasoHuecosMin, boolean reservaPublicaActiva, String plan, LocalDate pruebaHasta, long version) {
 
         static ConfiguracionResponse de(ConfiguracionDelConsultorio configuracion) {
             DatosDelConsultorio datos = configuracion.datos();
@@ -49,7 +51,7 @@ class ControladorDeConfiguracion {
                     datos.zonaHoraria(), datos.reglas().anticipacionCancelacionMin(),
                     datos.reglas().anticipacionReservaMin(), datos.reglas().horizonteReservaDias(),
                     datos.reglas().pasoHuecosMin(), datos.reservaPublicaActiva(), configuracion.plan(),
-                    configuracion.pruebaHasta());
+                    configuracion.pruebaHasta(), configuracion.version());
         }
     }
 
@@ -71,6 +73,6 @@ class ControladorDeConfiguracion {
         return ConfiguracionResponse.de(edicion.editar(new EditarConfiguracion.Pedido(pedido.nombre().trim(),
                 pedido.slug().trim(), pedido.direccion(), pedido.telefonoContacto(), pedido.zonaHoraria().trim(),
                 pedido.anticipacionCancelacionMin(), pedido.anticipacionReservaMin(), pedido.horizonteReservaDias(),
-                pedido.pasoHuecosMin(), pedido.reservaPublicaActiva())));
+                pedido.pasoHuecosMin(), pedido.reservaPublicaActiva(), pedido.version())));
     }
 }

@@ -16,6 +16,7 @@ import ar.sistemaodontologico.consultorio.domain.DatosDelConsultorio;
 import ar.sistemaodontologico.consultorio.domain.Diferencias;
 import ar.sistemaodontologico.consultorio.domain.ReglasDeReserva;
 import java.util.Map;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +30,14 @@ public class EditarConfiguracion {
     public static final String ACCION = "CONSULTORIO_CONFIG_CAMBIADA";
     static final int SUGERENCIAS_DE_SLUG = 3;
 
-    /** Lo que manda el odontólogo; el teléfono todavía sin normalizar. */
+    /**
+     * Lo que manda el odontólogo; el teléfono todavía sin normalizar.
+     *
+     * @param version la versión que leyó el navegador: si otra pestaña guardó antes, es vieja (issue #59)
+     */
     public record Pedido(String nombre, String slug, String direccion, String telefonoContacto, String zonaHoraria,
             int anticipacionCancelacionMin, int anticipacionReservaMin, int horizonteReservaDias, int pasoHuecosMin,
-            boolean reservaPublicaActiva) {
+            boolean reservaPublicaActiva, long version) {
     }
 
     private final ConsultorioRepositorio consultorios;
@@ -55,6 +60,10 @@ public class EditarConfiguracion {
         ConsultorioId id = tenant.actual();
         ConfiguracionDelConsultorio actual = consultorios.buscarConfiguracion(id)
                 .orElseThrow(() -> new RecursoNoEncontrado("consultorio"));
+        if (pedido.version() != actual.version()) {
+            // Otra pestaña o dispositivo guardó después de que se leyó: 409 sin escribir ni auditar (issue #59).
+            throw new OptimisticLockingFailureException("La configuración cambió desde que se leyó");
+        }
         DatosDelConsultorio nuevos = new DatosDelConsultorio(pedido.nombre(), pedido.slug(), pedido.direccion(),
                 NormalizadorDeTelefono.normalizar(pedido.telefonoContacto()), pedido.zonaHoraria(),
                 new ReglasDeReserva(pedido.anticipacionCancelacionMin(), pedido.anticipacionReservaMin(),
@@ -67,7 +76,7 @@ public class EditarConfiguracion {
         if (!diferencias.hayCambios()) {
             return actual;
         }
-        consultorios.actualizarDatos(id, nuevos, actual.version());
+        consultorios.actualizarDatos(id, nuevos, pedido.version());
         auditoria.publicar(new CambioAuditado(id, new Actor(ActorTipo.ODONTOLOGO, sesion.usuarioId()), "consultorio",
                 id.valor(), ACCION, diferencias.anterior(), diferencias.nuevo(), sesion.ip().orElse(null)));
         return new ConfiguracionDelConsultorio(id, nuevos, actual.plan(), actual.pruebaHasta(), actual.version() + 1);

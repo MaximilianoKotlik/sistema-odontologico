@@ -100,6 +100,6 @@ Valores por defecto configurables por consultorio se indican como `(config, defa
 ## Dominio: Excepciones globales (RN-GL)
 
 - **RN-GL-01**: Los datos de pacientes (nombre, teléfono, email) no se escriben en logs de aplicación; se enmascaran.
-- **RN-GL-02**: Toda modificación concurrente sobre un turno usa optimistic locking (`version`); un conflicto responde 409 `CONFLICTO_CONCURRENCIA`.
+- **RN-GL-02**: Toda modificación concurrente sobre un turno usa optimistic locking (`version`); un conflicto responde 409 `CONFLICTO_CONCURRENCIA`. La edición de la configuración del consultorio también manda la `version` que leyó el cliente, así un guardado desde otra pestaña o dispositivo no pisa cambios sin avisar (issue #59).
 - **RN-GL-03**: Los errores se devuelven en formato RFC 7807 con un `codigo` estable que el frontend traduce a mensajes en español.
 - **RN-GL-04**: Ninguna regla de negocio se implementa solo en el frontend; el backend es la fuente de verdad y el frontend solo anticipa validaciones para UX.

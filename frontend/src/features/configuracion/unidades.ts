@@ -24,6 +24,8 @@ export interface FormularioConsultorio {
   readonly horizonteReservaDias: number;
   readonly pasoHuecosMin: number;
   readonly reservaPublicaActiva: boolean;
+  /** La versión leída del backend: va en cada guardado para detectar otra pestaña (issue #59). No se edita. */
+  readonly version: number;
 }
 
 const MINUTOS_POR_HORA = 60;
@@ -56,6 +58,7 @@ export function formularioDesdeRespuesta(respuesta: ConfiguracionResponse): Form
     horizonteReservaDias: respuesta.horizonteReservaDias ?? POR_DEFECTO.horizonte,
     pasoHuecosMin: respuesta.pasoHuecosMin ?? POR_DEFECTO.paso,
     reservaPublicaActiva: respuesta.reservaPublicaActiva ?? true,
+    version: respuesta.version ?? 0,
   };
 }
 
@@ -72,5 +75,6 @@ export function solicitudDesdeFormulario(formulario: FormularioConsultorio): Con
     horizonteReservaDias: formulario.horizonteReservaDias,
     pasoHuecosMin: formulario.pasoHuecosMin,
     reservaPublicaActiva: formulario.reservaPublicaActiva,
+    version: formulario.version,
   };
 }
