@@ -48,7 +48,7 @@ C-04 deja un login que funciona pero que **no se puede exponer en público**: no
 ## Impact
 
 - **Código**:
-  - `backend/.../auth/**`: casos de uso nuevos `SolicitarRecuperacion`, `ConfirmarRecuperacion` y `CambiarContrasena`; ajustes en `IniciarSesion` y `RegistrarOdontologo` de C-04.
+  - `backend/.../auth/**`: casos de uso nuevos `SolicitarRecuperacion`, `ConfirmarRecuperacion` y `CambiarContrasena`; ajustes en el login (`GestionDeSesion.iniciar`) y en `RegistrarOdontologo` de C-04.
   - Filtro de rate limit.
   - Adaptador SMTP.
   - Una migración nueva, numerada al hacer rebase.

@@ -210,10 +210,10 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-06, DD-15
 
 ### [C-05] `auth-recuperacion-hardening`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #29, 2026-11-20)
 - **Scope**:
   - Migración: `token_recuperacion` (hash, 30 min, un solo uso).
-  - `POST /api/v1/auth/recuperacion` (202 idéntica exista o no el email) y `confirmar-recuperacion` (400 `TOKEN_INVALIDO` si está usado o vencido; revoca todos los refresh tokens); email por SMTP (Mailpit en local).
+  - `POST /api/v1/auth/recuperacion` (202 idéntica exista o no el email) y `POST /api/v1/auth/recuperacion/confirmar` (400 `TOKEN_INVALIDO` si está usado o vencido; revoca todos los refresh tokens); email por SMTP (Mailpit en local).
   - Cambio de contraseña con sesión iniciada (US-005, RN-AU-05): `POST /api/v1/auth/cambiar-password` con la contraseña actual; valida RN-AU-01; revoca **todos** los refresh tokens e incrementa `ver` (invalida los access tokens emitidos); 400 `PASSWORD_ACTUAL_INVALIDA` / `PASSWORD_DEBIL`.
   - Bloqueo de cuenta tras 5 fallos consecutivos (423 `CUENTA_BLOQUEADA` 15 min, mensaje genérico) y rate limiting Bucket4j sobre `/api/v1/auth/**`.
   - Eventos de auditoría de auth vía el puerto de C-02 (RN-AD-04): `CUENTA_CREADA`, `LOGIN_EXITOSO`, `LOGIN_FALLIDO`, `PASSWORD_CAMBIADA`, `PASSWORD_RECUPERADA`; nunca contraseñas, hashes ni tokens (RN-AD-05).
@@ -525,6 +525,7 @@ Reglas de coordinación del paralelismo:
   - Revisión de `/seguridad` contra el código (RN-PL-06) antes del release.
   - Seed local completo para demo; README de arranque (`docker compose up --build`); textos de privacidad y términos como borrador marcado "pendiente de revisión legal" (PA-06), sin declarar cumplimiento no verificado.
   - Checklist previo al lanzamiento (PA-02 país del VPS y backups, revisión legal de DD-28, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
+  - Checklist de despliegue, IP real detrás del reverse proxy (viene de C-05): el rate limit por IP usa `getRemoteAddr()`, y detrás del proxy del VPS todos los consultorios compartirían un mismo cupo (10 logins por minuto y 5 registros por hora). Configurar `server.forward-headers-strategy` (`native` o `framework`, según el proxy) y un proxy que **reemplace** `X-Forwarded-For` en vez de concatenarlo, y verificar con un test de humo que dos IPs distintas tengan cupos separados. Detalle en `backend/README.md`.
 - **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
 - **Leer antes**:
