@@ -1,6 +1,8 @@
 # Design
 
-> Governance **CRITICO** (RN-AU-06): no se escribe código de producción sin aprobación explícita de Maxi. Las decisiones de seguridad (D3 a D7) están marcadas para revisar.
+> Governance **CRITICO** (RN-AU-06): no se escribe código de producción sin aprobación explícita de Maxi. Las decisiones de seguridad (D3 a D7, D9 y D11) están marcadas para revisar.
+>
+> **Segunda versión** (revisión de Maxi en #37, 2026-11-21): suma D11 (cierre de sesión entre pestañas), acota D3 a la navegación dentro de la app (opción a), arma el DOM en D9, valida `volver` después de normalizar en D5, saca el timeout del refresh en D6 y suma a Risks el límite de los access tokens ya emitidos.
 
 ## Context
 
@@ -57,7 +59,7 @@ Las decisiones técnicas de C-07:
   - `errores.ts`: código → mensaje y campo, incluido el cálculo de espera desde `Retry-After`;
   - `sesion.ts`: arranque, guardas y destino después del login;
   - `volver.ts`: saneamiento del destino;
-  - `coordinacion.ts`: refresh entre pestañas;
+  - `coordinacion.ts`: refresh serializado (D6) y cierre de sesión entre pestañas (D11);
   - vistas de login, registro, recuperar, recuperar-confirmar y cambiar-contraseña con DOM vanilla y `ui/` de C-06.
 - `pages/`: una página por ruta pública más `/app/cuenta/contrasena`.
 - La lógica sensible está en funciones puras con tests propios. Las vistas se prueban con jsdom en los flujos clave.
@@ -71,7 +73,11 @@ Las decisiones técnicas de C-07:
 - Al cargar una ruta privada sin token en memoria, se muestra el splash "Abriendo tu agenda…" (`aria-busy`) y se llama una vez a `renovarSesion()` de C-06.
   - Con éxito: se monta el shell en la ruta pedida.
   - Con 401: va a `/login?volver=…` sin aviso. Es el caso normal de alguien que no tiene sesión, no un error.
-- En una ruta pública, no se intenta el refresh: solo se verifica si hay sesión para redirigir desde `/login` y `/registro` (spec "Usuario con sesión en rutas de ingreso").
+- En una ruta pública **no se intenta el refresh**, ni siquiera en `/login` o `/registro`:
+  - Si la pestaña ya tiene token en memoria (se llegó navegando dentro de la app), `/login` y `/registro` llevan a `/app` (spec "Usuario con sesión en rutas de ingreso").
+  - Si se abren con una carga completa (link, marcador o recarga), no hay token en memoria y se muestra el formulario. No se sabe si hay cookie de refresh y no se pregunta al backend.
+  - Si en ese caso el odontólogo tenía sesión y vuelve a ingresar, el backend emite un refresh nuevo y el anterior sigue valiendo hasta que vence (C-04 admite varias sesiones). No se pierde nada ni se revoca nada.
+- *Alternativa*: refresh silencioso en `/login` y `/registro` antes de pintar el formulario → descartada (revisión de Maxi en #37): suma una llamada al backend en cada visita y demora el formulario para el caso común, que es alguien sin sesión.
 - *Alternativa*: guardar una marca "tuvo sesión" en `localStorage` para no intentar el refresh sin sesión → descartada, porque deja una huella de uso en el dispositivo y el refresh sin cookie igual responde 401 rápido.
 
 ### D4 — Access token y contraseñas solo en memoria · **para revisar**
@@ -81,13 +87,18 @@ Las decisiones técnicas de C-07:
 - **Test de no-persistencia**: un test recorre login, registro con login automático, refresh y cambio de contraseña con espías sobre `Storage.prototype.setItem`, `indexedDB.open`, `document.cookie`, `history.pushState` y `history.replaceState`, y falla si alguno recibe el token o una contraseña.
 
 ### D5 — Destino después del login (`volver`) · **para revisar**
-- `sanearVolver(valor)` acepta solo rutas que empiezan con `/app/` o son exactamente `/app`. Las parsea con `new URL(valor, location.origin)` y exige el mismo origen.
-- Rechaza `//dominio`, `\\`, `javascript:`, URLs absolutas y rutas públicas. Ante la duda, `/app`.
+- `sanearVolver(valor)` valida **después de normalizar**, en este orden:
+  1. Exige que `valor` empiece con `/` y lo parsea con `url = new URL(valor, location.origin)`. Si falla el parseo, `/app`.
+  2. Exige `url.origin === location.origin`. Así quedan afuera `//dominio`, `/\dominio` y `\\dominio` (el parser trata `\` como `/`), `javascript:` y cualquier URL absoluta.
+  3. Chequea `url.pathname`, ya normalizado, y no el texto original: tiene que ser exactamente `/app` o empezar con `/app/`. El parser resuelve `..` y `%2e%2e` (en mayúsculas o minúsculas), así que `/app/../login` y `/app/%2e%2e/login` quedan como `/login` y se rechazan.
+  4. Devuelve `url.pathname + url.search + url.hash` de la URL normalizada, nunca el `valor` original.
+- Rechaza también las rutas públicas y el vacío. Ante la duda, `/app`.
 - Si el destino es `/app` y el consultorio no tiene prestaciones activas, C-09 decide llevar a `/app/bienvenida`. C-07 no conoce esa regla.
 
 ### D6 — Refresh coordinado entre pestañas · **para revisar**
 - **Problema** (D4 de C-04): la cookie de refresh es una sola para todas las pestañas. Si dos pestañas renuevan a la vez con la misma cookie, la segunda presenta un refresh ya rotado y el backend revoca todas las sesiones.
 - **Solución**: `renovarSesion()` toma el lock `muelas-auth-refresh` con la **Web Locks API** (`navigator.locks.request`) antes de llamar al backend. La segunda pestaña espera, y cuando entra, el navegador ya le manda la cookie rotada, así que su refresh es válido. El refresh en vuelo dentro de una misma pestaña sigue siendo uno (C-06).
+- **El refresh no se corta por timeout**: el `fetch` de `POST /auth/refresh` no usa `AbortController` ni ningún timeout propio, y el lock se libera recién cuando la respuesta terminó (cuerpo leído y token guardado, o error de red del navegador). Si se abortara el pedido después de que el backend rotó la cookie, el navegador podría descartar el `Set-Cookie`: el próximo refresh presentaría la cookie vieja, el backend lo vería como reuso y revocaría todas las sesiones. Un refresh colgado deja esperando a las otras pestañas hasta el timeout de red del propio navegador; es preferible a perder la sesión.
 - No se comparte el access token entre pestañas: cada una tiene el suyo en memoria, así no viaja ningún secreto por mensajes.
 - **Sin Web Locks** (navegadores viejos): se mantiene el comportamiento de C-06 y el riesgo queda acotado a dos pestañas que vencen en el mismo instante. Web Locks está en Chrome, Edge, Firefox y Safari actuales.
 - *Alternativa*: `BroadcastChannel` para que una pestaña renueve y reparta el token → descartada, porque haría viajar el access token entre contextos.
@@ -117,9 +128,12 @@ Las decisiones técnicas de C-07:
 - El Markdown se importa en el build (`?raw` de Vite) y se convierte con un conversor mínimo propio, sin dependencias nuevas, para el subconjunto que usan esos archivos:
   - títulos, párrafos, listas con viñetas y numeradas, énfasis y citas (el aviso de borrador);
   - tablas (la política de privacidad tiene 3).
-- Los links relativos al repo (por ejemplo, a `knowledge-base/`) se muestran como texto, sin link, porque esas rutas no existen en la app publicada.
+- **El conversor arma el DOM, no HTML**: crea cada nodo con `document.createElement` y pone el texto con `textContent` (o `document.createTextNode`). No arma strings de HTML ni usa `innerHTML`, `outerHTML`, `insertAdjacentHTML` ni `DOMParser`. Así un `<script>` o un `<img onerror>` escrito en el Markdown termina como texto visible, y la seguridad no depende de que el conversor escape bien.
+- **Links**:
+  - Los absolutos se parsean con `new URL(...)` y se aceptan solo con protocolo `https:` o `mailto:`. Cualquier otro (`javascript:`, `data:`, `http:`, etc.) se muestra como texto, sin link.
+  - Los relativos al repo (por ejemplo, a `knowledge-base/`) se muestran como texto, sin link, porque esas rutas no existen en la app publicada.
+  - Los aceptados se crean con `setAttribute('href', url.href)`; los `https:` llevan `rel="noopener noreferrer"`.
 - Los marcadores `[COMPLETAR …]` del borrador se muestran tal cual: son parte de lo que falta revisar.
-- El conversor escapa todo el HTML del texto, así un Markdown no puede inyectar marcado.
 - *Alternativas*:
   - copiarlos a mano como HTML → dos fuentes que mantener;
   - sumar una librería de Markdown → dependencia nueva para dos páginas.
@@ -132,9 +146,22 @@ Las decisiones técnicas de C-07:
 - Mostrar u ocultar la contraseña es un botón con `aria-pressed`.
 - El splash usa `aria-busy` y el spinner queda quieto con `prefers-reduced-motion`.
 
+### D11 — Cierre de sesión entre pestañas · **para revisar**
+- **Problema**: si se cierra la sesión o se cambia la contraseña en una pestaña, las demás siguen mostrando la agenda y operando con su access token hasta que vence (15 minutos). Va contra el goal "nunca ver contenido privado sin sesión" (decisión de Maxi en #37).
+- **Solución**: `coordinacion.ts` abre un `BroadcastChannel('muelas-auth')`.
+  - Al cerrar sesión (logout, aunque falle por red) o al terminar un cambio de contraseña con 204, la pestaña publica `{ tipo: 'sesion-cerrada', motivo }`, con `motivo` de un conjunto cerrado: `'logout'` o `'contrasena-cambiada'`. **Nunca** viaja el token, el email ni otro dato del usuario: el motivo solo elige el aviso.
+  - Al recibirlo, cada pestaña borra su token de memoria, desmonta el shell, borra la caché `agenda-v1` y va a `/login` con el aviso que corresponde ("Cerraste sesión" o "Cambiamos tu contraseña"), igual que la pestaña que lo originó. No llama a `/auth/logout`: la cookie ya no sirve.
+  - Una pestaña en una ruta pública solo borra el token si lo tuviera y se queda donde está.
+  - El mensaje entra como `unknown` y pasa por un type guard. Cualquier otro formato se ignora.
+- **Sin `BroadcastChannel`**: se mantiene el comportamiento de hoy. Las otras pestañas se enteran recién cuando su access token vence y el refresh responde 401.
+- *Alternativa*: evento `storage` de `localStorage` → descartada, porque deja una huella en el dispositivo (D3) y `BroadcastChannel` está en todos los navegadores actuales.
+
 ## Risks / Trade-offs
 
+- [Los access token ya emitidos siguen valiendo después de cambiar la contraseña] → `cambiar-password` revoca los refresh (C-05), pero un access token emitido antes sigue siendo válido hasta 15 minutos en otros dispositivos. D11 lo resuelve solo para otras pestañas del mismo navegador. Es un límite conocido de v1 del backend (C-05), no de esta propuesta.
+- [`BroadcastChannel` no disponible] → las otras pestañas siguen mostrando contenido hasta 15 minutos después de cerrar sesión, como sin D11.
 - [Web Locks no disponible en un navegador viejo] → vuelve el riesgo de D4 de C-04 solo en ese caso. El costo es un login nuevo, no una fuga.
+- [Un refresh colgado bloquea a las otras pestañas] → esperan hasta el timeout de red del navegador (D6). Se acepta para no perder la cookie rotada.
 - [El login automático guarda la contraseña unos milisegundos en memoria] → es la misma memoria del formulario que ya la tenía, y se descarta apenas termina (D4).
 - [Las pantallas de términos y privacidad muestran un borrador] → visible como tal (DD-28). El registro no se publica con datos reales sin la revisión legal.
 - [Cambios en archivos de C-06 (router, http, shell, app)] → acotados a lo que nombra la propuesta, con los tests existentes de C-06 en verde.

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Cómo entra y sale el odontólogo de la app: login, guardas de las rutas privadas, restauración de la sesión al recargar, vuelta a la ruta pedida, cierre de sesión y coordinación del refresh entre pestañas (US-002, FL-01, RN-AU-02, RN-AU-03).
+Cómo entra y sale el odontólogo de la app: login, guardas de las rutas privadas, restauración de la sesión al recargar, vuelta a la ruta pedida, cierre de sesión (también en las otras pestañas) y coordinación del refresh entre pestañas (US-002, FL-01, RN-AU-02, RN-AU-03).
 
 ## ADDED Requirements
 
@@ -36,6 +36,10 @@ Después del login, la app SHALL volver a la ruta de `volver` solo si es una rut
 #### Scenario: Redirección abierta
 - **WHEN** el odontólogo ingresa desde `/login?volver=https://otro.example.com`
 - **THEN** la app abre `/app` y no navega a otro sitio
+
+#### Scenario: Ruta que sale de /app al normalizarse
+- **WHEN** el odontólogo ingresa desde `/login?volver=/app/%2e%2e/login` o `/login?volver=/app/../login`
+- **THEN** la app abre `/app`, porque la ruta normalizada es `/login` y no empieza con `/app/`
 
 ### Requirement: Login
 El login SHALL enviar email y contraseña a `POST /api/v1/auth/login` y, con 200, MUST guardar el access token solo en memoria (con la función de sesión de C-06, que antes borra la agenda guardada) y entrar a la app.
@@ -84,9 +88,43 @@ Sin conexión, el login SHALL avisar que necesita red y MUST deshabilitar el env
 - **THEN** llega a `/login` con "Cerraste sesión" y el botón atrás no vuelve a mostrar contenido privado
 
 ### Requirement: Usuario con sesión en rutas de ingreso
-Con una sesión válida, abrir `/login` o `/registro` SHALL llevar a `/app`.
+Al navegar dentro de la app con una sesión cargada en la pestaña (access token en memoria), ir a `/login` o `/registro` SHALL llevar a `/app`. Al abrir esas rutas con una carga completa de la página, la app MUST NOT pedir `POST /api/v1/auth/refresh` y SHALL mostrar el formulario.
 
-#### Scenario: Login con sesión
-- **GIVEN** una sesión iniciada
-- **WHEN** el odontólogo abre `/login`
+#### Scenario: Login con sesión, navegando dentro de la app
+- **GIVEN** una sesión iniciada en la pestaña
+- **WHEN** el odontólogo navega a `/login` sin recargar
 - **THEN** la app abre `/app`
+
+#### Scenario: Login abierto desde cero
+- **GIVEN** un navegador con cookie de refresh y la pestaña recién cargada en `/login`
+- **WHEN** se pinta la página
+- **THEN** se ve el formulario de login y no se hace ningún `POST /api/v1/auth/refresh`
+
+### Requirement: Aviso de sesión cerrada entre pestañas
+Cuando una pestaña cierra la sesión o termina un cambio de contraseña, la app SHALL publicarlo en un `BroadcastChannel` llamado `muelas-auth`. El mensaje MUST llevar solo el tipo `sesion-cerrada` y el motivo (`logout` o `contrasena-cambiada`), y MUST NOT llevar el token ni datos del usuario. Sin `BroadcastChannel`, la app MUST seguir funcionando sin el aviso.
+
+#### Scenario: Contenido del aviso
+- **WHEN** el odontólogo cierra sesión
+- **THEN** se publica en `muelas-auth` exactamente `{ tipo: 'sesion-cerrada', motivo: 'logout' }`, sin token ni email
+
+#### Scenario: Navegador sin BroadcastChannel
+- **GIVEN** un navegador sin `BroadcastChannel`
+- **WHEN** el odontólogo cierra sesión
+- **THEN** la pestaña llega a `/login` con "Cerraste sesión" sin errores en la consola
+
+### Requirement: Cierre de sesión en todas las pestañas
+Cada pestaña que recibe el aviso `sesion-cerrada` SHALL borrar su token de memoria, desmontar el shell, borrar la caché `agenda-v1` e ir a `/login` con el aviso de su motivo.
+
+#### Scenario: Cerrar sesión con dos pestañas abiertas
+- **GIVEN** la agenda abierta en dos pestañas
+- **WHEN** el odontólogo toca "Cerrar sesión" en una
+- **THEN** la otra pestaña deja de mostrar la agenda y llega a `/login` con "Cerraste sesión"
+
+#### Scenario: Cambiar la contraseña con dos pestañas abiertas
+- **GIVEN** la agenda abierta en una pestaña y `/app/cuenta/contrasena` en otra
+- **WHEN** el cambio de contraseña responde 204
+- **THEN** las dos pestañas llegan a `/login` con "Cambiamos tu contraseña"
+
+#### Scenario: Mensaje con otro formato
+- **WHEN** llega por `muelas-auth` un mensaje que no es `{ tipo: 'sesion-cerrada', motivo }` con un motivo conocido
+- **THEN** la pestaña lo ignora y sigue con su sesión
