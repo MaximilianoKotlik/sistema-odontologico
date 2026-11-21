@@ -84,3 +84,7 @@ app:
     reserva: { capacidad: 10, periodo: 1h }
     consulta: { capacidad: 60, periodo: 1m }
     token: { capacidad: 10, periodo: 1h }
+  # Tarea diaria que pasa a VENCIDO las pruebas terminadas (C-20, FL-07, design D2). "-" la desactiva.
+  plan:
+    vencimiento:
+      cron: ${PLAN_VENCIMIENTO_CRON:0 0 3 * * *}

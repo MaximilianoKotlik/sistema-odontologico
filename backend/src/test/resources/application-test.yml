@@ -26,6 +26,11 @@ app:
     consulta: { capacidad: 100000, periodo: 1m }
     token: { capacidad: 100000, periodo: 1h }
 
+  # Tarea diaria de vencimiento (C-20, design D2): desactivada; los tests llaman a VencerPruebas con el RelojDePrueba.
+  plan:
+    vencimiento:
+      cron: "-"
+
 logging:
   level:
     org.testcontainers: WARN

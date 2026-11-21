@@ -14,10 +14,10 @@
 
 ## 2. Vencimiento y activación
 
-- [ ] 2.1 `VencerPruebas` (D2): pasa a `VENCIDO` y audita `PLAN_VENCIDO` con actor `SISTEMA`. Tests: corrida repetida, dos corridas a la vez con un solo evento, y que no toca pruebas vigentes ni `ACTIVO`. Si falla la auditoría, el plan no cambia (verificación: escenarios de "Vencimiento diario de las pruebas")
-- [ ] 2.2 `TareaDeVencimiento` con el cron y la zona configurables, desactivada en `test`, y `@EnableScheduling` (verificación: test de que el bean existe con el cron por defecto)
-- [ ] 2.3 `ActivarPlan` y el runner del perfil `operacion` (D3), con el runbook en `backend/README.md`. Tests: desde `PRUEBA` y desde `VENCIDO`, ya activo sin evento, inexistente falla (verificación: escenarios de "Pase manual a ACTIVO")
-- [ ] 2.4 Ninguna ruta HTTP cambia el plan: `PUT /api/v1/consultorio` con `plan` en el cuerpo lo ignora (verificación: escenario "Ninguna ruta HTTP activa el plan")
+- [x] 2.1 `VencerPruebas` (D2): pasa a `VENCIDO` y audita `PLAN_VENCIDO` con actor `SISTEMA`. Tests: corrida repetida, dos corridas a la vez con un solo evento, y que no toca pruebas vigentes ni `ACTIVO`. Si falla la auditoría, el plan no cambia (verificación: escenarios de "Vencimiento diario de las pruebas")
+- [x] 2.2 `TareaDeVencimiento` con el cron y la zona configurables, desactivada en `test`, y `@EnableScheduling` (verificación: test de que el bean existe con el cron por defecto)
+- [x] 2.3 `ActivarPlan` y el runner del perfil `operacion` (D3), con el runbook en `backend/README.md`. Tests: desde `PRUEBA` y desde `VENCIDO`, ya activo sin evento, inexistente falla (verificación: escenarios de "Pase manual a ACTIVO")
+- [x] 2.4 Ninguna ruta HTTP cambia el plan: `PUT /api/v1/consultorio` con `plan` en el cuerpo lo ignora (verificación: escenario "Ninguna ruta HTTP activa el plan")
 
 ## 3. Solo lectura
 
