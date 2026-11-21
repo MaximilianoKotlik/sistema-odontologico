@@ -79,12 +79,13 @@ LIMIT :tamano + 1
   - turnos: `TURNO_CREADO`, `TURNO_REPROGRAMADO`, `TURNO_ESTADO_CAMBIADO`, `TURNO_DURACION_CAMBIADA` y `TURNO_NOTA_CAMBIADA`;
   - bloqueos: `BLOQUEO_CREADO` y `BLOQUEO_ELIMINADO`;
   - configuración: `CONSULTORIO_CONFIG_CAMBIADA`, `PRESTACION_*` y `DISPONIBILIDAD_CAMBIADA`;
-  - pacientes: `PACIENTE_CREADO`, `PACIENTE_REQUIERE_REVISION`, `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` y `PACIENTE_REVISADO`;
+  - pacientes: `PACIENTE_CREADO`, `PACIENTE_MARCADO_PARA_REVISION`, `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` y `PACIENTE_REVISADO`;
   - accesos: `CUENTA_CREADA`, `LOGIN_EXITOSO`, `LOGIN_FALLIDO`, `PASSWORD_CAMBIADA` y `PASSWORD_RECUPERADA`;
   - exportación: `EXPORTACION_GENERADA`.
 
   Una acción sin etiqueta se muestra con su código.
-- **Valores**: `formatearCambio(clave, valor)` con etiquetas por clave (`inicio`, `fin`, `estado`, `duracion_min`, `nota_interna`, etc.).
+- **Valores**: `formatearCambio(clave, valor)` con etiquetas por clave: `inicio`, `fin`, `estado`, `duracion_min`, `nota_interna`, `es_sobreturno`, `origen`, `cancelado_por`, `requiere_revision`, `consentimiento_version` y `consentimiento_at`, entre otras (claves reales de C-11 y C-15).
+  - `paciente_id` y `tipo_prestacion_id` no se muestran: son ids internos y el contexto de la fila ya identifica el turno y el paciente.
   - Instantes en la zona del consultorio con `shared/fechas.ts`, estados con su nombre, minutos y Sí/No.
   - Para `nota_interna` se muestra el texto completo: es del odontólogo, no del paciente.
   - Una clave desconocida se muestra cruda.
@@ -125,6 +126,10 @@ Resueltas por Maxi en la revisión del PR #35 (2026-11-20):
 2. **Eventos de acceso**: se muestran junto con el resto, con el grupo "Accesos" en el filtro.
 3. **IP**: solo en los eventos de acceso (`LOGIN_*` y `PASSWORD_*`) (D6).
 4. **Contexto del turno**: alcanza con su estado actual, porque cada fila muestra el "antes → después" (D3).
+
+Pendiente de la revisión de Maxi (surgió al contrastar con C-15):
+
+5. **Actor de una reserva con un DNI ya registrado y otro nombre**: el evento lleva el `paciente_id` de la ficha, así que D3 mostraría que reservó la persona guardada, aunque quien escribió haya dado otro nombre (DD-24, DD-38). **Propuesta**: mientras el paciente tenga la revisión pendiente, mostrar "Reserva con este DNI" en los eventos de ese turno de origen (`informado_turno_id`). Si se aprueba, se ajustan D3, los specs y el mockup, que hoy no cubre este caso y requiere una nueva aprobación.
 
 Ajustes de mockup pedidos y aplicados: el actor "Sin sesión" para `LOGIN_FALLIDO` (D6) y las capturas de desktop con la barra lateral de alto completo.
 

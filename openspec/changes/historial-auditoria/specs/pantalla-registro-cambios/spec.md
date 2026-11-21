@@ -53,11 +53,16 @@ La lista SHALL cargar 50 eventos y ofrecer "Cargar más" mientras haya cursor. M
 - **THEN** ve "No hay cambios con estos filtros" y un botón "Quitar filtros"
 
 ### Requirement: Cambios legibles
-Los valores anterior y nuevo MUST mostrarse con etiquetas en español y en el formato de la UI: instantes en la zona del consultorio, estados con su nombre, duraciones en minutos y booleanos como "Sí" o "No". Un campo sin etiqueta conocida MUST mostrarse con su nombre técnico, sin romper la fila.
+Los valores anterior y nuevo MUST mostrarse con etiquetas en español y en el formato de la UI: instantes en la zona del consultorio, estados con su nombre, duraciones en minutos y booleanos como "Sí" o "No". Los ids internos `paciente_id` y `tipo_prestacion_id` MUST NOT mostrarse. Cualquier otro campo sin etiqueta conocida MUST mostrarse con su nombre técnico, sin romper la fila.
 
 #### Scenario: Cambio de estado
 - **WHEN** se muestra un `TURNO_ESTADO_CAMBIADO` de `RESERVADO` a `CANCELADO` por el paciente
 - **THEN** la fila dice "Canceló por el link" con el paciente como actor, y "Reservado → Cancelado"
+
+#### Scenario: Turno creado sin ids internos
+- **GIVEN** un `TURNO_CREADO` con `paciente_id`, `tipo_prestacion_id`, `origen` y `es_sobreturno`
+- **WHEN** se muestra
+- **THEN** la fila muestra el origen y si es sobreturno con etiquetas en español, y no muestra ningún UUID
 
 #### Scenario: Campo desconocido
 - **GIVEN** un evento con un campo `campo_nuevo` que la UI no conoce
