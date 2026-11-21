@@ -31,6 +31,13 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * Mensaje propio del 403 `PLAN_VENCIDO` (C-20, spec aviso-de-plan): reemplaza el `detail` del servidor, que es para
+ * desarrolladores y no está en el registro de la UI.
+ */
+export const MENSAJE_PLAN_VENCIDO =
+  'No se guardó: tu prueba terminó y la agenda pasó a solo lectura. No se perdió nada de lo que ya tenías.';
+
 export type Metodo = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export interface OpcionesCliente {
@@ -41,6 +48,8 @@ export interface OpcionesCliente {
   readonly alResponder?: (ruta: string, respuesta: Response) => void;
   /** Se llama cuando un pedido no llega al servidor por falta de red (navigator.onLine no es confiable). */
   readonly alFallarRed?: () => void;
+  /** Se llama cuando una escritura responde 403 `PLAN_VENCIDO`: la app vuelve a pedir el plan (C-20). No se reintenta. */
+  readonly alPlanVencido?: () => void;
   /**
    * Serializa el refresh entre pestañas (C-07, D6). Recibe la tarea completa y la corre bajo el lock; la tarea
    * termina recién con la respuesta leída, así el lock no se libera antes de guardar la cookie rotada.
@@ -197,7 +206,14 @@ export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
       }
     }
 
-    if (!respuesta.ok) throw await aApiError(respuesta);
+    if (!respuesta.ok) {
+      const error = await aApiError(respuesta);
+      if (error.status === 403 && error.codigo === 'PLAN_VENCIDO') {
+        opciones.alPlanVencido?.();
+        throw new ApiError(403, error.codigo, MENSAJE_PLAN_VENCIDO, {}, null);
+      }
+      throw error;
+    }
     opciones.alResponder?.(ruta, respuesta);
     // El tipo T lo fija quien llama a partir de api-types.ts; el cuerpo llega como JSON sin validar.
     return (await leerCuerpo(respuesta)) as T;

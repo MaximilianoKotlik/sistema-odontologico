@@ -4,6 +4,8 @@ import { crearCanalSesion, crearCoordinadorRefresh, type FabricaDeCanal, type Lo
 import { montarLayoutAuth, montarSplash } from './features/auth/layout';
 import { decidirAcceso, esRutaPrivada } from './features/auth/sesion';
 import { sanearVolver } from './features/auth/volver';
+import { crearAvisoDePlan } from './features/plan/aviso-de-plan';
+import { crearEstadoDelPlan } from './features/plan/estado-del-plan';
 import { RUTA_PLANES_PUBLICOS } from './features/precios/catalogo';
 import type { Pagina } from './pages/pagina';
 import { borrarCacheAgenda, crearConectividad, registrarSincronizacion, type EstadoConectividad } from './shared/conectividad';
@@ -105,13 +107,23 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
     coordinarRefresh: dependencias.locks === undefined ? crearCoordinadorRefresh() : crearCoordinadorRefresh(dependencias.locks),
     alVencerSesion: () => {
       sinRedAlRestaurar = false;
+      estadoDelPlan.olvidar();
       void olvidarAgendaGuardada();
       avisoPendiente = { tipo: 'sesion-vencida' };
       void routerCreado.navegar(rutaDeLogin(routerCreado.rutaActual()), { forzar: true });
     },
     alResponder: (ruta, respuesta) => registrarSincronizacion(conectividad, ruta, respuesta),
     alFallarRed: () => conectividad.set({ online: false }),
+    // C-20, D7: la prueba venció con la app abierta; se vuelve a pedir el plan y el shell pasa a solo lectura.
+    alPlanVencido: () => {
+      avisoDePlan.mostrarEscrituraRechazada();
+      void estadoDelPlan.cargar();
+    },
   });
+
+  /** Plan del consultorio (C-20): se pide al montar el shell; vive en memoria y se olvida con la sesión. */
+  const estadoDelPlan = crearEstadoDelPlan(http);
+  const avisoDePlan = crearAvisoDePlan({ estado: estadoDelPlan, zonaHoraria: () => sesion.get().zonaHoraria });
 
   /**
    * La agenda en caché tiene datos de pacientes (Ley 25.326): no sobrevive a la sesión que la vio.
@@ -123,6 +135,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
 
   async function iniciarSesion(accessToken: string): Promise<void> {
     await olvidarAgendaGuardada();
+    estadoDelPlan.olvidar();
     sinRedAlRestaurar = false;
     http.establecerToken(accessToken);
   }
@@ -130,6 +143,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
   /** Borra todo lo local de la sesión, avisa a las otras pestañas y lleva al login con el aviso del motivo. */
   async function terminarSesion(motivo: MotivoCierre): Promise<void> {
     http.borrarToken();
+    estadoDelPlan.olvidar();
     sinRedAlRestaurar = false;
     await olvidarAgendaGuardada();
     canal.publicar(motivo);
@@ -191,7 +205,13 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
       conectividad,
       zonaHoraria: () => sesion.get().zonaHoraria,
       alCerrarSesion: () => void cerrarSesion(),
+      plan: {
+        aviso: avisoDePlan.elemento,
+        soloLectura: () => estadoDelPlan.soloLectura(),
+        suscribir: (fn) => estadoDelPlan.suscribir(fn),
+      },
     });
+    if (estadoDelPlan.get() === null) void estadoDelPlan.cargar();
     shell.mostrar(pagina, { enfocar });
     pagina.montar(contextoPrivado(shell.contenido, shell.acciones, params));
     shell.sincronizarConexion();

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ApiError, crearClienteHttp, type ClienteHttp } from './http';
+import { ApiError, crearClienteHttp, MENSAJE_PLAN_VENCIDO, type ClienteHttp } from './http';
 
 type Respuesta = Response | Error;
 interface Llamada {
@@ -389,5 +389,37 @@ describe('cliente HTTP: necesidades de auth (C-07)', () => {
 
     expect(alVencerSesion).not.toHaveBeenCalled();
     expect(http.tieneToken()).toBe(false);
+  });
+});
+
+describe('cliente HTTP: 403 PLAN_VENCIDO (C-20, tarea 5.3)', () => {
+  const planVencido = () =>
+    problema(403, { codigo: 'PLAN_VENCIDO', detail: 'El plan del consultorio está vencido: la agenda está en solo lectura' });
+
+  it('muestra un mensaje propio en vez del detail, avisa y no reintenta', async () => {
+    const { falso, llamadas } = crearFetchFalso({ '/api/v1/bloqueos': [planVencido()] });
+    const alPlanVencido = vi.fn();
+    const http = crearClienteHttp({ fetch: falso, alPlanVencido });
+    http.establecerToken('token');
+
+    const error = await http.post('/api/v1/bloqueos', { inicio: 'x' }).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ status: 403, codigo: 'PLAN_VENCIDO' });
+    expect((error as ApiError).detail).toBe(MENSAJE_PLAN_VENCIDO);
+    expect((error as ApiError).detail).not.toContain('El plan del consultorio');
+    expect(alPlanVencido).toHaveBeenCalledTimes(1);
+    expect(llamadas).toHaveLength(1);
+  });
+
+  it('otro 403 no se toma como plan vencido', async () => {
+    const { falso } = crearFetchFalso({ '/api/v1/turnos': [problema(403, { codigo: 'ACCESO_DENEGADO', detail: 'No.' })] });
+    const alPlanVencido = vi.fn();
+    const http = crearClienteHttp({ fetch: falso, alPlanVencido });
+
+    const error = await http.post('/api/v1/turnos', {}).catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ codigo: 'ACCESO_DENEGADO', detail: 'No.' });
+    expect(alPlanVencido).not.toHaveBeenCalled();
   });
 });

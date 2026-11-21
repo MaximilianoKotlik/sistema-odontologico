@@ -32,10 +32,10 @@
 
 ## 5. Frontend
 
-- [ ] 5.1 `features/plan/estado-del-plan.ts`: pide `GET /api/v1/plan`, expone `soloLectura()` y notifica los cambios. Test con Vitest y la API simulada (verificación: escenarios de "Días de prueba restantes")
-- [ ] 5.2 `aviso-de-plan.ts` en el shell, según el mockup aprobado: estados de prueba, últimos 7 días, último día y vencido, con `role="status"`, tokens de rev. 1 y textos con voseo (verificación: escenarios de "Modo de solo lectura" y "Aviso accesible")
-- [ ] 5.3 El cliente API trata el 403 `PLAN_VENCIDO`: mensaje propio, vuelve a pedir el plan y no reintenta (verificación: escenario "La prueba vence con la app abierta")
-- [ ] 5.4 `npm run api:types` regenerado y commiteado (verificación: CI de frontend)
+- [x] 5.1 `features/plan/estado-del-plan.ts`: pide `GET /api/v1/plan`, expone `soloLectura()` y notifica los cambios. Test con Vitest y la API simulada (verificación: escenarios de "Días de prueba restantes")
+- [x] 5.2 `aviso-de-plan.ts` en el shell, según el mockup aprobado: estados de prueba, últimos 7 días, último día y vencido, con `role="status"`, tokens de rev. 1 y textos con voseo (verificación: escenarios de "Modo de solo lectura" y "Aviso accesible")
+- [x] 5.3 El cliente API trata el 403 `PLAN_VENCIDO`: mensaje propio, vuelve a pedir el plan y no reintenta (verificación: escenario "La prueba vence con la app abierta")
+- [x] 5.4 `npm run api:types` regenerado y commiteado (verificación: CI de frontend)
 
 ## 6. Cierre del change
 
