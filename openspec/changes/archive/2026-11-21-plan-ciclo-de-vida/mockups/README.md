@@ -1,6 +1,6 @@
 # Mockups de C-20 · `plan-ciclo-de-vida`
 
-`Approval: pending`
+`Approval: approved (2026-11-21, by Maxi), versión 1a8340b (#53)`
 
 - Design system revision: 1
 - Preview: rendered (2026-11-21). Capturas de página completa a 390×844 y 1440×900, en `previews/`. Sin desborde horizontal, sin errores de consola y con objetivos táctiles de 44 px.

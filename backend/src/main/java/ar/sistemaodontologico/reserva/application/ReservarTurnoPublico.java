@@ -71,7 +71,7 @@ public class ReservarTurnoPublico {
     public ReservaCreada reservar(String slug, PedidoDeReserva pedido, Optional<String> ip) {
         agenda.validarDatos(pedido.datos(), versionPrivacidad, publico.ahora());
         ConfiguracionDelConsultorio consultorio = publico.porSlug(slug);
-        ConsultorioPublico.exigirQueTomeTurnos(consultorio);
+        publico.exigirQueTomeTurnos(consultorio);
         TipoDePrestacion prestacion = ConsultarHuecosPublicos.prestacionOfrecida(prestaciones, consultorio,
                 pedido.prestacionId());
         try {
@@ -91,7 +91,7 @@ public class ReservarTurnoPublico {
         lock.tomar(leida.id());
         // Con el lock tomado: la configuración y la grilla son las vigentes (tarea 6.5a).
         ConfiguracionDelConsultorio consultorio = publico.porId(leida.id());
-        ConsultorioPublico.exigirQueTomeTurnos(consultorio);
+        publico.exigirQueTomeTurnos(consultorio);
         Instant ahora = publico.ahora();
         if (!publico.huecosDelDia(consultorio, prestacion.duracionMin(), pedido.inicio(), ahora, Optional.empty())
                 .contains(pedido.inicio())) {

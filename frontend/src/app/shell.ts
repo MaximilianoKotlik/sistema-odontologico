@@ -19,11 +19,20 @@ export interface EncabezadoPagina {
   readonly seccion: Seccion | 'cuenta' | null;
 }
 
+/** Estado del plan que el shell necesita (C-20): el aviso a ubicar y si las escrituras están bloqueadas. */
+export interface PlanDelShell {
+  readonly aviso: HTMLElement;
+  soloLectura(): boolean;
+  suscribir(fn: () => void): () => void;
+}
+
 export interface OpcionesShell {
   readonly marca: string;
   readonly conectividad: Store<EstadoConectividad>;
   readonly zonaHoraria: () => string;
   readonly alCerrarSesion: () => void;
+  /** Aviso de plan y modo de solo lectura (C-20); sin él, el shell no lo muestra. */
+  readonly plan?: PlanDelShell;
 }
 
 export interface Shell {
@@ -57,6 +66,19 @@ const EN_HOJA_MAS: readonly Seccion[] = ['auditoria', 'exportar'];
 const RUTA_CAMBIAR_CONTRASENA = '/app/cuenta/contrasena';
 const ID_MOTIVO_SIN_CONEXION = 'motivo-sin-conexion';
 const MOTIVO_SIN_CONEXION = 'Necesitás conexión para crear o cambiar datos.';
+/** Lo define el aviso de plan (`features/plan/aviso-de-plan.ts`); el botón deshabilitado apunta a él. */
+const ID_AVISO_SOLO_LECTURA = 'aviso-plan-solo-lectura';
+const MOTIVO_SOLO_LECTURA = 'Solo lectura: tu prueba terminó.';
+
+/** "Solo lectura" con candado junto a la acción: el estado no se indica solo con color (regla dura 12). */
+function motivoSoloLectura(): HTMLSpanElement {
+  return el(
+    'span',
+    { 'data-motivo-solo-lectura': true, 'aria-hidden': 'true', class: 'inline-flex items-center gap-1 text-xs text-texto-tenue' },
+    icono('candado', 'w-icono-sm h-icono-sm flex-none'),
+    'Solo lectura',
+  );
+}
 
 const rutaDe = (seccion: Seccion) => `/app/${seccion}`;
 const destino = (seccion: Seccion): Destino => {
@@ -242,7 +264,7 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
 
   anfitrion.replaceChildren(
     saltar,
-    el('div', { 'data-app-root': true, class: 'min-h-screen flex flex-col md:flex-row' }, lateral, el('div', { class: 'flex-1 flex flex-col min-w-0' }, barraSuperior, avisoSinConexion, contenido)),
+    el('div', { 'data-app-root': true, class: 'min-h-screen flex flex-col md:flex-row' }, lateral, el('div', { class: 'flex-1 flex flex-col min-w-0' }, barraSuperior, avisoSinConexion, ...(opciones.plan === undefined ? [] : [opciones.plan.aviso]), contenido)),
     navInferior,
     motivo,
   );
@@ -255,29 +277,44 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
       : `${ultimaSincronizacion === null ? '' : ` Mostrando tu agenda de las ${formatearHora(ultimaSincronizacion, opciones.zonaHoraria())}.`} Para crear o cambiar turnos necesitás conexión.`;
     if (textoAviso.textContent !== texto) textoAviso.textContent = texto;
 
+    const soloLectura = opciones.plan?.soloLectura() === true;
     for (const accion of document.querySelectorAll<HTMLButtonElement>('button[data-requiere-conexion]')) {
-      if (!online && !accion.disabled) {
+      const porPlan = soloLectura && accion.dataset['permitidoEnSoloLectura'] === undefined;
+      const nuestra = accion.dataset['deshabilitadoSinConexion'] !== undefined || accion.dataset['deshabilitadoPorPlan'] !== undefined;
+      // Una acción que la página deshabilitó por su cuenta no se toca.
+      if (!nuestra && accion.disabled) continue;
+      if (porPlan || !online) {
         accion.disabled = true;
-        accion.dataset['deshabilitadoSinConexion'] = '';
-        accion.setAttribute('aria-describedby', ID_MOTIVO_SIN_CONEXION);
-        accion.title = MOTIVO_SIN_CONEXION;
-      } else if (online && accion.dataset['deshabilitadoSinConexion'] !== undefined) {
+        if (online) delete accion.dataset['deshabilitadoSinConexion'];
+        else accion.dataset['deshabilitadoSinConexion'] = '';
+        if (porPlan) accion.dataset['deshabilitadoPorPlan'] = '';
+        else delete accion.dataset['deshabilitadoPorPlan'];
+        accion.setAttribute('aria-describedby', porPlan ? ID_AVISO_SOLO_LECTURA : ID_MOTIVO_SIN_CONEXION);
+        accion.title = porPlan ? MOTIVO_SOLO_LECTURA : MOTIVO_SIN_CONEXION;
+        const siguiente = accion.nextElementSibling;
+        const tieneMotivo = siguiente?.hasAttribute('data-motivo-solo-lectura') === true;
+        if (porPlan && !tieneMotivo) accion.after(motivoSoloLectura());
+        if (!porPlan && tieneMotivo) siguiente?.remove();
+      } else if (nuestra) {
         accion.disabled = false;
         delete accion.dataset['deshabilitadoSinConexion'];
+        delete accion.dataset['deshabilitadoPorPlan'];
         accion.removeAttribute('aria-describedby');
         accion.removeAttribute('title');
+        if (accion.nextElementSibling?.hasAttribute('data-motivo-solo-lectura') === true) accion.nextElementSibling.remove();
       }
     }
   }
 
   const desuscribir = conectividad.suscribir(sincronizarConexion);
+  const desuscribirPlan = opciones.plan?.suscribir(sincronizarConexion) ?? (() => undefined);
   // Acciones que una página agrega mientras no hay conexión también quedan deshabilitadas.
   // Solo reacciona a nodos AGREGADOS que traen acciones de escritura: así sus propios cambios
   // (texto del aviso, atributos) no vuelven a dispararlo.
   const traeAcciones = (nodo: Node) =>
     nodo instanceof Element && (nodo.matches('button[data-requiere-conexion]') || nodo.querySelector('button[data-requiere-conexion]') !== null);
   const observador = new MutationObserver((registros) => {
-    if (conectividad.get().online) return;
+    if (conectividad.get().online && opciones.plan?.soloLectura() !== true) return;
     if (registros.some((r) => [...r.addedNodes].some(traeAcciones))) sincronizarConexion();
   });
   observador.observe(document.body, { childList: true, subtree: true });
@@ -301,6 +338,7 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
     sincronizarConexion,
     destruir() {
       desuscribir();
+      desuscribirPlan();
       observador.disconnect();
       hojaMas.cerrar();
     },

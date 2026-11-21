@@ -259,3 +259,95 @@ describe('shell: sin conexión', () => {
     expect(nuevo.hasAttribute('aria-describedby')).toBe(false);
   });
 });
+
+describe('shell: plan en solo lectura (C-20, tarea 5.2)', () => {
+  function prepararConPlan(soloLectura: boolean) {
+    document.body.innerHTML = '<div id="app"></div>';
+    const anfitrion = document.querySelector<HTMLElement>('#app');
+    if (anfitrion === null) throw new Error('falta #app');
+    const conectividad = crearStore<EstadoConectividad>({ online: true, ultimaSincronizacion: null });
+    const estado = crearStore({ soloLectura });
+    const aviso = document.createElement('div');
+    aviso.dataset['regionPlan'] = '';
+    const shell = montarShell(anfitrion, {
+      marca: 'Turnos Odonto (TBD)',
+      conectividad,
+      zonaHoraria: () => ZONA,
+      alCerrarSesion: vi.fn(),
+      plan: { aviso, soloLectura: () => estado.get().soloLectura, suscribir: (fn) => estado.suscribir(() => fn()) },
+    });
+    montados.push(shell);
+    return { shell, estado, conectividad, aviso };
+  }
+
+  it('el aviso de plan va debajo del encabezado y arriba del contenido', () => {
+    const { shell, aviso } = prepararConPlan(false);
+
+    expect(aviso.parentElement).toBe(shell.contenido.parentElement);
+    expect(aviso.nextElementSibling).toBe(shell.contenido);
+  });
+
+  it('en solo lectura las escrituras se deshabilitan con candado y "Solo lectura" escrito', () => {
+    const { shell } = prepararConPlan(true);
+    const nuevo = boton({ texto: 'Nuevo turno', requiereConexion: true });
+
+    shell.acciones.append(nuevo);
+    shell.sincronizarConexion();
+
+    expect(nuevo.disabled).toBe(true);
+    expect(nuevo.getAttribute('aria-describedby')).toBe('aviso-plan-solo-lectura');
+    const motivo = nuevo.nextElementSibling;
+    expect(motivo?.hasAttribute('data-motivo-solo-lectura')).toBe(true);
+    expect(motivo?.textContent).toContain('Solo lectura');
+    expect(motivo?.querySelector('svg')).not.toBeNull();
+  });
+
+  it('una acción permitida en solo lectura (exportar) sigue habilitada', () => {
+    const { shell } = prepararConPlan(true);
+    const exportar = boton({ texto: 'Exportar', requiereConexion: true });
+    exportar.dataset['permitidoEnSoloLectura'] = '';
+
+    shell.contenido.append(exportar);
+    shell.sincronizarConexion();
+
+    expect(exportar.disabled).toBe(false);
+  });
+
+  it('al pasar a solo lectura con la app abierta se deshabilitan sin recargar, y al activarse vuelven', () => {
+    const { shell, estado } = prepararConPlan(false);
+    const nuevo = boton({ texto: 'Nuevo turno', requiereConexion: true });
+    shell.acciones.append(nuevo);
+    shell.sincronizarConexion();
+    expect(nuevo.disabled).toBe(false);
+
+    estado.set({ soloLectura: true });
+    expect(nuevo.disabled).toBe(true);
+
+    estado.set({ soloLectura: false });
+    expect(nuevo.disabled).toBe(false);
+    expect(nuevo.hasAttribute('aria-describedby')).toBe(false);
+    expect(document.querySelector('[data-motivo-solo-lectura]')).toBeNull();
+  });
+
+  it('sin conexión y en solo lectura: al volver la red sigue deshabilitada por el plan', () => {
+    const { shell, conectividad } = prepararConPlan(true);
+    const nuevo = boton({ texto: 'Nuevo turno', requiereConexion: true });
+    shell.acciones.append(nuevo);
+    conectividad.set({ online: false });
+
+    conectividad.set({ online: true });
+
+    expect(nuevo.disabled).toBe(true);
+    expect(nuevo.getAttribute('aria-describedby')).toBe('aviso-plan-solo-lectura');
+  });
+
+  it('una acción agregada en solo lectura se deshabilita sola (observador del DOM)', async () => {
+    const { shell } = prepararConPlan(true);
+    const nuevo = boton({ texto: 'Guardar', requiereConexion: true });
+
+    shell.contenido.append(nuevo);
+    await Promise.resolve();
+
+    expect(nuevo.disabled).toBe(true);
+  });
+});
