@@ -267,7 +267,7 @@
 - el cambio que la puso ya está auditado (`TURNO_CREADO`, `TURNO_REPROGRAMADO` o `TURNO_ESTADO_CAMBIADO` con actor `PACIENTE`, C-15 D14);
 - ninguna otra columna de `turno` cambia sin evento.
 
-**Carrera**: el visto indica qué novedad vio (`novedadAt`) y solo borra esa o una anterior (`… AND novedad_paciente_at <= :novedadAt`). Una reprogramación del paciente que llega mientras tanto no se pierde.
+**Carrera**: el visto indica qué novedad vio (`novedadAt`) y solo borra esa o una anterior (`… AND novedad_paciente_at <= :novedadAt`). Una reprogramación del paciente que llega mientras tanto no se pierde. La comparación trunca la columna a milisegundos (`date_trunc('milliseconds', novedad_paciente_at)`): Postgres guarda microsegundos y un cliente que pasa el valor por `Date` lo devuelve truncado (nota de Maxi en la aprobación de #39).
 **Contexto**: auditar cada apertura de un turno llenaría el registro de eventos sin valor para el odontólogo ni para la exportación (C-19), y la auditoría del cambio del paciente ya cuenta qué pasó y cuándo.
 **Alternativas consideradas**: un evento `TURNO_NOVEDAD_VISTA` con `{novedad_paciente_at}` anterior y nuevo (más ruido en el historial de C-18 sin información nueva).
 
