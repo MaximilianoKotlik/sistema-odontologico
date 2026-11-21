@@ -64,8 +64,10 @@
 - **Columnas por lista blanca**: cada entidad tiene un `ExportadorDe{Entidad}` que declara explícitamente sus columnas. Nunca `SELECT *`: una columna nueva con un secreto no entra sola.
   - `odontologo`: email, nombre, apellido, matrícula, términos aceptados (versión y fecha) y `created_at`. **Sin** `password_hash`, `intentos_fallidos`, `bloqueado_hasta` ni `credenciales_version`.
   - `consultorio`: todo lo configurable, más `plan` y `prueba_hasta`.
-  - `turnos`: incluye `nota_interna` y los datos de cancelación. Son del odontólogo. **Sin** `novedad_paciente_at`: C-12 la define como marca de lectura de la interfaz, no como dato del turno.
-  - `pacientes` (**pendiente de aprobación de Maxi**, ver §Open Questions 7): nombre, apellido, DNI, teléfono, email, origen, `requiere_revision`, `consentimiento_at`, `consentimiento_version`, `created_at` y las cinco columnas de lo informado de DD-38 (`nombre_informado`, `apellido_informado`, `email_informado`, `informado_at` e `informado_turno_id`). Lo informado llega de un formulario anónimo, así que pasa por el escape de D5.
+  - `prestaciones` y `bloqueos`: incluyen su `id`.
+  - `turnos`: incluye `id`, `paciente_id`, `tipo_prestacion_id`, `nota_interna` y los datos de cancelación. Son del odontólogo. **Sin** `novedad_paciente_at`: C-12 la define como marca de lectura de la interfaz, no como dato del turno.
+  - `pacientes` (aprobado por Maxi, §Open Questions 7): `id`, nombre, apellido, DNI, teléfono, email, origen, `requiere_revision`, `consentimiento_at`, `consentimiento_version`, `created_at` y las cinco columnas de lo informado de DD-38 (`nombre_informado`, `apellido_informado`, `email_informado`, `informado_at` e `informado_turno_id`). Lo informado llega de un formulario anónimo, así que pasa por el escape de D5.
+  - **Ids para relacionar las entidades**: `turnos.paciente_id` apunta a `pacientes.id`, `turnos.tipo_prestacion_id` a `prestaciones.id` y `pacientes.informado_turno_id` a `turnos.id`. Son UUID internos del propio consultorio y no son datos sensibles por sí mismos.
   - `auditoria`: `valor_anterior` y `valor_nuevo` como objetos JSON en el `.json`, y como texto JSON en el `.csv`.
   - **Tablas excluidas** (RN-EX-02): `refresh_token`, `token_recuperacion` y `token_gestion_turno`.
 - **Formato**:
@@ -155,9 +157,9 @@ Resueltas por Maxi en la revisión del PR #32 (2026-11-20):
 5. **Mockup**: se usa el de este PR (versión `45847c9`), aprobado con sus 6 decisiones y sin "última exportación".
 6. **Correcciones de documentación**: en el commit de cierre.
 
-Pendiente de la revisión de Maxi (surgió al contrastar con C-15):
+Resuelta por Maxi en la revisión del PR #52 (2026-11-21):
 
-7. **Columnas de `pacientes`** (D3): se propone incluir el consentimiento y `requiere_revision`, que son evidencia legal y estado del paciente, y también lo informado (DD-38), porque RN-EX-01 pide una exportación completa y esos datos existen mientras la revisión está pendiente. *Alternativa*: excluir lo informado por minimización (Ley 25.326), con el costo de que el odontólogo no se lleve una revisión sin resolver.
+7. **Columnas de `pacientes`** (D3): se incluyen el consentimiento, `requiere_revision` y las cinco columnas de lo informado (DD-38). RN-EX-01 pide una exportación completa y el odontólogo es el responsable de esos datos: la minimización de la Ley 25.326 limita lo que se recolecta, no lo que se le entrega al propio responsable. Lo informado pasa por el escape de D5. En la misma revisión se pidió exportar los ids que relacionan las entidades (D3).
 
 Cambio pedido y aplicado: el pedido de exportación (consultorio, usuario e IP) se arma en el hilo de la petición, porque el streaming corre en otro hilo (D2, D7 y D8).
 

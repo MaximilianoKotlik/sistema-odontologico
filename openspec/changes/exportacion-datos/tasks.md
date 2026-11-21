@@ -3,7 +3,7 @@
 > Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que se cumplan tres condiciones:
 > - C-09 y C-15 están `[x]`.
 > - Maxi aprobó esta propuesta (ALTO), incluidas las dependencias nuevas (design D6).
-> - Las preguntas de design §Open Questions están respondidas, incluida la 7 (columnas de `pacientes`).
+> - Las preguntas de design §Open Questions están respondidas.
 >
 > El frontend (grupo 8) usa el **mockup aprobado** de `/app/exportar` (versión `45847c9`).
 >
@@ -23,7 +23,7 @@
 
 ## 3. Lectores por entidad con lista blanca
 
-- [ ] 3.1 Un `ExportadorDe{Entidad}` por cada una de las 8 entidades, con columnas explícitas, filtro por `ConsultorioId` y lectura por streaming (verificación: test de integración por entidad con dos consultorios, en el que B no aparece; regla `repositoriosSiempreConTenant` en verde)
+- [ ] 3.1 Un `ExportadorDe{Entidad}` por cada una de las 8 entidades, con columnas explícitas, filtro por `ConsultorioId` y lectura por streaming (verificación: test de integración por entidad con dos consultorios, en el que B no aparece; escenario "Turno relacionado con su paciente"; regla `repositoriosSiempreConTenant` en verde)
 - [ ] 3.2 Test de arquitectura: ningún exportador lee `refresh_token`, `token_recuperacion` ni `token_gestion_turno`, y ninguna lista blanca contiene `password_hash` ni `token_hash` (verificación: test que inspecciona las listas declaradas)
 
 ## 4. PDF
