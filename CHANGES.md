@@ -297,7 +297,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 3 — Agenda del odontólogo
 
 ### [C-10] `agenda-esquema-dominio`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #18, 2026-11-21)
 - **Scope**:
   - Migración: `paciente` (único `(consultorio_id, dni)` por DD-24, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
   - Dominio puro (sin Spring/JPA): entidades y value objects (`Intervalo` semiabierto, `Duracion` múltiplo de 5), `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento`, `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), derivación `fin = inicio + duracion_min` (RN-AG-12), reglas de bloqueo (rechazo con lista de conflictos), invariantes de sobreturno.

@@ -87,9 +87,9 @@
 
 ## 7. Cierre del change
 
-- [ ] 7.1 `./gradlew test` completo en verde, `ArchitectureTest` en verde y cobertura ≥ 80 % en `agenda.domain` (verificación: CI del PR)
+- [x] 7.1 `./gradlew test` completo en verde, `ArchitectureTest` en verde y cobertura ≥ 80 % en `agenda.domain` (verificación: CI del PR)
 - [x] 7.2 Actualizar `knowledge-base/04_modelo_de_datos.md` §Turno con el nombre `ex_turno_sin_solapamiento` y los CHECKs agregados, y dejar en el "Leer antes" de C-11 en `CHANGES.md` el requisito de serializar las escrituras de agenda por consultorio (design, Risks) (verificación: diff de 04 y de CHANGES.md en el PR)
-- [ ] 7.3 PR listo con la evidencia y la revisión de Maxi. Avisar a Mati, que en C-15 usa la `CalculadoraDeHuecos`, la clave de `paciente` por DNI y `datosDifierenDe` (verificación: PR con revisor asignado)
+- [x] 7.3 PR listo con la evidencia y la revisión de Maxi. Avisar a Mati, que en C-15 usa la `CalculadoraDeHuecos`, la clave de `paciente` por DNI y `datosDifierenDe` (verificación: PR con revisor asignado)
 
 ## Workflow follow-up
 
