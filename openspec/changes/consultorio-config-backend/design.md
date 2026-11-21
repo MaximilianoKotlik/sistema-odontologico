@@ -54,7 +54,8 @@
   - `date + time` es inmutable, así que sirve en una restricción.
   - `btree_gist` (V1) da el `=` sobre `uuid` y `smallint`.
   - La fecha ancla da igual porque solo se comparan horas del mismo día.
-  - Se suma al mapa de constraints del manejador → 400 `FRANJAS_SOLAPADAS`, para el caso de una carrera.
+  - Se suma al mapa de constraints del manejador → 400 `FRANJAS_SOLAPADAS`, por si algo inserta franjas sin pasar por el reemplazo.
+- **Reemplazos concurrentes** (revisión de Maxi en #15): el caso de uso bloquea la fila del consultorio (`SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`) antes de leer la grilla anterior. Sin el bloqueo, el `DELETE` de una transacción no veía las filas que la otra todavía no había confirmado, y dos grillas que no se solapan quedaban sumadas. Con el bloqueo, el segundo guardado espera al primero y lo reemplaza, y su evento de auditoría compara contra lo que realmente quedó (`DisponibilidadConcurrenteTest`).
 - **Validez**: `CHECK (dia_semana BETWEEN 1 AND 7)`, `CHECK (hora_fin > hora_inicio)` y `CHECK` de minutos múltiplos de 5 en la base, más `FRANJA_INVALIDA` en la aplicación. La regla de 5 min extiende RN-AG-08 a las franjas: si no, una franja podría empezar a las 09:03 y ningún turno alineado a 5 min encajaría en su borde.
 
 ### D6 — Errores de negocio con propiedades extra
@@ -98,7 +99,7 @@
 - Depende de las tablas de C-04 (`usuario`), que es dependencia de este change.
 
 ### D12 — Migración
-- `V4__prestaciones_y_disponibilidad.sql` (V2 es la auditoría de C-03 y V3 la de C-04). Si C-05 entra antes, se renumera al siguiente libre.
+- `V5__prestaciones_y_disponibilidad.sql`: V2 es la auditoría de C-03, V3 la de C-04 y V4 la de C-05 (#29, mergeado antes que este PR).
 - Convención de `CONVENCIONES.md`: `consultorio_id` con FK, `UNIQUE (consultorio_id, id)`, índices que empiezan por `consultorio_id` y constraints con nombre.
 - **Permisos**: `REVOKE DELETE` solo en `tipo_prestacion`. `disponibilidad` conserva `DELETE`, porque el reemplazo completo lo necesita y la tabla es de configuración auditada.
 

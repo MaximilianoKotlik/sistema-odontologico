@@ -36,7 +36,17 @@ class DisponibilidadRepositorioJdbc implements DisponibilidadRepositorio {
     }
 
     @Override
+    public void bloquear(ConsultorioId consultorio) {
+        jdbc.sql("SELECT 1 FROM consultorio WHERE id = :consultorio FOR UPDATE")
+                .param("consultorio", consultorio.valor())
+                .query(Integer.class)
+                .list();
+    }
+
+    @Override
     public void reemplazar(ConsultorioId consultorio, GrillaSemanal grilla) {
+        // Ya bloqueada si el caso de uso llamó a bloquear(); en la misma transacción, repetirlo no espera.
+        bloquear(consultorio);
         jdbc.sql("DELETE FROM disponibilidad WHERE consultorio_id = :consultorio")
                 .param("consultorio", consultorio.valor())
                 .update();

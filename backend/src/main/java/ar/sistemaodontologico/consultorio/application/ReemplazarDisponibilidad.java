@@ -47,6 +47,8 @@ public class ReemplazarDisponibilidad {
     public GrillaSemanal reemplazar(List<Franja> franjas) {
         ConsultorioId consultorio = tenant.actual();
         GrillaSemanal nueva = new GrillaSemanal(franjas);
+        // Antes de leer la anterior: si otra pestaña guarda a la vez, esta espera y compara contra lo que quedó.
+        disponibilidad.bloquear(consultorio);
         GrillaSemanal anterior = disponibilidad.consultar(consultorio);
         if (nueva.equals(anterior)) {
             return anterior;
