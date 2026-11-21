@@ -4,6 +4,7 @@ import ar.sistemaodontologico.compartido.domain.ConsultorioId;
 import ar.sistemaodontologico.consultorio.domain.ConfiguracionDelConsultorio;
 import ar.sistemaodontologico.consultorio.domain.DatosDelConsultorio;
 import ar.sistemaodontologico.consultorio.domain.NuevoConsultorio;
+import java.time.LocalDate;
 import java.util.Optional;
 
 /**
@@ -24,4 +25,10 @@ public interface ConsultorioRepositorio extends SlugsEnUso {
      * {@code OptimisticLockingFailureException} (409 {@code CONFLICTO_CONCURRENCIA}, RN-GL-02).
      */
     void actualizarDatos(ConsultorioId id, DatosDelConsultorio datos, long versionLeida);
+
+    /** Lo que hace falta para el estado efectivo del plan (C-20, design D1): una lectura por la clave primaria. */
+    record PlanGuardado(String plan, LocalDate pruebaHasta, String zonaHoraria) {
+    }
+
+    Optional<PlanGuardado> buscarPlan(ConsultorioId id);
 }

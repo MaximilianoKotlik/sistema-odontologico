@@ -9,8 +9,8 @@
 
 ## 1. Estado efectivo del plan
 
-- [ ] 1.1 `EstadoDelPlan` puro (D1): vencido, días restantes y solo lectura. Casos: último día, día siguiente, `ACTIVO` con `prueba_hasta` pasada y una zona horaria distinta de Buenos Aires (verificación: escenarios de "Prueba vencida")
-- [ ] 1.2 `ConsultarPlan` y `GET /api/v1/plan` (D5), con test de aislamiento por consultorio y la respuesta con el plan vencido antes de la tarea (verificación: escenarios de "Consulta del plan")
+- [x] 1.1 `EstadoDelPlan` puro (D1): vencido, días restantes y solo lectura. Casos: último día, día siguiente, `ACTIVO` con `prueba_hasta` pasada y una zona horaria distinta de Buenos Aires (verificación: escenarios de "Prueba vencida")
+- [x] 1.2 `ConsultarPlan` y `GET /api/v1/plan` (D5), con test de aislamiento por consultorio y la respuesta con el plan vencido antes de la tarea (verificación: escenarios de "Consulta del plan")
 
 ## 2. Vencimiento y activación
 

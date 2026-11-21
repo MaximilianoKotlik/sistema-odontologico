@@ -70,6 +70,15 @@ class ConsultorioRepositorioJdbc implements ConsultorioRepositorio {
     }
 
     @Override
+    public Optional<PlanGuardado> buscarPlan(ConsultorioId id) {
+        return jdbc.sql("SELECT plan, prueba_hasta, zona_horaria FROM consultorio WHERE id = :id")
+                .param("id", id.valor())
+                .query((fila, numero) -> new PlanGuardado(fila.getString("plan"),
+                        fila.getObject("prueba_hasta", LocalDate.class), fila.getString("zona_horaria")))
+                .optional();
+    }
+
+    @Override
     public Optional<ConsultorioId> buscarIdPorSlug(String slug) {
         return jdbc.sql("SELECT id FROM consultorio WHERE slug = :slug")
                 .param("slug", slug)
