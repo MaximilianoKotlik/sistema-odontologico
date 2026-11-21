@@ -481,7 +481,7 @@ Reglas de coordinación del paralelismo:
   - `design-system/README.md`
 
 ### [C-21] `pagina-precios`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #33, 2026-11-20)
 - **Scope**:
   - `GET /api/v1/public/planes`: planes en ARS con impuestos incluidos y fecha de actualización, desde una fuente de configuración versionada (sin cobro integrado, RN-PL-04).
   - Página pública `/precios` (sin auth): planes, qué incluye cada uno y la prueba gratuita de 30 días que **no pide tarjeta ni medio de pago**, dicho explícitamente (RN-PL-02); fecha de actualización visible.
