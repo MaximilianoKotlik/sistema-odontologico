@@ -13,7 +13,7 @@
   - C-08: `tipo_prestacion` con `UNIQUE (consultorio_id, id)`, `disponibilidad`, `GrillaSemanal` en `consultorio.domain`, `ErrorDeNegocio.propiedades()` (su D6) y `db/seed-local/R__demo.sql`.
   - C-03, C-04 y C-05 también numeran migraciones.
 - **Quién lo consume**:
-  - C-11 (casos de uso, JPA, auditoría y transacciones).
+  - C-11 (casos de uso, persistencia JDBC, auditoría y transacciones).
   - C-15 (huecos y reserva pública, deduplicación de pacientes).
   - C-17 (revisión de pacientes).
 
@@ -25,16 +25,16 @@
 - Que `agenda.domain` no dependa del código de otros módulos de dominio, para poder desarrollarlo y testearlo en paralelo con la integración de C-08.
 
 **Non-Goals:**
-- Repositorios, entidades JPA y transacciones (C-11). Las pruebas de integración de este change escriben con SQL directo.
+- Repositorios JDBC y transacciones (C-11). Las pruebas de integración de este change escriben con SQL directo.
 - La deduplicación al reservar y la marca automática de revisión (C-15, RN-RP-03). Acá solo están la clave única y el método para marcar.
-- Optimistic locking en el dominio: la columna `version` existe, pero la gestiona JPA en C-11.
+- Optimistic locking en el dominio: la columna `version` existe, pero la gestionan los adaptadores JDBC de C-11 (`UPDATE … WHERE version = :esperada`).
 - Un límite al rango de fechas de la consulta de huecos: lo fija el endpoint de C-15.
 
 ## Decisions
 
 ### D1 — Alcance: migración y dominio puro, sin capa de infraestructura
 - **C-10 entrega** la migración, `agenda.domain` y sus tests. Las pruebas de integración insertan con `JdbcClient` para demostrar que la base protege las invariantes *aunque se saltee el servicio*, que es justamente lo que pide CHANGES.md.
-- **C-11 agrega** las entidades JPA y los repositorios. Con `ddl-auto=validate`, el mapeo se valida contra esta migración en ese change.
+- **C-11 agrega** los repositorios, con persistencia **JDBC** (`JdbcClient`), no JPA, igual que C-04 y C-08. Así no hace falta un mapeo con anotaciones paralelo al dominio puro (`dominioSinFramework`). Corrección de esta D1, que decía "entidades JPA": decisión de Maxi en #38 (C-11 D2), pedida en #18.
 - *Alternativa*: incluir los repositorios acá → mezcla el modelo con los casos de uso, agranda un PR de nivel ALTO y obliga a decidir el mapeo antes de tener los casos de uso que lo usan.
 
 ### D2 — `agenda.domain` no importa `consultorio.domain`
@@ -59,7 +59,7 @@
   - Nombre y apellido recortados, de 1 a 80 caracteres.
   - DNI por el value object `Dni`: quita puntos y espacios, exige 7 u 8 dígitos y si no lanza `ValidacionDeNegocio` `DNI_INVALIDO`. Es la identidad del paciente dentro del consultorio (DD-24).
   - Teléfono por `NormalizadorDeTelefono`, obligatorio (DD-32) y sin unicidad.
-  - `datosDifierenDe(nombre, apellido)`: compara sin distinguir mayúsculas ni espacios en los extremos. C-15 lo usa para reutilizar el paciente de un DNI existente sin sobrescribirlo y marcarlo con `requiere_revision` si los datos no coinciden.
+  - `datosDifierenDe(nombre, apellido)`: compara sin distinguir mayúsculas, acentos (NFD sin diacríticos, la regla de C-15 D7, pedido de Maxi en #18) ni espacios en los extremos. C-11 y C-15 lo usan para reutilizar el paciente de un DNI existente sin sobrescribirlo y marcarlo con `requiere_revision` si los datos no coinciden.
   - Email opcional, con validación sintáctica simple y guardado en minúsculas.
   - `origen`, `requiereRevision` y `Consentimiento(Instant, String version)`, obligatorio si el origen es `LINK`.
   - `toString()` no expone PII: usa `EnmascaradorDePii` o solo el id.
@@ -108,6 +108,7 @@
   - `email CITEXT`, `updated_at` y `REVOKE DELETE`.
   - `consentimiento_version VARCHAR(40)`, no 10 como decía 04: la versión vigente (`2026-11-borrador`, DD-23) tiene 16 caracteres. Se corrige 04.
   - `ix_paciente_consultorio_apellido (consultorio_id, lower(apellido), lower(nombre))` para la búsqueda de C-17.
+  - Lo informado en la reserva (DD-38, pedido de Maxi en #18): `nombre_informado`, `apellido_informado`, `email_informado CITEXT`, `informado_at` e `informado_turno_id`, todas anulables. `ck_paciente_informado CHECK (requiere_revision OR num_nonnulls(<las cinco>) = 0)`, que incluye el `informado_at IS NULL` de 04. La FK compuesta `fk_paciente_informado_turno (consultorio_id, informado_turno_id) → turno` va con un `ALTER TABLE` al final, porque `turno` se crea después. En el dominio, `Paciente` lleva `DatosInformados` y `marcadoParaRevision(informados)` los reemplaza (queda la última reserva).
 - **`turno`**:
   - FKs compuestas `fk_turno_paciente` y `fk_turno_tipo_prestacion`.
   - `ck_turno_duracion`: de 5 a 480 y `% 5 = 0`.
