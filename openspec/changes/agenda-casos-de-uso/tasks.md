@@ -13,12 +13,12 @@
 
 ## 2. Lock y lecturas
 
-- [ ] 2.1 `LockDeAgenda` con `SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`. Tests con dos transacciones:
+- [x] 2.1 `LockDeAgenda` con `SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`. Tests con dos transacciones:
   - el lock de agenda bloquea a `ReemplazarDisponibilidad` y viceversa;
   - repetirlo en la misma transacción no espera.
 
   (verificación: escenario "Un turno mientras se reemplaza la grilla")
-- [ ] 2.2 `TurnoRepositorio` y `BloqueoRepositorio` JDBC:
+- [x] 2.2 `TurnoRepositorio` y `BloqueoRepositorio` JDBC:
   - buscar por id con el consultorio;
   - los turnos activos y los bloqueos que intersectan un intervalo;
   - insertar;
@@ -26,7 +26,7 @@
   - eliminar un bloqueo.
 
   Cada consulta lleva `consultorio_id` y tiene su test de aislamiento (verificación: `ArchitectureTest` en verde y tests de integración de cada método)
-- [ ] 2.3 `ConsultaDeDisponibilidad`: arma la `DisponibilidadSemanal` con la grilla y la zona del consultorio por los puertos de `consultorio.application` (verificación: test con la grilla demo y `America/Argentina/Buenos_Aires`)
+- [x] 2.3 `ConsultaDeDisponibilidad`: arma la `DisponibilidadSemanal` con la grilla y la zona del consultorio por los puertos de `consultorio.application` (verificación: test con la grilla demo y `America/Argentina/Buenos_Aires`)
 
 ## 3. Pacientes
 
