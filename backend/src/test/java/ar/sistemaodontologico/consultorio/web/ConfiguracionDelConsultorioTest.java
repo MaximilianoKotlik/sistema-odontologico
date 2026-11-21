@@ -88,6 +88,64 @@ class ConfiguracionDelConsultorioTest extends IntegracionPostgresTest {
                 .andExpect(jsonPath("$.pasoHuecosMin").value(30));
     }
 
+    // --- Versión leída (issue #59) ---
+
+    @Test
+    void laConsultaDevuelveLaVersion() throws Exception {
+        mvc.perform(get(RUTA).header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(jsonPath("$.version").value(versionDe(cuenta.consultorio())));
+    }
+
+    @Test
+    void conLaVersionLeidaGuardaYLaVersionSube() throws Exception {
+        long leida = versionDe(cuenta.consultorio());
+
+        guardar(valido().put("pasoHuecosMin", 30))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(leida + 1));
+
+        assertThat(versionDe(cuenta.consultorio())).isEqualTo(leida + 1);
+    }
+
+    @Test
+    void conUnaVersionViejaResponde409SinCambiosNiEvento() throws Exception {
+        ObjectNode desdeLaPestanaB = valido().put("pasoHuecosMin", 20);
+        guardar(valido().put("pasoHuecosMin", 30)).andExpect(status().isOk());
+        long despuesDeA = versionDe(cuenta.consultorio());
+
+        guardar(desdeLaPestanaB)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.codigo").value("CONFLICTO_CONCURRENCIA"));
+
+        assertThat(jdbc.queryForObject("SELECT paso_huecos_min FROM consultorio WHERE id = ?", Integer.class,
+                cuenta.consultorio())).isEqualTo(30);
+        assertThat(versionDe(cuenta.consultorio())).isEqualTo(despuesDeA);
+        assertThat(eventos()).hasSize(1);
+    }
+
+    @Test
+    void sinCambiosNoSubeLaVersionYDevuelveLaActual() throws Exception {
+        // El primer guardado carga el teléfono, que la cuenta de prueba no tiene; el segundo no cambia nada.
+        guardar(valido()).andExpect(status().isOk());
+        long leida = versionDe(cuenta.consultorio());
+
+        guardar(valido()).andExpect(status().isOk()).andExpect(jsonPath("$.version").value(leida));
+
+        assertThat(versionDe(cuenta.consultorio())).isEqualTo(leida);
+        assertThat(eventos()).hasSize(1);
+    }
+
+    @Test
+    void laVersionEsObligatoria() throws Exception {
+        ObjectNode sinVersion = valido();
+        sinVersion.remove("version");
+
+        guardar(sinVersion)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.codigo").value("VALIDACION"))
+                .andExpect(jsonPath("$.errores[0].campo").value("version"));
+    }
+
     @Test
     void elPlanYLaPruebaSeIgnoran() throws Exception {
         guardar(valido().put("plan", "ACTIVO").put("pruebaHasta", "2099-01-01")).andExpect(status().isOk());
@@ -195,7 +253,7 @@ class ConfiguracionDelConsultorioTest extends IntegracionPostgresTest {
 
         Cuenta otra = CuentasDePrueba.crear(jdbc);
         String tokenDeOtra = TokensDePrueba.valido(SECRETO_JWT_DE_PRUEBA, otra.usuario(), otra.consultorio(), 1);
-        ObjectNode pedido = valido().put("slug", anterior);
+        ObjectNode pedido = valido().put("slug", anterior).put("version", versionDe(otra.consultorio()));
         mvc.perform(put(RUTA).header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDeOtra)
                         .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(pedido)))
                 .andExpect(status().isOk())
@@ -280,7 +338,12 @@ class ConfiguracionDelConsultorioTest extends IntegracionPostgresTest {
         pedido.put("horizonteReservaDias", 60);
         pedido.put("pasoHuecosMin", 15);
         pedido.put("reservaPublicaActiva", true);
+        pedido.put("version", versionDe(cuenta.consultorio()));
         return pedido;
+    }
+
+    private long versionDe(UUID consultorio) {
+        return jdbc.queryForObject("SELECT version FROM consultorio WHERE id = ?", Long.class, consultorio);
     }
 
     private List<Map<String, Object>> eventos() {
