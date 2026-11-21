@@ -1,0 +1,26 @@
+# Catálogo público de planes (C-21, US-060, RN-PL-01). Lo sirve GET /api/v1/public/planes.
+#
+# Cambiar un precio = un PR que actualiza el importe Y actualizadoEn (la fecha que se ve en /precios).
+# - Los importes van ENTRE COMILLAS, con dos decimales, en ARS e impuestos incluidos (regla dura 15:
+#   sin comillas YAML los lee como float y el plan no se publica).
+# - actualizadoEn va entre comillas, como instante UTC. Medianoche en Buenos Aires = T03:00:00Z.
+# - Un plan con importe inválido (p. ej. "PENDIENTE") no se publica; si no queda ninguno, la API responde
+#   PLANES_NO_DISPONIBLES.
+actualizadoEn: "2026-11-20T03:00:00Z"   # DD-22, confirmada el 2026-11-20
+
+prueba:
+  dias: 30                     # RN-PL-02
+  requiereMedioDePago: false   # RN-PL-02: nunca se pide tarjeta ni medio de pago
+
+planes:
+  - id: consultorio
+    nombre: Plan consultorio
+    descripcion: Un odontólogo · un consultorio.
+    incluye:
+      - Agenda diaria y semanal
+      - Bloqueos y sobreturnos marcados
+      - Link público para que tus pacientes reserven, reprogramen y cancelen
+      - Historial de cambios y exportación completa de tus datos
+    importeARS: "14900.00"     # DD-22: ARS 14.900 por mes, IVA incluido
+    moneda: ARS
+    impuestosIncluidos: true
