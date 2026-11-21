@@ -173,7 +173,7 @@ export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegaci
     const filas = delDia.map((f, i) => {
       const numero = i + 1;
       const hora = (valor: string, etiqueta: string, campo: 'horaInicio' | 'horaFin') => {
-        const entrada = el('input', { type: 'time', step: 300, value: valor, 'aria-label': `${nombre}, franja ${numero}: ${etiqueta}`, 'aria-invalid': error === undefined ? null : 'true', class: `${CLASE_CONTROL} w-auto` });
+        const entrada = el('input', { type: 'time', step: 300, value: valor, 'aria-label': `${nombre}, franja ${numero}: ${etiqueta}`, 'aria-invalid': error === undefined ? null : 'true', class: `${CLASE_CONTROL} flex-1 min-w-0` });
         entrada.value = valor;
         // La posición no cambia hasta el próximo dibujo: agregar, quitar o copiar vuelven a dibujar los días.
         const posicion = franjas.indexOf(f);

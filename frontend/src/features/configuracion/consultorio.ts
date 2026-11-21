@@ -8,7 +8,7 @@ import { avisoAuth } from '../auth/ui';
 import { guardarConfiguracion, obtenerConfiguracion } from './api';
 import { vigilarCambios } from './cambios';
 import { traducirError } from './errores';
-import { barraDeGuardado, campoConfig, cantidadDeDatos, regionAnuncios, resumenDeErrores, tarjeta, type CampoConfig } from './ui';
+import { barraDeGuardado, campoConfig, cantidadDeDatos, chip, regionAnuncios, resumenDeErrores, tarjeta, type CampoConfig } from './ui';
 import { formularioDesdeRespuesta, solicitudDesdeFormulario, type CantidadEditable, type FormularioConsultorio } from './unidades';
 import { normalizarSlug, PASOS_PERMITIDOS, validarConsultorio } from './validaciones';
 
@@ -257,16 +257,12 @@ export function montarConsultorio(contexto: ContextoPagina, destino: HTMLElement
           el(
             'li',
             {},
-            boton({
-              texto: s,
-              variante: 'secundario',
-              alHacerClic: () => {
-                c.slug.control.value = s;
-                c.slug.error(null);
-                mostrarSugerencias([]);
-                actualizarSlug();
-                actualizarCambios();
-              },
+            chip(s, () => {
+              c.slug.control.value = s;
+              c.slug.error(null);
+              mostrarSugerencias([]);
+              actualizarSlug();
+              actualizarCambios();
             }),
           ),
         ),

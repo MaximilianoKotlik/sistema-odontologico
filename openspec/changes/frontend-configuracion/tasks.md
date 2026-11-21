@@ -41,5 +41,7 @@
 ## 5. Verificación
 
 - [x] 5.1 `npm run typecheck`, `lint`, `test` y `build` en verde
-- [ ] 5.2 Verificación visual contra los mockups aprobados a 390×844 y 1440×900 (capturas en `mockups/verify/`), consola sin errores y accesibilidad (foco, contraste AA, objetivos ≥ 44 px, `prefers-reduced-motion`)
-- [ ] 5.3 Flujo FL-02 completo contra el backend local de C-08 con el seed `demo`
+- [x] 5.2 Verificación visual contra los mockups aprobados a 390×844 y 1440×900 (capturas en `mockups/verify/`), consola sin errores y accesibilidad (foco, contraste AA, objetivos ≥ 44 px, `prefers-reduced-motion`)
+  - Evidencia (2026-11-21): capturas en `mockups/verify/`, sin desbordes horizontales. En consola solo aparecen los 4xx que el flujo provoca a propósito (slug en uso). El foco va al resumen de errores y a "Seguir editando" en la confirmación de salida. Los objetivos táctiles usan `min-h-touch`/`w-touch` y el spinner queda quieto con `prefers-reduced-motion`. El contraste AA sale de los tokens del sistema de diseño aprobado, sin medición automatizada propia.
+- [x] 5.3 Flujo FL-02 completo contra el backend local de C-08 con el seed `demo`
+  - Evidencia (2026-11-21, `docker compose` local): en lugar del seed `demo`, que ya tiene prestaciones y no abre el asistente, se registró una cuenta nueva para recorrer el primer ingreso real. Registro → asistente; paso 1 sin teléfono no avanza; paso 2 sin prestaciones no avanza y los atajos crean Consulta y Limpieza; el atajo de horarios se guarda; paso 4 con el link; recarga con prestaciones → agenda. En Configuración: slug en uso con 3 sugerencias, guardado persistido, orden persistido, alta con duración inválida, desactivar, franjas solapadas, guardado de horarios y confirmación al salir con cambios.

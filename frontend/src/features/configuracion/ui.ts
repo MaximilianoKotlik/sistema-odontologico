@@ -16,7 +16,7 @@ const PESTANAS: readonly { readonly id: Pestana; readonly texto: string; readonl
 const CLASE_PESTANA =
   'relative flex-[1_0_auto] md:flex-none inline-flex items-center justify-center gap-2 min-h-touch px-2 md:px-3 no-underline whitespace-nowrap ' +
   'font-medium text-texto-tenue hover:text-texto aria-[current=page]:text-primario aria-[current=page]:font-bold ' +
-  "aria-[current=page]:after:content-[''] aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-2 aria-[current=page]:after:-bottom-px " +
+  "aria-[current=page]:after:content-[''] aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-2 aria-[current=page]:after:bottom-0 " +
   'aria-[current=page]:after:h-indicador aria-[current=page]:after:rounded-t-full aria-[current=page]:after:bg-primario';
 
 /** Pestañas como links con `aria-current` (D2): cada una es una URL navegable con historial propio. */
@@ -205,6 +205,17 @@ export function resumenDeErrores(titulo: string, errores: readonly { readonly id
     el('ul', { class: 'mt-1 mb-0 pl-5 list-disc' }, ...errores.map((e) => el('li', {}, el('a', { href: `#${e.id}`, class: 'font-semibold underline text-current' }, e.mensaje)))),
   );
   return resumen;
+}
+
+/** Chip con borde redondeado (mockup `config.css`, `.chip`): sugerencias de slug y opciones de un toque. */
+export const CLASE_CHIP =
+  'inline-flex items-center gap-1 min-h-touch px-3 rounded-full border-control border-borde-fuerte bg-superficie font-sans text-sm font-medium text-texto cursor-pointer ' +
+  'hover:border-primario hover:text-primario aria-pressed:border-primario aria-pressed:bg-primario-tinte aria-pressed:text-primario aria-pressed:font-semibold';
+
+export function chip(texto: string, alElegir: () => void): HTMLButtonElement {
+  const b = el('button', { type: 'button', class: CLASE_CHIP }, texto);
+  b.addEventListener('click', alElegir);
+  return b;
 }
 
 export function cantidadDeDatos(cantidad: number): string {

@@ -113,6 +113,14 @@
 - [`input type="time"` se ve distinto en cada navegador] → es la opción más accesible y con mejor teclado en el celular. El mockup muestra la versión de Chrome.
 - [El link compartido en el paso 4 no funciona hasta C-16] → la v1 se libera con C-16 (C-23 cierra). En desarrollo, el paso lo aclara solo en el mockup.
 
+## Notas de implementación (para revisar en el PR)
+
+- **Guarda de cambios sin guardar (D9)**: el router de C-06 no tenía una; se suma `bloquearSalida(confirmar)`, que consultan `navegar`, los links internos y el botón atrás. Las navegaciones de la sesión (vencida, cerrada, aviso de otra pestaña) pasan `forzar` y no preguntan.
+- **Asistente sin shell (D2)**: las páginas privadas pueden declarar `sinShell`; el asistente lo usa para ocupar la pantalla con solo la marca, el progreso y "Terminar después".
+- **Redirección al asistente (D3)**: después del login y al restaurar la sesión, `GET /api/v1/prestaciones`; si devuelve una lista sin activas, se abre `/app/bienvenida`. Si la respuesta no se puede interpretar o falla, no se interpone.
+- **Saludo del paso 1**: el mockup dice "¡Hola, Dra. Ejemplo!", pero la API no expone el nombre del odontólogo. Se muestra "¡Hola! Armemos tu consultorio" hasta que haya un endpoint con ese dato.
+- **Paso 3 del asistente**: reutiliza el editor de Horarios con `exigirFranjas` (sin franjas no avanza, en vez de confirmar una semana vacía) y sin la barra de cambios; el "Siguiente" del asistente dispara el guardado.
+
 ## Migration Plan
 
 - Solo frontend. Reemplaza el placeholder de Configuración de C-06. Rollback = no mergear.
@@ -124,4 +132,4 @@
 - Mockups: `openspec/changes/frontend-configuracion/mockups/` (`bienvenida.html`, `consultorio.html`, `prestaciones.html`, `horarios.html`, más `config.css` y `mockup.js`)
 - Approval: approved (2026-11-20, by Maxi), versión `743ec3a` (#23)
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
-- Visual verify: pending
+- Visual verify: passed (2026-11-21); `mockups/verify/*-{390x844,1440x900}.png` de los cuatro pasos del asistente, Consultorio (con validación y slug en uso), Prestaciones (con el diálogo y la duración inválida) y Horarios (con franjas solapadas y salir con cambios), contra el backend local. Sin desbordes horizontales. Se corrigieron el indicador de la pestaña activa (quedaba sobre el texto), las sugerencias de slug como chips y el ancho de los campos de hora en mobile.

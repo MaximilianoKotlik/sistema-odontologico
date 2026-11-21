@@ -12,7 +12,7 @@ import { linkPublico } from './consultorio';
 import { traducirError } from './errores';
 import { montarHorarios, type ControlHorarios } from './horarios';
 import { abrirDialogoPrestacion, aPrestacion, type Prestacion } from './prestaciones';
-import { campoConfig, regionAnuncios } from './ui';
+import { campoConfig, chip, regionAnuncios } from './ui';
 import { formularioDesdeRespuesta, solicitudDesdeFormulario, type FormularioConsultorio } from './unidades';
 import { normalizarSlug, validarConsultorio } from './validaciones';
 
@@ -197,14 +197,10 @@ export function montarAsistente(contexto: ContextoPagina): void {
               el(
                 'li',
                 {},
-                boton({
-                  texto: s,
-                  variante: 'secundario',
-                  alHacerClic: () => {
-                    slug.control.value = s;
-                    slug.error(null);
-                    sugerencias.replaceChildren();
-                  },
+                chip(s, () => {
+                  slug.control.value = s;
+                  slug.error(null);
+                  sugerencias.replaceChildren();
                 }),
               ),
             ),
