@@ -1,9 +1,6 @@
 # Tasks
 
-> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que se cumplan tres condiciones:
-> - C-12 y C-13 están `[x]`.
-> - Maxi aprobó esta propuesta y los mockups.
-> - Las preguntas de design §Open Questions están respondidas.
+> Strict TDD en cada tarea: test en rojo → verde → triangular → refactor dentro del ciclo. **No arrancar** hasta que C-12 y C-13 estén `[x]`. Maxi ya aprobó esta propuesta y los mockups (PR #35).
 >
 > Verificación base: `./gradlew test` y `npm run typecheck && npm run lint && npm test` en verde. Los tests de integración extienden `IntegracionPostgresTest` (Testcontainers, PostgreSQL 16) y usan solo datos ficticios evidentes (regla dura 17).
 

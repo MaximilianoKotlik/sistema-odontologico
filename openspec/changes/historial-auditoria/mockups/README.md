@@ -1,6 +1,6 @@
 # Mockups de C-18 · `historial-auditoria`
 
-`Approval: pending`
+`Approval: approved (2026-11-20, by Maxi)`, versión `9cb3635` (#35)
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20).

@@ -2,10 +2,7 @@
 
 > Change **C-18** de [CHANGES.md](../../../CHANGES.md) · Governance **MEDIO** · Depende de `C-12` (`agenda-api-odontologo`) y `C-13` (`frontend-agenda`) · Responsable: Mati · Aprobación: Maxi.
 >
-> Es trabajo anticipado. Se apoya en C-03 (mergeado: `evento_auditoria` append-only), en la propuesta y los mockups de C-13 (mergeados en `openspec/changes/frontend-agenda/`) y en las propuestas de C-15 (#30) y C-19 (#32), que agregan eventos al registro. C-12 todavía no tiene propuesta. El código no se escribe hasta que se cumplan tres condiciones:
-> - C-12 y C-13 están `[x]`.
-> - Maxi aprobó esta propuesta y los mockups (modo `system-and-mockups`).
-> - Las preguntas de `design.md` §Open Questions ya las resolvió Maxi en la revisión del PR #35.
+> Es trabajo anticipado. Se apoya en C-03 (mergeado: `evento_auditoria` append-only), en la propuesta y los mockups de C-13 (mergeados en `openspec/changes/frontend-agenda/`) y en las propuestas de C-15 (#30) y C-19 (#32), que agregan eventos al registro. C-12 todavía no tiene propuesta. Maxi aprobó esta propuesta y los mockups en el PR #35 (versión `9cb3635`). El código se escribe recién cuando C-12 y C-13 estén `[x]`.
 
 ## Why
 
