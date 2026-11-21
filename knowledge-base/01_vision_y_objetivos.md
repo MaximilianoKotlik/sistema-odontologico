@@ -97,4 +97,4 @@ hosting cloud productivo (ver [PA-02](10_preguntas_abiertas.md)), Supabase u otr
 | Solapamientos indebidos | Turnos no-sobreturno superpuestos en base | 0 (invariante cubierta por tests y constraint) | [RN-AG-01](05_reglas_de_negocio.md) |
 | Tiempo de reserva | Mediana desde abrir el link hasta confirmar | < 90 s en mobile | UX de la página pública |
 
-> **Hipótesis a validar:** las metas numéricas (incluido el ≥ 40 % de reservas por link) son tentativas, no tienen fuente de mercado y se recalibran tras el piloto con los primeros consultorios. Están registradas como hipótesis en [`discovery.md` §10](../docs/discovery/discovery.md) (definidas al armar la KB, 2026-11-20).
+> **Hipótesis a validar:** las metas numéricas (incluido el ≥ 40 % de reservas por link) son tentativas, no tienen fuente de mercado y se recalibran con los primeros consultorios. Están registradas como hipótesis en [`discovery.md` §10](../docs/discovery/discovery.md) (definidas al armar la KB, 2026-11-20).

@@ -21,6 +21,9 @@ public abstract class IntegracionPostgresTest {
     protected static final String OWNER_PASSWORD = "owner-test";
     protected static final String APP_USER = "app_rw";
     protected static final String APP_PASSWORD = "app-test";
+    protected static final String SECRETO_JWT_DE_PRUEBA =
+            "c29sby1wYXJhLXRlc3RzLW5vLXVzYXItZW4tcHJvZHVjY2lvbi0wMTIzNDU2Nzg5YWI=";
+    protected static final String ORIGEN_FRONTEND = "http://localhost:5173";
 
     private static final Path SCRIPT_ROLES = Path.of("..", "docker", "postgres", "init", "01-roles.sh");
 
@@ -47,5 +50,8 @@ public abstract class IntegracionPostgresTest {
         registro.add("DB_APP_PASSWORD", () -> APP_PASSWORD);
         registro.add("DB_OWNER_USER", () -> OWNER_USER);
         registro.add("DB_OWNER_PASSWORD", () -> OWNER_PASSWORD);
+        // Solo de test (C-04): 48 bytes fijos en base64; nunca se usa fuera de los tests.
+        registro.add("JWT_SECRET", () -> SECRETO_JWT_DE_PRUEBA);
+        registro.add("APP_FRONTEND_ORIGIN", () -> ORIGEN_FRONTEND);
     }
 }

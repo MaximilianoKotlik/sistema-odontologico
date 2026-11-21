@@ -38,7 +38,7 @@ class ReglasDeArquitecturaTest {
                 .anyMatch(detalle -> detalle.contains("TurnoSinTenantRepositorio.buscarPorId"))
                 .anyMatch(detalle -> detalle.contains("TurnoSinTenantRepositorio.listarTodos"))
                 .noneMatch(detalle -> detalle.contains("PacienteRepositorio"))
-                .noneMatch(detalle -> detalle.contains("ConsultorioRepositorio"));
+                .noneMatch(detalle -> detalle.contains("ConsultorioRepositorio.buscarPorSlug"));
     }
 
     @Test
@@ -48,6 +48,30 @@ class ReglasDeArquitecturaTest {
 
         assertThat(resultado.getFailureReport().getDetails())
                 .anyMatch(detalle -> detalle.contains("ConsultorioRepositorio.buscarPorSlug"));
+    }
+
+    @Test
+    void laExcepcionDeUnMetodoNoCubreAOtrosMetodosDeLaMismaClase() {
+        EvaluationResult resultado = ReglasDeArquitectura
+                .repositoriosSiempreConTenant(java.util.Set.of("ConsultorioRepositorio", "TurnoConExcepcionRepositorio.buscarPorCodigo"))
+                .evaluate(fixturesDeRepositorios);
+
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("TurnoConExcepcionRepositorio.buscarPorFecha"))
+                .anyMatch(detalle -> detalle.contains("TurnoConExcepcionRepositorioJdbc.buscarPorFecha"))
+                .noneMatch(detalle -> detalle.contains("buscarPorCodigo"));
+    }
+
+    @Test
+    void laExcepcionCubreLaInterfazYSusImplementacionesPeroNoOtrosNombresParecidos() {
+        EvaluationResult resultado = ReglasDeArquitectura
+                .repositoriosSiempreConTenant(java.util.Set.of("ConsultorioRepositorio"))
+                .evaluate(fixturesDeRepositorios);
+
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("ConsultorioRepositorioDePrestaciones.listarTodas"))
+                .noneMatch(detalle -> detalle.contains("ConsultoriosRepositorioJdbc"))
+                .noneMatch(detalle -> detalle.contains("ConsultorioRepositorio.buscarPorSlug"));
     }
 
     @Test
@@ -69,6 +93,18 @@ class ReglasDeArquitecturaTest {
                 .anyMatch(detalle -> detalle.contains("CalculoConNowDirecto") && detalle.contains("Instant.now()"))
                 .anyMatch(detalle -> detalle.contains("CalculoConNowDirecto") && detalle.contains("LocalDate.now()"))
                 .noneMatch(detalle -> detalle.contains("CalculoConClock"));
+    }
+
+    @Test
+    void usarElModuloDeAuditoriaDesdeOtroModuloViolaLaRegla() {
+        EvaluationResult resultado =
+                ReglasDeArquitectura.auditoriaSoloPorElPuerto(RAIZ_FIXTURES).evaluate(fixtures);
+
+        assertThat(resultado.hasViolation()).isTrue();
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("ServicioQueAuditaDirecto")
+                        && detalle.contains("RegistroDirectoDePrueba"))
+                .noneMatch(detalle -> detalle.contains("ValidadorInternoDePrueba"));
     }
 
     @Test

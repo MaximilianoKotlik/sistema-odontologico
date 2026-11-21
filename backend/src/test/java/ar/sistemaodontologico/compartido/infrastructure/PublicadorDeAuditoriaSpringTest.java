@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 import pruebas.auditoria.SuscriptorDeAuditoriaDePrueba;
 
@@ -56,9 +57,15 @@ class PublicadorDeAuditoriaSpringTest extends IntegracionPostgresTest {
 
     private final ConsultorioId consultorio = new ConsultorioId(UUID.randomUUID());
 
+    @Autowired
+    private JdbcTemplate jdbc;
+
     @BeforeEach
     void limpiar() {
         suscriptor.limpiar();
+        // Desde C-03 el evento se persiste de verdad, y evento_auditoria tiene FK a consultorio.
+        jdbc.update("INSERT INTO consultorio (id, nombre, slug, plan) VALUES (?, 'Consultorio Demo', ?, 'PRUEBA')",
+                consultorio.valor(), "publicador-" + consultorio.valor().toString().substring(0, 8));
     }
 
     @Test

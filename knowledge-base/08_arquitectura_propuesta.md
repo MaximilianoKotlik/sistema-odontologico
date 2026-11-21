@@ -90,7 +90,7 @@ servicios de `application` públicos o por eventos de dominio (`auditoria` escuc
   En cloud, el gestor de secretos del proveedor elegido ([PA-02](10_preguntas_abiertas.md)).
 - **Datos sensibles** ([11](11_marco_legal_argentino.md)): minimización (sin DNI ni datos clínicos en
   v1), enmascarado de PII en logs, TLS en tránsito fuera de local, cifrado en reposo delegado al
-  volumen/servicio gestionado de Postgres, backups cifrados (pendiente de hosting).
+  Postgres como contenedor del mismo Compose en un VPS ([DD-25](09_decisiones_y_supuestos.md)); país del VPS y backups pendientes ([PA-02](10_preguntas_abiertas.md)).
 
 ## Persistencia y migraciones
 

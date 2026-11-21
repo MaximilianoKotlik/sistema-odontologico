@@ -71,6 +71,7 @@ erDiagram
     PACIENTE {
         uuid id PK
         uuid consultorio_id FK
+        varchar dni
         varchar telefono_e164
         varchar nombre
         varchar apellido
@@ -98,6 +99,9 @@ erDiagram
 ### Usuario (odontólogo)
 - `id UUID PK`, `consultorio_id UUID UNIQUE NOT NULL FK` (relación 1:1 en v1), `email CITEXT UNIQUE NOT NULL`, `password_hash VARCHAR(100) NOT NULL` (BCrypt), `nombre`, `apellido`, `matricula VARCHAR(30) NULL`.
 - `intentos_fallidos INT NOT NULL DEFAULT 0`, `bloqueado_hasta TIMESTAMPTZ NULL`, `password_cambiado_at TIMESTAMPTZ NOT NULL`.
+- `credenciales_version INT NOT NULL DEFAULT 1`: viaja como claim `ver` del access token. Cambiar o recuperar la contraseña la incrementa y deja sin efecto los tokens anteriores ([RN-AU-05](05_reglas_de_negocio.md)).
+- `terminos_version VARCHAR(40) NOT NULL` y `terminos_aceptados_at TIMESTAMPTZ NOT NULL`: versión de términos aceptada en el registro y cuándo (LG-04, [DD-23](09_decisiones_y_supuestos.md)).
+- Sin `DELETE` para el rol de la aplicación (`REVOKE`): la cuenta se desactiva o se da de baja por soporte, nunca se borra desde la app ([PA-07](10_preguntas_abiertas.md)).
 - Relaciones: 1:N `refresh_token`, 1:N `token_recuperacion`.
 
 ### RefreshToken / TokenRecuperacion
@@ -117,9 +121,9 @@ erDiagram
 - Índice GiST: `(consultorio_id, tstzrange(inicio, fin))`.
 
 ### Paciente (datos mínimos)
-- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(10) NULL`, `created_at`, `updated_at`.
-- Unique: `(consultorio_id, telefono_e164)` — clave de deduplicación por defecto ([DD-09](09_decisiones_y_supuestos.md), a confirmar en [PA-01](10_preguntas_abiertas.md)).
-- Sin DNI, sin datos clínicos en v1 (minimización, [11](11_marco_legal_argentino.md)).
+- `id`, `consultorio_id`, `nombre VARCHAR(80)`, `apellido VARCHAR(80)`, `dni VARCHAR(8) NOT NULL` (solo dígitos, 7 u 8), `telefono_e164 VARCHAR(16) NOT NULL`, `email CITEXT NULL`, `origen VARCHAR(10) CHECK IN ('LINK','MANUAL')`, `requiere_revision BOOLEAN DEFAULT false`, `consentimiento_at TIMESTAMPTZ NULL`, `consentimiento_version VARCHAR(10) NULL`, `created_at`, `updated_at`.
+- Unique: `(consultorio_id, dni)` — clave de deduplicación ([DD-24](09_decisiones_y_supuestos.md)). El teléfono es contacto obligatorio, no único.
+- Sin datos clínicos en v1 (minimización, [11](11_marco_legal_argentino.md)).
 
 ### Turno
 - `id`, `consultorio_id`, `paciente_id`, `tipo_prestacion_id`, `inicio TIMESTAMPTZ`, `fin TIMESTAMPTZ`, `duracion_min INT` (copia de la prestación al crear; editable por el odontólogo).

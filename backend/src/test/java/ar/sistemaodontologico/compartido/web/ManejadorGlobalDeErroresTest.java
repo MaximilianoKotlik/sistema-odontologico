@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
@@ -19,8 +20,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pruebas.errores.ControladorDeErroresDePrueba;
 
-/** Spec errores-api (C-02, tarea 4.1). */
+/**
+ * Spec errores-api (C-02, tarea 4.1). Prueba solo el mapeo de errores: los filtros de seguridad de C-04 se
+ * desactivan, porque el 401 de la seguridad tiene su propio test (SeguridadHttpTest).
+ */
 @WebMvcTest(controllers = ControladorDeErroresDePrueba.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(ControladorDeErroresDePrueba.class)
 @ExtendWith(OutputCaptureExtension.class)
 class ManejadorGlobalDeErroresTest {
