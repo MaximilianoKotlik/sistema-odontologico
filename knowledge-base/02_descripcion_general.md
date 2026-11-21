@@ -97,7 +97,7 @@ Contrato publicado en `/v3/api-docs` y Swagger UI en `/swagger-ui.html` (este ú
 | Turnos | `POST /turnos` · `GET /turnos/{id}` · `PUT /turnos/{id}/horario` · `POST /turnos/{id}/estado` | Alta (normal o sobreturno), reprogramación y cambio de estado |
 | Pacientes | `GET /pacientes?q=` · `PUT /pacientes/{id}` | Búsqueda por nombre/teléfono y corrección de datos |
 | Auditoría | `GET /auditoria?turnoId&desde&hasta&page` | Consulta del registro append-only |
-| Exportación | `GET /exportacion` | Descarga ZIP con JSON + CSV de todos los datos del consultorio |
+| Exportación | `POST /exportacion` | Descarga ZIP con JSON + CSV de todos los datos del consultorio |
 
 ### Autenticación (pública)
 

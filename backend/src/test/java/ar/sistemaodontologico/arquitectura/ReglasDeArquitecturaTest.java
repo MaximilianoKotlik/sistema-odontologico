@@ -140,4 +140,16 @@ class ReglasDeArquitecturaTest {
                 .anyMatch(detalle -> detalle.contains("ReservaQueUsaInfraestructuraDeConsultorio"))
                 .noneMatch(detalle -> detalle.contains("ReservaPura"));
     }
+
+    @Test
+    void laExportacionQueLeeTenantOSesionViolaLaRegla() {
+        // C-19, design D2: el streaming corre en otro hilo, sin petición ni sesión.
+        EvaluationResult resultado = ReglasDeArquitectura.exportacionSinContextoDePeticion().evaluate(fixtures);
+
+        assertThat(resultado.hasViolation()).isTrue();
+        assertThat(resultado.getFailureReport().getDetails())
+                .anyMatch(detalle -> detalle.contains("ExportacionQueLeeElTenant"))
+                .anyMatch(detalle -> detalle.contains("ExportacionQueLeeLaSesion"))
+                .noneMatch(detalle -> detalle.contains("ExportacionPura"));
+    }
 }

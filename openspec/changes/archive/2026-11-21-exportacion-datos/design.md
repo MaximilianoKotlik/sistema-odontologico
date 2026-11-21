@@ -170,4 +170,7 @@ Cambio pedido y aplicado: el pedido de exportación (consultorio, usuario e IP) 
 - Mockups: [`mockups/exportar.html`](mockups/exportar.html), con su [README](mockups/README.md), brief y decisiones. Estados: `inicial`, `generando`, `listo`, `reciente` (429), `sin-conexion`, `error` y `vencido`.
 - Approval: approved (2026-11-20, by Maxi), versión `45847c9`
 - Preview: rendered (2026-11-20), 14 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440x900, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola.
-- Visual verify: pendiente (tarea 9.1).
+- Visual verify: passed (2026-11-21). 14 capturas en [`mockups/verify/`](mockups/verify/), con los 7 estados a 390x844 y 1440x900, sin desborde horizontal y con el botón de 44 px.
+  - Corregido en la verificación: "Más" no quedaba marcado en la navegación mobile.
+  - Diferencias menores, sin corregir: la columna mide 768 px en vez de 720 (`max-w-3xl`, sin token nuevo) y en mobile la barra superior muestra la marca, como el shell aprobado de C-06, con el título solo para lectores de pantalla.
+  - El ZIP real se validó con el seed `demo`: cantidades del CSV contra el manifest, hashes y PDF renderizado. El CSV se validó con un parser; no se abrió en Excel ni en Google Sheets.

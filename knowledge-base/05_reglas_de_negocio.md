@@ -78,7 +78,7 @@ Valores por defecto configurables por consultorio se indican como `(config, defa
 
 ## Dominio: Exportación (RN-EX) — governance **HIGH**
 
-- **RN-EX-01**: La exportación es completa: consultorio, prestaciones, disponibilidad, bloqueos, pacientes, turnos y auditoría. Se entrega como ZIP con un JSON por entidad, un CSV por entidad (UTF-8, separador `,`, encabezado) y un `manifest.json` con versión de esquema, fecha de generación y cantidad de registros.
+- **RN-EX-01**: La exportación es completa: consultorio, odontólogo (sin secretos), prestaciones, disponibilidad, bloqueos, pacientes, turnos y auditoría. Se entrega como ZIP con un JSON por entidad, un CSV por entidad (UTF-8, separador `,`, encabezado) y un `manifest.json` con versión de esquema, fecha de generación y cantidad de registros.
 - **RN-EX-02**: Nunca incluye secretos (hash de contraseña, refresh tokens, tokens de recuperación o de gestión).
 - **RN-EX-03**: Está disponible en cualquier estado del plan, incluido `VENCIDO`. — Pilar de transparencia: el odontólogo nunca queda rehén.
 - **RN-EX-04**: Cada exportación genera un evento `EXPORTACION_GENERADA`. Límite: 1 exportación cada 5 minutos por consultorio.

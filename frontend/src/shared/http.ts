@@ -14,7 +14,7 @@ const PREFIJO_PUBLICO = '/api/v1/public/';
 const RUTA_REFRESH = '/api/v1/auth/refresh';
 
 /** Códigos que genera el propio cliente (los de dominio vienen del backend). */
-export type CodigoCliente = 'SIN_CONEXION' | 'SESION_VENCIDA' | 'ERROR_INESPERADO';
+export type CodigoCliente = 'SIN_CONEXION' | 'SESION_VENCIDA' | 'ERROR_INESPERADO' | 'DESCARGA_INTERRUMPIDA';
 
 export class ApiError extends Error {
   constructor(
@@ -62,8 +62,16 @@ export interface OpcionesRenovacion {
   readonly avisarSiVence?: boolean;
 }
 
+/** Archivo recibido de un pedido privado (C-19). */
+export interface ArchivoDescargado {
+  readonly contenido: Blob;
+  readonly nombre: string;
+}
+
 export interface ClienteHttp {
   request<T>(metodo: Metodo, ruta: string, cuerpo?: unknown): Promise<T>;
+  /** Pedido cuya respuesta es un archivo: misma autorización, renovación y errores que los pedidos JSON. */
+  descargar(ruta: string, opciones: { readonly metodo: Metodo }): Promise<ArchivoDescargado>;
   get<T>(ruta: string): Promise<T>;
   post<T>(ruta: string, cuerpo?: unknown): Promise<T>;
   put<T>(ruta: string, cuerpo?: unknown): Promise<T>;
@@ -120,6 +128,14 @@ async function aApiError(respuesta: Response): Promise<ApiError> {
   return new ApiError(respuesta.status, 'ERROR_INESPERADO', `Error HTTP ${respuesta.status}`, {}, retryAfter);
 }
 
+const ACEPTA_JSON = 'application/json, application/problem+json';
+const ACEPTA_ARCHIVO = 'application/zip, application/octet-stream, application/problem+json';
+
+/** Parser acotado a `filename="…"`: es el formato que emite el backend (C-19, design D10). */
+function nombreDeArchivo(respuesta: Response): string {
+  return /filename="([^"]+)"/.exec(respuesta.headers.get('Content-Disposition') ?? '')?.[1] ?? 'descarga';
+}
+
 export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
   const hacerFetch = opciones.fetch ?? ((entrada, init) => fetch(entrada, init));
   const coordinar = opciones.coordinarRefresh ?? (<T,>(tarea: () => Promise<T>) => tarea());
@@ -127,8 +143,8 @@ export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
   let refreshEnCurso: Promise<boolean> | null = null;
   let avisoEnCurso: Promise<boolean> | null = null;
 
-  async function enviar(metodo: Metodo, ruta: string, cuerpo: unknown): Promise<Response> {
-    const encabezados = new Headers({ Accept: 'application/json, application/problem+json' });
+  async function enviar(metodo: Metodo, ruta: string, cuerpo: unknown, acepta = ACEPTA_JSON): Promise<Response> {
+    const encabezados = new Headers({ Accept: acepta });
     if (cuerpo !== undefined) encabezados.set('Content-Type', 'application/json');
     if (esRutaPrivada(ruta) && tokenEnMemoria !== null) encabezados.set('Authorization', `Bearer ${tokenEnMemoria}`);
 
@@ -194,12 +210,13 @@ export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
 
   const sesionVencida = () => new ApiError(401, 'SESION_VENCIDA', 'Tu sesión venció. Iniciá sesión de nuevo.');
 
-  async function request<T>(metodo: Metodo, ruta: string, cuerpo?: unknown): Promise<T> {
-    let respuesta = await enviar(metodo, ruta, cuerpo);
+  /** Envía el pedido con la renovación ante 401 y devuelve solo una respuesta exitosa. */
+  async function pedir(metodo: Metodo, ruta: string, cuerpo: unknown, acepta?: string): Promise<Response> {
+    let respuesta = await enviar(metodo, ruta, cuerpo, acepta);
 
     if (respuesta.status === 401 && esRutaPrivada(ruta)) {
       if (!(await renovarSesion())) throw sesionVencida();
-      respuesta = await enviar(metodo, ruta, cuerpo);
+      respuesta = await enviar(metodo, ruta, cuerpo, acepta);
       if (respuesta.status === 401) {
         vencerSesion();
         throw sesionVencida();
@@ -215,12 +232,27 @@ export function crearClienteHttp(opciones: OpcionesCliente = {}): ClienteHttp {
       throw error;
     }
     opciones.alResponder?.(ruta, respuesta);
+    return respuesta;
+  }
+
+  async function request<T>(metodo: Metodo, ruta: string, cuerpo?: unknown): Promise<T> {
+    const respuesta = await pedir(metodo, ruta, cuerpo);
     // El tipo T lo fija quien llama a partir de api-types.ts; el cuerpo llega como JSON sin validar.
     return (await leerCuerpo(respuesta)) as T;
   }
 
+  async function descargar(ruta: string, { metodo }: { readonly metodo: Metodo }): Promise<ArchivoDescargado> {
+    const respuesta = await pedir(metodo, ruta, undefined, ACEPTA_ARCHIVO);
+    try {
+      return { contenido: await respuesta.blob(), nombre: nombreDeArchivo(respuesta) };
+    } catch {
+      throw new ApiError(respuesta.status, 'DESCARGA_INTERRUMPIDA', 'La descarga se interrumpió.');
+    }
+  }
+
   return {
     request,
+    descargar,
     get: (ruta) => request('GET', ruta),
     post: (ruta, cuerpo) => request('POST', ruta, cuerpo),
     put: (ruta, cuerpo) => request('PUT', ruta, cuerpo),
