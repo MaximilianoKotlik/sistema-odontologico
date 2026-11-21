@@ -12,7 +12,7 @@
 2. Leer los docs de la knowledge-base indicados en "Leer antes". En los changes de frontend, leer además el sistema de diseño aprobado (`design-system/README.md`, `tokens.css`, `components.html`).
 3. Acordar el alcance y los criterios de aceptación del item (los Given/When/Then de `06_funcionalidades.md` son la base; Strict TDD: cada criterio se escribe primero como test en rojo).
 4. Implementar, verificar los criterios acordados y registrar la evidencia en el PR.
-5. Cerrar el change en el mismo PR de implementación: cuando el PR está aprobado (o el líder confirma que no quedan cambios pedidos), el autor suma un último commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). No hace falta un PR aparte para el cierre.
+5. Cerrar el change en el mismo PR de implementación, **antes de pedir la revisión**: con todo en verde, el autor suma un commit que marca el `[x]` en este archivo (`[x]` completado (PR #N, AAAA-MM-DD)) y archiva el change de OpenSpec (`openspec archive <change>`). El `[x]` llega a `main` solo con el merge, que exige la aprobación del líder. Si el líder pide cambios, se hacen en commits nuevos y el `[x]` queda puesto. No hace falta un PR aparte para el cierre.
 
 Reglas del equipo:
 - **Governance**: CRITICO = solo análisis hasta aprobación humana explícita; ALTO = proponer y esperar revisión antes de escribir; MEDIO = implementar con checkpoints; BAJO = autonomía si los tests pasan.
@@ -138,7 +138,7 @@ Reglas de coordinación del paralelismo:
 - **Propuestas un paso antes**: los changes CRITICO y ALTO preparan su propuesta en el paso previo, para que la aprobación del líder no frene el change.
 - **Prioridad de revisión**: los PRs del camino crítico (C-02, C-04, C-08, C-10, C-11, C-12, C-13, C-14/C-18) se revisan antes que el resto.
 - **Migraciones Flyway**: cada change numera su migración provisoriamente y, al rebasar sobre `main` antes del merge, la pasa al siguiente número libre (una migración no mergeada todavía se puede renumerar; una mergeada nunca se edita).
-- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, recién con la aprobación del líder (paso 5). Los PRs de solo propuesta o mockups no marcan `[x]`.
+- **Archivos compartidos**: `api-types.ts` se regenera tras cada rebase (no se resuelve a mano); el checkbox `[x]` de este archivo lo marca el autor del change en el commit de cierre de su PR, antes de pedir la revisión (paso 5); llega a `main` solo con el merge aprobado. Los PRs de solo propuesta o mockups no marcan `[x]`.
 - **Trabajo anticipado**: se pueden preparar mockups, tests y propuestas antes de que se habilite un change, pero su PR se abre recién con las dependencias en `[x]`.
 
 ---
