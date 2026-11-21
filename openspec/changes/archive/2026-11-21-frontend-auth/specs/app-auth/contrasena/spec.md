@@ -7,7 +7,7 @@ Recuperación de la contraseña por email y cambio con la sesión iniciada, sin 
 ## ADDED Requirements
 
 ### Requirement: Pedido de recuperación sin enumeración
-`/recuperar` SHALL enviar el email a `POST /api/v1/auth/recuperacion` y, con 202, MUST mostrar siempre el mismo mensaje ("Si hay una cuenta con ese email, te mandamos un link"), exista o no la cuenta.
+`/recuperar` SHALL enviar el email a `POST /api/v1/auth/recuperacion` y, con 202, MUST mostrar siempre el mismo mensaje ("Revisá tu email" y "Si hay una cuenta con {email}, te llega un link para crear una contraseña nueva."), exista o no la cuenta.
 
 #### Scenario: Email sin cuenta
 - **WHEN** se pide recuperar un email que no tiene cuenta
@@ -25,11 +25,11 @@ El formulario SHALL pedir la contraseña nueva dos veces, con los requisitos en 
 
 #### Scenario: Restablecer
 - **WHEN** la confirmación responde 204
-- **THEN** la app abre `/login` con "Cambiamos tu contraseña. Ingresá con la nueva."
+- **THEN** la app abre `/login` con "Cambiaste tu contraseña." y "Por seguridad cerramos la sesión en todos tus dispositivos. Ingresá con la contraseña nueva."
 
 #### Scenario: Las contraseñas no coinciden
 - **WHEN** las dos contraseñas son distintas
-- **THEN** no se envía y la repetición queda marcada con "Las contraseñas no coinciden"
+- **THEN** no se envía y la repetición queda marcada con "Las dos contraseñas no coinciden."
 
 ### Requirement: Link vencido o usado
 Ante 400 `TOKEN_INVALIDO`, la pantalla SHALL mostrar un único mensaje, "Este link ya no sirve" (sin distinguir vencido, usado o revocado), con el botón "Pedir un link nuevo". Sin token en la URL, MUST mostrar el pedido de recuperación.
@@ -43,7 +43,7 @@ Ante 400 `TOKEN_INVALIDO`, la pantalla SHALL mostrar un único mensaje, "Este li
 
 #### Scenario: Cambio exitoso
 - **WHEN** el cambio responde 204
-- **THEN** el odontólogo llega a `/login` con "Cambiamos tu contraseña" y tiene que ingresar de nuevo
+- **THEN** el odontólogo llega a `/login` con "Cambiaste tu contraseña." y tiene que ingresar de nuevo
 
 #### Scenario: Contraseña actual incorrecta
 - **WHEN** el cambio responde 400 `PASSWORD_ACTUAL_INVALIDA`

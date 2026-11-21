@@ -1,10 +1,9 @@
-# Spec Delta
+# app-auth/registro Specification
 
 ## Purpose
-
 Alta de la cuenta del odontólogo y de su consultorio desde la app, con los requisitos de contraseña visibles mientras escribe y la entrada automática al terminar (US-001, FL-01, RN-AU-01).
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Formulario de registro
 El registro SHALL pedir nombre, apellido, email, contraseña, nombre del consultorio y la aceptación de los términos y la política de privacidad, con links a `/terminos` y `/privacidad`, y MUST enviarlos a `POST /api/v1/auth/registro`.
@@ -47,4 +46,4 @@ Con el 201 del registro, la app SHALL mostrar "¡Listo! Entrando a tu consultori
 
 #### Scenario: Falla el login automático
 - **WHEN** el registro responde 201 y el login falla
-- **THEN** la app abre `/login` con el email cargado y "¡Tu consultorio está listo! Ingresá con tu contraseña"
+- **THEN** la app abre `/login` con el email cargado y "¡Tu consultorio está listo!" y "No pudimos abrir tu sesión automáticamente. Ingresá con el email y la contraseña que acabás de crear."

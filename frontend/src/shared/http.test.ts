@@ -298,3 +298,96 @@ describe('cliente HTTP: observación de respuestas', () => {
     expect(alResponder.mock.calls[0]?.[1].headers.get('Date')).toBe(fecha);
   });
 });
+
+describe('cliente HTTP: necesidades de auth (C-07)', () => {
+  it('el ApiError conserva los datos extra del problema y el Retry-After', async () => {
+    const bloqueada = new Response(JSON.stringify({ status: 423, codigo: 'CUENTA_BLOQUEADA', detail: 'Bloqueada', minutosRestantes: 12 }), {
+      status: 423,
+      headers: { 'Content-Type': 'application/problem+json' },
+    });
+    const limite = new Response(JSON.stringify({ status: 429, codigo: 'DEMASIADAS_SOLICITUDES' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/problem+json', 'Retry-After': '60' },
+    });
+    const { falso } = crearFetchFalso({ '/api/v1/auth/login': [bloqueada, limite] });
+    const http = crearClienteHttp({ fetch: falso });
+
+    const primero = await http.post('/api/v1/auth/login', {}).catch((e: unknown) => e);
+    const segundo = await http.post('/api/v1/auth/login', {}).catch((e: unknown) => e);
+
+    expect(primero).toMatchObject({ codigo: 'CUENTA_BLOQUEADA', datos: { minutosRestantes: 12 }, retryAfter: null });
+    expect(segundo).toMatchObject({ codigo: 'DEMASIADAS_SOLICITUDES', retryAfter: '60' });
+  });
+
+  it('cambiar-password lleva Authorization y cookies, y renueva ante un 401', async () => {
+    const { falso, llamadas } = crearFetchFalso({
+      '/api/v1/auth/cambiar-password': [noAutorizado(), new Response(null, { status: 204 })],
+      '/api/v1/auth/refresh': [json({ accessToken: 'token-nuevo' })],
+    });
+    const http = crearClienteHttp({ fetch: falso });
+    http.establecerToken('token-viejo');
+
+    await http.post('/api/v1/auth/cambiar-password', { passwordActual: 'a', passwordNueva: 'b' });
+
+    expect(encabezado(llamadas[0], 'Authorization')).toBe('Bearer token-viejo');
+    expect(llamadas[0]?.init.credentials).toBe('include');
+    expect(encabezado(llamadas[2], 'Authorization')).toBe('Bearer token-nuevo');
+  });
+
+  it('el refresh pasa por el coordinador entre pestañas y no lleva señal de aborto', async () => {
+    const { falso, llamadas } = crearFetchFalso({ '/api/v1/auth/refresh': [json({ accessToken: 'token-nuevo' })] });
+    const orden: string[] = [];
+    let llamadasAlCoordinador = 0;
+    const coordinarRefresh = async <T,>(tarea: () => Promise<T>): Promise<T> => {
+      llamadasAlCoordinador += 1;
+      orden.push('lock');
+      const resultado = await tarea();
+      orden.push('libera');
+      return resultado;
+    };
+    const http = crearClienteHttp({ fetch: falso, coordinarRefresh });
+
+    await expect(http.renovarSesion()).resolves.toBe(true);
+
+    expect(llamadasAlCoordinador).toBe(1);
+    expect(orden).toEqual(['lock', 'libera']);
+    expect(llamadas[0]?.init.signal).toBeUndefined();
+    expect(http.tieneToken()).toBe(true);
+  });
+
+  it('el coordinador libera el lock recién cuando se leyó el cuerpo del refresh', async () => {
+    let cuerpoLeido = false;
+    const respuesta = json({ accessToken: 'token-nuevo' });
+    const textoOriginal = respuesta.text.bind(respuesta);
+    respuesta.text = async () => {
+      const texto = await textoOriginal();
+      cuerpoLeido = true;
+      return texto;
+    };
+    const { falso } = crearFetchFalso({ '/api/v1/auth/refresh': [respuesta] });
+    let leidoAlLiberar: boolean | null = null;
+    const http = crearClienteHttp({
+      fetch: falso,
+      coordinarRefresh: async (tarea) => {
+        const resultado = await tarea();
+        leidoAlLiberar = cuerpoLeido;
+        return resultado;
+      },
+    });
+
+    await http.renovarSesion();
+
+    expect(leidoAlLiberar).toBe(true);
+  });
+
+  it('la restauración silenciosa no avisa sesión vencida si el refresh falla', async () => {
+    const { falso } = crearFetchFalso({ '/api/v1/auth/refresh': [problema(401, { codigo: 'SESION_EXPIRADA' })] });
+    const alVencerSesion = vi.fn();
+    const http = crearClienteHttp({ fetch: falso, alVencerSesion });
+
+    await expect(http.renovarSesion({ avisarSiVence: false })).resolves.toBe(false);
+
+    expect(alVencerSesion).not.toHaveBeenCalled();
+    expect(http.tieneToken()).toBe(false);
+  });
+});

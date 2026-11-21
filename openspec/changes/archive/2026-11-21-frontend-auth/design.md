@@ -1,6 +1,6 @@
 # Design
 
-> Governance **CRITICO** (RN-AU-06): no se escribe código de producción sin aprobación explícita de Maxi. Las decisiones de seguridad (D3 a D7, D9 y D11) están marcadas para revisar.
+> Governance **CRITICO** (RN-AU-06): no se escribe código de producción sin aprobación explícita de Maxi. Las decisiones de seguridad (D3 a D7, D9 y D11) están aprobadas por Maxi en #37 (2026-11-21).
 >
 > **Segunda versión** (revisión de Maxi en #37, 2026-11-21): suma D11 (cierre de sesión entre pestañas), acota D3 a la navegación dentro de la app (opción a), arma el DOM en D9, valida `volver` después de normalizar en D5, saca el timeout del refresh en D6 y suma a Risks el límite de los access tokens ya emitidos.
 
@@ -69,10 +69,11 @@ Las decisiones técnicas de C-07:
 - El shell se monta recién cuando hay sesión. Al cerrarla se desmonta, así su contenido no queda en el DOM ni en la caché de la página para el botón atrás.
 - Una ruta que no existe fuera de `/app` va a `/login` sin sesión y a `/app` con sesión.
 
-### D3 — Arranque y restauración de sesión · **para revisar**
+### D3 — Arranque y restauración de sesión · aprobada por Maxi en #37
 - Al cargar una ruta privada sin token en memoria, se muestra el splash "Abriendo tu agenda…" (`aria-busy`) y se llama una vez a `renovarSesion()` de C-06.
   - Con éxito: se monta el shell en la ruta pedida.
   - Con 401: va a `/login?volver=…` sin aviso. Es el caso normal de alguien que no tiene sesión, no un error.
+  - **Sin red** (aprobada por Maxi en #57): si el refresh no llega al servidor, se monta el shell sin token y con el aviso "Sin conexión", para conservar la lectura de la última agenda guardada (pwa-offline de C-06). Esa caché solo existe mientras hubo una sesión: se borra al cerrar, al vencer y al iniciar otra. Al volver la red, el primer pedido privado renueva la sesión o la vence y lleva al login.
 - En una ruta pública **no se intenta el refresh**, ni siquiera en `/login` o `/registro`:
   - Si la pestaña ya tiene token en memoria (se llegó navegando dentro de la app), `/login` y `/registro` llevan a `/app` (spec "Usuario con sesión en rutas de ingreso").
   - Si se abren con una carga completa (link, marcador o recarga), no hay token en memoria y se muestra el formulario. No se sabe si hay cookie de refresh y no se pregunta al backend.
@@ -80,13 +81,13 @@ Las decisiones técnicas de C-07:
 - *Alternativa*: refresh silencioso en `/login` y `/registro` antes de pintar el formulario → descartada (revisión de Maxi en #37): suma una llamada al backend en cada visita y demora el formulario para el caso común, que es alguien sin sesión.
 - *Alternativa*: guardar una marca "tuvo sesión" en `localStorage` para no intentar el refresh sin sesión → descartada, porque deja una huella de uso en el dispositivo y el refresh sin cookie igual responde 401 rápido.
 
-### D4 — Access token y contraseñas solo en memoria · **para revisar**
+### D4 — Access token y contraseñas solo en memoria · aprobada por Maxi en #37
 - El access token vive solo en el cierre de `crearClienteHttp` (C-06). Entra por `app.iniciarSesion(token)`, que antes borra la agenda guardada de una sesión anterior.
 - **Prohibido** en `localStorage`, `sessionStorage`, IndexedDB, cookies legibles, la URL, el `state` del historial, logs y mensajes entre pestañas.
 - La contraseña del registro se guarda en una variable local solo para el login automático, y se descarta al terminar el intento, salga bien o mal. Los inputs de contraseña se vacían al salir de la pantalla.
 - **Test de no-persistencia**: un test recorre login, registro con login automático, refresh y cambio de contraseña con espías sobre `Storage.prototype.setItem`, `indexedDB.open`, `document.cookie`, `history.pushState` y `history.replaceState`, y falla si alguno recibe el token o una contraseña.
 
-### D5 — Destino después del login (`volver`) · **para revisar**
+### D5 — Destino después del login (`volver`) · aprobada por Maxi en #37
 - `sanearVolver(valor)` valida **después de normalizar**, en este orden:
   1. Exige que `valor` empiece con `/` y lo parsea con `url = new URL(valor, location.origin)`. Si falla el parseo, `/app`.
   2. Exige `url.origin === location.origin`. Así quedan afuera `//dominio`, `/\dominio` y `\\dominio` (el parser trata `\` como `/`), `javascript:` y cualquier URL absoluta.
@@ -95,7 +96,7 @@ Las decisiones técnicas de C-07:
 - Rechaza también las rutas públicas y el vacío. Ante la duda, `/app`.
 - Si el destino es `/app` y el consultorio no tiene prestaciones activas, C-09 decide llevar a `/app/bienvenida`. C-07 no conoce esa regla.
 
-### D6 — Refresh coordinado entre pestañas · **para revisar**
+### D6 — Refresh coordinado entre pestañas · aprobada por Maxi en #37
 - **Problema** (D4 de C-04): la cookie de refresh es una sola para todas las pestañas. Si dos pestañas renuevan a la vez con la misma cookie, la segunda presenta un refresh ya rotado y el backend revoca todas las sesiones.
 - **Solución**: `renovarSesion()` toma el lock `muelas-auth-refresh` con la **Web Locks API** (`navigator.locks.request`) antes de llamar al backend. La segunda pestaña espera, y cuando entra, el navegador ya le manda la cookie rotada, así que su refresh es válido. El refresh en vuelo dentro de una misma pestaña sigue siendo uno (C-06).
 - **El refresh no se corta por timeout**: el `fetch` de `POST /auth/refresh` no usa `AbortController` ni ningún timeout propio, y el lock se libera recién cuando la respuesta terminó (cuerpo leído y token guardado, o error de red del navegador). Si se abortara el pedido después de que el backend rotó la cookie, el navegador podría descartar el `Set-Cookie`: el próximo refresh presentaría la cookie vieja, el backend lo vería como reuso y revocaría todas las sesiones. Un refresh colgado deja esperando a las otras pestañas hasta el timeout de red del propio navegador; es preferible a perder la sesión.
@@ -103,7 +104,7 @@ Las decisiones técnicas de C-07:
 - **Sin Web Locks** (navegadores viejos): se mantiene el comportamiento de C-06 y el riesgo queda acotado a dos pestañas que vencen en el mismo instante. Web Locks está en Chrome, Edge, Firefox y Safari actuales.
 - *Alternativa*: `BroadcastChannel` para que una pestaña renueve y reparta el token → descartada, porque haría viajar el access token entre contextos.
 
-### D7 — Token de recuperación · **para revisar**
+### D7 — Token de recuperación · aprobada por Maxi en #37
 - El link del email es `/recuperar#token=…` (C-05): el fragmento no se manda al servidor ni queda en los logs de acceso.
 - Al cargar, se lee el token, se guarda en memoria y se hace `history.replaceState(null, '', '/recuperar')` antes de pintar el formulario. Así no queda en el historial, en un marcador ni en una captura de pantalla.
 - Ante `PASSWORD_DEBIL`, el token se conserva para reintentar (el backend no lo consume). Ante `TOKEN_INVALIDO`, se descarta.
@@ -123,7 +124,7 @@ Las decisiones técnicas de C-07:
 | `ORIGEN_NO_PERMITIDO` (403) | — | Error inesperado: no debería pasar desde el frontend propio |
 | Red caída | Todas | Aviso sin conexión y envío deshabilitado |
 
-### D9 — Términos y privacidad · **para revisar**
+### D9 — Términos y privacidad · aprobada por Maxi en #37
 - `/terminos` y `/privacidad` muestran el borrador de `docs/legal/` (#24) con su aviso de "pendiente de revisión legal" (DD-28).
 - El Markdown se importa en el build (`?raw` de Vite) y se convierte con un conversor mínimo propio, sin dependencias nuevas, para el subconjunto que usan esos archivos:
   - títulos, párrafos, listas con viñetas y numeradas, énfasis y citas (el aviso de borrador);
@@ -146,7 +147,7 @@ Las decisiones técnicas de C-07:
 - Mostrar u ocultar la contraseña es un botón con `aria-pressed`.
 - El splash usa `aria-busy` y el spinner queda quieto con `prefers-reduced-motion`.
 
-### D11 — Cierre de sesión entre pestañas · **para revisar**
+### D11 — Cierre de sesión entre pestañas · aprobada por Maxi en #37
 - **Problema**: si se cierra la sesión o se cambia la contraseña en una pestaña, las demás siguen mostrando la agenda y operando con su access token hasta que vence (15 minutos). Va contra el goal "nunca ver contenido privado sin sesión" (decisión de Maxi en #37).
 - **Solución**: `coordinacion.ts` abre un `BroadcastChannel('muelas-auth')`.
   - Al cerrar sesión (logout, aunque falle por red) o al terminar un cambio de contraseña con 204, la pestaña publica `{ tipo: 'sesion-cerrada', motivo }`, con `motivo` de un conjunto cerrado: `'logout'` o `'contrasena-cambiada'`. **Nunca** viaja el token, el email ni otro dato del usuario: el motivo solo elige el aviso.
@@ -181,4 +182,4 @@ Las decisiones técnicas de C-07:
 - Mockups: openspec/changes/frontend-auth/mockups/ (`login.html`, `registro.html`, `recuperar.html`, `recuperar-confirmar.html`, `cambiar-contrasena.html`, más `auth.css` y `mockup.js`)
 - Approval: approved (2026-11-20, by Maxi), versión `3ffa2f7` (#14)
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
-- Visual verify: pending
+- Visual verify: passed (2026-11-21); `mockups/verify/*-{360x780,390x844,1440x900}.png` de login, registro, recuperar, contraseña nueva, términos y cambiar contraseña, contra el dev server con el backend simulado. Sin scroll horizontal ni errores de consola (salvo los 401 esperados). Se corrigieron las viñetas del resumen de errores y el `aria-current` de "Cambiar contraseña".

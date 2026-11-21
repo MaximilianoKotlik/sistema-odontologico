@@ -243,7 +243,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-02, DD-11
 
 ### [C-07] `frontend-auth`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #57, 2026-11-21)
 - **Scope**:
   - Pantallas: registro (con aceptación de términos), login, recuperación y confirmación de recuperación, cambio de contraseña con sesión iniciada (US-005; al terminar fuerza nuevo login), cierre de sesión; manejo de `CUENTA_BLOQUEADA`, `EMAIL_EN_USO`, `PASSWORD_DEBIL`, `PASSWORD_ACTUAL_INVALIDA`, `TOKEN_INVALIDO`.
   - Guardas de ruta y restauración de sesión vía `/auth/refresh` al recargar.

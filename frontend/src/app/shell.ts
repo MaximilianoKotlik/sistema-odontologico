@@ -15,7 +15,8 @@ export type Seccion = 'agenda' | 'bloqueos' | 'configuracion' | 'auditoria' | 'e
 
 export interface EncabezadoPagina {
   readonly titulo: string;
-  readonly seccion: Seccion | null;
+  /** `cuenta`: páginas del bloque de cuenta (C-07), que no son secciones de la navegación principal. */
+  readonly seccion: Seccion | 'cuenta' | null;
 }
 
 export interface OpcionesShell {
@@ -53,6 +54,7 @@ const DESTINOS: readonly Destino[] = [
 const EN_BARRA_INFERIOR: readonly Seccion[] = ['agenda', 'bloqueos', 'configuracion'];
 const EN_HOJA_MAS: readonly Seccion[] = ['auditoria', 'exportar'];
 
+const RUTA_CAMBIAR_CONTRASENA = '/app/cuenta/contrasena';
 const ID_MOTIVO_SIN_CONEXION = 'motivo-sin-conexion';
 const MOTIVO_SIN_CONEXION = 'Necesitás conexión para crear o cambiar datos.';
 
@@ -122,9 +124,16 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
     ),
     el('div', { class: 'flex-1' }),
   );
+  // Bloque de cuenta (C-07, decisión de Maxi en #14): "Cambiar contraseña" arriba de "Cerrar sesión".
+  const contrasenaLateral = el(
+    'a',
+    { href: RUTA_CAMBIAR_CONTRASENA, 'data-link': true, 'data-destino': 'cuenta', class: CLASE_DESTINO_LATERAL },
+    icono('llave'),
+    'Cambiar contraseña',
+  );
   const salirLateral = el('button', { type: 'button', class: CLASE_DESTINO_LATERAL }, icono('salir'), 'Cerrar sesión');
   salirLateral.addEventListener('click', () => opciones.alCerrarSesion());
-  lateral.append(el('div', { class: 'border-t border-borde pt-3 mt-3' }, salirLateral));
+  lateral.append(el('div', { 'data-cuenta': true, class: 'grid gap-1 border-t border-borde pt-3 mt-3' }, contrasenaLateral, salirLateral));
 
   // Barra superior
   const titulo = el('h1', { class: 'm-0 text-lg font-bold md:text-xl max-md:sr-only' });
@@ -186,6 +195,13 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
     ),
   );
 
+  const contrasenaHoja = el(
+    'a',
+    { href: RUTA_CAMBIAR_CONTRASENA, 'data-link': true, class: CLASE_ITEM_HOJA },
+    icono('llave', 'w-icono h-icono flex-none text-texto-tenue'),
+    'Cambiar contraseña',
+  );
+  contrasenaHoja.addEventListener('click', () => hojaMas.cerrar());
   const salirHoja = el('button', { type: 'button', class: CLASE_ITEM_HOJA }, icono('salir', 'w-icono h-icono flex-none text-texto-tenue'), 'Cerrar sesión');
   const listaHoja = el(
     'ul',
@@ -197,7 +213,7 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
   const hojaMas = dialogo({
     forma: 'hoja',
     titulo: 'Más opciones',
-    contenido: el('div', {}, listaHoja, el('hr', { class: 'border-0 border-t border-borde my-2' }), salirHoja),
+    contenido: el('div', {}, listaHoja, el('hr', { class: 'border-0 border-t border-borde my-2' }), contrasenaHoja, salirHoja),
     acciones: [],
     claseContenedor: 'md:hidden',
     alCerrar: () => botonMas.setAttribute('aria-expanded', 'false'),
