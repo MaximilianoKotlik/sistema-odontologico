@@ -21,10 +21,10 @@
 
 ## 3. Solo lectura
 
-- [ ] 3.1 `FiltroDePlanVencido` (D4) con 403 `PLAN_VENCIDO` en Problem Details y sin evento (verificación: escenario "Crear un turno con el plan vencido")
-- [ ] 3.2 Test de matriz: recorre todas las escrituras de `RequestMappingHandlerMapping` y espera 403 en cada una salvo la lista permitida, para que un endpoint nuevo no quede abierto sin querer (verificación: escenarios de "Escrituras bloqueadas" y "Rutas permitidas")
-- [ ] 3.3 Rutas permitidas: sesión, cambio y recuperación de contraseña, `visto` y `POST /api/v1/exportacion` (si C-19 ya está mergeado; si no, el caso queda en la lista y el test lo cubre cuando llegue). Sin token sigue siendo 401 (verificación: escenarios de "Rutas permitidas" y "Sin sesión")
-- [ ] 3.4 El 403 `PLAN_VENCIDO` en RN-PL-03 (`knowledge-base/05_reglas_de_negocio.md`), como RN-GL-02 nombra `CONFLICTO_CONCURRENCIA`, y en el contrato OpenAPI (verificación: `ContratoOpenApiTest`)
+- [x] 3.1 `FiltroDePlanVencido` (D4) con 403 `PLAN_VENCIDO` en Problem Details y sin evento (verificación: escenario "Crear un turno con el plan vencido")
+- [x] 3.2 Test de matriz: recorre todas las escrituras de `RequestMappingHandlerMapping` y espera 403 en cada una salvo la lista permitida, para que un endpoint nuevo no quede abierto sin querer (verificación: escenarios de "Escrituras bloqueadas" y "Rutas permitidas")
+- [x] 3.3 Rutas permitidas: sesión, cambio y recuperación de contraseña, `visto` y `POST /api/v1/exportacion` (si C-19 ya está mergeado; si no, el caso queda en la lista y el test lo cubre cuando llegue). Sin token sigue siendo 401 (verificación: escenarios de "Rutas permitidas" y "Sin sesión")
+- [x] 3.4 El 403 `PLAN_VENCIDO` en RN-PL-03 (`knowledge-base/05_reglas_de_negocio.md`), como RN-GL-02 nombra `CONFLICTO_CONCURRENCIA`, y en el contrato OpenAPI (verificación: `ContratoOpenApiTest`)
 
 ## 4. Reserva pública
 

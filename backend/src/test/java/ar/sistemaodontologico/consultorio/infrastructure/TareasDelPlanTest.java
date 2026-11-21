@@ -28,7 +28,7 @@ class TareasDelPlanTest {
 
         assertThat(programacion.cron()).isEqualTo("${app.plan.vencimiento.cron:0 0 3 * * *}");
         assertThat(programacion.zone()).isEqualTo("America/Argentina/Buenos_Aires");
-        assertThat(ConfiguracionDeTareasDelPlan.class).hasAnnotation(EnableScheduling.class);
+        assertThat(ConfiguracionDelPlan.class).hasAnnotation(EnableScheduling.class);
     }
 
     @Test
