@@ -65,9 +65,12 @@ const sinNulos = <T,>(lista: readonly (T | null)[]): T[] => lista.filter((x): x 
  * La semana completa de lunes a lunes (`[desde, hasta)`) en la zona del consultorio. Día y Semana piden el mismo
  * rango: así la tira de días tiene sus conteos y la copia sin conexión sirve para las dos vistas.
  */
-export async function obtenerAgendaDeSemana(http: ClienteHttp, lunes: string, zona: string): Promise<Agenda> {
-  const desde = instanteLocal(lunes, '00:00', zona).toISOString();
-  const hasta = instanteLocal(sumarDias(lunes, 7), '00:00', zona).toISOString();
+export function obtenerAgendaDeSemana(http: ClienteHttp, lunes: string, zona: string): Promise<Agenda> {
+  return obtenerAgendaEntre(http, instanteLocal(lunes, '00:00', zona).toISOString(), instanteLocal(sumarDias(lunes, 7), '00:00', zona).toISOString());
+}
+
+/** Turnos (en cualquier estado) y bloqueos que se cruzan con `[desde, hasta)`, instantes UTC. */
+export async function obtenerAgendaEntre(http: ClienteHttp, desde: string, hasta: string): Promise<Agenda> {
   const respuesta = await http.get<AgendaResponse | undefined>(`/api/v1/agenda?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`);
   return { turnos: sinNulos((respuesta?.turnos ?? []).map(aTurno)), bloqueos: sinNulos((respuesta?.bloqueos ?? []).map(aBloqueo)) };
 }
