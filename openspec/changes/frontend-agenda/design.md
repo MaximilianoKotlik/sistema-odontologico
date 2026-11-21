@@ -96,6 +96,6 @@ Los cancelados se atenúan **sin opacidad** (fondo `surface-muted`, texto `text-
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: `openspec/changes/frontend-agenda/mockups/` (`agenda.html`, `turno.html`, más `agenda.css` y `mockup.js`)
-- Approval: pending
+- Approval: approved (2026-11-20, by Maxi), versión `ffad4d0` (#27)
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
