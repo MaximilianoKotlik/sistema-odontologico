@@ -23,6 +23,6 @@ Las decisiones de UI están en `mockups/README.md` §Decisiones, aprobadas por M
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: openspec/changes/pacientes-revision/mockups/ (`agenda-aviso.html`, `pacientes.html`, `paciente.html`, más `base.css`, `agenda.css`, `pacientes.css` y `mockup.js`)
-- Approval: pending
+- Approval: approved (2026-11-20, by Maxi), versión dcb700b (#36)
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #36); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending

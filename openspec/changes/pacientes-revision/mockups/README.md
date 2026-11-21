@@ -1,6 +1,6 @@
 # Mockups de C-17 · `pacientes-revision`
 
-`Approval: pending`
+`Approval: approved (2026-11-20, by Maxi), versión dcb700b (#36)`
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #36) · capturas de página completa a 390×844 y 1440×900 (39). En mobile se renderizan con la ventana del alto de la página, así la barra inferior fija queda al final y no tapa contenido; la hoja "Más" es una captura del viewport. Sin scroll horizontal, sin errores de consola, controles de al menos 44 px y un solo `h1` por pantalla.
@@ -43,7 +43,7 @@ Maxi aprobó estas decisiones en la revisión de #36 (2026-11-20); la 6 se ajust
 3. **Solo se muestran los datos que difieren**; lo que coincide se resume en una línea ("Coinciden el apellido, el email y el teléfono"). El dato distinto lleva fondo, negrita, ícono y la palabra "Distinto": no depende solo del color.
 4. **DNI y teléfono no se editan**: el DNI es la clave (DD-24) y el teléfono queda fuera en v1 (alcance de C-17). Se muestran de solo lectura, con la razón.
 5. **"Pacientes" es una sección nueva del shell**: en desktop va en la barra lateral, después de "Bloqueos"; en mobile, dentro de "Más" (la barra inferior ya tiene sus cuatro lugares). El contador aparece en "Pacientes" y sobre "Más", con el número y un texto para lectores de pantalla. **Toca el shell de C-06 (Nacho).**
-6. **Aviso en la agenda** ("contador visible desde la agenda", scope de C-17): va **pegado al aviso de cambios de DD-30**, uno debajo del otro y con la misma jerarquía, en versión compacta (título, una línea y el link "Revisar pacientes", que lleva al filtro). Desaparece cuando no queda nadie para revisar. **Toca la agenda de C-13 (Nacho)**, que C-17 suma al implementar.
+6. **Aviso en la agenda** ("contador visible desde la agenda", scope de C-17): va **pegado al aviso de cambios de DD-30**, uno debajo del otro y con la misma jerarquía, en versión compacta (título, una línea y el link "Revisar pacientes", que lleva al filtro). Desaparece cuando no queda nadie para revisar. **Toca la agenda de C-13 (Nacho)**, que C-17 suma al implementar. **Para la implementación** (pedido de Maxi en #36): el link en línea "Revisar pacientes" tiene que tener un área táctil de al menos 44 px.
 7. **Lista**: ordenada por apellido, con DNI, teléfono y email. Los marcados muestran "Revisar" y una línea con lo que se escribió ("Escribió «Anna Ejemplo» al reservar el 18 de noviembre"). Paginada con "Mostrar más". Sin búsqueda en v1.
 8. **Sin conexión**: la lista y la revisión no se guardan en el dispositivo (son datos personales, igual que en C-06). Se avisa y no se puede revisar.
 9. **Otro consultorio**: un paciente ajeno responde 404 (RN-TE-04) y se ve "No encontramos este paciente", igual que un enlace roto.
