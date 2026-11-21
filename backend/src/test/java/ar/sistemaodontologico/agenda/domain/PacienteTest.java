@@ -1,0 +1,119 @@
+package ar.sistemaodontologico.agenda.domain;
+
+import static ar.sistemaodontologico.agenda.domain.IntervaloYDuracionTest.assertCodigo;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
+import java.time.Instant;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
+
+/** {@code Dni} y {@code Paciente} (C-10, tareas 3.5 y 3.6; spec pacientes, DD-24). Datos ficticios (regla dura 17). */
+class PacienteTest {
+
+    private static final PacienteId ID = new PacienteId(UUID.randomUUID());
+    private static final Consentimiento CONSENTIMIENTO =
+            new Consentimiento(Instant.parse("2026-11-20T12:00:00Z"), "2026-11-borrador");
+
+    // --- Dni (3.5) ---
+
+    @Test
+    void elDniSeGuardaSoloConDigitos() {
+        assertThat(new Dni("90.000.001").valor()).isEqualTo("90000001");
+        assertThat(new Dni("9.000.001").valor()).isEqualTo("9000001");
+        assertThat(new Dni(" 90 000 001 ").valor()).isEqualTo("90000001");
+    }
+
+    @Test
+    void dniInvalido() {
+        for (String invalido : new String[] {"90A00001", "123456", "123456789", "", "   ", "-9000001"}) {
+            assertCodigo(() -> new Dni(invalido), "DNI_INVALIDO");
+        }
+        assertCodigo(() -> new Dni(null), "DNI_INVALIDO");
+    }
+
+    @Test
+    void elDniNoApareceEnElTexto() {
+        assertThat(new Dni("90000001").toString()).doesNotContain("90000001");
+    }
+
+    // --- Paciente (3.6) ---
+
+    @Test
+    void pacienteValido() {
+        Paciente ana = Paciente.nuevo(ID, "  Ana ", " Prueba ", "90.000.001", "011 15-0000-0001", null,
+                OrigenPaciente.MANUAL, null);
+
+        assertThat(ana.nombre()).isEqualTo("Ana");
+        assertThat(ana.apellido()).isEqualTo("Prueba");
+        assertThat(ana.dni()).isEqualTo(new Dni("90000001"));
+        assertThat(ana.telefonoE164()).isEqualTo("+5491100000001");
+        assertThat(ana.email()).isNull();
+        assertThat(ana.requiereRevision()).isFalse();
+    }
+
+    @Test
+    void telefonoInvalidoUObligatorio() {
+        assertCodigo(() -> manual("Ana", "Prueba", "123", null), "TELEFONO_INVALIDO");
+        assertCodigo(() -> manual("Ana", "Prueba", null, null), "TELEFONO_INVALIDO");
+    }
+
+    @Test
+    void nombreYApellidoDe1A80() {
+        assertCodigo(() -> manual("   ", "Prueba", "+5491100000001", null), "VALIDACION");
+        assertCodigo(() -> manual("Ana", "", "+5491100000001", null), "VALIDACION");
+        assertCodigo(() -> manual("a".repeat(81), "Prueba", "+5491100000001", null), "VALIDACION");
+        assertThatCode(() -> manual("a".repeat(80), "b".repeat(80), "+5491100000001", null)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void emailOpcionalEnMinusculas() {
+        assertThat(manual("Ana", "Prueba", "+5491100000001", " Ana.Prueba@Example.com ").email())
+                .isEqualTo("ana.prueba@example.com");
+        assertThat(manual("Ana", "Prueba", "+5491100000001", "  ").email()).isNull();
+        assertCodigo(() -> manual("Ana", "Prueba", "+5491100000001", "ana@"), "VALIDACION");
+        assertCodigo(() -> manual("Ana", "Prueba", "+5491100000001", "ana prueba@example.com"), "VALIDACION");
+    }
+
+    @Test
+    void porLinkNecesitaConsentimiento() {
+        assertCodigo(() -> Paciente.nuevo(ID, "Ana", "Prueba", "90000001", "+5491100000001", null, OrigenPaciente.LINK,
+                null), "VALIDACION");
+        assertThat(Paciente.nuevo(ID, "Ana", "Prueba", "90000001", "+5491100000001", null, OrigenPaciente.LINK,
+                CONSENTIMIENTO).consentimiento()).isEqualTo(CONSENTIMIENTO);
+        assertCodigo(() -> new Consentimiento(Instant.parse("2026-11-20T12:00:00Z"), " "), "VALIDACION");
+    }
+
+    @Test
+    void marcarParaRevisionNoCambiaLosDatos() {
+        Paciente ana = manual("Ana", "Prueba", "+5491100000001", "ana@example.com");
+
+        Paciente marcado = ana.marcadoParaRevision();
+
+        assertThat(marcado.requiereRevision()).isTrue();
+        assertThat(marcado).usingRecursiveComparison().ignoringFields("requiereRevision").isEqualTo(ana);
+    }
+
+    @Test
+    void datosDistintosParaUnDniExistente() {
+        Paciente ana = manual("Ana", "Prueba", "+5491100000001", null);
+
+        assertThat(ana.datosDifierenDe("Ana María", "Prueba")).isTrue();
+        assertThat(ana.datosDifierenDe("Ana", "Pruebas")).isTrue();
+        assertThat(ana.datosDifierenDe(" ana ", "PRUEBA")).isFalse();
+    }
+
+    @Test
+    void laRepresentacionTextualNoTienePii() {
+        Paciente ana = manual("Ana", "Prueba", "+5491100000001", "ana.prueba@example.com");
+
+        assertThat(ana.toString())
+                .doesNotContain("Ana").doesNotContain("Prueba").doesNotContain("90000001")
+                .doesNotContain("+5491100000001").doesNotContain("example.com")
+                .contains(ID.valor().toString());
+    }
+
+    private static Paciente manual(String nombre, String apellido, String telefono, String email) {
+        return Paciente.nuevo(ID, nombre, apellido, "90000001", telefono, email, OrigenPaciente.MANUAL, null);
+    }
+}
