@@ -3,6 +3,7 @@ package ar.sistemaodontologico.auth.web;
 import ar.sistemaodontologico.auth.application.RegistrarOdontologo;
 import ar.sistemaodontologico.auth.application.RegistrarOdontologo.Resultado;
 import ar.sistemaodontologico.auth.application.RegistrarOdontologo.Solicitud;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -54,9 +55,9 @@ class ControladorDeRegistro {
 
     @PostMapping("/registro")
     @ResponseStatus(HttpStatus.CREATED)
-    RegistroResponse registrar(@Valid @RequestBody RegistroRequest pedido) {
+    RegistroResponse registrar(@Valid @RequestBody RegistroRequest pedido, HttpServletRequest peticion) {
         Resultado resultado = registro.registrar(new Solicitud(pedido.nombre(), pedido.apellido(), pedido.email(),
-                pedido.password(), pedido.nombreConsultorio(), pedido.aceptaTerminos()));
+                pedido.password(), pedido.nombreConsultorio(), pedido.aceptaTerminos()), peticion.getRemoteAddr());
         return new RegistroResponse(resultado.usuarioId(), resultado.consultorioId().valor(), resultado.slug());
     }
 }

@@ -1,9 +1,14 @@
 package ar.sistemaodontologico.auth.web;
 
 import ar.sistemaodontologico.auth.application.GestionDeSesion;
+import ar.sistemaodontologico.auth.application.GestionDeSesion.Bloqueada;
+import ar.sistemaodontologico.auth.application.GestionDeSesion.CredencialesInvalidas;
+import ar.sistemaodontologico.auth.application.GestionDeSesion.Exitoso;
 import ar.sistemaodontologico.auth.application.GestionDeSesion.Renovada;
 import ar.sistemaodontologico.auth.application.GestionDeSesion.Renovacion;
+import ar.sistemaodontologico.auth.application.GestionDeSesion.ResultadoLogin;
 import ar.sistemaodontologico.auth.application.GestionDeSesion.Sesion;
+import ar.sistemaodontologico.compartido.domain.error.AutenticacionRechazada;
 import ar.sistemaodontologico.compartido.web.ManejadorGlobalDeErrores;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
@@ -48,8 +53,15 @@ class ControladorDeSesion {
     }
 
     @PostMapping("/login")
-    ResponseEntity<SesionResponse> login(@RequestBody LoginRequest pedido) {
-        return conSesion(sesiones.iniciar(pedido.email(), pedido.password()));
+    ResponseEntity<SesionResponse> login(@RequestBody LoginRequest pedido, HttpServletRequest peticion) {
+        ResultadoLogin resultado = sesiones.iniciar(pedido.email(), pedido.password(), peticion.getRemoteAddr());
+        // Los rechazos se lanzan recién acá, con la transacción del login (contador y evento) ya confirmada.
+        return switch (resultado) {
+            case Exitoso exitoso -> conSesion(exitoso.sesion());
+            case CredencialesInvalidas invalidas ->
+                    throw new AutenticacionRechazada("CREDENCIALES_INVALIDAS", "Email o contraseña incorrectos");
+            case Bloqueada bloqueada -> throw new CuentaBloqueada(bloqueada.minutosRestantes());
+        };
     }
 
     @PostMapping("/refresh")

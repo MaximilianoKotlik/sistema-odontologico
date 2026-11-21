@@ -1,5 +1,7 @@
 package ar.sistemaodontologico.auth.infrastructure.seguridad;
 
+import ar.sistemaodontologico.auth.application.LimitadorDeSolicitudes;
+import ar.sistemaodontologico.auth.infrastructure.PropiedadesDeLimites;
 import ar.sistemaodontologico.compartido.application.TenantContext;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +32,9 @@ class ConfiguracionDeSeguridad {
 
     /** Endpoints de sesión: se autentican con credenciales o con la cookie de refresh, no con el access token. */
     static final String[] RUTAS_DE_SESION = {
-        "/api/v1/auth/registro", "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/logout"
+        "/api/v1/auth/registro", "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/logout",
+        // Recuperación de contraseña (C-05): quien la usa no tiene sesión.
+        "/api/v1/auth/recuperacion", "/api/v1/auth/recuperacion/confirmar"
     };
 
     private static final long UN_ANIO_EN_SEGUNDOS = 31_536_000L;
@@ -61,7 +65,8 @@ class ConfiguracionDeSeguridad {
     @Bean
     @org.springframework.core.annotation.Order(2)
     SecurityFilterChain cadenaDeSeguridad(HttpSecurity http, Environment entorno, TenantContext tenant,
-            RespuestasDeSeguridad respuestas, PropiedadesDeAuth propiedades) throws Exception {
+            RespuestasDeSeguridad respuestas, PropiedadesDeAuth propiedades, PropiedadesDeLimites limites,
+            LimitadorDeSolicitudes limitador) throws Exception {
         boolean local = entorno.acceptsProfiles(Profiles.of("local"));
         http
                 .csrf(csrf -> csrf.disable())
@@ -100,6 +105,9 @@ class ConfiguracionDeSeguridad {
                 // Antes que CORS: un origen ajeno en refresh/logout tiene que responder ORIGEN_NO_PERMITIDO en
                 // Problem Details, no el 403 vacío del CorsFilter.
                 .addFilterBefore(new FiltroDeOrigenDeSesion(propiedades.frontendOrigin(), respuestas), CorsFilter.class)
+                // Primero de todos: un 429 no llega a la autenticación ni cuenta como intento fallido (C-05, D8).
+                .addFilterBefore(new LimiteDeSolicitudesFilter(limites, limitador, respuestas),
+                        FiltroDeOrigenDeSesion.class)
                 .addFilterAfter(new FiltroDeConsultorioDeSesion(tenant), BearerTokenAuthenticationFilter.class);
         return http.build();
     }

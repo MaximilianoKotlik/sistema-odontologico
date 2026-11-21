@@ -23,6 +23,7 @@ val springdocVersion = "2.8.17"
 val archunitVersion = "1.4.2"
 val libphonenumberVersion = "8.13.55"
 val uuidGeneratorVersion = "5.1.0"
+val bucket4jVersion = "8.22.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -32,6 +33,8 @@ dependencies {
     // Autenticación stateless con JWT HS256 firmado y validado por Nimbus (C-04, design D2)
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    // Email de recuperación de contraseña por SMTP; Mailpit en local (C-05, design D5)
+    implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
@@ -39,6 +42,9 @@ dependencies {
     implementation("com.googlecode.libphonenumber:libphonenumber:$libphonenumberVersion")
     // Identificadores UUIDv7 generados en la aplicación (C-02, design D3)
     implementation("com.fasterxml.uuid:java-uuid-generator:$uuidGeneratorVersion")
+    // Rate limiting por clave en memoria, con buckets acotados en Caffeine (C-05, design D8)
+    implementation("com.bucket4j:bucket4j_jdk17-core:$bucket4jVersion")
+    implementation("com.github.ben-manes.caffeine:caffeine")
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

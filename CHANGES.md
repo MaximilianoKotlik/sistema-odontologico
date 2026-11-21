@@ -210,10 +210,10 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-06, DD-15
 
 ### [C-05] `auth-recuperacion-hardening`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #29, 2026-11-20)
 - **Scope**:
   - Migración: `token_recuperacion` (hash, 30 min, un solo uso).
-  - `POST /api/v1/auth/recuperacion` (202 idéntica exista o no el email) y `confirmar-recuperacion` (400 `TOKEN_INVALIDO` si está usado o vencido; revoca todos los refresh tokens); email por SMTP (Mailpit en local).
+  - `POST /api/v1/auth/recuperacion` (202 idéntica exista o no el email) y `POST /api/v1/auth/recuperacion/confirmar` (400 `TOKEN_INVALIDO` si está usado o vencido; revoca todos los refresh tokens); email por SMTP (Mailpit en local).
   - Cambio de contraseña con sesión iniciada (US-005, RN-AU-05): `POST /api/v1/auth/cambiar-password` con la contraseña actual; valida RN-AU-01; revoca **todos** los refresh tokens e incrementa `ver` (invalida los access tokens emitidos); 400 `PASSWORD_ACTUAL_INVALIDA` / `PASSWORD_DEBIL`.
   - Bloqueo de cuenta tras 5 fallos consecutivos (423 `CUENTA_BLOQUEADA` 15 min, mensaje genérico) y rate limiting Bucket4j sobre `/api/v1/auth/**`.
   - Eventos de auditoría de auth vía el puerto de C-02 (RN-AD-04): `CUENTA_CREADA`, `LOGIN_EXITOSO`, `LOGIN_FALLIDO`, `PASSWORD_CAMBIADA`, `PASSWORD_RECUPERADA`; nunca contraseñas, hashes ni tokens (RN-AD-05).
@@ -228,7 +228,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/10_preguntas_abiertas.md` §IN-01 (resuelta → DD-19 en `09_decisiones_y_supuestos.md`), PA-09
 
 ### [C-06] `frontend-shell-pwa`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #17, 2026-11-20)
 - **Scope**:
   - `tokens.css` del sistema de diseño importado y mapeado en `tailwind.config.ts`; `BRAND_NAME` desde `design-system/brand.js`.
   - `shared/`: router, cliente HTTP (fetch + refresh por cookie, token solo en memoria), store, `ui/` (botón, campo, chip de estado, diálogo, aviso, estado vacío según `components.html`), formateo de fechas con `Intl.DateTimeFormat('es-AR', { timeZone })`, `api-types.ts` generado.
@@ -333,9 +333,11 @@ Reglas de coordinación del paralelismo:
 - **Scope**:
   - `GET /api/v1/agenda?desde&hasta` (turnos, sobreturnos marcados, bloqueos, cancelados filtrables; indicador de "nuevos" por reservas/cambios de pacientes).
   - `POST /api/v1/turnos` (manual y `esSobreturno`), `PATCH /api/v1/turnos/{id}/estado`, `POST /api/v1/turnos/{id}/reprogramar` (sin anticipación mínima para el odontólogo; conserva el token de gestión), `PATCH /api/v1/turnos/{id}/duracion` (RN-AG-12), `PATCH /api/v1/turnos/{id}/nota` (RN-AD-01), `POST/DELETE /api/v1/bloqueos` (el `DELETE` audita `BLOQUEO_ELIMINADO`).
+  - `GET /api/v1/turnos/{id}`: detalle completo del turno para la pantalla de C-13 (paciente con DNI, teléfono y email, nota interna, motivo y autor de la cancelación, horario anterior si el paciente lo reprogramó). `GET /agenda` sigue liviano (sin DNI, teléfono, email ni texto de la nota) para no cargar datos personales de más en la caché offline. Decisión de Maxi en la revisión de #27.
+  - `POST /api/v1/turnos/{id}/visto`: marca como visto el cambio hecho por el paciente desde el link (DD-30). Es idempotente. Dónde se guarda la marca y si genera evento de auditoría (regla dura 7) lo define la propuesta de C-12.
   - Errores con código estable: 409 `TURNO_SOLAPADO`, `HORARIO_BLOQUEADO`, `FUERA_DE_DISPONIBILIDAD`, `BLOQUEO_CON_TURNOS` (con lista), `TRANSICION_INVALIDA`, `CONFLICTO_CONCURRENCIA`; 400 por duración no múltiplo de 5 o nota > 500.
   - OpenAPI actualizado y `api-types.ts` regenerado.
-  - Tests API/seguridad (MockMvc + Testcontainers) de US-012, US-021 a US-025 y aislamiento por tenant.
+  - Tests API/seguridad (MockMvc + Testcontainers) de US-012, US-021 a US-025 y aislamiento por tenant, incluidos el detalle y el visto (turno de otro consultorio = 404).
 - **Dependencias**: `C-11`
 - **Governance**: MEDIO
 - **Leer antes**:
@@ -523,6 +525,7 @@ Reglas de coordinación del paralelismo:
   - Revisión de `/seguridad` contra el código (RN-PL-06) antes del release.
   - Seed local completo para demo; README de arranque (`docker compose up --build`); textos de privacidad y términos como borrador marcado "pendiente de revisión legal" (PA-06), sin declarar cumplimiento no verificado.
   - Checklist previo al lanzamiento (PA-02 país del VPS y backups, revisión legal de DD-28, validación de valores por defecto con odontólogos) documentado, sin resolverlo en código.
+  - Checklist de despliegue, IP real detrás del reverse proxy (viene de C-05): el rate limit por IP usa `getRemoteAddr()`, y detrás del proxy del VPS todos los consultorios compartirían un mismo cupo (10 logins por minuto y 5 registros por hora). Configurar `server.forward-headers-strategy` (`native` o `framework`, según el proxy) y un proxy que **reemplace** `X-Forwarded-For` en vez de concatenarlo, y verificar con un test de humo que dos IPs distintas tengan cupos separados. Detalle en `backend/README.md`.
 - **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
 - **Leer antes**:
