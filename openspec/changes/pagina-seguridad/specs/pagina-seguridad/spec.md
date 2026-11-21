@@ -63,7 +63,7 @@ Cada afirmación de la fuente MUST declarar su respaldo (regla, decisión, chang
 
 ### Requirement: Revisión antes de publicar
 
-Antes de publicar una versión, una revisión automática MUST fallar si alguna afirmación depende de un change que no está completado en `CHANGES.md`, si alguna no tiene respaldo o si la fuente tiene marcadores `(TBD)` (proveedor y país del servidor, copias de seguridad, proveedor de email, email de seguridad). Mientras falle, la página MUST NOT publicarse.
+Antes de publicar una versión, una revisión automática MUST fallar si alguna afirmación depende de un change que no está completado en `CHANGES.md`, si alguna no tiene respaldo o si la fuente tiene marcadores `(TBD)` (proveedor del servidor, proveedor de email, email de seguridad). Mientras falle, la página MUST NOT publicarse.
 
 #### Scenario: Depende de un change sin terminar
 
@@ -73,7 +73,7 @@ Antes de publicar una versión, una revisión automática MUST fallar si alguna 
 
 #### Scenario: Quedan marcadores pendientes
 
-- **GIVEN** el país del servidor todavía figura como `(TBD)`
+- **GIVEN** el proveedor del servidor todavía figura como `(TBD)`
 - **WHEN** se corre la revisión
 - **THEN** falla y lista los marcadores pendientes
 

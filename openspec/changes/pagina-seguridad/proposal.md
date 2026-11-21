@@ -2,7 +2,7 @@
 
 > Change **C-22** de [CHANGES.md](../../../CHANGES.md) · Governance **ALTO** (afirmaciones públicas sobre datos de salud) · Depende de `C-03` (`auditoria-base`, `[x]`), `C-06` (`frontend-shell-pwa`, `[x]`) y `C-19` (`exportacion-datos`) · Responsable: Octi · Aprobación: Maxi.
 >
-> Es trabajo anticipado. El mockup ya está aprobado (#40, versión `1609d16`) y la propuesta de C-19 está en `main` (#32). El código se escribe recién cuando C-19 esté `[x]`. La página **no se publica** hasta resolver PA-02 (proveedor, país y backups del VPS), el proveedor SMTP, el email de seguridad y el TLS del VPS.
+> Es trabajo anticipado. El mockup ya está aprobado (#40, versión `1609d16`) y la propuesta de C-19 está en `main` (#32). El código se escribe recién cuando C-19 esté `[x]`. La página **no se publica** hasta cumplir el criterio de salida de C-23 (DD-40): proveedor del VPS en Argentina, backups con una restauración probada, TLS, proveedor SMTP declarado y email de seguridad.
 
 ## Why
 
@@ -18,7 +18,7 @@ La transparencia es el diferenciador de la v1, y para un odontólogo la primera 
 
 **Fuera de alcance**:
 - Los textos de términos y privacidad (`docs/legal/`, DD-28) y su revisión por un abogado.
-- Resolver PA-02, elegir el proveedor SMTP o definir el email de seguridad: la página los muestra como `(TBD)` y no se publica hasta tenerlos.
+- Contratar el VPS, elegir el proveedor SMTP o definir el email de seguridad: la página los muestra como `(TBD)` y no se publica hasta tenerlos (criterio de salida de C-23, DD-40).
 - La verificación en dos pasos (DD-35), que la página declara como faltante.
 
 ## Capabilities
@@ -34,11 +34,12 @@ La transparencia es el diferenciador de la v1, y para un odontólogo la primera 
 ## Impact
 
 - **Código**: `frontend/src/contenido/seguridad.json`, `frontend/src/features/seguridad/**`, la página en `frontend/src/pages/`, la tabla de `frontend/src/publico.ts` y el script `frontend/scripts/seguridad-revisar.mjs`. Sin cambios en `backend/`.
+- **Documentación en este PR**: `08_arquitectura_propuesta.md` §Seguridad cita DD-40 en vez de PA-02, y `CHANGES.md` §C-23 suma `npm run seguridad:revisar` a su criterio de salida.
 - **Dependencias**: ninguna nueva.
 - **Coordinación**:
   - **C-19 (Mati)**: "Tus datos son tuyos" describe la exportación tal como la define C-19 (ZIP con JSON, CSV y PDF, sin secretos, también con plan `VENCIDO`). Si cambia al implementar, se actualiza la fuente.
   - **C-18 (Mati)**: "Podés consultarlo desde tu cuenta" depende de C-18; si no está `[x]` al publicar, el comando de revisión lo marca y la frase se saca.
   - **C-15 y C-16**: la frase del link del paciente depende de los dos.
-  - **C-23 (Maxi)**: suma `npm run seguridad:revisar` a la checklist de release.
-- **Bloqueos de publicación** (no de implementación): PA-02, proveedor SMTP, email de seguridad (con el dominio, DD-34) y TLS del VPS.
-- **Preguntas abiertas**: toca PA-02 (Alta, acotada por DD-25). La propuesta es implementar la página con `(TBD)` en el proveedor, el país y los backups, y bloquear solo su **publicación** hasta resolverla (el comando de revisión falla con marcadores `(TBD)`). **Pregunta para Maxi**: ¿esto cumple la regla dura 16 o hay que resolver PA-02 antes de escribir el código?
+  - **C-23 (Maxi)**: `npm run seguridad:revisar` queda en su criterio de salida (se suma a §C-23 de CHANGES.md en este PR).
+- **Bloqueos de publicación** (no de implementación): el criterio de salida de C-23 (DD-40), con el proveedor del VPS, los backups con restauración probada, el TLS, el proveedor SMTP y el email de seguridad (con el dominio, DD-34).
+- **Preguntas abiertas**: ninguna Alta. PA-02 quedó cerrada con DD-40 (#42): servidor y backups en Argentina. Lo que falta son datos para publicar, no decisiones, así que se puede implementar (regla dura 16, confirmado por Maxi en #44).

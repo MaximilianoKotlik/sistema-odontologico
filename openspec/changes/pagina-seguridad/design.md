@@ -18,7 +18,7 @@
 
 - Un CMS o una API para editar el contenido en caliente.
 - Traducir la página (la v1 es solo es-AR).
-- Resolver PA-02 o los otros bloqueos de publicación.
+- Contratar el VPS o resolver los otros datos que faltan para publicar (criterio de salida de C-23, DD-40).
 
 ## Decisions
 
@@ -44,13 +44,13 @@ La página importa el JSON y arma el DOM con los helpers de C-06. No hay pedido 
 - alguna afirmación no tiene respaldo;
 - la fuente tiene marcadores `(TBD)`.
 
-Lista cada problema con la afirmación y el motivo. Es un script aparte y no un test de CI porque, mientras PA-02 siga abierta, fallaría siempre y bloquearía cualquier PR. Lo corre la checklist de release de C-23 antes de publicar.
+Lista cada problema con la afirmación y el motivo. Es un script aparte y no un test de CI porque, mientras falten el proveedor del VPS, el SMTP y el email de seguridad, fallaría siempre y bloquearía cualquier PR. Está en el criterio de salida de C-23 (`CHANGES.md` §C-23), que se corre antes de publicar.
 
 - **Alternativa descartada**: un test que falle en CI. Frenaría el trabajo de todo el equipo por un bloqueo que solo importa al publicar.
 
 ### D4 — Los tests de la página validan la fuente y las frases prohibidas
 
-Los tests Vitest verifican que la página muestra la fecha y "Lo que todavía no está", que su texto coincide con la fuente, que cada afirmación tiene respaldo (este sí corre en CI: no depende de PA-02) y que no aparecen frases prohibidas (certificaciones, cumplimiento legal, "100 % seguro", "contraseña cifrada").
+Los tests Vitest verifican que la página muestra la fecha y "Lo que todavía no está", que su texto coincide con la fuente, que cada afirmación tiene respaldo (este sí corre en CI: no depende de los datos que faltan para publicar) y que no aparecen frases prohibidas (certificaciones, cumplimiento legal, "100 % seguro", "contraseña cifrada").
 
 ### D5 — Ruta pública y marcadores visibles
 
@@ -60,16 +60,16 @@ Los tests Vitest verifican que la página muestra la fecha y "Lo que todavía no
 
 - **[Una afirmación queda vieja después de un cambio de código]** → el campo `requiere` y el script de D3 solo detectan changes sin terminar, no regresiones. Mitigación: la checklist de release pide revisar el respaldo de cada frase contra el código, como exige RN-PL-06.
 - **[Se publica con `(TBD)`]** → el script de D3 falla y la página muestra los marcadores a la vista.
-- **[Regla dura 16 y PA-02]** → se implementa con `(TBD)` y se bloquea solo la publicación; queda como pregunta para Maxi en el proposal.
+- **[Regla dura 16]** → resuelta: PA-02 cerró con DD-40 (#42) y no queda ninguna pregunta Alta. Los `(TBD)` son datos para publicar, no decisiones (confirmado por Maxi en #44).
 - **[Divergencia con C-19]** → si la exportación cambia al implementarse, la frase de "Tus datos son tuyos" se actualiza en la fuente; su `requiere` incluye C-19.
 
 ## Migration Plan
 
-Sin migración. Se despliega cuando C-19 esté `[x]`, pero la página se publica recién cuando `npm run seguridad:revisar` pase: PA-02 resuelta, proveedor SMTP elegido, email de seguridad definido y TLS confirmado en el VPS.
+Sin migración. Se despliega cuando C-19 esté `[x]`, pero la página se publica recién cuando `npm run seguridad:revisar` pase y se cumpla el criterio de salida de C-23 (DD-40): VPS en Argentina contratado, backups con una restauración probada, TLS, proveedor SMTP declarado y email de seguridad definido.
 
 ## Open Questions
 
-- ¿Implementar con `(TBD)` cumple la regla dura 16, o hay que resolver PA-02 antes de escribir el código? (ver proposal).
+- Ninguna. La pregunta sobre la regla dura 16 la resolvió DD-40 (#42), confirmado por Maxi en la revisión de #44.
 
 ## UI Mockups
 

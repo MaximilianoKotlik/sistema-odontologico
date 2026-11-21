@@ -6,11 +6,11 @@
 
 - [x] 1.1 Obtener la aprobación de Maxi para el mockup de `/seguridad`; verificar `Approval: approved` en `design.md` y en `mockups/README.md` (#40, versión `1609d16`)
 - [ ] 1.2 Confirmar que C-19 está mergeado y `[x]` en `CHANGES.md` (C-03 y C-06 ya lo están); verificar con `git log origin/main --oneline`
-- [ ] 1.3 Registrar la respuesta de Maxi sobre la regla dura 16 y PA-02 (implementar con `(TBD)` o resolver antes); verificar que quedó en `design.md` §Open Questions o como DD
+- [x] 1.3 Confirmar que no queda ninguna pregunta Alta abierta: PA-02 cerró con DD-40 (#42) y Maxi lo confirmó en la revisión de #44; verificar `design.md` §Open Questions
 
 ## 2. Fuente versionada
 
-- [ ] 2.1 Crear `frontend/src/contenido/seguridad.json` con el contenido aprobado del mockup (versión `1609d16`), el respaldo y `requiere` de cada afirmación (D1); verificar con un test Vitest que el type guard lo acepta y rechaza una afirmación sin `texto`
+- [ ] 2.1 Crear `frontend/src/contenido/seguridad.json` con el contenido aprobado del mockup (versión `1609d16`, con el texto de hosting actualizado por DD-40 en #44), el respaldo y `requiere` de cada afirmación (D1); verificar con un test Vitest que el type guard lo acepta y rechaza una afirmación sin `texto`
 - [ ] 2.2 Escribir el test de que cada afirmación declara respaldo y de que la fuente no tiene frases prohibidas (D4); verificar que falla con una afirmación sin respaldo y con "certificado" agregados a propósito, y pasa con la fuente real
 
 ## 3. Página
@@ -22,15 +22,15 @@
 ## 4. Revisión antes de publicar
 
 - [ ] 4.1 Implementar `npm run seguridad:revisar` (D3): falla si una afirmación requiere un change sin `[x]`, si no tiene respaldo o si hay `(TBD)`, y lista cada problema; verificar con tests del script usando un `CHANGES.md` y una fuente de prueba para cada caso
-- [ ] 4.2 Documentar el comando en el README del frontend y pedir a C-23 que lo sume a la checklist de release; verificar el texto en el README y el pedido en el PR
+- [ ] 4.2 Documentar el comando en el README del frontend; verificar el texto en el README y que `CHANGES.md` §C-23 lo incluye en su criterio de salida
 
 ## 5. Verificación integrada
 
 - [ ] 5.1 Recorrer `/seguridad` contra el mockup aprobado (versión `1609d16`) a 360, 390 y 1440 px; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible y sin errores de consola
 - [ ] 5.2 Revisar cada afirmación de la fuente contra el código mergeado (RN-PL-06) y dejar la tabla afirmación → respaldo → evidencia en el PR
-- [ ] 5.3 Pasar `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, correr `npm run seguridad:revisar` (se espera que falle por los `(TBD)` hasta resolver PA-02) y abrir el PR con commits conventional en español que referencien `(C-22)`; verificar el PR listo para revisión de Maxi
+- [ ] 5.3 Pasar `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, correr `npm run seguridad:revisar` (se espera que falle por los `(TBD)` hasta cumplir el criterio de salida de C-23) y abrir el PR con commits conventional en español que referencien `(C-22)`; verificar el PR listo para revisión de Maxi
 
 ## Workflow follow-up
 
 - Cuando Maxi apruebe el PR, el autor suma en el mismo PR el commit de cierre: `[x]` en `CHANGES.md` y `openspec archive pagina-seguridad` (CLAUDE.md, ciclo del PR).
-- La publicación de `/seguridad` espera a que `npm run seguridad:revisar` pase (PA-02, proveedor SMTP, email de seguridad y TLS del VPS).
+- La publicación de `/seguridad` espera a que `npm run seguridad:revisar` pase y se cumpla el criterio de salida de C-23 (DD-40).

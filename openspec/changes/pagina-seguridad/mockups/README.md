@@ -38,7 +38,7 @@ Maxi aprobó las seis decisiones en la revisión de #40 (2026-11-20).
 
 ## Bloqueos para publicar
 
-- **PA-02 bloquea la publicación**: el proveedor y país del VPS, los backups y el proveedor SMTP aparecen como `(TBD)`. La página no puede publicarse con esos marcadores; se completan cuando se decida PA-02 (antes de cargar pacientes reales, DD-25).
+- **Criterio de salida de C-23 (DD-40)**: el país ya está decidido (servidor y backups en Argentina, con la política de backups de DD-40). Quedan como `(TBD)` el proveedor del VPS y el proveedor SMTP. La página no se publica con esos marcadores. *Texto actualizado en la revisión de la propuesta (#44), a pedido de Maxi, sobre la versión aprobada `1609d16`.*
 - **TLS en el VPS**: "la conexión viaja cifrada (HTTPS)" vale cuando el VPS tenga TLS configurado. Hay que confirmarlo antes de publicar.
 - **Email de seguridad** (decidido por Maxi en #40): va en "Cómo cuidamos el acceso" como `(TBD)`. Se define junto con el dominio (DD-34) y bloquea la publicación igual que PA-02.
 
@@ -58,6 +58,6 @@ Abrí `seguridad.html` directo en el navegador (funciona con `file://`) y usá l
 - [ ] "Lo que todavía no está" es completa: revisión legal, 2FA, certificaciones, país y backups, baja de la cuenta.
 - [ ] Ninguna frase declara cumplimiento legal ni certificaciones (RN-PL-05, LG-10).
 - [ ] Fuente versionada compilada con la página (decisión 1).
-- [ ] Bloqueos: PA-02, TLS en el VPS y email de seguridad.
+- [ ] Bloqueos (criterio de salida de C-23, DD-40): proveedor del VPS, proveedor SMTP, TLS y email de seguridad.
 - [ ] Ajustes de #40: huella en vez de "versión cifrada", DD-38 en "Qué datos guardamos", email de seguridad `(TBD)` y 08 corregido.
 - [ ] Textos en es-AR con voseo; solo tokens rev. 1; foco visible; objetivos ≥ 44 px; estados con ícono y texto.
