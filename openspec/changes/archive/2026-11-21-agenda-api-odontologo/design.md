@@ -43,7 +43,7 @@
 
 ### D3 — `cambioPaciente` y el horario anterior, desde la auditoría
 - **`turno.novedad_paciente_at`** (C-15 D14) dice **que** hubo un cambio del paciente sin ver, pero no **cuál**. C-13 necesita el tipo, y el detalle necesita el horario anterior si el paciente reprogramó.
-- **Se derivan del registro de auditoría**, por un puerto de lectura de `auditoria.application`:
+- **Se derivan del registro de auditoría**, por un puerto de lectura. *Ajuste de la implementación*: el puerto es `compartido.application.ConsultaDeAuditoria`, implementado en `auditoria.infrastructure`, como `PublicadorDeAuditoria`. La regla ArchUnit `auditoriaSoloPorElPuerto` (C-03) no deja que otro módulo dependa de `auditoria`:
   - si `novedad_paciente_at` no es nulo, se toma el último evento del turno con actor `PACIENTE`;
   - `TURNO_CREADO` → `RESERVO`, `TURNO_REPROGRAMADO` → `REPROGRAMO` y `TURNO_ESTADO_CAMBIADO` a `CANCELADO` → `CANCELO`;
   - el horario anterior es el `valor_anterior` del último `TURNO_REPROGRAMADO` con actor `PACIENTE`.
@@ -73,6 +73,7 @@
   - el cambio que la puso ya está auditado (`TURNO_CREADO`, `TURNO_REPROGRAMADO` o `TURNO_ESTADO_CAMBIADO`, C-15 D14);
   - ninguna otra columna de `turno` cambia sin evento.
 - **La migración**: si al rebasar `turno.novedad_paciente_at` todavía no existe porque C-15 no se mergeó, este change la crea en `V{n}__turno_novedad_paciente.sql`, con `ADD COLUMN IF NOT EXISTS` para que C-15 no la duplique.
+  - *Al mergear*: C-15 (#47) se mergeó antes y la creó en `V7__token_gestion_turno.sql`. Este change no agrega migración; `MigracionNovedadPacienteTest` verifica la columna (revisión de Maxi en #48).
 
 ### D6 — Errores y el turno con el que choca
 - **Estados HTTP**:
@@ -89,6 +90,8 @@
   - **Con letras**: busca el nombre o el apellido que empiezan con alguna de las palabras, sin distinguir mayúsculas. Usa el índice `ix_paciente_consultorio_apellido` de C-10.
 - **Respuesta**: `id`, `nombre`, `apellido`, `dni`, `telefono` y `requiereRevision`. Son datos del propio consultorio, para elegir al paciente.
 - **Logs**: el valor de `q` se reemplaza por `***` en el log de acceso y en el MDC, igual que el token de gestión de C-15 (`PatronDeRutaSensible`), porque puede ser un DNI o un teléfono (RN-GL-01).
+  - *Ajuste de la implementación*: hoy el backend no tiene log de acceso ni pone la URL en el MDC, y `PatronDeRutaSensible` (C-15) enmascara el token en la ruta, no la query. Lo que sí escribe la query es el `DispatcherServlet` en DEBUG. `FiltroDeParametrosSensibles` (`compartido.infrastructure.logging`) le pasa al resto de la cadena un `getQueryString()` con `q=***`, y el parámetro se sigue leyendo sin cambios.
+  - Un log de acceso de Tomcat no pasaría por el filtro. Si se habilita, su patrón va sin `%q`. C-15 puede sumar sus rutas al mismo filtro.
 - *Alternativa*: `POST /pacientes/busqueda` con body → saca el dato de la URL, pero se aparta del alcance de #34 y del contrato de C-14.
 
 ### D8 — Bloqueos
@@ -125,7 +128,7 @@
 
 ## Migration Plan
 
-- Aditiva y condicional: solo `novedad_paciente_at`, si C-15 no la trajo. El rollback es no mergear.
+- Sin migración propia: `novedad_paciente_at` llegó con C-15 (`V7__token_gestion_turno.sql`). El rollback es no mergear.
 
 ## Open Questions
 

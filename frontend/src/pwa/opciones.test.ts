@@ -70,6 +70,19 @@ describe('Workbox (pwa-offline: política de caché)', () => {
     }
   });
 
+  it('no guarda las respuestas con datos personales de la agenda (C-12, revisión de Maxi en #39)', () => {
+    // La búsqueda de pacientes y el detalle del turno traen DNI y teléfono: solo GET /api/v1/agenda va a la caché.
+    const patron = reglas[0]?.urlPattern;
+    for (const ruta of [
+      '/api/v1/pacientes?q=90000001',
+      '/api/v1/turnos/0192f3a4-0000-7000-8000-000000000001',
+      '/api/v1/turnos/fuera-de-disponibilidad',
+      '/api/v1/bloqueos?desde=2026-11-23T03:00:00Z',
+    ]) {
+      expect(coincide(patron, ruta), ruta).toBe(false);
+    }
+  });
+
   it('no aplica la estrategia a métodos que no sean GET', () => {
     expect(reglas.every((r) => (r.method ?? 'GET') === 'GET')).toBe(true);
   });
