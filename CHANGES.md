@@ -297,7 +297,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 3 — Agenda del odontólogo
 
 ### [C-10] `agenda-esquema-dominio`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #18, 2026-11-21)
 - **Scope**:
   - Migración: `paciente` (único `(consultorio_id, dni)` por DD-24, consentimiento, `requiere_revision`), `turno` (`duracion_min`, `es_sobreturno`, `nota_interna VARCHAR(500)`, `version`, restricción `turno_sin_solapamiento` EXCLUDE GiST, FKs compuestas), `bloqueo` (índice GiST).
   - Dominio puro (sin Spring/JPA): entidades y value objects (`Intervalo` semiabierto, `Duracion` múltiplo de 5), `CalculadoraDeHuecos` (disponibilidad, bloqueos, paso, anticipación mínima, horizonte), `ValidadorDeSolapamiento`, `MaquinaDeEstadosTurno` (RESERVADO/CONFIRMADO/CANCELADO/AUSENTE), derivación `fin = inicio + duracion_min` (RN-AG-12), reglas de bloqueo (rechazo con lista de conflictos), invariantes de sobreturno.
@@ -326,7 +326,8 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/05_reglas_de_negocio.md` §Agenda (RN-AG), RN-RP-03, §Auditoría (RN-AD-01, RN-AD-04, RN-AD-05), RN-GL-02
   - `knowledge-base/06_funcionalidades.md` §US-012, US-021 a US-025
   - `knowledge-base/07_flujos_principales.md` §FL-03
-  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-17
+  - `knowledge-base/09_decisiones_y_supuestos.md` §DD-17, DD-24 (paciente por DNI; DD-09 quedó reemplazada)
+  - `openspec/changes/archive/*-agenda-esquema-dominio/design.md` §Risks: **serializar las escrituras de agenda por consultorio** con el mismo bloqueo que C-08 usa en la grilla (`SELECT 1 FROM consultorio WHERE id = :id FOR UPDATE`), no con un lock consultivo aparte. Así turnos, bloqueos, reservas (C-15) y cambios de grilla quedan en una sola cola (revisión de Maxi en #18). La exclusión GiST no cruza tablas: sin ese bloqueo, un turno y un bloqueo concurrentes podrían pasar las dos validaciones.
 
 ### [C-12] `agenda-api-odontologo`
 - **Estado**: `[ ]` pendiente
