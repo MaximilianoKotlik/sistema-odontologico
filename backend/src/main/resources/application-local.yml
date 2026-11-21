@@ -1,4 +1,9 @@
 # Perfil de desarrollo local (docker compose).
+spring:
+  flyway:
+    # Seed de demo solo en local (C-08, design D11): db/seed-local/README.md.
+    locations: classpath:db/migration,classpath:db/seed-local
+
 springdoc:
   swagger-ui:
     enabled: true

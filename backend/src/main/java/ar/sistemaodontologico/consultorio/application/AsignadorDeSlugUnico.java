@@ -2,7 +2,9 @@ package ar.sistemaodontologico.consultorio.application;
 
 import ar.sistemaodontologico.compartido.domain.slug.SugeridorDeSlug;
 import ar.sistemaodontologico.compartido.domain.slug.ValidadorDeSlug;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +25,34 @@ public class AsignadorDeSlugUnico {
         return primeroLibre(SugeridorDeSlug.sugerir(nombreConsultorio));
     }
 
+    /** Si ningún consultorio usa el slug (C-08, cambio de slug). */
+    public boolean estaLibre(String slug) {
+        return !enUso.empiezanCon(slug).contains(slug);
+    }
+
+    /**
+     * Hasta {@code cantidad} slugs libres {@code -N} a partir del pedido, que ya está tomado (C-08, design D7).
+     * Se recorta la base para no pasar del largo máximo.
+     */
+    public List<String> sugerencias(String pedido, int cantidad) {
+        return libres(pedido, cantidad, false);
+    }
+
     String primeroLibre(String base) {
+        return libres(base, 1, true).get(0);
+    }
+
+    private List<String> libres(String base, int cantidad, boolean incluirBase) {
         // Se consulta por el prefijo que comparten la base y los candidatos de la longitud de sufijo en curso. Cuando
         // el sufijo crece (de "-999" a "-1000") la base se recorta más, así que se vuelve a consultar con ese prefijo
         // más corto (revisión de Mati en #16).
         int largoConsultado = ValidadorDeSlug.LARGO_MAXIMO - 4;
         Set<String> tomados = new HashSet<>(enUso.empiezanCon(recortar(base, largoConsultado)));
-        if (!tomados.contains(base)) {
-            return base;
+        List<String> libres = new ArrayList<>();
+        if (incluirBase && !tomados.contains(base)) {
+            libres.add(base);
         }
-        for (int numero = 2; ; numero++) {
+        for (int numero = 2; libres.size() < cantidad; numero++) {
             String sufijo = "-" + numero;
             int largoDeBase = ValidadorDeSlug.LARGO_MAXIMO - sufijo.length();
             if (largoDeBase < largoConsultado) {
@@ -41,9 +61,10 @@ public class AsignadorDeSlugUnico {
             }
             String candidato = recortar(base, largoDeBase) + sufijo;
             if (!tomados.contains(candidato)) {
-                return candidato;
+                libres.add(candidato);
             }
         }
+        return libres;
     }
 
     private static String recortar(String base, int largoMaximo) {

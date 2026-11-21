@@ -2,3 +2,11 @@
 logging:
   level:
     org.testcontainers: WARN
+
+# Cada contexto de Spring que queda en caché abre su propio pool contra el contenedor compartido (max_connections
+# = 100). Con 10 por pool, la suite se queda sin conexiones al sumar contextos (C-08); 4 alcanza para los tests,
+# incluido el de dos transacciones concurrentes.
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 4
