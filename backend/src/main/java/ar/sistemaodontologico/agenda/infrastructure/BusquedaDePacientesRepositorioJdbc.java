@@ -12,9 +12,10 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 /**
- * El buscador de pacientes con JdbcClient (C-12, design D7). Las palabras van como prefijo contra
- * {@code lower(apellido)} y {@code lower(nombre)}, las columnas del índice {@code ix_paciente_consultorio_apellido} de
- * C-10. Los {@code %}, {@code _} y {@code \} que escribe el usuario se escapan: no son comodines.
+ * El buscador de pacientes con JdbcClient (C-12, design D7). Las palabras van como prefijo contra el nombre y el
+ * apellido en minúsculas y sin tildes ({@code unaccent}, V8): "perez" encuentra a "Pérez". Sin índice propio: la
+ * búsqueda ya queda acotada a los pacientes de un consultorio. Los {@code %}, {@code _} y {@code \} que escribe el
+ * usuario se escapan: no son comodines.
  */
 @Repository
 class BusquedaDePacientesRepositorioJdbc implements BusquedaDePacientesRepositorio {
@@ -37,7 +38,8 @@ class BusquedaDePacientesRepositorioJdbc implements BusquedaDePacientesRepositor
             }
             case PorPalabras(List<String> palabras) -> {
                 condicion = "(" + String.join(" OR ", palabras.stream()
-                        .map(palabra -> "lower(apellido) LIKE ? ESCAPE '\\' OR lower(nombre) LIKE ? ESCAPE '\\'")
+                        .map(palabra -> "lower(unaccent(apellido)) LIKE unaccent(?) ESCAPE '\\'"
+                                + " OR lower(unaccent(nombre)) LIKE unaccent(?) ESCAPE '\\'")
                         .toList()) + ")";
                 patrones = palabras.stream()
                         .flatMap(palabra -> java.util.stream.Stream.of(sinComodines(palabra) + "%",

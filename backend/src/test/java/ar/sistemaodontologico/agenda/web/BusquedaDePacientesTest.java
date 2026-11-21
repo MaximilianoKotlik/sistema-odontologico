@@ -44,6 +44,16 @@ class BusquedaDePacientesTest extends ApiDeAgendaTest {
     }
 
     @Test
+    void sinDistinguirTildes() throws Exception {
+        UUID jose = agenda.paciente("José", "Pérez");
+
+        buscar("perez").andExpect(jsonPath("$[*].id", contains(jose.toString())));
+        buscar("PÉREZ").andExpect(jsonPath("$[*].id", contains(jose.toString())));
+        buscar("jose").andExpect(jsonPath("$[*].id", contains(jose.toString())));
+        buscar("Ánà").andExpect(jsonPath("$[*].id", contains(ana.toString())));
+    }
+
+    @Test
     void elNombreTieneQueEmpezarConLaPalabra() throws Exception {
         buscar("rueba").andExpect(jsonPath("$").isEmpty());
     }
