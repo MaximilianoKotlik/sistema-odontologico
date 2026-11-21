@@ -263,7 +263,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 2 — Configuración del consultorio
 
 ### [C-08] `consultorio-config-backend`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #15, 2026-11-20)
 - **Scope**:
   - Migración: `tipo_prestacion` (duración múltiplo de 5, `activa`, `visible_publica`, único por nombre) y `disponibilidad` (franjas semanales con exclusión GiST para no solaparse).
   - Endpoints: `GET/PUT /api/v1/consultorio` (nombre, slug, teléfono de contacto, anticipaciones, paso de huecos, `reserva_publica_activa`; 400/409 por slug reservado o en uso), CRUD de `/api/v1/prestaciones` (desactivar en vez de borrar), `PUT /api/v1/disponibilidad` (400 `FRANJAS_SOLAPADAS`).

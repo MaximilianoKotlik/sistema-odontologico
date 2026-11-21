@@ -45,7 +45,10 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
     private static final Map<String, ErrorDeConstraint> ERRORES_DE_CONSTRAINT = Map.of(
             "uk_consultorio_slug", new ErrorDeConstraint(HttpStatus.CONFLICT, "SLUG_EN_USO"),
             // C-04: dos registros simultáneos con el mismo email (el chequeo previo no ve la carrera).
-            "uk_usuario_email", new ErrorDeConstraint(HttpStatus.CONFLICT, "EMAIL_EN_USO"));
+            "uk_usuario_email", new ErrorDeConstraint(HttpStatus.CONFLICT, "EMAIL_EN_USO"),
+            // C-08 (design D5 y D8): carreras que el chequeo previo de la aplicación no ve.
+            "uk_tipo_prestacion_nombre", new ErrorDeConstraint(HttpStatus.CONFLICT, "PRESTACION_DUPLICADA"),
+            "ex_disponibilidad_sin_solape", new ErrorDeConstraint(HttpStatus.BAD_REQUEST, "FRANJAS_SOLAPADAS"));
 
     private static final Map<Integer, String> CODIGOS_POR_ESTADO = Map.of(
             400, "SOLICITUD_INVALIDA",
@@ -72,7 +75,9 @@ public class ManejadorGlobalDeErrores extends ResponseEntityExceptionHandler {
             case NO_ENCONTRADO -> HttpStatus.NOT_FOUND;
             case CONFLICTO -> HttpStatus.CONFLICT;
         };
-        return respuesta(problema(estado, error.getCodigo(), error.getMessage(), peticion));
+        ProblemDetail problema = problema(estado, error.getCodigo(), error.getMessage(), peticion);
+        error.getPropiedades().forEach(problema::setProperty);
+        return respuesta(problema);
     }
 
     @ExceptionHandler(OptimisticLockingFailureException.class)
