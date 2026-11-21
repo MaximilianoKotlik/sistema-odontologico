@@ -94,6 +94,11 @@ Cada evento SHALL traer el nombre del actor: nombre y apellido del odontólogo s
 - **WHEN** se lee su evento `TURNO_CREADO`
 - **THEN** el actor es `PACIENTE` con nombre `Paciente Uno Prueba`, y el contexto trae el inicio del turno y el paciente
 
+#### Scenario: Intento de inicio de sesión fallido
+- **GIVEN** un `LOGIN_FALLIDO` registrado con actor `ODONTOLOGO` sin `actor_id`
+- **WHEN** se lee el evento
+- **THEN** el actor es `ODONTOLOGO` sin id ni nombre, y el evento trae la IP
+
 #### Scenario: Evento del sistema
 - **WHEN** se lee un evento con actor `SISTEMA`
 - **THEN** el actor no trae nombre

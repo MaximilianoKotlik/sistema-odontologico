@@ -88,7 +88,8 @@ LIMIT :tamano + 1
   - Instantes en la zona del consultorio con `shared/fechas.ts`, estados con su nombre, minutos y Sí/No.
   - Para `nota_interna` se muestra el texto completo: es del odontólogo, no del paciente.
   - Una clave desconocida se muestra cruda.
-- **IP**: viene en la respuesta y se muestra solo en los eventos de acceso (`LOGIN_*` y `PASSWORD_*`), donde sirve para detectar un acceso ajeno. En el resto es ruido.
+- **IP**: viene en la respuesta y se muestra solo en los eventos de acceso (`LOGIN_*` y `PASSWORD_*`), donde sirve para detectar un acceso ajeno. En el resto es ruido. Decidido por Maxi.
+- **Actor sin id**: `LOGIN_FALLIDO` se registra con `actor_tipo = ODONTOLOGO` y `actor_id` nulo, porque quien intenta todavía no está autenticado (C-05, design D9). La UI lo muestra como **"Sin sesión"**, con el texto "Intento fallido de iniciar sesión con tu email", el número de intento (`intentos_fallidos` de 5) y la IP. Nunca como "Sistema": ese actor queda para operaciones internas, como el pase de plan de RN-PL-04 (revisión de Maxi al PR #35). El catálogo cubre cualquier evento con `actor_id` nulo: "Sin sesión" si el tipo es `ODONTOLOGO` o `PACIENTE`, y "Sistema" solo si el tipo es `SISTEMA`.
 
 ### D7 — Fechas del filtro
 - `desde` y `hasta` son `LocalDate` en la zona del consultorio (RN-TE-05). El intervalo es `[desde 00:00 local, (hasta + 1) 00:00 local)`, convertido a `Instant` con la zona actual del consultorio.
@@ -118,12 +119,14 @@ LIMIT :tamano + 1
 
 ## Open Questions
 
-Para la revisión de Maxi:
+Resueltas por Maxi en la revisión del PR #35 (2026-11-20):
 
-1. **Orden del registro**: propongo del más nuevo al más viejo, como cualquier registro de actividad. El historial de un turno va del más viejo al más nuevo, como dice US-040. CHANGES.md dice "orden cronológico" para los dos. ¿Se confirma?
-2. **Eventos de acceso en el registro** (`LOGIN_EXITOSO` y `LOGIN_FALLIDO`): ¿se muestran junto con el resto (propuesta, con su grupo "Accesos" en el filtro) o se ocultan por defecto?
-3. **IP visible solo en los accesos** (D6): ¿se confirma o se muestra en todos los eventos?
-4. **Contexto del turno con su estado actual** (D3): ¿alcanza, o hace falta el horario de ese momento? Este último requiere reconstruirlo desde los eventos.
+1. **Orden**: el registro del consultorio va del más nuevo al más viejo, y el historial del turno en orden cronológico (US-040). "Orden cronológico" de CHANGES.md §C-18 se corrige en el commit de cierre.
+2. **Eventos de acceso**: se muestran junto con el resto, con el grupo "Accesos" en el filtro.
+3. **IP**: solo en los eventos de acceso (`LOGIN_*` y `PASSWORD_*`) (D6).
+4. **Contexto del turno**: alcanza con su estado actual, porque cada fila muestra el "antes → después" (D3).
+
+Ajustes de mockup pedidos y aplicados: el actor "Sin sesión" para `LOGIN_FALLIDO` (D6) y las capturas de desktop con la barra lateral de alto completo.
 
 ## UI Mockups
 
@@ -131,5 +134,5 @@ Para la revisión de Maxi:
 - Decision: yes (2026-11-20). Dos pantallas: `/app/auditoria` y la tarjeta "Historial" del detalle del turno.
 - Mockups: [`mockups/registro.html`](mockups/registro.html) y [`mockups/turno-historial.html`](mockups/turno-historial.html), con su [README](mockups/README.md).
 - Approval: pending
-- Preview: rendered (2026-11-20), 24 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440x900, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola.
+- Preview: rendered (2026-11-20, versión 2 con los ajustes de la revisión del PR #35), 24 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440 de ancho, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola.
 - Visual verify: pendiente (tarea 6.1).

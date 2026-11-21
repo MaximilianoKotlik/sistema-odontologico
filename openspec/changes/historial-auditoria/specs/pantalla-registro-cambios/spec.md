@@ -64,6 +64,14 @@ Los valores anterior y nuevo MUST mostrarse con etiquetas en español y en el fo
 - **WHEN** se muestra
 - **THEN** la fila muestra `campo_nuevo` con su valor anterior y nuevo
 
+### Requirement: Actor sin sesión
+Un evento con `actor_id` nulo y tipo `ODONTOLOGO` o `PACIENTE` MUST mostrarse con el actor "Sin sesión", nunca como "Sistema". "Sistema" queda solo para el tipo `SISTEMA`.
+
+#### Scenario: Login fallido
+- **GIVEN** un `LOGIN_FALLIDO` con actor `ODONTOLOGO` sin id, 1 intento fallido y la IP `203.0.113.24`
+- **WHEN** se muestra en el registro
+- **THEN** la fila dice "Intento fallido de iniciar sesión con tu email", con el actor "Sin sesión", "1 de 5 intentos" y la IP
+
 ### Requirement: Accesibilidad del registro
 La sección y la tarjeta MUST cumplir AA: la lista como lista semántica con encabezados por día, los "antes → después" leíbles por lectores de pantalla ("antes 10:00, después 11:00"), objetivos táctiles de al menos 44 px, foco visible, y estados de actor y acción con texto, no solo color.
 

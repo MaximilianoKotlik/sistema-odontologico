@@ -4,7 +4,7 @@
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20).
-  - 24 capturas a 390×844 (del tamaño de la ventana, para que la navegación inferior fija no tape contenido) y 1440×900 (página completa).
+  - 24 capturas a 390×844 (del tamaño de la ventana, para que la navegación inferior fija no tape contenido) y a 1440 de ancho con la ventana del alto de la página. Así la barra lateral llega hasta abajo, igual que en las capturas de C-13.
   - Sin desborde horizontal en 360, 390 y 1440 px, y sin errores de consola.
 - Preparado e implementa: Mati (trabajo anticipado). El plan del equipo le asignaba el mockup a Octi. El código se escribe cuando C-12 y C-13 estén `[x]` y Maxi apruebe estos mockups y la propuesta.
 
@@ -48,7 +48,7 @@ Para verlos: servir la raíz del repo (`python -m http.server`) y entrar a `/ope
 4. **Tipo de cambio agrupado por tema** (`optgroup`): Turnos, Bloqueos, Configuración, Pacientes, Accesos y Exportaciones, en lenguaje de usuario y no con los códigos (design D6).
 5. **Filtro por turno como chip removible**. Se llega con "Ver en el registro de cambios" desde el detalle. Los filtros viven en la URL (design D8).
 6. **IP visible solo en los accesos** (design Open Question 3), en tipografía mono y discreta.
-7. **Un intento de sesión fallido** usa el ícono en tono de alerta, para que se destaque al recorrer la lista.
+7. **Un intento de sesión fallido** usa el ícono en tono de alerta, para que se destaque al recorrer la lista. Se muestra con el actor **"Sin sesión"**, porque C-05 lo registra como `ODONTOLOGO` sin id, nunca como "Sistema", con el número de intento y la IP (revisión de Maxi).
 8. **El error del historial no rompe el detalle**: la tarjeta muestra su propio error con "Reintentar".
 9. **Sin conexión**: el registro no se cachea (tiene datos personales), así que se muestra el aviso y no hay filtros.
 

@@ -5,7 +5,7 @@
 > Es trabajo anticipado. Se apoya en C-03 (mergeado: `evento_auditoria` append-only), en la propuesta y los mockups de C-13 (mergeados en `openspec/changes/frontend-agenda/`) y en las propuestas de C-15 (#30) y C-19 (#32), que agregan eventos al registro. C-12 todavía no tiene propuesta. El código no se escribe hasta que se cumplan tres condiciones:
 > - C-12 y C-13 están `[x]`.
 > - Maxi aprobó esta propuesta y los mockups (modo `system-and-mockups`).
-> - Las decisiones de `design.md` §Open Questions están resueltas.
+> - Las preguntas de `design.md` §Open Questions ya las resolvió Maxi en la revisión del PR #35.
 
 ## Why
 

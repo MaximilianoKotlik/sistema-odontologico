@@ -10,7 +10,7 @@
 ## 1. Preparación
 
 - [ ] 1.1 Rebasar sobre `main` con C-12 y C-13 mergeados. Verificar el puerto de lectura del turno de C-12 (design D2), los nombres de columnas de `turno`, `paciente` y `usuario` que usa D3, y las acciones que publican los módulos (D6) (verificación: suite existente en verde y la lista de acciones en el PR)
-- [ ] 1.2 Volcar al design las respuestas de Maxi a §Open Questions, ajustando specs y tareas si cambian (verificación: `openspec validate historial-auditoria --strict` en verde)
+- [x] 1.2 Volcar al design las respuestas de Maxi a §Open Questions (revisión del PR #35) (verificación: `openspec validate historial-auditoria --strict` en verde)
 
 ## 2. Dominio y cursor
 
