@@ -84,8 +84,30 @@ Un paciente SHALL registrar su origen (`LINK` si se dio de alta al reservar por 
 
 #### Scenario: Marcar para revisión
 - **GIVEN** un paciente sin revisión pendiente
-- **WHEN** se lo marca para revisión
-- **THEN** el paciente queda con revisión pendiente y sus datos no cambian
+- **WHEN** se lo marca para revisión con lo informado en la reserva
+- **THEN** el paciente queda con revisión pendiente, sus datos no cambian y guarda lo informado
+
+### Requirement: Datos informados en la reserva
+Mientras un paciente tiene la revisión pendiente, SHALL guardar lo escrito en la reserva que la disparó: nombre y apellido (de 1 a 80 caracteres), email opcional, el instante y el turno de origen, si lo hay (DD-38). Si llega otra reserva antes de revisar, MUST quedar la última. Sin revisión pendiente, las cinco columnas MUST ser `NULL`, y la base MUST impedirlo (minimización, Ley 25.326). El turno de origen MUST ser del mismo consultorio que el paciente.
+
+#### Scenario: Marcar con lo informado
+- **GIVEN** el paciente "Ana Prueba" con DNI `90000001`
+- **WHEN** se lo marca para revisión con lo informado "Anna Prueba"
+- **THEN** su nombre sigue siendo "Ana" y lo informado es "Anna Prueba"
+
+#### Scenario: Otra reserva antes de revisar
+- **GIVEN** un paciente con revisión pendiente y lo informado "Anna Prueba"
+- **WHEN** se lo vuelve a marcar con lo informado "Anita Prueba"
+- **THEN** lo informado es "Anita Prueba"
+
+#### Scenario: Datos informados sin revisión pendiente
+- **WHEN** se guarda un paciente sin revisión pendiente y con alguna de las columnas de lo informado
+- **THEN** la base rechaza la fila por `ck_paciente_informado`
+
+#### Scenario: Turno de origen de otro consultorio
+- **GIVEN** un paciente del consultorio A con revisión pendiente
+- **WHEN** se guarda como turno de origen un turno del consultorio B
+- **THEN** la base rechaza la fila por `fk_paciente_informado_turno`
 
 ### Requirement: Los pacientes no se borran
 La aplicación MUST NOT poder borrar pacientes de la base (RN-AG-07).

@@ -39,6 +39,7 @@
 
   Después, crear la restricción (verificación: escenarios "La base rechaza el solapamiento aunque se saltee la validación" y "Reactivar un horario ocupado en la base")
 - [x] 2.4 Test de integración de `bloqueo`: fin no posterior al inicio falla, horario fuera de la grilla falla, dos bloqueos superpuestos pasan, `app_rw` conserva `DELETE` y el índice GiST existe. Después, crear la tabla (verificación: escenario "La base rechaza un bloqueo invertido")
+- [x] 2.5 Test de integración: sin revisión pendiente, cualquiera de `nombre_informado`, `apellido_informado`, `email_informado`, `informado_at` o `informado_turno_id` falla por `ck_paciente_informado`; con revisión pendiente se guardan y, al revisar, hay que limpiarlas; un turno de origen de otro consultorio falla por `fk_paciente_informado_turno`. Después, sumar las columnas y la FK compuesta con un `ALTER TABLE` al final de la `V6` (verificación: escenarios "Datos informados sin revisión pendiente" y "Turno de origen de otro consultorio")
 
 ## 3. Value objects y entidades
 
@@ -57,6 +58,8 @@
 - [x] 3.4 `Bloqueo`: rango válido, varios días, grilla de 5 minutos y motivo de hasta 120 caracteres (verificación: escenarios de "Bloqueo con inicio y fin explícitos")
 - [x] 3.5 Value object `Dni`: quita puntos y espacios, exige 7 u 8 dígitos y rechaza con `DNI_INVALIDO`; `toString()` sin el número (verificación: escenarios de "DNI normalizado")
 - [x] 3.6 `Paciente`: recorte y largo de nombre y apellido, `Dni`, teléfono obligatorio por `NormalizadorDeTelefono`, email opcional, consentimiento obligatorio con origen `LINK`, `datosDifierenDe` para un DNI existente, marcar para revisión y `toString()` sin PII (verificación: escenarios del spec `pacientes`)
+- [x] 3.7 `DatosInformados` y `Paciente.marcadoParaRevision(informados)` (DD-38, pedido de Maxi en #18): nombre y apellido obligatorios, email normalizado, instante y turno de origen opcional; solo con la revisión pendiente; una reserva nueva reemplaza lo informado; `toString()` sin PII (verificación: escenarios de "Datos informados en la reserva")
+- [ ] 3.8 `Paciente.datosDifierenDe` ignora los acentos (NFD sin diacríticos), además de las mayúsculas y los espacios en los extremos: "José Pérez" no difiere de "jose perez". Es la regla de C-15 D7 (pedido de Maxi en #18, desde #38). Primero el test en rojo (verificación: escenario "Mismo DNI con acentos distintos")
 
 ## 4. Validadores
 

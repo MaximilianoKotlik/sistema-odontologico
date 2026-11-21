@@ -100,6 +100,58 @@ class MigracionAgendaTest extends IntegracionPostgresTest {
                 .isFalse();
     }
 
+    // --- datos informados en la reserva (DD-38) ---
+
+    @Test
+    void sinRevisionPendienteNoHayDatosInformados() {
+        UUID turno = insertarTurno(consultorio, DIEZ, 30, "RESERVADO", false);
+        String[] asignaciones = {"nombre_informado = 'Anna'", "apellido_informado = 'Ejemplo'",
+            "email_informado = 'anna@example.com'", "informado_at = now()", "informado_turno_id = '" + turno + "'"};
+
+        for (String asignacion : asignaciones) {
+            assertThatThrownBy(() -> jdbc.update("UPDATE paciente SET " + asignacion + " WHERE id = ?", paciente))
+                    .as(asignacion)
+                    .isInstanceOf(DataIntegrityViolationException.class)
+                    .hasMessageContaining("ck_paciente_informado");
+        }
+    }
+
+    @Test
+    void conRevisionPendienteSeGuardaLoInformadoYAlRevisarSeBorra() {
+        UUID turno = insertarTurno(consultorio, DIEZ, 30, "RESERVADO", false);
+
+        assertThat(jdbc.update("""
+                UPDATE paciente SET requiere_revision = true, nombre_informado = 'Anna', apellido_informado = 'Ejemplo',
+                       email_informado = 'Anna@Example.com', informado_at = now(), informado_turno_id = ?
+                WHERE id = ?""", turno, paciente)).isEqualTo(1);
+        assertThat(jdbc.queryForObject(
+                "SELECT count(*) FROM paciente WHERE id = ? AND email_informado = 'anna@example.com'", Integer.class,
+                paciente)).isEqualTo(1);
+
+        // Revisar sin limpiar lo informado no pasa; revisar y limpiar, sí (C-17).
+        assertThatThrownBy(() -> jdbc.update("UPDATE paciente SET requiere_revision = false WHERE id = ?", paciente))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContaining("ck_paciente_informado");
+        assertThat(jdbc.update("""
+                UPDATE paciente SET requiere_revision = false, nombre_informado = NULL, apellido_informado = NULL,
+                       email_informado = NULL, informado_at = NULL, informado_turno_id = NULL
+                WHERE id = ?""", paciente)).isEqualTo(1);
+    }
+
+    @Test
+    void elTurnoInformadoEsDelMismoConsultorio() {
+        UUID otro = insertarConsultorio();
+        insertarPrestacion(otro);
+        UUID turnoDeOtro = insertarTurnoEn(otro, DIEZ);
+
+        assertThatThrownBy(() -> jdbc.update("""
+                UPDATE paciente SET requiere_revision = true, nombre_informado = 'Anna', apellido_informado = 'Ejemplo',
+                       informado_at = now(), informado_turno_id = ?
+                WHERE id = ?""", turnoDeOtro, paciente))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContaining("fk_paciente_informado_turno");
+    }
+
     @Test
     void elRolDeAplicacionNoBorraPacientesNiTurnos() {
         UUID turno = insertarTurno(consultorio, DIEZ, 30, "RESERVADO", false);

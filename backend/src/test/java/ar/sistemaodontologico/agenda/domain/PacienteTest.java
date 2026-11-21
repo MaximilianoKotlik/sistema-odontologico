@@ -14,6 +14,8 @@ class PacienteTest {
     private static final PacienteId ID = new PacienteId(UUID.randomUUID());
     private static final Consentimiento CONSENTIMIENTO =
             new Consentimiento(Instant.parse("2026-11-20T12:00:00Z"), "2026-11-borrador");
+    private static final DatosInformados INFORMADOS = new DatosInformados("Anna", "Prueba", "anna@example.com",
+            Instant.parse("2026-11-20T12:00:00Z"), new TurnoId(UUID.randomUUID()));
 
     // --- Dni (3.5) ---
 
@@ -85,13 +87,48 @@ class PacienteTest {
     }
 
     @Test
-    void marcarParaRevisionNoCambiaLosDatos() {
+    void marcarParaRevisionNoCambiaLosDatosYGuardaLoInformado() {
         Paciente ana = manual("Ana", "Prueba", "+5491100000001", "ana@example.com");
 
-        Paciente marcado = ana.marcadoParaRevision();
+        Paciente marcado = ana.marcadoParaRevision(INFORMADOS);
 
         assertThat(marcado.requiereRevision()).isTrue();
-        assertThat(marcado).usingRecursiveComparison().ignoringFields("requiereRevision").isEqualTo(ana);
+        assertThat(marcado.informados()).isEqualTo(INFORMADOS);
+        assertThat(marcado).usingRecursiveComparison().ignoringFields("requiereRevision", "informados").isEqualTo(ana);
+    }
+
+    @Test
+    void unaReservaNuevaAntesDeRevisarReemplazaLoInformado() {
+        DatosInformados ultima = new DatosInformados("Anita", "Prueba", null, Instant.parse("2026-11-21T12:00:00Z"),
+                null);
+
+        Paciente marcado = manual("Ana", "Prueba", "+5491100000001", null).marcadoParaRevision(INFORMADOS)
+                .marcadoParaRevision(ultima);
+
+        assertThat(marcado.informados()).isEqualTo(ultima);
+    }
+
+    @Test
+    void sinRevisionPendienteNoHayDatosInformados() {
+        Paciente ana = manual("Ana", "Prueba", "+5491100000001", null);
+
+        assertThat(ana.informados()).isNull();
+        assertCodigo(() -> new Paciente(ana.id(), "Ana", "Prueba", ana.dni(), ana.telefonoE164(), null,
+                OrigenPaciente.MANUAL, false, null, INFORMADOS), "VALIDACION");
+    }
+
+    @Test
+    void losDatosInformadosSeNormalizan() {
+        DatosInformados informados = new DatosInformados(" Anna ", " Ejemplo ", " Anna@Example.com ",
+                Instant.parse("2026-11-20T12:00:00Z"), null);
+
+        assertThat(informados.nombre()).isEqualTo("Anna");
+        assertThat(informados.apellido()).isEqualTo("Ejemplo");
+        assertThat(informados.email()).isEqualTo("anna@example.com");
+        assertThat(informados.turnoOrigen()).isNull();
+        assertCodigo(() -> new DatosInformados(" ", "Ejemplo", null, Instant.now(), null), "VALIDACION");
+        assertCodigo(() -> new DatosInformados("Anna", "Ejemplo", "anna@", Instant.now(), null), "VALIDACION");
+        assertThat(informados.toString()).doesNotContain("Anna").doesNotContain("Ejemplo").doesNotContain("example");
     }
 
     @Test

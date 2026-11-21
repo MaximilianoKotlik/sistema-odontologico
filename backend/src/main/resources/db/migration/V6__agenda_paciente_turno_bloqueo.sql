@@ -15,6 +15,13 @@ CREATE TABLE paciente (
     consentimiento_at       TIMESTAMPTZ,
     -- 40 como usuario.terminos_version: la versión vigente ("2026-11-borrador") no entra en los 10 de 04.
     consentimiento_version  VARCHAR(40),
+    -- Lo escrito en la reserva que disparó la revisión (DD-38): datos temporales, se borran al revisar (C-17).
+    -- La FK de informado_turno_id va al final, porque turno se crea después.
+    nombre_informado        VARCHAR(80),
+    apellido_informado      VARCHAR(80),
+    email_informado         CITEXT,
+    informado_at            TIMESTAMPTZ,
+    informado_turno_id      UUID,
     created_at              TIMESTAMPTZ  NOT NULL DEFAULT now(),
     updated_at              TIMESTAMPTZ  NOT NULL DEFAULT now(),
 
@@ -27,7 +34,12 @@ CREATE TABLE paciente (
     CONSTRAINT ck_paciente_origen CHECK (origen IN ('LINK', 'MANUAL')),
     -- Quien reserva por el link acepta la política de privacidad (LG-03).
     CONSTRAINT ck_paciente_consentimiento CHECK (
-        origen <> 'LINK' OR (consentimiento_at IS NOT NULL AND consentimiento_version IS NOT NULL))
+        origen <> 'LINK' OR (consentimiento_at IS NOT NULL AND consentimiento_version IS NOT NULL)),
+    -- DD-38: sin revisión pendiente, las cinco columnas de lo informado son NULL (minimización, Ley 25.326).
+    -- Incluye el CHECK (requiere_revision OR informado_at IS NULL) de 04 §Paciente.
+    CONSTRAINT ck_paciente_informado CHECK (
+        requiere_revision
+        OR num_nonnulls(nombre_informado, apellido_informado, email_informado, informado_at, informado_turno_id) = 0)
 );
 
 CREATE INDEX ix_paciente_consultorio_apellido ON paciente (consultorio_id, lower(apellido), lower(nombre));
@@ -89,6 +101,11 @@ CREATE INDEX ix_turno_consultorio_paciente_inicio ON turno (consultorio_id, paci
 
 -- RN-AG-07: un turno se cancela, no se borra.
 REVOKE DELETE ON turno FROM "${app-user}";
+
+-- DD-38: el turno de origen de lo informado es del mismo consultorio que el paciente.
+ALTER TABLE paciente
+    ADD CONSTRAINT fk_paciente_informado_turno FOREIGN KEY (consultorio_id, informado_turno_id)
+        REFERENCES turno (consultorio_id, id);
 
 CREATE TABLE bloqueo (
     id              UUID         NOT NULL,
