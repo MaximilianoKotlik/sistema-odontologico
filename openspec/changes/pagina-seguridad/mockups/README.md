@@ -1,6 +1,6 @@
 # Mockups de C-22 · `pagina-seguridad`
 
-`Approval: pending`
+`Approval: approved (2026-11-20, by Maxi), versión 1609d16 (#40)`
 
 - Design system revision: 1
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #40) · capturas de página completa a 390×844 y 1440×900 (4). En mobile, con la ventana del alto de la página. Sin scroll horizontal, sin errores de consola, controles de al menos 44 px y un solo `h1`.

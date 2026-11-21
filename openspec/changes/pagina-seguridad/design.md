@@ -25,6 +25,6 @@ Las decisiones de UI y de contenido están en `mockups/README.md` §Decisiones, 
 - Design system revision: 1
 - Decision: yes (2026-11-20)
 - Mockups: openspec/changes/pagina-seguridad/mockups/ (`seguridad.html`, más `seguridad.css` y `mockup.js`)
-- Approval: pending
+- Approval: approved (2026-11-20, by Maxi), versión 1609d16 (#40)
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #40); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
