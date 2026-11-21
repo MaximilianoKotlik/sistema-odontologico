@@ -78,6 +78,18 @@ Tests de backend sin base de datos (carga y validación de configuración, contr
 
 Sin migración de base de datos ni datos que preservar. El despliegue publica configuración + backend + frontend en el mismo release; ante un problema se revierte la imagen anterior y se repone la configuración versionada previa. `CHANGES.md` no se modifica para marcar avance: lo hace el líder al mergear.
 
+## Implementation Notes (2026-11-20)
+
+Ajustes que surgieron al implementar, dentro del alcance de la spec:
+
+- **Lectura por consulta, no al arranque (D1)**: `FuenteDePlanesYaml` lee `planes.yaml` en cada pedido. Así un archivo inválido responde `PLANES_NO_DISPONIBLES` (503), como pide la spec, en vez de impedir el arranque de toda la API. La ubicación se puede cambiar con `app.planes.recurso` (por defecto `classpath:planes.yaml`).
+- **Importes y fecha entre comillas (D2)**: sin comillas, YAML convierte el importe en float y la fecha en `Date`; la fuente los descarta, así que el plan no se publica (o el catálogo es inválido).
+- **Contrato (D3)**: se agregó `descripcion` (opcional) para la línea "Un odontólogo · un consultorio." del mockup. `actualizadoEn` se serializa siempre como ISO-8601 (`@JsonFormat`). Todos los campos, salvo `descripcion`, son obligatorios en el OpenAPI. El importe publicado es `"14900.00"` (DD-22) y la fecha `2026-11-20T03:00:00Z`, medianoche en Buenos Aires.
+- **503 en el manejador global**: `TipoDeError` suma `NO_DISPONIBLE`, que `ManejadorGlobalDeErrores` traduce a 503. El mapeo de errores a HTTP sigue en un solo lugar.
+- **Página pública sin shell (D4)**: `main.ts` monta `/precios` con `publico.ts`, sin shell, sesión ni `Authorization`. Es la primera página pública; C-07 y C-16 pueden sumar las suyas a la tabla de `publico.ts`. El enlace "Crear mi consultorio" va a `/registro` (C-07).
+- **Formato de importe**: la parte entera se formatea como `BigInt` con `Intl.NumberFormat("es-AR")` y los centavos se agregan tal cual, sin pasar nunca por float: "$ 14.900".
+- **Período**: "por mes" es texto de la página (DD-22 define un plan mensual); el contrato no tiene período.
+
 ## Open Questions
 
 - ¿Nombre comercial definitivo? Es PA-12, no afecta el contrato ni las specs: se resuelve cambiando `BRAND_NAME` cuando el Product Owner lo decida.
@@ -89,4 +101,4 @@ Sin migración de base de datos ni datos que preservar. El despliegue publica co
 - Mockups: openspec/changes/c-21-pagina-precios/mockups/
 - Approval: approved (2026-11-20, by user)
 - Preview: rendered (2026-11-20); `previews/precios-mobile-390x844.png`, `previews/precios-desktop-1440x900.png`
-- Visual verify: pending
+- Visual verify: passed (2026-11-20); `mockups/verify/precios-{catalogo,error}-{mobile-360x800,mobile-390x844,desktop-1440x900}.png`, API simulada con Playwright (sin Docker no hay backend local)
