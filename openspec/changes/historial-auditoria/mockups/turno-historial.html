@@ -12,7 +12,7 @@
 <script src="../../../../design-system/brand.js" defer></script>
 <script src="mockup.js" defer></script>
 </head>
-<body data-estados="historial:Historial del turno|historial-cargando:Historial cargando|historial-error:Error al cargar el historial">
+<body data-estados="historial:Historial del turno|historial-cargando:Historial cargando|historial-error:Error al cargar el historial|historial-dni:Reserva con DNI repetido">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M12 4.5c-4 0-7 1.6-7 5.6 0 2.4.8 4 1.6 7.2.8 3.2.8 5.2 2 5.2 1.6 0 1.6-4 3.4-4s1.8 4 3.4 4c1.2 0 1.2-2 2-5.2.8-3.2 1.6-4.8 1.6-7.2 0-4-3-5.6-7-5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
@@ -67,7 +67,7 @@
     <header class="topbar"><h1 class="page-title">Turno</h1><span class="grow"></span></header>
     <main class="content" id="contenido" tabindex="-1">
       <a class="back" href="agenda.html?estado=dia"><svg aria-hidden="true"><use href="#i-left"/></svg>Volver a la agenda</a>
-      <article class="det" data-solo="historial historial-cargando historial-error" aria-labelledby="t-reprogramado">
+      <article class="det" data-solo="historial historial-dni historial-cargando historial-error" aria-labelledby="t-reprogramado">
         <div class="stack" style="gap:var(--space-4)">
           <div class="det-head"><div class="tags"><span class="chip reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span></div><h2 id="t-reprogramado">Hernán Muestra</h2><p class="when" style="margin:0">Viernes 20 de noviembre · 18:00 a 18:30</p></div>
           <div class="notice info" role="status" style="margin:0"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Cambio de tu paciente</strong><p>Lo reprogramó desde tu link ayer a las 21:40. Antes era el jueves 19 a las 16:30. Ya lo marcamos como visto.</p></div></div>
@@ -87,13 +87,25 @@
                   <dl class="cambios"><dt>Inicio</dt><dd><span class="sr">antes </span><span class="antes">jue 19/11 16:30</span><svg class="flecha" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr">, después </span><span class="despues">vie 20/11 18:00</span></dd></dl></div>
               </li>
             </ol>
+            <ol class="hist" data-solo="historial-dni">
+              <li>
+                <span class="punto pac" aria-hidden="true"><svg><use href="#i-link"/></svg></span>
+                <div><span class="que">Reservó por tu link</span><span class="cuando">Reserva con este DNI · lun 16/11 10:12</span>
+                  <dl class="cambios"><dt>Turno</dt><dd><span class="despues">jue 19/11 16:30 · Consulta · 30 min</span></dd></dl></div>
+              </li>
+              <li>
+                <span class="punto pac" aria-hidden="true"><svg><use href="#i-link"/></svg></span>
+                <div><span class="que">Reprogramó por el link</span><span class="cuando">Reserva con este DNI · jue 19/11 21:40</span>
+                  <dl class="cambios"><dt>Inicio</dt><dd><span class="sr">antes </span><span class="antes">jue 19/11 16:30</span><svg class="flecha" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr">, después </span><span class="despues">vie 20/11 18:00</span></dd></dl></div>
+              </li>
+            </ol>
             <div data-solo="historial-cargando" aria-busy="true" aria-label="Cargando el historial"><span class="skel"></span><span class="skel w60"></span><span class="skel"></span></div>
             <div class="notice danger inline" role="alert" data-solo="historial-error" style="margin:0">
               <svg aria-hidden="true"><use href="#i-alert"/></svg>
               <div><strong>No pudimos cargar el historial</strong><p>El resto del turno se ve igual.</p>
                 <div class="actions"><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-refresh"/></svg>Reintentar</button></div></div>
             </div>
-            <p class="hist-pie" data-solo="historial"><a href="registro.html?estado=turno"><svg aria-hidden="true"><use href="#i-arrow"/></svg>Ver en el registro de cambios</a></p>
+            <p class="hist-pie" data-solo="historial historial-dni"><a href="registro.html?estado=turno"><svg aria-hidden="true"><use href="#i-arrow"/></svg>Ver en el registro de cambios</a></p>
           </section>
         </div>
         <div class="stack" style="gap:var(--space-4)">

@@ -77,6 +77,19 @@ Un evento con `actor_id` nulo y tipo `ODONTOLOGO` o `PACIENTE` MUST mostrarse co
 - **WHEN** se muestra en el registro
 - **THEN** la fila dice "Intento fallido de iniciar sesión con tu email", con el actor "Sin sesión", "1 de 5 intentos" y la IP
 
+### Requirement: Reserva con un DNI en revisión
+Un evento con `actor.identidadEnRevision: true` MUST mostrar como actor "Reserva con este DNI", en el historial del turno y en el registro, y MUST NOT mostrar el nombre de la ficha como autor del cambio.
+
+#### Scenario: Revisión pendiente
+- **GIVEN** un turno reservado con el DNI de Hernán Muestra y otro nombre, con la revisión pendiente
+- **WHEN** el odontólogo abre su historial
+- **THEN** el evento dice "Reservó por tu link" con el actor "Reserva con este DNI", y no atribuye la reserva a Hernán Muestra
+
+#### Scenario: Revisión resuelta
+- **GIVEN** la revisión de ese paciente ya resuelta
+- **WHEN** el odontólogo abre el historial del mismo turno
+- **THEN** el evento muestra como actor el nombre que quedó en la ficha
+
 ### Requirement: Accesibilidad del registro
 La sección y la tarjeta MUST cumplir AA: la lista como lista semántica con encabezados por día, los "antes → después" leíbles por lectores de pantalla ("antes 10:00, después 11:00"), objetivos táctiles de al menos 44 px, foco visible, y estados de actor y acción con texto, no solo color.
 
