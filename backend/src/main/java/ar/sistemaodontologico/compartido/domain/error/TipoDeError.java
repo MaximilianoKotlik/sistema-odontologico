@@ -5,5 +5,6 @@ public enum TipoDeError {
     VALIDACION,
     NO_AUTENTICADO,
     NO_ENCONTRADO,
-    CONFLICTO
+    CONFLICTO,
+    NO_DISPONIBLE
 }
