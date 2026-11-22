@@ -107,4 +107,15 @@
 - Mockups: `openspec/changes/frontend-turnos-bloqueos/mockups/` (`nuevo-turno.html`, `acciones-turno.html`, `bloqueos.html`, `aviso-fuera-de-horario.html`, más `c14.css`, y `base.css`, `agenda.css` y `mockup.js` copiados de C-13)
 - Approval: approved (2026-11-20, by Maxi), versión `e91e1b8` (#31). El estado `aviso-fuera-de-horario` se sumó después, a pedido de Maxi (#34)
 - Preview: rendered (2026-11-20); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
-- Visual verify: pending
+- Visual verify: passed (2026-11-22), con el backend local de C-12 y datos ficticios, a 1440×900, 390×844 y 360×780 (sin scroll horizontal). Capturas en `mockups/verify/`. Consola sin errores propios: los 409 son los rechazos provocados a propósito y los 404 son de `GET /api/v1/plan`, porque el backend del contenedor local es anterior a C-20.
+  - Pantallas revisadas: nuevo turno (vacío, buscar, paciente elegido, alta con DNI inválido, aviso de superposición, `solapado`, creado y sobreturno creado), acciones del detalle (confirmar, cancelar, duración con rechazo, reprogramar, nota), bloqueos (lista, `con-turnos`, eliminar, mobile) y aviso de turnos fuera de horario (con turnos y sin turnos).
+  - Ajustes durante la verificación: el aviso previo de superposición ya no se repite debajo de un rechazo, y un cambio de día, hora o prestación saca el rechazo viejo; el "+" del selector de duración no se achica; la casilla de sobreturno usa las mismas clases que las de C-09.
+  - Desvíos para que decida Maxi:
+    1. Confirmar sin diálogo: si responde `TRANSICION_INVALIDA`, se avisa con un toast y se recarga el detalle, en vez del aviso dentro del detalle del estado `transicion`. En Cancelar y Marcar ausente sí se ve el aviso de concurrencia dentro del diálogo.
+    2. El buscador de pacientes no resalta el texto buscado en los resultados (`mark` del mockup).
+    3. "Guardamos tus horarios" se anuncia con la región `aria-live` de C-09 y no con un toast visible como en el mockup del aviso.
+    4. `BLOQUEO_CON_TURNOS` trae solo los ids: los turnos se nombran con la agenda del rango, que C-12 limita a 42 días; más allá se listan como "Turno en ese horario" con su link.
+    5. Bloqueos: "Esta semana" es la semana calendario (hasta el domingo); un bloqueo del lunes que viene va a "Más adelante".
+  - Preexistente, no es de este change: con el sistema en modo oscuro, `tokens.css` declara `color-scheme: dark` y las casillas y los selectores nativos se ven oscuros sobre la paleta clara (pasa igual en C-09). Las capturas se tomaron con el esquema claro. Además, en Horarios (C-09) las franjas se muestran sin ordenar justo después de guardar; al recargar quedan en orden.
+  - D4, para revisar: no se muestra ayuda extra para pacientes sin DNI argentino, como proponía el diseño.
+  - De paso: el detalle de C-13 muestra el teléfono agrupado (`+54 9 11 0000-0001`), uno de los desvíos menores de C-13.
