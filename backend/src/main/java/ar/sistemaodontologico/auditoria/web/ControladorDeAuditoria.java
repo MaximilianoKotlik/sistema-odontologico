@@ -49,7 +49,7 @@ class ControladorDeAuditoria {
         }
     }
 
-    record RegistroResponse(List<EventoResponse> eventos, String siguienteCursor) {
+    record RegistroDeCambiosResponse(List<EventoResponse> eventos, String siguienteCursor) {
     }
 
     private final ConsultarAuditoria consultar;
@@ -66,13 +66,13 @@ class ControladorDeAuditoria {
 
     @GetMapping("/auditoria")
     @Operation(summary = "Registro de cambios del consultorio, del más nuevo al más viejo")
-    RegistroResponse registro(@RequestParam(required = false) String turnoId,
+    RegistroDeCambiosResponse registro(@RequestParam(required = false) String turnoId,
             @RequestParam(required = false) String desde, @RequestParam(required = false) String hasta,
             @RequestParam(required = false) List<String> accion, @RequestParam(required = false) String cursor,
             @RequestParam(required = false) String tamano) {
         FiltrosDeAuditoria filtros = FiltrosDeAuditoria.desdeTexto(turnoId, desde, hasta, accion);
         ConsultarAuditoria.PaginaDeAuditoria pagina = consultar.registro(filtros, cursor, tamano);
-        return new RegistroResponse(pagina.eventos().stream().map(EventoResponse::de).toList(),
+        return new RegistroDeCambiosResponse(pagina.eventos().stream().map(EventoResponse::de).toList(),
                 pagina.siguienteCursor());
     }
 }

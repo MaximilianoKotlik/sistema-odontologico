@@ -1036,6 +1036,10 @@ export interface components {
             telefono?: string;
             requiereRevision?: boolean;
         };
+        RegistroDeCambiosResponse: {
+            eventos?: components["schemas"]["EventoResponse"][];
+            siguienteCursor?: string;
+        };
         AgendaResponse: {
             turnos?: components["schemas"]["TurnoResponse"][];
             bloqueos?: components["schemas"]["BloqueoResponse"][];
@@ -2293,7 +2297,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RegistroResponse"];
+                    "*/*": components["schemas"]["RegistroDeCambiosResponse"];
                 };
             };
         };
