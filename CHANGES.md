@@ -367,7 +367,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/07_flujos_principales.md` §FL-03
 
 ### [C-14] `frontend-turnos-bloqueos`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #67, 2026-11-22)
 - **Scope**:
   - Features `turnos/` y `bloqueos/`: crear turno manual (prestación, hueco, paciente buscado por nombre, DNI o teléfono, con alta rápida por DNI, DD-24), agregar sobreturno, confirmar/cancelar/marcar ausente, reprogramar, **ajustar la duración** (selector en pasos de 5 min, muestra el nuevo fin), **agregar/editar la nota interna** (contador de 500), crear y eliminar bloqueos; manejo de errores 409 con mensajes y lista de conflictos de bloqueo.
   - **Aviso de turnos fuera de horario** (decisión de Maxi en #15):
