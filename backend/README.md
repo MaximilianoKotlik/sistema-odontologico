@@ -82,3 +82,28 @@ El email sale por SMTP con la configuración `spring.mail.*` (`SMTP_HOST`, `SMTP
 commit y fuera del hilo de la petición, así la respuesta `202` no espera al servidor de correo. Si el envío falla,
 queda en el log en `WARN` sin el email ni el token, y el health del backend no depende del SMTP
 (`management.health.mail.enabled: false`).
+
+## Plan del consultorio (C-20)
+
+### Vencimiento de la prueba
+
+Una tarea diaria (`TareaDeVencimiento`, 03:00 de Buenos Aires) pasa a `VENCIDO` las pruebas cuyo `prueba_hasta` ya
+pasó en la zona del consultorio y audita `PLAN_VENCIDO` con actor `SISTEMA`. El cron se cambia con
+`PLAN_VENCIMIENTO_CRON` (`-` la desactiva). El bloqueo de escrituras no depende de la tarea: desde las 00:00 del día
+siguiente a `prueba_hasta` la API ya responde 403 `PLAN_VENCIDO` a las escrituras privadas.
+
+### Runbook: pasar un consultorio a `ACTIVO`
+
+No hay endpoint HTTP que cambie el plan. El equipo lo hace con la misma imagen del backend y el perfil `operacion`,
+que arranca sin servidor web, activa el consultorio, audita `PLAN_ACTIVADO` (actor `SISTEMA`) y termina:
+
+```bash
+docker compose run --rm --no-deps backend \
+  --spring.profiles.active=operacion --operacion.consultorio=<uuid-del-consultorio>
+```
+
+- Vale desde `PRUEBA` o desde `VENCIDO`. Si ya estaba `ACTIVO`, no cambia nada ni deja otro evento.
+- Un UUID inexistente hace fallar la corrida sin cambios (código de salida distinto de 0).
+- Verificación: `SELECT plan FROM consultorio WHERE id = '<uuid>'` da `ACTIVO`, y hay un evento `PLAN_ACTIVADO` en
+  `evento_auditoria` para ese consultorio.
+- Fuera de la v1: el pase manual de `ACTIVO` a `VENCIDO` (decisión de Maxi en #53).

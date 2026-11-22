@@ -1,0 +1,17 @@
+/* Solo para el mockup C-20: el aviso de plan del shell. Solo tokens de design-system/tokens.css (rev. 1). */
+.plan-aviso{margin-bottom:var(--space-5)}
+.plan-aviso.discreto{padding:var(--space-2) var(--space-4);align-items:center}
+.plan-aviso.discreto strong{display:inline;font-size:var(--text-sm);line-height:var(--lh-sm)}
+.plan-aviso.discreto p{display:inline;margin-left:var(--space-1)}
+.plan-aviso .actions .btn{min-height:var(--touch-min)}
+.plan-aviso .dias{font-variant-numeric:tabular-nums}
+
+/* Acción deshabilitada con el motivo escrito, no solo con color (regla dura 12). */
+.motivo{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--text-xs);color:var(--color-text-muted)}
+.motivo svg{width:14px;height:14px}
+.topbar .motivo{display:none}
+@media (min-width:768px){.topbar .motivo{display:inline-flex}}
+
+/* Libre en solo lectura: no invita a crear un turno. */
+.libre[aria-disabled=true]{cursor:not-allowed;opacity:1;color:var(--color-text-subtle);border-style:dashed}
+.libre[aria-disabled=true] svg{display:none}

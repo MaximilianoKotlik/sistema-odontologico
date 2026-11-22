@@ -24,7 +24,7 @@ Permite que un paciente sin cuenta vea la página pública de un consultorio, co
 - **THEN** la respuesta es 404 `RECURSO_NO_ENCONTRADO`
 
 ### Requirement: Consultorio que no toma turnos online
-Si el consultorio desactivó la reserva pública o su plan está `VENCIDO`, la página pública MUST responder 200 con `tomaTurnosOnline: false`, el nombre, la dirección y el teléfono, y sin prestaciones (RN-RP-11).
+Si el consultorio desactivó la reserva pública o está vencido (plan `VENCIDO`, o `PRUEBA` con `prueba_hasta` pasada en su zona horaria), la página pública MUST responder 200 con `tomaTurnosOnline: false`, el nombre, la dirección y el teléfono, y sin prestaciones (RN-RP-11).
 
 #### Scenario: Reserva desactivada
 - **GIVEN** un consultorio con `reserva_publica_activa = false`
@@ -34,6 +34,11 @@ Si el consultorio desactivó la reserva pública o su plan está `VENCIDO`, la p
 #### Scenario: Plan vencido
 - **GIVEN** un consultorio con plan `VENCIDO` y la reserva pública activa
 - **WHEN** se pide su página pública
+- **THEN** la respuesta es 200 con `tomaTurnosOnline: false`
+
+#### Scenario: Prueba vencida que la tarea todavía no pasó
+- **GIVEN** un consultorio en `PRUEBA` con `prueba_hasta` de ayer y la reserva pública activa
+- **WHEN** se pide su página pública antes de que corra la tarea diaria
 - **THEN** la respuesta es 200 con `tomaTurnosOnline: false`
 
 ### Requirement: Consulta de huecos ofrecibles

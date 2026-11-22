@@ -198,6 +198,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/exportacion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Descarga todos los datos del consultorio en un ZIP */
+        post: operations["exportar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/bloqueos": {
         parameters: {
             query?: never;
@@ -507,6 +524,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["consultar_3"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/pacientes": {
         parameters: {
             query?: never;
@@ -628,6 +661,8 @@ export interface components {
             /** Format: int32 */
             pasoHuecosMin: number;
             reservaPublicaActiva: boolean;
+            /** Format: int64 */
+            version: number;
         };
         ConfiguracionResponse: {
             nombre?: string;
@@ -647,6 +682,8 @@ export interface components {
             plan?: string;
             /** Format: date */
             pruebaHasta?: string;
+            /** Format: int64 */
+            version?: number;
         };
         CrearTurnoRequest: {
             /** Format: uuid */
@@ -788,6 +825,19 @@ export interface components {
             fin?: string;
             prestacion?: string;
             estado?: string;
+        };
+        ProblemDetail: {
+            /** Format: uri */
+            type?: string;
+            title?: string | null;
+            /** Format: int32 */
+            status?: number;
+            detail?: string | null;
+            /** Format: uri */
+            instance?: string | null;
+            properties?: {
+                [key: string]: unknown;
+            } | null;
         };
         CrearBloqueoRequest: {
             /** Format: date-time */
@@ -969,6 +1019,14 @@ export interface components {
             /** Format: int32 */
             duracionMin?: number;
         };
+        PlanResponse: {
+            plan?: string;
+            /** Format: date */
+            pruebaHasta?: string;
+            /** Format: int32 */
+            diasDePruebaRestantes?: number;
+            soloLectura?: boolean;
+        };
         PacienteResponse: {
             /** Format: uuid */
             id?: string;
@@ -1037,6 +1095,13 @@ export interface operations {
                     "*/*": components["schemas"]["PrestacionResponse"];
                 };
             };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     consultar_1: {
@@ -1080,6 +1145,13 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["GrillaResponse"];
                 };
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -1125,6 +1197,13 @@ export interface operations {
                     "*/*": components["schemas"]["ConfiguracionResponse"];
                 };
             };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     crear: {
@@ -1148,6 +1227,13 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["TurnoCreadoResponse"];
                 };
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -1198,6 +1284,13 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["DetalleResponse"];
                 };
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -1436,6 +1529,13 @@ export interface operations {
                     "*/*": components["schemas"]["PrestacionResponse"];
                 };
             };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     desactivar: {
@@ -1458,6 +1558,13 @@ export interface operations {
                     "*/*": components["schemas"]["PrestacionResponse"];
                 };
             };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     activar: {
@@ -1478,6 +1585,51 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PrestacionResponse"];
+                };
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    exportar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ZIP con JSON, CSV, PDF y manifest */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/zip": string;
+                };
+            };
+            /** @description Sin sesión */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Exportación reciente o en curso; ver Retry-After */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
         };
@@ -1525,6 +1677,13 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["BloqueoResponse"];
                 };
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -1708,6 +1867,13 @@ export interface operations {
                     "*/*": components["schemas"]["DetalleResponse"];
                 };
             };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     cambiarEstado: {
@@ -1734,6 +1900,13 @@ export interface operations {
                     "*/*": components["schemas"]["DetalleResponse"];
                 };
             };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     duracion: {
@@ -1759,6 +1932,13 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["DetalleResponse"];
                 };
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -2049,6 +2229,26 @@ export interface operations {
             };
         };
     };
+    consultar_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PlanResponse"];
+                };
+            };
+        };
+    };
     buscar: {
         parameters: {
             query?: {
@@ -2134,6 +2334,13 @@ export interface operations {
         responses: {
             /** @description No Content */
             204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

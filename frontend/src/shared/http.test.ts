@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ApiError, crearClienteHttp, type ClienteHttp } from './http';
+import './prueba-blob';
+import { ApiError, crearClienteHttp, MENSAJE_PLAN_VENCIDO, type ClienteHttp } from './http';
 
 type Respuesta = Response | Error;
 interface Llamada {
@@ -28,6 +29,84 @@ const problema = (status: number, cuerpo: Record<string, unknown>) =>
   new Response(JSON.stringify({ status, ...cuerpo }), { status, headers: { 'Content-Type': 'application/problem+json' } });
 const noAutorizado = () => problema(401, { codigo: 'NO_AUTENTICADO', detail: 'Token vencido' });
 const encabezado = (l: Llamada | undefined, nombre: string) => new Headers(l?.init.headers).get(nombre);
+
+describe('cliente HTTP: descarga de archivos (C-19)', () => {
+  const RUTA = '/api/v1/exportacion';
+  const zip = (extra: HeadersInit = {}) =>
+    new Response(new Uint8Array([80, 75, 5, 6]), {
+      status: 200,
+      headers: { 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="export-demo-2026-11-20.zip"', ...extra },
+    });
+
+  it('devuelve el contenido binario y el nombre de Content-Disposition', async () => {
+    const { falso, llamadas } = crearFetchFalso({ [RUTA]: [zip()] });
+    const http = crearClienteHttp({ fetch: falso });
+    http.establecerToken('token-ficticio');
+
+    const archivo = await http.descargar(RUTA, { metodo: 'POST' });
+
+    expect(archivo.nombre).toBe('export-demo-2026-11-20.zip');
+    const bytes = await archivo.contenido.arrayBuffer();
+    expect([...new Uint8Array(bytes)]).toEqual([80, 75, 5, 6]);
+    expect(llamadas[0]?.init.method).toBe('POST');
+    expect(encabezado(llamadas[0], 'Authorization')).toBe('Bearer token-ficticio');
+    expect(encabezado(llamadas[0], 'Accept')).toContain('application/zip');
+    expect(encabezado(llamadas[0], 'Accept')).toContain('application/problem+json');
+  });
+
+  it('sin filename usa un nombre genérico', async () => {
+    const sinNombre = new Response(new Uint8Array([1]), { status: 200, headers: { 'Content-Type': 'application/zip' } });
+    const { falso } = crearFetchFalso({ [RUTA]: [sinNombre] });
+
+    const archivo = await crearClienteHttp({ fetch: falso }).descargar(RUTA, { metodo: 'POST' });
+
+    expect(archivo.nombre).toBe('descarga');
+  });
+
+  it('un 429 rechaza con el código y el Retry-After', async () => {
+    const reciente = new Response(JSON.stringify({ status: 429, codigo: 'EXPORTACION_RECIENTE', detail: 'Reciente' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/problem+json', 'Retry-After': '180' },
+    });
+    const { falso } = crearFetchFalso({ [RUTA]: [reciente] });
+
+    const error = await crearClienteHttp({ fetch: falso }).descargar(RUTA, { metodo: 'POST' }).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ status: 429, codigo: 'EXPORTACION_RECIENTE', retryAfter: '180' });
+  });
+
+  it('con el access token vencido renueva una vez y repite el pedido', async () => {
+    const { falso, llamadas } = crearFetchFalso({
+      [RUTA]: [noAutorizado(), zip()],
+      '/api/v1/auth/refresh': [json({ accessToken: 'token-nuevo' })],
+    });
+    const http = crearClienteHttp({ fetch: falso });
+    http.establecerToken('token-vencido');
+
+    const archivo = await http.descargar(RUTA, { metodo: 'POST' });
+
+    expect(archivo.nombre).toBe('export-demo-2026-11-20.zip');
+    expect(llamadas.filter((l) => l.url === '/api/v1/auth/refresh')).toHaveLength(1);
+    expect(encabezado(llamadas.at(-1), 'Authorization')).toBe('Bearer token-nuevo');
+  });
+
+  it('si el cuerpo se corta rechaza con DESCARGA_INTERRUMPIDA', async () => {
+    const cortado = new Response(
+      new ReadableStream<Uint8Array>({
+        pull(control) {
+          control.error(new Error('conexión cortada'));
+        },
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/zip' } },
+    );
+    const { falso } = crearFetchFalso({ [RUTA]: [cortado] });
+
+    await expect(crearClienteHttp({ fetch: falso }).descargar(RUTA, { metodo: 'POST' })).rejects.toMatchObject({
+      codigo: 'DESCARGA_INTERRUMPIDA',
+    });
+  });
+});
 
 describe('cliente HTTP: errores Problem Details', () => {
   it('convierte un problem+json en ApiError con status, codigo y detail', async () => {
@@ -296,5 +375,130 @@ describe('cliente HTTP: observación de respuestas', () => {
 
     expect(alResponder).toHaveBeenCalledWith('/api/v1/agenda?dia=2026-11-24', expect.any(Response));
     expect(alResponder.mock.calls[0]?.[1].headers.get('Date')).toBe(fecha);
+  });
+});
+
+describe('cliente HTTP: necesidades de auth (C-07)', () => {
+  it('el ApiError conserva los datos extra del problema y el Retry-After', async () => {
+    const bloqueada = new Response(JSON.stringify({ status: 423, codigo: 'CUENTA_BLOQUEADA', detail: 'Bloqueada', minutosRestantes: 12 }), {
+      status: 423,
+      headers: { 'Content-Type': 'application/problem+json' },
+    });
+    const limite = new Response(JSON.stringify({ status: 429, codigo: 'DEMASIADAS_SOLICITUDES' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/problem+json', 'Retry-After': '60' },
+    });
+    const { falso } = crearFetchFalso({ '/api/v1/auth/login': [bloqueada, limite] });
+    const http = crearClienteHttp({ fetch: falso });
+
+    const primero = await http.post('/api/v1/auth/login', {}).catch((e: unknown) => e);
+    const segundo = await http.post('/api/v1/auth/login', {}).catch((e: unknown) => e);
+
+    expect(primero).toMatchObject({ codigo: 'CUENTA_BLOQUEADA', datos: { minutosRestantes: 12 }, retryAfter: null });
+    expect(segundo).toMatchObject({ codigo: 'DEMASIADAS_SOLICITUDES', retryAfter: '60' });
+  });
+
+  it('cambiar-password lleva Authorization y cookies, y renueva ante un 401', async () => {
+    const { falso, llamadas } = crearFetchFalso({
+      '/api/v1/auth/cambiar-password': [noAutorizado(), new Response(null, { status: 204 })],
+      '/api/v1/auth/refresh': [json({ accessToken: 'token-nuevo' })],
+    });
+    const http = crearClienteHttp({ fetch: falso });
+    http.establecerToken('token-viejo');
+
+    await http.post('/api/v1/auth/cambiar-password', { passwordActual: 'a', passwordNueva: 'b' });
+
+    expect(encabezado(llamadas[0], 'Authorization')).toBe('Bearer token-viejo');
+    expect(llamadas[0]?.init.credentials).toBe('include');
+    expect(encabezado(llamadas[2], 'Authorization')).toBe('Bearer token-nuevo');
+  });
+
+  it('el refresh pasa por el coordinador entre pestañas y no lleva señal de aborto', async () => {
+    const { falso, llamadas } = crearFetchFalso({ '/api/v1/auth/refresh': [json({ accessToken: 'token-nuevo' })] });
+    const orden: string[] = [];
+    let llamadasAlCoordinador = 0;
+    const coordinarRefresh = async <T,>(tarea: () => Promise<T>): Promise<T> => {
+      llamadasAlCoordinador += 1;
+      orden.push('lock');
+      const resultado = await tarea();
+      orden.push('libera');
+      return resultado;
+    };
+    const http = crearClienteHttp({ fetch: falso, coordinarRefresh });
+
+    await expect(http.renovarSesion()).resolves.toBe(true);
+
+    expect(llamadasAlCoordinador).toBe(1);
+    expect(orden).toEqual(['lock', 'libera']);
+    expect(llamadas[0]?.init.signal).toBeUndefined();
+    expect(http.tieneToken()).toBe(true);
+  });
+
+  it('el coordinador libera el lock recién cuando se leyó el cuerpo del refresh', async () => {
+    let cuerpoLeido = false;
+    const respuesta = json({ accessToken: 'token-nuevo' });
+    const textoOriginal = respuesta.text.bind(respuesta);
+    respuesta.text = async () => {
+      const texto = await textoOriginal();
+      cuerpoLeido = true;
+      return texto;
+    };
+    const { falso } = crearFetchFalso({ '/api/v1/auth/refresh': [respuesta] });
+    let leidoAlLiberar: boolean | null = null;
+    const http = crearClienteHttp({
+      fetch: falso,
+      coordinarRefresh: async (tarea) => {
+        const resultado = await tarea();
+        leidoAlLiberar = cuerpoLeido;
+        return resultado;
+      },
+    });
+
+    await http.renovarSesion();
+
+    expect(leidoAlLiberar).toBe(true);
+  });
+
+  it('la restauración silenciosa no avisa sesión vencida si el refresh falla', async () => {
+    const { falso } = crearFetchFalso({ '/api/v1/auth/refresh': [problema(401, { codigo: 'SESION_EXPIRADA' })] });
+    const alVencerSesion = vi.fn();
+    const http = crearClienteHttp({ fetch: falso, alVencerSesion });
+
+    await expect(http.renovarSesion({ avisarSiVence: false })).resolves.toBe(false);
+
+    expect(alVencerSesion).not.toHaveBeenCalled();
+    expect(http.tieneToken()).toBe(false);
+  });
+});
+
+describe('cliente HTTP: 403 PLAN_VENCIDO (C-20, tarea 5.3)', () => {
+  const planVencido = () =>
+    problema(403, { codigo: 'PLAN_VENCIDO', detail: 'El plan del consultorio está vencido: la agenda está en solo lectura' });
+
+  it('muestra un mensaje propio en vez del detail, avisa y no reintenta', async () => {
+    const { falso, llamadas } = crearFetchFalso({ '/api/v1/bloqueos': [planVencido()] });
+    const alPlanVencido = vi.fn();
+    const http = crearClienteHttp({ fetch: falso, alPlanVencido });
+    http.establecerToken('token');
+
+    const error = await http.post('/api/v1/bloqueos', { inicio: 'x' }).catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ status: 403, codigo: 'PLAN_VENCIDO' });
+    expect((error as ApiError).detail).toBe(MENSAJE_PLAN_VENCIDO);
+    expect((error as ApiError).detail).not.toContain('El plan del consultorio');
+    expect(alPlanVencido).toHaveBeenCalledTimes(1);
+    expect(llamadas).toHaveLength(1);
+  });
+
+  it('otro 403 no se toma como plan vencido', async () => {
+    const { falso } = crearFetchFalso({ '/api/v1/turnos': [problema(403, { codigo: 'ACCESO_DENEGADO', detail: 'No.' })] });
+    const alPlanVencido = vi.fn();
+    const http = crearClienteHttp({ fetch: falso, alPlanVencido });
+
+    const error = await http.post('/api/v1/turnos', {}).catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ codigo: 'ACCESO_DENEGADO', detail: 'No.' });
+    expect(alPlanVencido).not.toHaveBeenCalled();
   });
 });

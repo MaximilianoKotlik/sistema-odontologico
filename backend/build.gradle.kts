@@ -24,6 +24,8 @@ val archunitVersion = "1.4.2"
 val libphonenumberVersion = "8.13.55"
 val uuidGeneratorVersion = "5.1.0"
 val bucket4jVersion = "8.22.0"
+val openpdfVersion = "3.0.5"
+val pdfboxVersion = "3.0.8"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -45,6 +47,8 @@ dependencies {
     // Rate limiting por clave en memoria, con buckets acotados en Caffeine (C-05, design D8)
     implementation("com.bucket4j:bucket4j_jdk17-core:$bucket4jVersion")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    // Resumen PDF de la exportación (C-19, design D6)
+    implementation("com.github.librepdf:openpdf:$openpdfVersion")
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -53,6 +57,8 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("com.tngtech.archunit:archunit-junit5:$archunitVersion")
+    // Extrae el texto del PDF en los tests (C-19, design D6)
+    testImplementation("org.apache.pdfbox:pdfbox:$pdfboxVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

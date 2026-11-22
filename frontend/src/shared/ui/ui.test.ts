@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { aviso } from './aviso';
-import { boton, enlaceBoton } from './boton';
+import { boton, clasesBoton, enlaceBoton } from './boton';
 import { campo } from './campo';
 import { chipEstado } from './chip-estado';
 import { dialogo } from './dialogo';
@@ -54,6 +54,22 @@ describe('boton', () => {
 
   it('marca las acciones de escritura para deshabilitarlas sin conexión', () => {
     expect(boton({ texto: 'Nuevo turno', requiereConexion: true }).hasAttribute('data-requiere-conexion')).toBe(true);
+  });
+});
+
+describe('clasesBoton', () => {
+  // Con `border-transparent` en la base, el CSS generado lo ponía después de `border-primario` y el secundario quedaba sin
+  // borde (encontrado en la verificación visual de C-13). El borde transparente va solo en las variantes sin borde propio.
+  it('el secundario y el peligro secundario tienen su borde de color y ningún borde transparente', () => {
+    expect(clasesBoton('secundario')).toContain('border-primario');
+    expect(clasesBoton('secundario')).not.toContain('border-transparent');
+    expect(clasesBoton('peligro-secundario')).toContain('border-peligro');
+    expect(clasesBoton('peligro-secundario')).toContain('text-peligro');
+    expect(clasesBoton('peligro-secundario')).not.toContain('border-transparent');
+  });
+
+  it('las variantes rellenas y la fantasma usan un borde transparente', () => {
+    for (const variante of ['primario', 'fantasma', 'peligro'] as const) expect(clasesBoton(variante)).toContain('border-transparent');
   });
 });
 

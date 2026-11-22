@@ -6,7 +6,7 @@ Permite que el odontólogo consulte y edite los datos de su consultorio y las re
 ## Requirements
 
 ### Requirement: Consulta de la configuración
-El odontólogo SHALL poder obtener la configuración de su consultorio: nombre, slug, dirección, teléfono de contacto, zona horaria, anticipación de cancelación y de reserva, horizonte de reserva, paso de huecos, `reserva_publica_activa`, plan y `prueba_hasta`.
+El odontólogo SHALL poder obtener la configuración de su consultorio: nombre, slug, dirección, teléfono de contacto, zona horaria, anticipación de cancelación y de reserva, horizonte de reserva, paso de huecos, `reserva_publica_activa`, plan, `prueba_hasta` y la `version` de la configuración.
 
 #### Scenario: Consulta con sesión
 - **GIVEN** un consultorio recién registrado
@@ -23,6 +23,22 @@ El odontólogo SHALL poder reemplazar los campos editables de su consultorio (no
 #### Scenario: Intento de cambiar el plan
 - **WHEN** el body incluye `plan: ACTIVO` o `pruebaHasta`
 - **THEN** esos campos se ignoran y el plan no cambia
+
+### Requirement: Versión leída al editar
+Cada edición MUST incluir la `version` que el cliente leyó. Si la configuración cambió desde esa lectura (por ejemplo, desde otra pestaña o dispositivo), la respuesta MUST ser 409 `CONFLICTO_CONCURRENCIA`, sin escribir ni auditar. Un guardado aceptado con cambios MUST devolver la versión nueva; un guardado sin cambios MUST devolver la versión actual sin subirla (issue #59).
+
+#### Scenario: Dos pestañas con la misma versión
+- **GIVEN** la configuración abierta en dos pestañas con la misma versión leída
+- **WHEN** la pestaña A guarda un cambio y después la pestaña B guarda otro
+- **THEN** A recibe 200 con la versión nueva, y B recibe 409 `CONFLICTO_CONCURRENCIA` sin que cambie nada ni se registre un evento
+
+#### Scenario: Guardado sin cambios
+- **WHEN** el odontólogo guarda los mismos valores con la versión actual
+- **THEN** la respuesta es 200 con esa misma versión y no se registra un evento
+
+#### Scenario: Edición sin versión
+- **WHEN** el body no incluye `version`
+- **THEN** la respuesta es 400 `VALIDACION` con el campo `version`
 
 ### Requirement: Validación de la configuración
 Los valores MUST respetar los rangos del modelo: anticipación de cancelación entre 0 y 10080 min, anticipación de reserva de 0 o más, horizonte entre 1 y 365 días, paso de huecos en 5, 10, 15, 20 o 30, y nombre obligatorio de hasta 120 caracteres. Si algún valor no cumple, la respuesta MUST ser 400 `VALIDACION` con el detalle por campo.

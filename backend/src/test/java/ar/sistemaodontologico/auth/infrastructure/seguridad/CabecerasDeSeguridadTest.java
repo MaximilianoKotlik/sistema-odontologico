@@ -47,6 +47,19 @@ class CabecerasDeSeguridadTest extends IntegracionPostgresTest {
         assertThat(respuesta.getHeaders().getAccessControlAllowOrigin()).isNull();
     }
 
+    // C-19: el frontend lee el nombre del archivo y la espera del 429. Solo se exponen estas dos cabeceras.
+    @Test
+    void exponeAlFrontendSoloLasCabecerasDeLaDescarga() {
+        HttpHeaders cabeceras = new HttpHeaders();
+        cabeceras.setOrigin(ORIGEN_FRONTEND);
+
+        ResponseEntity<String> respuesta =
+                http.exchange("/actuator/health", HttpMethod.GET, new HttpEntity<>(cabeceras), String.class);
+
+        assertThat(respuesta.getHeaders().getAccessControlExposeHeaders())
+                .containsExactlyInAnyOrder(HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.RETRY_AFTER);
+    }
+
     private ResponseEntity<String> preflight(String origen) {
         HttpHeaders cabeceras = new HttpHeaders();
         cabeceras.setOrigin(origen);

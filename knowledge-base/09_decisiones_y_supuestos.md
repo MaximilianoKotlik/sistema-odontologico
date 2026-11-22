@@ -91,7 +91,7 @@
 **Trade-offs aceptados**: si el paciente pierde el link, debe contactar al consultorio para cancelar.
 
 ### DD-14 — Exportación síncrona por streaming (ZIP con JSON + CSV + PDF)
-**Decisión**: `GET /exportacion` genera el ZIP (JSON, CSV y PDF legible, RN-EX-05; ver DD-18) en streaming dentro de la request.
+**Decisión**: `POST /exportacion` genera el ZIP (JSON, CSV y PDF legible, RN-EX-05; ver DD-18) en streaming dentro de la request.
 **Justificación**: volúmenes chicos por consultorio; sin colas ni almacenamiento de archivos.
 **Trade-offs aceptados**: si un consultorio crece mucho, migrar a generación asíncrona.
 

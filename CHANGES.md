@@ -243,7 +243,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-02, DD-11
 
 ### [C-07] `frontend-auth`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #57, 2026-11-21)
 - **Scope**:
   - Pantallas: registro (con aceptación de términos), login, recuperación y confirmación de recuperación, cambio de contraseña con sesión iniciada (US-005; al terminar fuerza nuevo login), cierre de sesión; manejo de `CUENTA_BLOQUEADA`, `EMAIL_EN_USO`, `PASSWORD_DEBIL`, `PASSWORD_ACTUAL_INVALIDA`, `TOKEN_INVALIDO`.
   - Guardas de ruta y restauración de sesión vía `/auth/refresh` al recargar.
@@ -279,7 +279,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/07_flujos_principales.md` §FL-02
 
 ### [C-09] `frontend-configuracion`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #58, 2026-11-21)
 - **Scope**:
   - Feature `configuracion/`: datos del consultorio y slug (con link público copiable `/c/{slug}`), prestaciones con duración, disponibilidad semanal, anticipaciones; onboarding guiado FL-02 tras el registro.
   - Mockup revisado de las pantallas y del onboarding antes de implementar.
@@ -353,7 +353,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/08_arquitectura_propuesta.md` §OpenAPI
 
 ### [C-13] `frontend-agenda`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #64, 2026-11-21)
 - **Scope**:
   - Feature `agenda/`: vista diaria por defecto en mobile y semanal desde `md`; tarjetas de turno con color + ícono + texto, sobreturno con borde punteado, bloqueo rayado, cancelados atenuados y ocultables; lectura sin scroll horizontal a 360 px; indicador de "nuevos"; caché offline de la última agenda (solo lectura).
   - Mockup revisado de vista diaria, semanal y detalle de turno antes de implementar.
@@ -461,10 +461,10 @@ Reglas de coordinación del paralelismo:
   - `design-system/README.md`
 
 ### [C-19] `exportacion-datos`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #61, 2026-11-21)
 - **Scope**:
   - `POST /api/v1/exportacion`: ZIP por streaming con JSON y CSV por entidad, un PDF legible (`resumen.pdf`: consultorio, prestaciones, pacientes, listado de turnos y resumen de auditoría; lo genera el backend, librería a decidir al proponer, p. ej. OpenPDF) y `manifest.json` (cantidades que coinciden con la base); sin hashes ni tokens; 429 si hubo otra hace < 5 min; funciona en plan `VENCIDO`; evento `EXPORTACION_GENERADA`.
-  - Botón y pantalla de exportación en `configuracion/` (feature `exportacion/`); mockup revisado antes de implementar.
+  - Botón y pantalla de exportación en `/app/exportar` (feature `exportacion/`); mockup revisado antes de implementar.
   - Tests: US-050, contenido del ZIP (incluido el PDF: se genera, tiene las secciones mínimas y no contiene hashes ni tokens), rate limit, aislamiento por tenant.
 - **Dependencias**: `C-09`, `C-15`
 - **Governance**: ALTO
@@ -476,7 +476,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/11_marco_legal_argentino.md`
 
 ### [C-20] `plan-ciclo-de-vida`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #62, 2026-11-21)
 - **Scope**:
   - Lógica de `plan` (`PRUEBA`/`ACTIVO`/`VENCIDO`); tarea diaria programada (FL-07, idempotente) que pasa a `VENCIDO` al vencer `prueba_hasta` y audita `PLAN_VENCIDO` con `actor_tipo = SISTEMA`; pase a `ACTIVO` manual como operación interna auditada (`SISTEMA`).
   - Bloqueo de escrituras en `VENCIDO`: guarda transversal en backend (RN-GL-04) que rechaza con 403 `PLAN_VENCIDO` toda escritura privada (agenda, bloqueos, pacientes, configuración) salvo una lista explícita de permitidas (lectura, exportación, login/logout/cambio de contraseña); como es genérica, alcanza también a los endpoints que se agreguen después. La reserva pública deja de tomar reservas.

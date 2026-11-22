@@ -27,6 +27,33 @@ const TRAZOS = {
   reloj: `<circle cx="12" cy="12" r="8" ${L}/><path d="M12 8v4l2.5 1.5" ${L}/>`,
   check: '<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
   cruz: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  // Trazos del mockup aprobado de C-07 (#14).
+  ojo: `<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" ${L}/><circle cx="12" cy="12" r="3" ${L}/>`,
+  llave: `<circle cx="8" cy="15" r="4" ${L}/><path d="M11 12l8-8M16 7l2.5 2.5M14 9l2 2" ${L}/>`,
+  punto: `<circle cx="12" cy="12" r="7" ${L}/>`,
+  info: `<circle cx="12" cy="12" r="9" ${L}/><path d="M12 11v5.5M12 7.8v.1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+  'check-circulo': `<circle cx="12" cy="12" r="9" ${L}/><path d="M8 12.3l2.7 2.7L16 9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  sobre: `<rect x="3" y="5.5" width="18" height="13" rx="2.5" ${L}/><path d="M3.8 7l8.2 6 8.2-6" ${L}/>`,
+  // Trazos del mockup aprobado de C-09 (#23).
+  lista: `<path d="M9 6.5h11M9 12h11M9 17.5h11" ${L}/><circle cx="4.5" cy="6.5" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="17.5" r="1.2" fill="currentColor"/>`,
+  lapiz: `<path d="M4 20l1-4.5L15.5 5a2.1 2.1 0 013 3L8 18.5 4 20z" ${L}/><path d="M13.5 7l3.5 3.5" ${L}/>`,
+  copiar: `<rect x="8.5" y="8.5" width="11" height="11" rx="2.5" ${L}/><path d="M15.5 8.5V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7.5a2 2 0 002 2h2.5" ${L}/>`,
+  subir: '<path d="M6 14.5l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  bajar: '<path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  pausa: `<circle cx="12" cy="12" r="9" ${L}/><path d="M10 9v6M14 9v6" ${L}/>`,
+  compartir: `<circle cx="18" cy="5.5" r="2.5" ${L}/><circle cx="6" cy="12" r="2.5" ${L}/><circle cx="18" cy="18.5" r="2.5" ${L}/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1" ${L}/>`,
+  'ojo-tachado': `<path d="M3 4l18 16M10.6 6A9.6 9.6 0 0112 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-3 3.7M6.5 7.6A17 17 0 002.5 12S6 18.5 12 18.5c1.6 0 3-.4 4.2-1" ${L}/>`,
+  'link-roto': `<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1M4 4l16 16" ${L}/>`,
+  // Trazos del mockup aprobado de C-19 (#32).
+  tabla: `<rect x="3.5" y="4.5" width="17" height="15" rx="2.5" ${L}/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10" ${L}/>`,
+  documento: `<path d="M6.5 3.5h7l4 4v13h-11z" ${L}/><path d="M13.5 3.5v4h4M9 12.5h6M9 16h6" ${L}/>`,
+  // Trazos del mockup aprobado de C-13 (#27).
+  ausente: `<circle cx="10" cy="8" r="3.5" ${L}/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.3 0 2.5.3 3.5 1M16 15l5 5M21 15l-5 5" ${L}/>`,
+  nota: `<path d="M6 3.5h8.5L19 8v12.5H6z" ${L}/><path d="M14 3.5V8.5h5M9 12.5h6M9 16h4" ${L}/>`,
+  telefono: `<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 006 6l1.5-2 4 1.5v3a2 2 0 01-2 2A16.5 16.5 0 014.5 5.5a2 2 0 012-2z" ${L}/>`,
+  repetir: `<path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" ${L}/>`,
+  'reloj-arena': `<path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5" ${L}/>`,
+  luna: `<path d="M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z" ${L}/>`,
 } as const satisfies Record<string, string>;
 
 export type NombreIcono = keyof typeof TRAZOS;
