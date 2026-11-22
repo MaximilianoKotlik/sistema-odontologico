@@ -353,7 +353,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/08_arquitectura_propuesta.md` §OpenAPI
 
 ### [C-13] `frontend-agenda`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #64, 2026-11-21)
 - **Scope**:
   - Feature `agenda/`: vista diaria por defecto en mobile y semanal desde `md`; tarjetas de turno con color + ícono + texto, sobreturno con borde punteado, bloqueo rayado, cancelados atenuados y ocultables; lectura sin scroll horizontal a 360 px; indicador de "nuevos"; caché offline de la última agenda (solo lectura).
   - Mockup revisado de vista diaria, semanal y detalle de turno antes de implementar.

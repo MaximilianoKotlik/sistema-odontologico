@@ -1,4 +1,9 @@
-import { seccionPendiente } from './seccion-pendiente';
+import { montarAgenda } from '../features/agenda/pantalla';
+import type { Pagina } from './pagina';
 
-/** Provisoria: el contenido real de esta sección llega en su propio change (ver CHANGES.md). */
-export const pagina = seccionPendiente('Agenda', 'agenda', 'calendario');
+/** Agenda diaria y semanal (C-13): reemplaza la sección provisoria de C-06. */
+export const pagina: Pagina = {
+  titulo: 'Agenda',
+  seccion: 'agenda',
+  montar: montarAgenda,
+};

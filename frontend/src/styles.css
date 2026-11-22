@@ -23,3 +23,22 @@
     border-radius: var(--radius-md);
   }
 }
+
+/*
+ * Agenda (C-13, design D5; mockup aprobado en #27). Patrones de design-system/components.html que Tailwind no expresa
+ * con una utilidad: el rayado del bloqueo y el tinte suave de las tarjetas de turno. Solo tokens.
+ */
+@layer components {
+  .fondo-rayado {
+    background: repeating-linear-gradient(135deg, var(--state-bloqueo-bg) 0 var(--space-2), var(--color-surface-muted) var(--space-2) var(--space-4));
+  }
+  .tinte-reservado {
+    background: color-mix(in srgb, var(--state-reservado-bg) 55%, var(--color-surface));
+  }
+  .tinte-confirmado {
+    background: color-mix(in srgb, var(--state-confirmado-bg) 55%, var(--color-surface));
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}

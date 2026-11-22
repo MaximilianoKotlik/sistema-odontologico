@@ -59,6 +59,7 @@ const RUTA_ASISTENTE = '/app/bienvenida';
 /** Cada ruta se carga con import() para dividir el bundle (C-06, design D1). */
 const RUTAS: readonly DefinicionRuta<Destino>[] = [
   privada('/app/agenda', async () => (await import('./pages/agenda')).pagina),
+  privada('/app/agenda/turnos/:id', async () => (await import('./pages/turno')).pagina),
   privada('/app/bloqueos', async () => (await import('./pages/bloqueos')).pagina),
   privada('/app/configuracion', async () => (await import('./pages/configuracion')).pagina),
   privada('/app/configuracion/prestaciones', async () => (await import('./pages/configuracion-prestaciones')).pagina),
