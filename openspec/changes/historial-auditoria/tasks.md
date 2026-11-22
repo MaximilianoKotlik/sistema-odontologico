@@ -6,7 +6,7 @@
 
 ## 1. Preparación
 
-- [ ] 1.1 Rebasar sobre `main` con C-12 y C-13 mergeados. Verificar el puerto de lectura del turno de C-12 (design D2), los nombres de columnas de `turno`, `paciente` y `usuario` que usa D3, y las acciones que publican los módulos (D6) (verificación: suite existente en verde y la lista de acciones en el PR)
+- [x] 1.1 Rebasar sobre `main` con C-12 y C-13 mergeados. Verificar el puerto de lectura del turno de C-12 (design D2), los nombres de columnas de `turno`, `paciente` y `usuario` que usa D3, y las acciones que publican los módulos (D6) (verificación: suite existente en verde y la lista de acciones en el PR)
 - [x] 1.2 Volcar al design las respuestas de Maxi a §Open Questions (revisión del PR #35) (verificación: `openspec validate historial-auditoria --strict` en verde)
 
 ## 2. Dominio y cursor
@@ -33,11 +33,11 @@
 
 ## 5. Frontend (requiere mockups aprobados)
 
-- [ ] 5.1 `features/auditoria/catalogo.ts` y `formatearCambio` de design D6 (verificación: Vitest de etiquetas, verbos por actor, formato de instantes en la zona del consultorio, clave desconocida, y comparación con la lista de acciones de la tarea 1.1)
-- [ ] 5.2 Tarjeta "Historial" en `features/agenda/detalle.ts`, según `mockups/turno-historial.html` (verificación: escenarios "Turno reservado y reprogramado" y "Error al cargar el historial" en Vitest + jsdom)
-- [ ] 5.2b Actor "Reserva con este DNI" en el historial y en el registro, según los estados `historial-dni` y `dni-repetido` de los mockups, leyendo solo la marca de la respuesta (verificación: escenarios de "Reserva con un DNI en revisión" en Vitest + jsdom)
-- [ ] 5.3 Sección `/app/auditoria` según `mockups/registro.html`: filtros en la URL, chip del turno, agrupación por día, "Cargar más" con foco y estados (verificación: escenarios de "Sección Registro de cambios", "Filtros en la URL" y "Paginación y estados de la lista")
-- [ ] 5.4 Accesibilidad AA (verificación: escenario "Lector de pantalla en un cambio" y revisión con el checklist de `accessibility`)
+- [x] 5.1 `features/auditoria/catalogo.ts` y `formatearCambio` de design D6 (verificación: Vitest de etiquetas, verbos por actor, formato de instantes en la zona del consultorio, clave desconocida, y comparación con la lista de acciones de la tarea 1.1)
+- [x] 5.2 Tarjeta "Historial" en `features/agenda/detalle.ts`, según `mockups/turno-historial.html` (verificación: escenarios "Turno reservado y reprogramado" y "Error al cargar el historial" en Vitest + jsdom)
+- [x] 5.2b Actor "Reserva con este DNI" en el historial y en el registro, según los estados `historial-dni` y `dni-repetido` de los mockups, leyendo solo la marca de la respuesta (verificación: escenarios de "Reserva con un DNI en revisión" en Vitest + jsdom)
+- [x] 5.3 Sección `/app/auditoria` según `mockups/registro.html`: filtros en la URL, chip del turno, agrupación por día, "Cargar más" con foco y estados (verificación: escenarios de "Sección Registro de cambios", "Filtros en la URL" y "Paginación y estados de la lista")
+- [x] 5.4 Accesibilidad AA (verificación: escenario "Lector de pantalla en un cambio" y revisión con el checklist de `accessibility`)
 
 ## 6. Verificación integral
 

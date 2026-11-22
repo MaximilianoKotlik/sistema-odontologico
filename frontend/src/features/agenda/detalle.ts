@@ -7,6 +7,7 @@ import { errorRecuperable } from '../../shared/ui/error-recuperable';
 import { esqueleto } from '../../shared/ui/esqueleto';
 import { tarjetaEstado } from '../../shared/ui/estado-vacio';
 import { icono, type NombreIcono } from '../../shared/ui/iconos';
+import { tarjetaHistorial } from '../auditoria/historial-turno';
 import { marcarVisto, obtenerAgendaEntre, obtenerTurno, type DetalleTurno } from './api';
 import { accionesDelTurno, nombreCompleto, type AccionTurno, type CambioPaciente } from './modelo';
 import { puntosDeEntrada } from './puntos-de-entrada';
@@ -83,7 +84,7 @@ function avisoDeCambio(turno: DetalleTurno, zona: string): HTMLElement | null {
   return aviso('info', 'info', 'Cambio de tu paciente', partes.join(' '), { 'data-cambio-paciente': true, role: 'status' });
 }
 
-function vistaDelTurno(turno: DetalleTurno, zona: string): { readonly nodo: HTMLElement; readonly avisoCambio: HTMLElement | null; readonly avisoSobreturno: HTMLElement | null } {
+function vistaDelTurno(turno: DetalleTurno, zona: string, historial: HTMLElement): { readonly nodo: HTMLElement; readonly avisoCambio: HTMLElement | null; readonly avisoSobreturno: HTMLElement | null } {
   const dia = diaLocal(turno.inicio, zona);
   const avisoCambio = avisoDeCambio(turno, zona);
   const avisoSobreturno = turno.esSobreturno ? aviso('sobreturno', 'mas', 'Es un sobreturno', 'Se atiende en un horario que ya tiene otro turno.', { 'data-aviso-sobreturno': true }) : null;
@@ -136,6 +137,7 @@ function vistaDelTurno(turno: DetalleTurno, zona: string): { readonly nodo: HTML
         null,
         listaDeDatos(['Prestación', `${turno.prestacion} · ${turno.duracionMin} min`], ['Origen', turno.origen === 'LINK' ? 'Reservó por tu link' : 'Lo cargaste vos'], ...cancelacion),
       ),
+      historial,
     ),
     el(
       'div',
@@ -199,10 +201,12 @@ export function montarDetalle(contexto: ContextoPagina): void {
 
   async function cargar(): Promise<void> {
     cuerpo.replaceChildren(esqueleto({ etiqueta: 'Cargando el turno…', filas: 3 }));
+    // El historial se pide en paralelo y maneja sus propios errores (C-18, design D8).
+    const historial = tarjetaHistorial(http, id, zona);
     try {
       const turno = await obtenerTurno(http, id);
       volver.setAttribute('href', rutaDelDia(diaLocal(turno.inicio, zona)));
-      const { nodo, avisoCambio, avisoSobreturno } = vistaDelTurno(turno, zona);
+      const { nodo, avisoCambio, avisoSobreturno } = vistaDelTurno(turno, zona, historial);
       cuerpo.replaceChildren(nodo);
       if (avisoCambio !== null) void dejarVisto(turno, avisoCambio);
       if (avisoSobreturno !== null) void completarSobreturno(turno, avisoSobreturno);
