@@ -100,8 +100,8 @@
         {
           "tipo": "parrafo",
           "afirmacion": {
-            "texto": [{ "fuerte": "No guardamos datos de salud" }, ": no hay historia clínica, odontograma ni diagnósticos."],
-            "respaldo": ["DD-16 (sin datos clínicos en v1)", "DD-18"],
+            "texto": [{ "fuerte": "No guardamos historia clínica, odontograma ni diagnósticos." }, " Igual tratamos todos los datos de tus pacientes como sensibles, porque un turno y su prestación pueden revelar información de salud."],
+            "respaldo": ["11_marco_legal_argentino.md §Datos sensibles de salud", "DD-16 (sin datos clínicos en v1)", "DD-18"],
             "requiere": []
           }
         },

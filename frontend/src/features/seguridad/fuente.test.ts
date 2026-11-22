@@ -47,7 +47,7 @@ describe('2.2 respaldo y frases prohibidas (design D4)', () => {
     expect(frasesProhibidas(copia())).toEqual([]);
   });
 
-  it.each(['Estamos certificados en seguridad.', 'Cumplimos la ley de datos personales.', 'El sistema es 100 % seguro.', 'Tu contraseña cifrada está a salvo.'])(
+  it.each(['Estamos certificados en seguridad.', 'Cumplimos la ley de datos personales.', 'El sistema es 100 % seguro.', 'Tu contraseña cifrada está a salvo.', 'No guardamos datos de salud.'])(
     'detecta "%s"',
     (frase) => {
       const fuente = copia();

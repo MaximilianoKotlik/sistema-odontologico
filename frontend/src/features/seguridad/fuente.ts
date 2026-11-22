@@ -135,7 +135,7 @@ export function sinRespaldo(fuente: FuenteSeguridad): string[] {
  * Frases que la página no puede decir (RN-PL-05, LG-10). "Certificaciones ... ISO 27001" está permitido solo para
  * decir que no las hay: el patrón prohibido es afirmar "certificado/a" o "certificación ISO".
  */
-const PROHIBIDAS: readonly RegExp[] = [/\bcertificad[oa]s?\b/i, /certificaci[oó]n(es)? ISO/i, /\bcumpl\w* (con )?la ley\b/i, /100\s?%\s?segur/i, /contraseñas? cifradas?/i];
+const PROHIBIDAS: readonly RegExp[] = [/\bcertificad[oa]s?\b/i, /certificaci[oó]n(es)? ISO/i, /\bcumpl\w* (con )?la ley\b/i, /100\s?%\s?segur/i, /contraseñas? cifradas?/i, /no guardamos datos de salud/i];
 
 /** Changes marcados `[x]` en CHANGES.md (`### [C-NN] …` seguido de `- **Estado**: \`[x]\``). */
 export function changesCompletados(changesMd: string): Set<string> {
