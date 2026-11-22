@@ -21,7 +21,7 @@ import {
   type FranjaDisponible,
   type Vista,
 } from './modelo';
-import { puntosDeEntrada } from './puntos-de-entrada';
+import { puntosDeEntrada, type EntornoDeAccion } from './puntos-de-entrada';
 import { grillaSemanal, listaSemanal, rutaDelDia } from './semana';
 import { chipBloqueo, chipEstadoTurno, chipSobreturno } from './tarjeta';
 import { diaDeSemana, instanteLocal, lunesDe, sumarDias } from './tiempo';
@@ -212,8 +212,11 @@ export function montarAgenda(contexto: ContextoPagina): void {
     void contexto.navegacion.navegar(ruta);
   };
 
+  // Las acciones de C-14 vuelven a pedir la agenda al terminar.
+  const entorno: EntornoDeAccion = { http, zona, alTerminar: () => void cargar() };
+
   contexto.acciones.replaceChildren(
-    boton({ texto: 'Nuevo turno', icono: 'mas', requiereConexion: true, alHacerClic: () => puntosDeEntrada().nuevoTurno(null) }),
+    boton({ texto: 'Nuevo turno', icono: 'mas', requiereConexion: true, alHacerClic: () => puntosDeEntrada().nuevoTurno(null, entorno) }),
   );
 
   // Barra: navegación y título, interruptor y Día/Semana.
@@ -262,7 +265,7 @@ export function montarAgenda(contexto: ContextoPagina): void {
     const franjasHoy = franjas === null ? [] : franjasDelDia(fecha, franjas);
     const filas = lineaDelDia({ dia: fecha, zona, turnos: agenda.turnos, bloqueos: agenda.bloqueos, franjas: franjas ?? [], ahora: new Date(), mostrarCancelados });
     const hayAlgo = filas.some((f) => f.tipo === 'turno' || f.tipo === 'bloqueo');
-    const alElegirLibre = (desde: string) => puntosDeEntrada().nuevoTurno(instanteLocal(fecha, desde, zona).toISOString());
+    const alElegirLibre = (desde: string) => puntosDeEntrada().nuevoTurno(instanteLocal(fecha, desde, zona).toISOString(), entorno);
 
     let contenido: HTMLElement;
     if (!hayAlgo && franjas !== null && franjasHoy.length === 0) {

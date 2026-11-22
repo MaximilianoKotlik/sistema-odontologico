@@ -10,7 +10,7 @@ import { icono, type NombreIcono } from '../../shared/ui/iconos';
 import { tarjetaHistorial } from '../auditoria/historial-turno';
 import { marcarVisto, obtenerAgendaEntre, obtenerTurno, type DetalleTurno } from './api';
 import { accionesDelTurno, nombreCompleto, type AccionTurno, type CambioPaciente } from './modelo';
-import { puntosDeEntrada } from './puntos-de-entrada';
+import { puntosDeEntrada, type EntornoDeAccion } from './puntos-de-entrada';
 import { rutaDelDia } from './semana';
 import { chipEstadoTurno, chipSobreturno } from './tarjeta';
 import { diaLocal, horaLocal, sumarDias } from './tiempo';
@@ -84,7 +84,7 @@ function avisoDeCambio(turno: DetalleTurno, zona: string): HTMLElement | null {
   return aviso('info', 'info', 'Cambio de tu paciente', partes.join(' '), { 'data-cambio-paciente': true, role: 'status' });
 }
 
-function vistaDelTurno(turno: DetalleTurno, zona: string, historial: HTMLElement): { readonly nodo: HTMLElement; readonly avisoCambio: HTMLElement | null; readonly avisoSobreturno: HTMLElement | null } {
+function vistaDelTurno(turno: DetalleTurno, zona: string, historial: HTMLElement, entorno: EntornoDeAccion): { readonly nodo: HTMLElement; readonly avisoCambio: HTMLElement | null; readonly avisoSobreturno: HTMLElement | null } {
   const dia = diaLocal(turno.inicio, zona);
   const avisoCambio = avisoDeCambio(turno, zona);
   const avisoSobreturno = turno.esSobreturno ? aviso('sobreturno', 'mas', 'Es un sobreturno', 'Se atiende en un horario que ya tiene otro turno.', { 'data-aviso-sobreturno': true }) : null;
@@ -157,7 +157,7 @@ function vistaDelTurno(turno: DetalleTurno, zona: string, historial: HTMLElement
           { 'data-acciones': true, class: 'grid gap-2' },
           ...acciones.map((accion) => {
             const { texto, icono: nombreIcono, variante } = ACCIONES[accion];
-            const b = boton({ texto, icono: nombreIcono, variante, requiereConexion: true, alHacerClic: () => puntosDeEntrada().accion(accion, turno) });
+            const b = boton({ texto, icono: nombreIcono, variante, requiereConexion: true, alHacerClic: () => puntosDeEntrada().accion(accion, turno, entorno) });
             b.classList.add('w-full', '!justify-start');
             return b;
           }),
@@ -175,6 +175,8 @@ export function montarDetalle(contexto: ContextoPagina): void {
   const volver = el('a', { href: '/app/agenda', 'data-link': true, class: 'inline-flex items-center gap-1 min-h-touch mb-2 font-semibold text-primario no-underline' }, icono('izquierda', 'w-icono-sm h-icono-sm'), 'Volver a la agenda');
   const cuerpo = el('div', {});
   contenedor.replaceChildren(el('div', { class: 'pb-6' }, volver, cuerpo));
+  // Las acciones de C-14 vuelven a pedir el detalle al terminar o si el turno cambió.
+  const entorno: EntornoDeAccion = { http, zona, alTerminar: () => void cargar() };
 
   /** Avisa con qué turno se superpone un sobreturno. Si no se puede saber, queda el texto general. */
   async function completarSobreturno(turno: DetalleTurno, destino: HTMLElement): Promise<void> {
@@ -206,7 +208,7 @@ export function montarDetalle(contexto: ContextoPagina): void {
     try {
       const turno = await obtenerTurno(http, id);
       volver.setAttribute('href', rutaDelDia(diaLocal(turno.inicio, zona)));
-      const { nodo, avisoCambio, avisoSobreturno } = vistaDelTurno(turno, zona, historial);
+      const { nodo, avisoCambio, avisoSobreturno } = vistaDelTurno(turno, zona, historial, entorno);
       cuerpo.replaceChildren(nodo);
       if (avisoCambio !== null) void dejarVisto(turno, avisoCambio);
       if (avisoSobreturno !== null) void completarSobreturno(turno, avisoSobreturno);

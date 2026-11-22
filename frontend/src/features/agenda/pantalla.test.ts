@@ -139,9 +139,24 @@ describe('montarAgenda: vista diaria', () => {
     const nuevo = botonConTexto(contexto.acciones, 'Nuevo turno');
     expect(nuevo?.hasAttribute('data-requiere-conexion')).toBe(true);
     nuevo?.click();
-    expect(nuevoTurno).toHaveBeenCalledWith(null);
+    expect(nuevoTurno).toHaveBeenCalledWith(null, expect.objectContaining({ http: contexto.http, zona: 'America/Argentina/Buenos_Aires' }));
     contenedor.querySelector<HTMLButtonElement>('button[data-libre]')?.click();
-    expect(nuevoTurno).toHaveBeenLastCalledWith(en('2026-11-21', '09:00'));
+    expect(nuevoTurno).toHaveBeenLastCalledWith(en('2026-11-21', '09:00'), expect.anything());
+  });
+
+  it('al terminar una acción de C-14, la agenda se vuelve a pedir', async () => {
+    const nuevoTurno = vi.fn();
+    registrarPuntosDeEntrada({ nuevoTurno, accion: vi.fn() });
+    const { contexto, llamadas } = montar('?vista=dia&fecha=2026-11-21', {
+      [`GET ${SEMANA}`]: [json({ turnos: [], bloqueos: [] }), json({ turnos: [], bloqueos: [] })],
+      'GET /api/v1/disponibilidad': [json(HORARIO)],
+    });
+    await esperar();
+    botonConTexto(contexto.acciones, 'Nuevo turno')?.click();
+    const entorno = nuevoTurno.mock.calls[0]?.[1] as { alTerminar: () => void };
+    entorno.alTerminar();
+    await esperar();
+    expect(llamadas.filter((l) => l.url.startsWith('/api/v1/agenda'))).toHaveLength(2);
   });
 });
 
