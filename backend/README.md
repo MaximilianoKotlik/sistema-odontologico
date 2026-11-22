@@ -69,6 +69,12 @@ y asegurarse de que el proxy **reemplace** (no agregue) la cabecera `X-Forwarded
 Sin eso, el límite por IP se puede esquivar. En local, detrás del proxy de Vite, todas las solicitudes comparten IP:
 se acepta en desarrollo.
 
+## Cursores del registro de cambios (C-18)
+
+Los cursores de paginación de la auditoría se firman con HMAC usando una clave derivada de `JWT_SECRET`. Si se rota
+ese secreto, los cursores en uso dejan de ser válidos y responden `400`. Para seguir, hay que volver a pedir el
+registro desde la primera página.
+
 ## Email de recuperación
 
 El email sale por SMTP con la configuración `spring.mail.*` (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`,
