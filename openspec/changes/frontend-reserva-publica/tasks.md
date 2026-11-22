@@ -26,11 +26,11 @@
 
 ## 4. Gestión `/t/{token}`
 
-- [ ] 4.1 Cargar la vista del turno y mostrar estado con chip, nombre del paciente, consultorio y `modificableHasta`; verificar con tests Vitest que no aparecen DNI, teléfono, email ni nota interna
-- [ ] 4.2 Mostrar las acciones según `puedeModificar` y `puedeReprogramar`: fuera de plazo con botón para llamar, reserva desactivada con solo cancelar y turno cancelado según `canceladoPor`; verificar con tests Vitest cada combinación
-- [ ] 4.3 Implementar la reprogramación con la tira de días y horarios de `/turnos/{token}/huecos`, el diálogo de confirmación y el manejo de `HUECO_NO_DISPONIBLE` (conserva el horario original), `FUERA_DE_PLAZO`, `RESERVA_NO_DISPONIBLE` y `CONFLICTO_CONCURRENCIA`; verificar con tests Vitest
-- [ ] 4.4 Implementar la cancelación con diálogo que atrapa el foco y lo devuelve al cerrarse, y el estado "Cancelaste tu turno"; verificar con tests Vitest del foco con teclado y de la respuesta 200
-- [ ] 4.5 Mostrar "Este link no funciona" ante cualquier 404, al cargar o durante una acción, sin datos del consultorio; verificar con tests Vitest
+- [x] 4.1 Cargar la vista del turno y mostrar estado con chip, nombre del paciente, consultorio y `modificableHasta`; verificar con tests Vitest que no aparecen DNI, teléfono, email ni nota interna
+- [x] 4.2 Mostrar las acciones según `puedeModificar` y `puedeReprogramar`: fuera de plazo con botón para llamar, reserva desactivada con solo cancelar y turno cancelado según `canceladoPor`; verificar con tests Vitest cada combinación
+- [x] 4.3 Implementar la reprogramación con la tira de días y horarios de `/turnos/{token}/huecos`, el diálogo de confirmación y el manejo de `HUECO_NO_DISPONIBLE` (conserva el horario original), `FUERA_DE_PLAZO`, `RESERVA_NO_DISPONIBLE` y `CONFLICTO_CONCURRENCIA`; verificar con tests Vitest
+- [x] 4.4 Implementar la cancelación con diálogo que atrapa el foco y lo devuelve al cerrarse, y el estado "Cancelaste tu turno"; verificar con tests Vitest del foco con teclado y de la respuesta 200
+- [x] 4.5 Mostrar "Este link no funciona" ante cualquier 404, al cargar o durante una acción, sin datos del consultorio; verificar con tests Vitest
 
 ## 5. Verificación integrada
 

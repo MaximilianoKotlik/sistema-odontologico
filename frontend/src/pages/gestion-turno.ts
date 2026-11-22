@@ -1,6 +1,7 @@
+import { montarGestion } from '../features/gestion-turno/pantalla';
 import type { ContextoPublico } from '../publico';
 
-/** Página pública `/t/{token}` (C-16). */
-export async function montarGestionTurno(_contenedor: HTMLElement, { http, params }: ContextoPublico): Promise<void> {
-  await http.get<unknown>(`/api/v1/public/turnos/${encodeURIComponent(params['token'] ?? '')}`).catch(() => undefined);
+/** Página pública `/t/{token}` (C-16, spec pantalla-gestion-turno). */
+export function montarGestionTurno(contenedor: HTMLElement, { http, params, cabecera }: ContextoPublico): Promise<void> {
+  return montarGestion(contenedor, { http, token: params['token'] ?? '', cabecera });
 }
