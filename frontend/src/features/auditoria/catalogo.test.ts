@@ -102,6 +102,11 @@ describe('cambiosDelEvento', () => {
     expect(JSON.stringify(cambios)).not.toContain('018f');
   });
 
+  it('ordena los campos aunque el JSON llegue en otro orden, y los desconocidos van al final', () => {
+    const cambios = cambiosDelEvento(evento({ accion: 'TURNO_CREADO', valorNuevo: { campo_nuevo: 1, estado: 'RESERVADO', origen: 'LINK', inicio: '2026-11-23T13:00:00Z', duracion_min: 30 } }), BA);
+    expect(cambios.map((c) => c.etiqueta)).toEqual(['Inicio', 'Duración', 'Estado', 'Origen', 'campo_nuevo']);
+  });
+
   it('solo incluye lo que cambió', () => {
     const cambios = cambiosDelEvento(evento({ accion: 'CONSULTORIO_CONFIG_CAMBIADA', entidad: 'consultorio', valorAnterior: { anticipacion_cancelacion_min: 1440, nombre: 'Demo' }, valorNuevo: { anticipacion_cancelacion_min: 2880, nombre: 'Demo' } }), BA);
     expect(cambios).toEqual([{ etiqueta: 'Anticipación para cancelar', antes: '24 h', despues: '48 h', codigo: false }]);

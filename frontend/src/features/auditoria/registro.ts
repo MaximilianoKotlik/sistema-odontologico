@@ -71,7 +71,7 @@ function contextoDeFila(evento: EventoAuditoria, zona: string): HTMLElement | nu
     'p',
     { class: 'mt-1 mb-0 text-sm' },
     'Turno de ',
-    el('a', { href: `/app/agenda/turnos/${encodeURIComponent(evento.entidadId)}`, 'data-link': true, class: 'font-semibold text-primario' }, contexto.paciente),
+    el('a', { href: `/app/agenda/turnos/${encodeURIComponent(evento.entidadId)}`, 'data-link': true, class: 'font-semibold text-primario underline' }, contexto.paciente),
     ` · ${instanteCorto(contexto.inicio, zona)}`,
   );
 }

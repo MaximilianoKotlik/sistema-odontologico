@@ -186,6 +186,8 @@ const CLAVES: Readonly<Record<string, { readonly etiqueta: string; readonly form
   entidades: { etiqueta: 'Registros exportados', formato: 'total' },
 };
 
+const ORDEN_DE_CLAVES = Object.keys(CLAVES);
+
 /** Ids internos y datos técnicos que la fila no muestra (spec "Cambios legibles"; el intento va en `detalleDeAcceso`). */
 const OCULTAS = new Set(['paciente_id', 'tipo_prestacion_id', 'cancelado_por', 'intentos_fallidos', 'bloqueado_hasta', 'credenciales_version', 'versionEsquema']);
 
@@ -240,7 +242,9 @@ export interface CambioLegible {
 export function cambiosDelEvento(evento: EventoAuditoria, zona: string): CambioLegible[] {
   const anterior = evento.valorAnterior ?? {};
   const nuevo = evento.valorNuevo ?? {};
-  const claves = [...new Set([...Object.keys(nuevo), ...Object.keys(anterior)])];
+  // JSONB no conserva el orden de las claves: se usa el del catálogo, y las desconocidas van al final.
+  const posicion = (clave: string) => (clave in CLAVES ? ORDEN_DE_CLAVES.indexOf(clave) : ORDEN_DE_CLAVES.length);
+  const claves = [...new Set([...Object.keys(nuevo), ...Object.keys(anterior)])].sort((x, y) => posicion(x) - posicion(y));
   const cambios: CambioLegible[] = [];
   for (const clave of claves) {
     if (OCULTAS.has(clave)) continue;
