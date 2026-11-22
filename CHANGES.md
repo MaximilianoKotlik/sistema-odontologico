@@ -542,7 +542,8 @@ Reglas de coordinación del paralelismo:
     - backup diario cifrado de Postgres en Argentina, retención de 30 días y una restauración de prueba hecha;
     - TLS activo en el dominio de producción;
     - proveedor SMTP elegido y declarado en la política de privacidad;
-    - email de seguridad de `/seguridad` definido.
+    - email de seguridad de `/seguridad` definido;
+    - `npm run seguridad:revisar` pasa: ninguna afirmación de `/seguridad` depende de un change sin `[x]`, todas tienen respaldo y no quedan `(TBD)` (C-22, RN-PL-06).
   - Checklist de despliegue, IP real detrás del reverse proxy (viene de C-05): el rate limit por IP usa `getRemoteAddr()`, y detrás del proxy del VPS todos los consultorios compartirían un mismo cupo (10 logins por minuto y 5 registros por hora). Configurar `server.forward-headers-strategy` (`native` o `framework`, según el proxy) y un proxy que **reemplace** `X-Forwarded-For` en vez de concatenarlo, y verificar con un test de humo que dos IPs distintas tengan cupos separados. Detalle en `backend/README.md`.
 - **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
