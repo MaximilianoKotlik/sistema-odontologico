@@ -62,6 +62,7 @@ LIMIT :tamano + 1
 - `LIMIT tamano + 1` sirve para saber si hay otra página sin un `COUNT`.
 - **Reserva con un DNI ya registrado y otro nombre** (decisión de Maxi en #51, DD-24 y DD-38): el historial no puede afirmar que reservó la persona de la ficha cuando el nombre escrito no coincidía.
   - **Alcance**: los eventos con actor `PACIENTE` cuya entidad es el turno `informado_turno_id` de ese paciente, mientras `requiere_revision = true`.
+  - **Ampliación (issue #66, decisión de Maxi, 2026-11-22)**: también `PACIENTE_MARCADO_PARA_REVISION` y `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` de esa misma reserva, porque es el registro de un consentimiento (Ley 25.326). Como esos eventos no guardan el turno, se reconocen porque caen entre `informado_at` y el `TURNO_CREADO` del turno de origen.
   - **Respuesta**: el backend resuelve la regla y devuelve `actor.identidadEnRevision = true`, con `actor.nombre` nulo. Así el nombre de la ficha no llega como autor y el frontend no consulta pacientes. En el resto de los eventos la marca es `false`.
   - **Al resolver la revisión (C-17)**: se borran las columnas de lo informado, la marca pasa a `false` y el actor muestra el nombre que quede en la ficha.
   - **Límite aceptado por DD-38**: lo informado guarda solo la última reserva con diferencias. Si hay otra, la marca pasa a ese turno y el anterior vuelve a mostrar el nombre de la ficha.

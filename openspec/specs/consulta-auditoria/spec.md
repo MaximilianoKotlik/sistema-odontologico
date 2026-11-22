@@ -104,7 +104,7 @@ Cada evento SHALL traer el nombre del actor: nombre y apellido del odontólogo s
 - **THEN** el actor no trae nombre
 
 ### Requirement: Actor de una reserva con identidad en revisión
-Mientras un paciente tenga `requiere_revision = true`, los eventos con actor `PACIENTE` cuya entidad sea su turno `informado_turno_id` SHALL traer `actor.identidadEnRevision: true` y MUST NOT traer el nombre del paciente como actor. En cualquier otro evento, `actor.identidadEnRevision` MUST ser `false`.
+Mientras un paciente tenga `requiere_revision = true`, los eventos con actor `PACIENTE` cuya entidad sea su turno `informado_turno_id`, y los `PACIENTE_MARCADO_PARA_REVISION` y `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` de la reserva que creó ese turno, SHALL traer `actor.identidadEnRevision: true` y MUST NOT traer el nombre del paciente como actor. En cualquier otro evento, `actor.identidadEnRevision` MUST ser `false`.
 
 #### Scenario: Revisión pendiente
 - **GIVEN** un paciente `Paciente Uno Prueba` con la revisión pendiente por una reserva hecha con su DNI y otro nombre
@@ -120,6 +120,21 @@ Mientras un paciente tenga `requiere_revision = true`, los eventos con actor `PA
 - **GIVEN** un paciente con la revisión pendiente y otro turno que no es el de origen
 - **WHEN** se lee un evento de ese otro turno
 - **THEN** el actor trae `identidadEnRevision: false` y el nombre de la ficha
+
+#### Scenario: Consentimiento y marca de la reserva en revisión
+- **GIVEN** una reserva hecha con el DNI de `Paciente Uno Prueba` y otro nombre, con la revisión pendiente
+- **WHEN** se leen su `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` y su `PACIENTE_MARCADO_PARA_REVISION`
+- **THEN** los dos traen `identidadEnRevision: true` y sin nombre
+
+#### Scenario: Consentimiento de otra reserva del mismo paciente
+- **GIVEN** un paciente con la revisión pendiente y otra reserva, anterior o posterior, hecha con el nombre de la ficha
+- **WHEN** se lee el `PACIENTE_CONSENTIMIENTO_ACTUALIZADO` de esa otra reserva
+- **THEN** trae `identidadEnRevision: false` y el nombre de la ficha
+
+#### Scenario: Consentimiento con la revisión resuelta
+- **GIVEN** la revisión de ese paciente ya resuelta
+- **WHEN** se leen el consentimiento y la marca de la reserva
+- **THEN** los dos traen `identidadEnRevision: false` y el nombre que quedó en la ficha
 
 ### Requirement: Solo lectura
 La consulta del registro MUST NOT modificar ni agregar eventos, y MUST funcionar en cualquier estado del plan, incluido `VENCIDO`.

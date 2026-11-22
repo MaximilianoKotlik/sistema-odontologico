@@ -19,7 +19,9 @@ import org.springframework.stereotype.Repository;
 /**
  * Lectura con el actor y el contexto en una sola consulta (C-18, design D3). Todos los joins repiten el consultorio: un
  * {@code actor_id} mal cargado no puede traer un nombre ajeno. La marca de revisión se resuelve acá para que el nombre de
- * la ficha nunca llegue como autor de la reserva.
+ * la ficha nunca llegue como autor de la reserva. Eso incluye su consentimiento y su marca de revisión (issue #66): esos
+ * eventos no guardan el turno, y se reconocen porque caen entre {@code informado_at} y el alta del turno de origen, un
+ * tramo que la reserva recorre con el lock de la agenda del consultorio tomado.
  */
 @Repository
 class LecturaDeAuditoriaJdbc implements LecturaDeAuditoria {
@@ -33,8 +35,18 @@ class LecturaDeAuditoriaJdbc implements LecturaDeAuditoria {
                    u.nombre AS u_nombre, u.apellido AS u_apellido,
                    pa.nombre AS pa_nombre, pa.apellido AS pa_apellido,
                    t.inicio AS t_inicio, pt.nombre AS pt_nombre, pt.apellido AS pt_apellido,
-                   (e.actor_tipo = 'PACIENTE' AND e.entidad = 'turno' AND pa.requiere_revision
-                    AND pa.informado_turno_id = e.entidad_id) IS TRUE AS actor_en_revision
+                   (e.actor_tipo = 'PACIENTE' AND pa.requiere_revision AND (
+                        (e.entidad = 'turno' AND pa.informado_turno_id = e.entidad_id)
+                        OR (e.entidad = 'paciente' AND e.entidad_id = pa.id
+                            AND e.accion IN ('PACIENTE_MARCADO_PARA_REVISION', 'PACIENTE_CONSENTIMIENTO_ACTUALIZADO')
+                            AND e.ocurrido_at >= pa.informado_at
+                            AND e.ocurrido_at <= (SELECT min(o.ocurrido_at)
+                                                    FROM evento_auditoria o
+                                                   WHERE o.consultorio_id = e.consultorio_id
+                                                     AND o.entidad = 'turno'
+                                                     AND o.entidad_id = pa.informado_turno_id
+                                                     AND o.accion = 'TURNO_CREADO'))
+                    )) IS TRUE AS actor_en_revision
               FROM evento_auditoria e
               LEFT JOIN usuario u   ON e.actor_tipo = 'ODONTOLOGO' AND u.id = e.actor_id
                                    AND u.consultorio_id = e.consultorio_id
