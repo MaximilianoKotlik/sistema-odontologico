@@ -17,7 +17,7 @@
 
 - [x] 3.1 Sumar `/seguridad` a la tabla de páginas de `publico.ts` (D5); verificar con tests Vitest que no monta el shell, no envía `Authorization` y pone el título "Seguridad y datos · {marca}"
 - [x] 3.2 Armar la página desde la fuente (D2): aviso de "sin revisión legal" primero, índice, ocho temas, tabla de roles, "Lo que todavía no está" con ícono y texto, fecha en es-AR y pie; verificar con tests Vitest que el texto coincide con la fuente, que el respaldo no se muestra y que hay un solo `h1`
-- [ ] 3.3 Aplicar los tokens del sistema de diseño, la tabla de roles apilada en mobile y los links del índice y del pie con área táctil de al menos 44 px; verificar con un test de atributos de accesibilidad y el checklist AA en el PR
+- [x] 3.3 Aplicar los tokens del sistema de diseño, la tabla de roles apilada en mobile y los links del índice y del pie con área táctil de al menos 44 px; verificar con un test de atributos de accesibilidad y el checklist AA en el PR (checklist AA en el PR)
 
 ## 4. Revisión antes de publicar
 
@@ -26,8 +26,8 @@
 
 ## 5. Verificación integrada
 
-- [ ] 5.1 Recorrer `/seguridad` contra el mockup aprobado (versión `1609d16`) a 360, 390 y 1440 px; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible y sin errores de consola
-- [ ] 5.2 Revisar cada afirmación de la fuente contra el código mergeado (RN-PL-06) y dejar la tabla afirmación → respaldo → evidencia en el PR
+- [x] 5.1 Recorrer `/seguridad` contra el mockup aprobado (versión `1609d16`) a 360, 390 y 1440 px; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible y sin errores de consola (2026-11-22: 3 capturas en `mockups/verify/`, sin problemas; foco verificado con Tab real)
+- [x] 5.2 Revisar cada afirmación de la fuente contra el código mergeado (RN-PL-06) y dejar la tabla afirmación → respaldo → evidencia en el PR (tabla en el PR, revisada contra `origin/main` el 2026-11-22)
 - [ ] 5.3 Pasar `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, correr `npm run seguridad:revisar` (se espera que falle por los `(TBD)` hasta cumplir el criterio de salida de C-23) y abrir el PR con commits conventional en español que referencien `(C-22)`; verificar el PR listo para revisión de Maxi
 
 ## Workflow follow-up

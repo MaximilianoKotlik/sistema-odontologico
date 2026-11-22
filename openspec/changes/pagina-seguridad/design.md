@@ -78,4 +78,4 @@ Sin migración. Se despliega cuando C-19 esté `[x]`, pero la página se publica
 - Mockups: openspec/changes/pagina-seguridad/mockups/ (`seguridad.html`, más `seguridad.css` y `mockup.js`)
 - Approval: approved (2026-11-20, by Maxi), versión 1609d16 (#40)
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #40); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
-- Visual verify: pending
+- Visual verify: passed (2026-11-22). `/seguridad` a 360, 390 y 1440 px en `mockups/verify/` (3 capturas e `informe.json`): sin scroll horizontal, un solo `h1`, links del índice y del pie de al menos 44 px, tabla de roles apilada hasta 519 px, foco visible con teclado y sin errores de consola. Igual al mockup aprobado, sin la franja de revisión ni el cartel de borrador, que eran solo del mockup.
