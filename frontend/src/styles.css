@@ -48,7 +48,8 @@
  * reserva su alto, así el último horario se ve y se toca arriba de la barra. Desde 768 px la barra va en el flujo.
  */
 @layer components {
-  .con-barra {
+  .con-barra,
+  :has(.barra-accion) > footer {
     padding-bottom: calc(var(--touch-min) + var(--space-3) * 2 + 1px + env(safe-area-inset-bottom));
   }
   .barra-accion {
@@ -65,6 +66,9 @@
   @media (min-width: 768px) {
     .con-barra {
       padding-bottom: 0;
+    }
+    :has(.barra-accion) > footer {
+      padding-bottom: var(--space-5);
     }
     .barra-accion {
       position: static;
