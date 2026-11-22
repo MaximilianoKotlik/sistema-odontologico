@@ -99,7 +99,8 @@ class MatrizDeEscriturasTest extends ApiDelPlanTest {
                 "PUT /api/v1/consultorio", "PUT /api/v1/disponibilidad", "POST /api/v1/prestaciones",
                 "PUT /api/v1/prestaciones/{id}", "POST /api/v1/prestaciones/{id}/desactivar",
                 "POST /api/v1/prestaciones/{id}/activar");
-        assertThat(accionesDelConsultorio(agenda)).isEmpty();
+        // Ninguna escritura bloqueada audita. La exportación sigue permitida y registra su propio evento (C-19).
+        assertThat(accionesDelConsultorio(agenda)).isSubsetOf("EXPORTACION_GENERADA");
     }
 
     @Test
