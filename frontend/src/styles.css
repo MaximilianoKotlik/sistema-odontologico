@@ -42,3 +42,36 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+/*
+ * Reserva del paciente (C-16, mockup aprobado en #25). En mobile la acción principal queda fija abajo y la sección
+ * reserva su alto, así el último horario se ve y se toca arriba de la barra. Desde 768 px la barra va en el flujo.
+ */
+@layer components {
+  .con-barra {
+    padding-bottom: calc(var(--touch-min) + var(--space-3) * 2 + 1px + env(safe-area-inset-bottom));
+  }
+  .barra-accion {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 10;
+    margin-top: var(--space-5);
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+    backdrop-filter: blur(var(--space-2));
+    border-top: 1px solid var(--color-border);
+  }
+  @media (min-width: 768px) {
+    .con-barra {
+      padding-bottom: 0;
+    }
+    .barra-accion {
+      position: static;
+      padding: 0;
+      background: none;
+      backdrop-filter: none;
+      border-top: 0;
+    }
+  }
+}

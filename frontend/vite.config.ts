@@ -29,5 +29,8 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     // Dispositivo en otra zona a propósito: detecta usos de la zona local (C-06, design D7).
     env: { TZ: 'Europe/Madrid' },
+    // Desde Node 25, `localStorage` global es el de Node (undefined sin --localstorage-file) y tapa al de jsdom.
+    // Apagarlo deja el de jsdom en cualquier versión de Node (CI usa 22, donde ya viene apagado).
+    execArgv: ['--no-experimental-webstorage'],
   },
 });

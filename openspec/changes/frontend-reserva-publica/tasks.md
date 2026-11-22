@@ -17,12 +17,12 @@
 
 ## 3. Reserva `/c/{slug}`
 
-- [ ] 3.1 Cargar la página pública del consultorio y mostrar encabezado, prestaciones, el estado "no toma turnos online" y el 404 del slug; verificar con tests Vitest los tres casos y que no aparecen datos del odontólogo
-- [ ] 3.2 Implementar la tira de días por ventanas de 14 hasta el horizonte de reserva (design D3), con días "sin turnos" según `atiende` y huecos, el ofrecimiento del próximo día con horarios y "No hay turnos en estos días"; verificar con tests Vitest sábado elegible, domingo "sin turnos", día completo, 14 días seguidos sin huecos (el botón sigue) y fin del horizonte (el botón desaparece)
-- [ ] 3.3 Mostrar los horarios en la zona del consultorio, agrupados en mañana y tarde, con el aviso de la zona, y guardar el instante UTC elegido (design D4); verificar con tests Vitest en un entorno con otra zona del dispositivo
-- [ ] 3.4 Implementar el paso de datos con validación en el cliente (DNI con o sin puntos, celular, email opcional, consentimiento sin marcar con el texto del anexo legal) y el resumen de errores enlazado; verificar con tests Vitest cada regla y que el DNI se envía solo con dígitos
-- [ ] 3.5 Enviar la reserva y manejar 201, `HUECO_NO_DISPONIBLE` (vuelve a horarios con los huecos del 409 y conserva los datos), `LIMITE_TURNOS`, `RESERVA_NO_DISPONIBLE`, 400 por campo y 429; verificar con tests Vitest con el cliente HTTP falso
-- [ ] 3.6 Implementar la confirmación con el link destacado, "Copiar link" y el `.ics` generado en el cliente (design D6); verificar con tests Vitest el contenido del `.ics` (UTC, CRLF, link en la descripción), el escapado RFC 5545 con una dirección que tiene coma, punto y coma y un salto de línea seguido de una propiedad falsa, el plegado de líneas de más de 75 octetos sin partir caracteres multibyte, y que el token no queda en `localStorage`, `sessionStorage` ni cookies
+- [x] 3.1 Cargar la página pública del consultorio y mostrar encabezado, prestaciones, el estado "no toma turnos online" y el 404 del slug; verificar con tests Vitest los tres casos y que no aparecen datos del odontólogo
+- [x] 3.2 Implementar la tira de días por ventanas de 14 hasta el horizonte de reserva (design D3), con días "sin turnos" según `atiende` y huecos, el ofrecimiento del próximo día con horarios y "No hay turnos en estos días"; verificar con tests Vitest sábado elegible, domingo "sin turnos", día completo, 14 días seguidos sin huecos (el botón sigue) y fin del horizonte (el botón desaparece)
+- [x] 3.3 Mostrar los horarios en la zona del consultorio, agrupados en mañana y tarde, con el aviso de la zona, y guardar el instante UTC elegido (design D4); verificar con tests Vitest en un entorno con otra zona del dispositivo
+- [x] 3.4 Implementar el paso de datos con validación en el cliente (DNI con o sin puntos, celular, email opcional, consentimiento sin marcar con el texto del anexo legal) y el resumen de errores enlazado; verificar con tests Vitest cada regla y que el DNI se envía solo con dígitos
+- [x] 3.5 Enviar la reserva y manejar 201, `HUECO_NO_DISPONIBLE` (vuelve a horarios con los huecos del 409 y conserva los datos), `LIMITE_TURNOS`, `RESERVA_NO_DISPONIBLE`, 400 por campo y 429; verificar con tests Vitest con el cliente HTTP falso
+- [x] 3.6 Implementar la confirmación con el link destacado, "Copiar link" y el `.ics` generado en el cliente (design D6); verificar con tests Vitest el contenido del `.ics` (UTC, CRLF, link en la descripción), el escapado RFC 5545 con una dirección que tiene coma, punto y coma y un salto de línea seguido de una propiedad falsa, el plegado de líneas de más de 75 octetos sin partir caracteres multibyte, y que el token no queda en `localStorage`, `sessionStorage` ni cookies
 
 ## 4. Gestión `/t/{token}`
 
