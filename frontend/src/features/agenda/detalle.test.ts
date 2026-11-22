@@ -59,6 +59,16 @@ describe('montarDetalle', () => {
     expect(texto(contenedor)).toContain('Lo cargaste vos');
   });
 
+  it('muestra el historial debajo de la tarjeta Turno, y si falla el resto se ve igual (C-18)', async () => {
+    const { contenedor } = montar({ [RUTA]: [json(detalle())], [`${RUTA}/historial`]: [problema(500, 'ERROR_INTERNO')] });
+    await esperar();
+    await esperar();
+    const historial = contenedor.querySelector('[data-historial]');
+    expect(texto(historial?.previousElementSibling?.querySelector('h3'))).toBe('Turno');
+    expect(texto(historial)).toContain('No pudimos cargar el historial');
+    expect(texto(contenedor.querySelector('h2'))).toBe('Carla Ficticia');
+  });
+
   it('tiene "Volver a la agenda" al día del turno', async () => {
     const { contenedor } = montar({ [RUTA]: [json(detalle())] });
     await esperar();

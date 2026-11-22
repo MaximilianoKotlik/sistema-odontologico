@@ -1,4 +1,9 @@
-import { seccionPendiente } from './seccion-pendiente';
+import { montarRegistro } from '../features/auditoria/registro';
+import type { Pagina } from './pagina';
 
-/** Provisoria: el contenido real de esta sección llega en su propio change (ver CHANGES.md). */
-export const pagina = seccionPendiente('Registro de cambios', 'auditoria', 'historial');
+/** Registro de cambios del consultorio (C-18, spec pantalla-registro-cambios). */
+export const pagina: Pagina = {
+  titulo: 'Registro de cambios',
+  seccion: 'auditoria',
+  montar: montarRegistro,
+};
