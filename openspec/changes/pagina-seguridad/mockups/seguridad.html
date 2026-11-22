@@ -118,14 +118,14 @@
 
   <section class="seccion" id="hosting" aria-labelledby="host-t">
     <h2 id="host-t"><svg aria-hidden="true"><use href="#i-server"/></svg>Dónde están los datos</h2>
-    <p>El sistema y su base de datos corren juntos en un servidor virtual (VPS) <strong>en Argentina</strong>, contratado y administrado por nuestro equipo. Las copias de seguridad también se guardan en Argentina, así que los datos no salen del país.</p>
+    <p>El sistema y su base de datos corren juntos en un servidor virtual (VPS) <strong>en Argentina</strong>, contratado y administrado por nuestro equipo. Las copias de seguridad también se guardan en Argentina, así que la base de datos y sus copias no salen del país.</p>
     <ul>
       <li>Proveedor del servidor: <span class="tbd">(TBD) proveedor del VPS</span></li>
       <li>Copias de seguridad: una por día, cifradas, guardadas fuera del servidor y conservadas 30 días. Probamos restaurarlas antes de empezar y una vez por mes.</li>
       <li>Envío de emails (por ejemplo, el link del turno si el paciente deja su email): <span class="tbd">(TBD) proveedor SMTP</span></li>
     </ul>
-    <p class="nota">Los proveedores se eligen antes de cargar datos reales de pacientes y los vamos a nombrar acá.</p>
-    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Docker Compose con Postgres en un VPS (DD-25), en Argentina con los backups (DD-40, LG-09): sin transferencia internacional.</li><li>Política de backups de DD-40: diario, cifrado, fuera del VPS, retención de 30 días y restauración de prueba antes del lanzamiento y mensual.</li><li>Proveedor del VPS y proveedor SMTP (DD-15, DD-26): criterio de salida de C-23 (DD-40), <strong>bloquean la publicación</strong> hasta elegirse.</li></ul></div>
+    <p class="nota">Los proveedores se eligen antes de cargar datos reales de pacientes y los vamos a nombrar acá. Si el de emails queda fuera de Argentina, el email del paciente sale del país, y lo vamos a explicar acá.</p>
+    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Docker Compose con Postgres en un VPS (DD-25), en Argentina con los backups (DD-40, LG-09): la base no tiene transferencia internacional. El email del paciente (DD-26) sí la tendría si el proveedor SMTP queda fuera de Argentina (DD-40, punto 4).</li><li>Política de backups de DD-40: diario, cifrado, fuera del VPS, retención de 30 días y restauración de prueba antes del lanzamiento y mensual.</li><li>Proveedor del VPS y proveedor SMTP (DD-15, DD-26): criterio de salida de C-23 (DD-40), <strong>bloquean la publicación</strong> hasta elegirse.</li></ul></div>
   </section>
 
   <section class="seccion falta" id="falta" aria-labelledby="falta-t">

@@ -32,5 +32,5 @@
 
 ## Workflow follow-up
 
-- Cuando Maxi apruebe el PR, el autor suma en el mismo PR el commit de cierre: `[x]` en `CHANGES.md` y `openspec archive pagina-seguridad` (CLAUDE.md, ciclo del PR).
+- Antes de pedir la revisión del PR de implementación, con todo en verde, el autor suma en el mismo PR el commit de cierre: `[x]` en `CHANGES.md` y `openspec archive pagina-seguridad` (CLAUDE.md, ciclo del PR, #45).
 - La publicación de `/seguridad` espera a que `npm run seguridad:revisar` pase y se cumpla el criterio de salida de C-23 (DD-40).
