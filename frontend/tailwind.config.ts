@@ -109,6 +109,22 @@ export default {
       salida: 'var(--ease-out)',
     },
     extend: {
+      /**
+       * Breakpoints propios de algunas pantallas, con nombre para no repetir píxeles sueltos (issue #60). Se suman a
+       * los de Tailwind (sm 640, md 768, lg 1024…) y se ordenan solos por ancho. `max-chico:` vale por debajo de 420.
+       */
+      screens: {
+        /** Pantallas muy angostas: se ocultan rótulos e íconos secundarios (pasos del asistente, pestañas). */
+        chico: '420px',
+        /** Nombre y apellido lado a lado en el registro. */
+        'campos-2col': '480px',
+        /** Dos acciones o rótulo y control en una fila (asistente, exportar). */
+        'acciones-2col': '520px',
+        /** Panel lateral del ingreso y filtros del registro de cambios en una sola fila. */
+        panel: '900px',
+        /** Configuración a dos columnas (consultorio y horarios). */
+        'config-2col': '1100px',
+      },
       width: { icono: 'var(--space-5)', 'icono-sm': 'calc(var(--space-5) * 0.75)' },
       height: { icono: 'var(--space-5)', 'icono-sm': 'calc(var(--space-5) * 0.75)' },
       /** barra: alto de la barra superior en desktop (botón táctil + aire, 68 px). */

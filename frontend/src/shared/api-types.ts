@@ -407,6 +407,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/turnos/{id}/historial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Eventos de un turno, en orden cronológico */
+        get: operations["historial"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/turnos/fuera-de-disponibilidad": {
         parameters: {
             query?: never;
@@ -531,6 +548,23 @@ export interface paths {
             cookie?: never;
         };
         get: operations["buscar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auditoria": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Registro de cambios del consultorio, del más nuevo al más viejo */
+        get: operations["registro"];
         put?: never;
         post?: never;
         delete?: never;
@@ -875,6 +909,37 @@ export interface components {
             /** Format: int64 */
             version: number;
         };
+        ActorResponse: {
+            tipo?: string;
+            /** Format: uuid */
+            id?: string;
+            nombre?: string;
+            identidadEnRevision?: boolean;
+        };
+        ContextoResponse: {
+            /** Format: date-time */
+            inicio?: string;
+            paciente?: string;
+        };
+        EventoResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            ocurridoAt?: string;
+            actor?: components["schemas"]["ActorResponse"];
+            accion?: string;
+            entidad?: string;
+            /** Format: uuid */
+            entidadId?: string;
+            valorAnterior?: {
+                [key: string]: unknown;
+            };
+            valorNuevo?: {
+                [key: string]: unknown;
+            };
+            ip?: string;
+            contexto?: components["schemas"]["ContextoResponse"];
+        };
         PacienteResumen: {
             /** Format: uuid */
             id?: string;
@@ -970,6 +1035,10 @@ export interface components {
             dni?: string;
             telefono?: string;
             requiereRevision?: boolean;
+        };
+        RegistroDeCambiosResponse: {
+            eventos?: components["schemas"]["EventoResponse"][];
+            siguienteCursor?: string;
         };
         AgendaResponse: {
             turnos?: components["schemas"]["TurnoResponse"][];
@@ -1899,6 +1968,28 @@ export interface operations {
             };
         };
     };
+    historial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["EventoResponse"][];
+                };
+            };
+        };
+    };
     fueraDeDisponibilidad: {
         parameters: {
             query?: never;
@@ -2180,6 +2271,33 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PacienteResponse"][];
+                };
+            };
+        };
+    };
+    registro: {
+        parameters: {
+            query?: {
+                turnoId?: string;
+                desde?: string;
+                hasta?: string;
+                accion?: string[];
+                cursor?: string;
+                tamano?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RegistroDeCambiosResponse"];
                 };
             };
         };

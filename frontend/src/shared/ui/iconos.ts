@@ -44,6 +44,9 @@ const TRAZOS = {
   compartir: `<circle cx="18" cy="5.5" r="2.5" ${L}/><circle cx="6" cy="12" r="2.5" ${L}/><circle cx="18" cy="18.5" r="2.5" ${L}/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1" ${L}/>`,
   'ojo-tachado': `<path d="M3 4l18 16M10.6 6A9.6 9.6 0 0112 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-3 3.7M6.5 7.6A17 17 0 002.5 12S6 18.5 12 18.5c1.6 0 3-.4 4.2-1" ${L}/>`,
   'link-roto': `<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1M4 4l16 16" ${L}/>`,
+  // Trazos del mockup aprobado de C-18 (#51).
+  link: `<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" ${L}/>`,
+  flecha: `<path d="M4 12h15M14 7l5 5-5 5" ${L}/>`,
   // Trazos del mockup aprobado de C-19 (#32).
   tabla: `<rect x="3.5" y="4.5" width="17" height="15" rx="2.5" ${L}/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10" ${L}/>`,
   documento: `<path d="M6.5 3.5h7l4 4v13h-11z" ${L}/><path d="M13.5 3.5v4h4M9 12.5h6M9 16h6" ${L}/>`,
@@ -60,6 +63,9 @@ const TRAZOS = {
   'calendario-mas': `<rect x="3.5" y="5" width="17" height="15.5" rx="3" ${L}/><path d="M3.5 10h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5" ${L}/>`,
   'flecha-abajo': `<path d="M12 5v14M6.5 13.5L12 19l5.5-5.5" ${L}/>`,
   'cruz-circulo': `<circle cx="12" cy="12" r="9" ${L}/><path d="M9 9l6 6M15 9l-6 6" ${L}/>`,
+  // Trazos del mockup aprobado de C-14 (#31).
+  basura: `<path d="M5 7h14M10 7V5h4v2M7 7l1 12.5h8L17 7" ${L}/>`,
+  'persona-mas': `<circle cx="10" cy="8" r="3.5" ${L}/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.6 0 3 .4 4 1.2M18 14v6M15 17h6" ${L}/>`,
 } as const satisfies Record<string, string>;
 
 export type NombreIcono = keyof typeof TRAZOS;

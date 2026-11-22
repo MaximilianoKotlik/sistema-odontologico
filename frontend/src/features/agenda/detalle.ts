@@ -7,9 +7,11 @@ import { errorRecuperable } from '../../shared/ui/error-recuperable';
 import { esqueleto } from '../../shared/ui/esqueleto';
 import { tarjetaEstado } from '../../shared/ui/estado-vacio';
 import { icono, type NombreIcono } from '../../shared/ui/iconos';
+import { tarjetaHistorial } from '../auditoria/historial-turno';
 import { marcarVisto, obtenerAgendaEntre, obtenerTurno, type DetalleTurno } from './api';
+import { dniLegible, telefonoLegible } from './formato';
 import { accionesDelTurno, nombreCompleto, type AccionTurno, type CambioPaciente } from './modelo';
-import { puntosDeEntrada } from './puntos-de-entrada';
+import { puntosDeEntrada, type EntornoDeAccion } from './puntos-de-entrada';
 import { rutaDelDia } from './semana';
 import { chipEstadoTurno, chipSobreturno } from './tarjeta';
 import { diaLocal, horaLocal, sumarDias } from './tiempo';
@@ -31,9 +33,6 @@ const ACCIONES: Record<AccionTurno, { readonly texto: string; readonly icono: No
 const VERBO: Record<CambioPaciente, string> = { RESERVO: 'reservó', REPROGRAMO: 'reprogramó', CANCELO: 'canceló' };
 
 const mayuscula = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
-const formatoDni = new Intl.NumberFormat('es-AR', { useGrouping: true, maximumFractionDigits: 0 });
-/** "30.000.003" solo para leer (D7); si no son solo dígitos, se muestra tal cual. */
-const dniLegible = (dni: string) => (/^\d+$/.test(dni) ? formatoDni.format(Number(dni)) : dni);
 const hrefTelefono = (telefono: string) => `tel:${telefono.replace(/[^\d+]/g, '')}`;
 
 /** "hoy a las 10:05", "ayer a las 21:40" o "el jueves 19 de noviembre a las 16:30", en la zona del consultorio. */
@@ -83,7 +82,7 @@ function avisoDeCambio(turno: DetalleTurno, zona: string): HTMLElement | null {
   return aviso('info', 'info', 'Cambio de tu paciente', partes.join(' '), { 'data-cambio-paciente': true, role: 'status' });
 }
 
-function vistaDelTurno(turno: DetalleTurno, zona: string): { readonly nodo: HTMLElement; readonly avisoCambio: HTMLElement | null; readonly avisoSobreturno: HTMLElement | null } {
+function vistaDelTurno(turno: DetalleTurno, zona: string, historial: HTMLElement, entorno: EntornoDeAccion): { readonly nodo: HTMLElement; readonly avisoCambio: HTMLElement | null; readonly avisoSobreturno: HTMLElement | null } {
   const dia = diaLocal(turno.inicio, zona);
   const avisoCambio = avisoDeCambio(turno, zona);
   const avisoSobreturno = turno.esSobreturno ? aviso('sobreturno', 'mas', 'Es un sobreturno', 'Se atiende en un horario que ya tiene otro turno.', { 'data-aviso-sobreturno': true }) : null;
@@ -91,7 +90,7 @@ function vistaDelTurno(turno: DetalleTurno, zona: string): { readonly nodo: HTML
   const telefono =
     turno.paciente.telefono === null
       ? vacio('Sin teléfono')
-      : el('a', { href: hrefTelefono(turno.paciente.telefono), class: 'inline-flex items-center gap-1 font-semibold text-primario' }, icono('telefono', 'w-icono-sm h-icono-sm flex-none'), turno.paciente.telefono);
+      : el('a', { href: hrefTelefono(turno.paciente.telefono), class: 'inline-flex items-center gap-1 font-semibold text-primario' }, icono('telefono', 'w-icono-sm h-icono-sm flex-none'), telefonoLegible(turno.paciente.telefono));
 
   const cancelacion: [string, Node | string][] =
     turno.estado === 'CANCELADO'
@@ -136,6 +135,7 @@ function vistaDelTurno(turno: DetalleTurno, zona: string): { readonly nodo: HTML
         null,
         listaDeDatos(['Prestación', `${turno.prestacion} · ${turno.duracionMin} min`], ['Origen', turno.origen === 'LINK' ? 'Reservó por tu link' : 'Lo cargaste vos'], ...cancelacion),
       ),
+      historial,
     ),
     el(
       'div',
@@ -155,7 +155,7 @@ function vistaDelTurno(turno: DetalleTurno, zona: string): { readonly nodo: HTML
           { 'data-acciones': true, class: 'grid gap-2' },
           ...acciones.map((accion) => {
             const { texto, icono: nombreIcono, variante } = ACCIONES[accion];
-            const b = boton({ texto, icono: nombreIcono, variante, requiereConexion: true, alHacerClic: () => puntosDeEntrada().accion(accion, turno) });
+            const b = boton({ texto, icono: nombreIcono, variante, requiereConexion: true, alHacerClic: () => puntosDeEntrada().accion(accion, turno, entorno) });
             b.classList.add('w-full', '!justify-start');
             return b;
           }),
@@ -173,6 +173,8 @@ export function montarDetalle(contexto: ContextoPagina): void {
   const volver = el('a', { href: '/app/agenda', 'data-link': true, class: 'inline-flex items-center gap-1 min-h-touch mb-2 font-semibold text-primario no-underline' }, icono('izquierda', 'w-icono-sm h-icono-sm'), 'Volver a la agenda');
   const cuerpo = el('div', {});
   contenedor.replaceChildren(el('div', { class: 'pb-6' }, volver, cuerpo));
+  // Las acciones de C-14 vuelven a pedir el detalle al terminar o si el turno cambió.
+  const entorno: EntornoDeAccion = { http, zona, alTerminar: () => void cargar() };
 
   /** Avisa con qué turno se superpone un sobreturno. Si no se puede saber, queda el texto general. */
   async function completarSobreturno(turno: DetalleTurno, destino: HTMLElement): Promise<void> {
@@ -199,10 +201,12 @@ export function montarDetalle(contexto: ContextoPagina): void {
 
   async function cargar(): Promise<void> {
     cuerpo.replaceChildren(esqueleto({ etiqueta: 'Cargando el turno…', filas: 3 }));
+    // El historial se pide en paralelo y maneja sus propios errores (C-18, design D8).
+    const historial = tarjetaHistorial(http, id, zona);
     try {
       const turno = await obtenerTurno(http, id);
       volver.setAttribute('href', rutaDelDia(diaLocal(turno.inicio, zona)));
-      const { nodo, avisoCambio, avisoSobreturno } = vistaDelTurno(turno, zona);
+      const { nodo, avisoCambio, avisoSobreturno } = vistaDelTurno(turno, zona, historial, entorno);
       cuerpo.replaceChildren(nodo);
       if (avisoCambio !== null) void dejarVisto(turno, avisoCambio);
       if (avisoSobreturno !== null) void completarSobreturno(turno, avisoSobreturno);

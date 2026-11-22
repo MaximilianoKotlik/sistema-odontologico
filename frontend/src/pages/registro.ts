@@ -69,7 +69,7 @@ export const pagina: PaginaAuth = {
     const formulario = el(
       'form',
       { novalidate: true },
-      el('div', { class: 'grid min-[480px]:grid-cols-2 gap-x-3' }, nombre.contenedor, apellido.contenedor),
+      el('div', { class: 'grid campos-2col:grid-cols-2 gap-x-3' }, nombre.contenedor, apellido.contenedor),
       email.contenedor,
       password.contenedor,
       consultorio.contenedor,

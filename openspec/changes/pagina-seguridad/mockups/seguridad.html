@@ -113,19 +113,19 @@
     </ul>
     <p class="nota">Por ahora la cuenta se protege con contraseña. La verificación en dos pasos llega más adelante (ver <a href="#falta">Lo que todavía no está</a>).</p>
     <p>¿Encontraste un problema de seguridad? Escribinos a <span class="tbd">(TBD) email de seguridad</span>.</p>
-    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Email de seguridad: decidido por Maxi en #40, se define junto con el dominio (DD-34) y <strong>bloquea la publicación</strong> como PA-02.</li><li>BCrypt (hash, no cifrado reversible), bloqueo por intentos y rate limit (C-04, C-05, RN-AU-*, <code>08_arquitectura_propuesta.md</code> §Seguridad).</li><li>Sesión de 15 min con refresh rotado; cierre en todos los dispositivos al cambiar la contraseña (C-04, C-05, RN-AU-05).</li><li>HSTS y TLS fuera de local (C-04, <code>CabecerasDeSeguridadTest</code>). Hay que confirmar TLS en el VPS antes de publicar.</li><li>Token de 256 bits guardado como hash y vista sin DNI ni teléfono (C-15, C-16).</li></ul></div>
+    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Email de seguridad: decidido por Maxi en #40, se define junto con el dominio (DD-34) y <strong>bloquea la publicación</strong> (criterio de salida de C-23, DD-40).</li><li>BCrypt (hash, no cifrado reversible), bloqueo por intentos y rate limit (C-04, C-05, RN-AU-*, <code>08_arquitectura_propuesta.md</code> §Seguridad).</li><li>Sesión de 15 min con refresh rotado; cierre en todos los dispositivos al cambiar la contraseña (C-04, C-05, RN-AU-05).</li><li>HSTS y TLS fuera de local (C-04, <code>CabecerasDeSeguridadTest</code>). Hay que confirmar TLS en el VPS antes de publicar.</li><li>Token de 256 bits guardado como hash y vista sin DNI ni teléfono (C-15, C-16).</li></ul></div>
   </section>
 
   <section class="seccion" id="hosting" aria-labelledby="host-t">
     <h2 id="host-t"><svg aria-hidden="true"><use href="#i-server"/></svg>Dónde están los datos</h2>
-    <p>El sistema y su base de datos corren juntos en un servidor virtual (VPS) contratado y administrado por nuestro equipo.</p>
+    <p>El sistema y su base de datos corren juntos en un servidor virtual (VPS) <strong>en Argentina</strong>, contratado y administrado por nuestro equipo. Las copias de seguridad también se guardan en Argentina, así que la base de datos y sus copias no salen del país.</p>
     <ul>
-      <li>Proveedor y país del servidor: <span class="tbd">(TBD) PA-02</span></li>
-      <li>Copias de seguridad: <span class="tbd">(TBD) PA-02</span></li>
+      <li>Proveedor del servidor: <span class="tbd">(TBD) proveedor del VPS</span></li>
+      <li>Copias de seguridad: una por día, cifradas, guardadas fuera del servidor y conservadas 30 días. Probamos restaurarlas antes de empezar y una vez por mes.</li>
       <li>Envío de emails (por ejemplo, el link del turno si el paciente deja su email): <span class="tbd">(TBD) proveedor SMTP</span></li>
     </ul>
-    <p class="nota">Se definen antes de cargar datos reales de pacientes. Si el servidor queda fuera de Argentina, lo vamos a explicar acá.</p>
-    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Docker Compose con Postgres en un VPS (DD-25). País y backups abiertos (PA-02, LG-09): <strong>bloquea la publicación</strong> hasta resolverse.</li><li>Proveedor SMTP en producción (DD-15, ligado a PA-02): recibe el email del paciente cuando lo deja (DD-26), así que se nombra acá como proveedor que trata datos.</li></ul></div>
+    <p class="nota">Los proveedores se eligen antes de cargar datos reales de pacientes y los vamos a nombrar acá. Si el de emails queda fuera de Argentina, el email del paciente sale del país, y lo vamos a explicar acá.</p>
+    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Docker Compose con Postgres en un VPS (DD-25), en Argentina con los backups (DD-40, LG-09): la base no tiene transferencia internacional. El email del paciente (DD-26) sí la tendría si el proveedor SMTP queda fuera de Argentina (DD-40, punto 4).</li><li>Política de backups de DD-40: diario, cifrado, fuera del VPS, retención de 30 días y restauración de prueba antes del lanzamiento y mensual.</li><li>Proveedor del VPS y proveedor SMTP (DD-15, DD-26): criterio de salida de C-23 (DD-40), <strong>bloquean la publicación</strong> hasta elegirse.</li></ul></div>
   </section>
 
   <section class="seccion falta" id="falta" aria-labelledby="falta-t">
@@ -134,10 +134,10 @@
       <li><svg aria-hidden="true"><use href="#i-alert"/></svg><span><strong>Revisión legal profesional.</strong> Los términos, la política de privacidad y esta página son un borrador propio. Un abogado especializado en datos personales y salud los va a revisar.</span></li>
       <li><svg aria-hidden="true"><use href="#i-alert"/></svg><span><strong>Verificación en dos pasos.</strong> Llega con la versión que sume historia clínica. Hoy la cuenta se protege con contraseña, bloqueo por intentos y límite de pedidos.</span></li>
       <li><svg aria-hidden="true"><use href="#i-alert"/></svg><span><strong>Certificaciones.</strong> No tenemos certificaciones de seguridad (como ISO 27001) y no decimos lo contrario.</span></li>
-      <li><svg aria-hidden="true"><use href="#i-alert"/></svg><span><strong>País del servidor y copias de seguridad.</strong> Se deciden antes de cargar datos reales.</span></li>
+      <li><svg aria-hidden="true"><use href="#i-alert"/></svg><span><strong>Servidor contratado.</strong> Hoy el sistema corre en desarrollo. El servidor en Argentina, con copias de seguridad diarias y una restauración probada, se contrata antes de cargar datos reales.</span></li>
       <li><svg aria-hidden="true"><use href="#i-alert"/></svg><span><strong>Baja de la cuenta.</strong> Por ahora se pide por soporte: la cuenta se desactiva y los datos se conservan, sin borrado automático. Antes te ofrecemos descargar todo. El plazo de conservación lo va a fijar la revisión legal.</span></li>
     </ul>
-    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Sin revisión legal: DD-28, LG-10. Sin 2FA: DD-18, DD-35. Sin certificaciones: RN-PL-05, LG-10.</li><li>País y backups: PA-02. Baja y conservación: DD-29, LG-08.</li></ul></div>
+    <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Sin revisión legal: DD-28, LG-10. Sin 2FA: DD-18, DD-35. Sin certificaciones: RN-PL-05, LG-10.</li><li>Servidor y backups antes de datos reales: DD-40, criterio de salida de C-23. Baja y conservación: DD-29, LG-08.</li></ul></div>
   </section>
 
   <section class="review" aria-labelledby="rev-t">

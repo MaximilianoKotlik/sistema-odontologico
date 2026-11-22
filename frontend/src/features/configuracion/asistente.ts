@@ -47,7 +47,7 @@ function progreso(actual: number): HTMLOListElement {
           'span',
           { class: `flex items-center gap-1 ${enCurso ? 'text-primario font-bold' : completo ? 'text-texto' : 'text-texto-tenue'}` },
           completo ? icono('check', 'w-icono-sm h-icono-sm flex-none text-exito') : null,
-          el('span', { class: 'max-[419px]:sr-only' }, nombre),
+          el('span', { class: 'max-chico:sr-only' }, nombre),
           completo ? el('span', { class: 'sr-only' }, ' (completo)') : null,
         ),
       );
@@ -368,7 +368,7 @@ export function montarAsistente(contexto: ContextoPagina): void {
         el('p', { class: 'm-0 text-texto-tenue' }, 'Compartí tu link para que tus pacientes reserven sin crear una cuenta.'),
       ),
       el('div', { class: 'p-4 mb-3 bg-primario-tinte border border-reservado-bd rounded-md' }, el('p', { class: 'm-0 font-mono font-semibold text-lg text-reservado-fg break-all' }, el('small', { class: 'block font-sans font-normal text-xs text-texto-tenue' }, 'Tu link público'), url)),
-      el('div', { class: 'grid gap-2 min-[520px]:grid-cols-2' }, copiar, compartir),
+      el('div', { class: 'grid gap-2 acciones-2col:grid-cols-2' }, copiar, compartir),
       puedeCompartir ? '' : el('p', { class: 'mt-2 mb-0 text-sm text-texto-tenue' }, 'Tu navegador no permite compartir directo: copiá el link y pegalo donde quieras.'),
       el(
         'ul',

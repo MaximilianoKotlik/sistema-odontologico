@@ -87,10 +87,10 @@ servicios de `application` públicos o por eventos de dominio (`auditoria` escuc
   `Referrer-Policy: no-referrer` (el token viaja en la URL de `/t/{token}`; evita filtrarlo por Referer).
 - **CORS**: solo el origen del frontend (`APP_FRONTEND_ORIGIN`).
 - **Secrets management**: variables de entorno vía `.env` (no versionado; se versiona `.env.example`).
-  En cloud, el gestor de secretos del proveedor elegido ([PA-02](10_preguntas_abiertas.md)).
+  En producción, el VPS en Argentina de [DD-40](09_decisiones_y_supuestos.md).
 - **Datos sensibles** ([11](11_marco_legal_argentino.md)): minimización (sin datos clínicos en v1; el
   DNI se guarda porque identifica al paciente, [DD-24](09_decisiones_y_supuestos.md)), enmascarado de PII en logs, TLS en tránsito fuera de local, cifrado en reposo delegado al
-  Postgres como contenedor del mismo Compose en un VPS ([DD-25](09_decisiones_y_supuestos.md)); país del VPS y backups pendientes ([PA-02](10_preguntas_abiertas.md)).
+  Postgres como contenedor del mismo Compose en un VPS ([DD-25](09_decisiones_y_supuestos.md)); VPS y backups en Argentina, con backup diario cifrado, retención de 30 días y restauraciones de prueba ([DD-40](09_decisiones_y_supuestos.md)).
 
 ## Persistencia y migraciones
 
