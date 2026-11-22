@@ -27,7 +27,7 @@ export function abrirDuracion(turno: DetalleTurno, entorno: EntornoDeAccion): vo
   const fin = el('small', { class: 'block text-sm font-normal text-texto-tenue' });
   const salida = el('output', { 'aria-live': 'polite', class: 'text-center text-2xl font-bold tabular' }, valor, ' ', fin);
   const paso = (delta: number, etiqueta: string, nombre: 'mas' | 'menos') => {
-    const b = el('button', { type: 'button', 'aria-label': etiqueta, class: `${clasesBoton('secundario')} w-touch px-0 text-xl` }, nombre === 'mas' ? icono('mas', 'w-icono h-icono') : el('span', { 'aria-hidden': 'true' }, '−'));
+    const b = el('button', { type: 'button', 'aria-label': etiqueta, class: `${clasesBoton('secundario')} w-touch px-0 text-xl` }, nombre === 'mas' ? icono('mas', 'w-icono h-icono flex-none') : el('span', { 'aria-hidden': 'true' }, '−'));
     b.addEventListener('click', () => elegir(ajustarDuracion(minutos, delta)));
     return b;
   };

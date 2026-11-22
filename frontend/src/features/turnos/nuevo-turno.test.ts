@@ -152,6 +152,22 @@ describe('abrirNuevoTurno', () => {
     expect(dialogoAbierto()).toBeNull();
   });
 
+  it('con el rechazo a la vista no repite el aviso previo, y cambiar la hora lo saca porque ya no aplica', async () => {
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date(en('2026-11-20', '08:00')) });
+    await abrir(en('2026-11-20', '10:15'), {
+      'GET /api/v1/pacientes?q=3000': [json([LUCIA])],
+      'POST /api/v1/turnos': [problema(409, 'TURNO_SOLAPADO', { turnoEnConflicto: { id: 't-carla', inicio: en('2026-11-20', '10:30'), fin: en('2026-11-20', '11:30') } })],
+    });
+    await elegirALucia();
+    opcion('Consulta')?.click();
+    botonEn(dialogoAbierto(), 'Crear turno')?.click();
+    await esperar();
+    expect(dialogoAbierto()?.querySelector('[data-error-turno]')).not.toBeNull();
+    expect(dialogoAbierto()?.querySelector('[data-aviso-superpone]')).toBeNull();
+    escribir(campo('hora'), '12:00');
+    expect(dialogoAbierto()?.querySelector('[data-error-turno]')).toBeNull();
+  });
+
   it('ante HORARIO_BLOQUEADO nombra el bloqueo y no ofrece el sobreturno (escenario "Dentro de un bloqueo")', async () => {
     vi.useFakeTimers({ toFake: ['Date'], now: new Date(en('2026-11-20', '08:00')) });
     await abrir(en('2026-11-20', '15:00'), {

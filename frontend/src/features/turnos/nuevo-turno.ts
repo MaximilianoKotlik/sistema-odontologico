@@ -204,6 +204,7 @@ export function abrirNuevoTurno(inicio: string | null, entorno: EntornoDeAccion,
         b.addEventListener('click', () => {
           prestacion = p;
           errorPrestacion.hidden = true;
+          formulario?.zonaDeAviso.replaceChildren();
           pintarPrestaciones();
           [...zonaPrestaciones.querySelectorAll<HTMLButtonElement>('[data-prestacion]')].find((otro) => otro.dataset['prestacion'] === p.id)?.focus();
           actualizar();
@@ -214,7 +215,7 @@ export function abrirNuevoTurno(inicio: string | null, entorno: EntornoDeAccion,
   }
 
   // Sobreturno (RN-AG-04).
-  const casilla = el('input', { name: 'sobreturno', type: 'checkbox', class: 'w-[calc(var(--space-5)-var(--space-1)/2)] h-[calc(var(--space-5)-var(--space-1)/2)] mt-1 flex-none accent-[var(--color-primary)]' });
+  const casilla = el('input', { name: 'sobreturno', type: 'checkbox', class: 'flex-none w-icono h-icono mt-1 accent-primario' });
   const textoCasilla = el('span', { class: 'block text-sm' });
   const cajaSobreturno = el(
     'label',
@@ -239,8 +240,9 @@ export function abrirNuevoTurno(inicio: string | null, entorno: EntornoDeAccion,
       ? 'Se va a ver marcado en tu agenda y nunca se ofrece en tu página. No puede caer en un horario bloqueado.'
       : 'Para una urgencia: puede superponerse con otro turno o quedar fuera de tu horario.';
 
+    const conRechazo = formulario?.zonaDeAviso.querySelector('[data-error-turno]') != null;
     const choca =
-      horario === null || casilla.checked
+      horario === null || casilla.checked || conRechazo
         ? undefined
         : datos.turnos.find((t) => activo(t.estado) && !t.esSobreturno && Date.parse(t.inicio) < Date.parse(horario.fin) && Date.parse(horario.inicio) < Date.parse(t.fin));
     zonaSuperpone.replaceChildren(
@@ -270,13 +272,18 @@ export function abrirNuevoTurno(inicio: string | null, entorno: EntornoDeAccion,
     actualizar();
   }
 
+  /** Un rechazo habla del horario que se envió: si cambia lo cargado, ya no aplica. */
+  const olvidarRechazo = () => formulario?.zonaDeAviso.replaceChildren();
+
   campos.dia.control.addEventListener('change', () => {
     campos.dia.error(null);
+    olvidarRechazo();
     void cargarDia();
     actualizar();
   });
   campos.hora.control.addEventListener('input', () => {
     campos.hora.error(null);
+    olvidarRechazo();
     actualizar();
   });
 
