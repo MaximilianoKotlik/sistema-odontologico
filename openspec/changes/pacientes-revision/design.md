@@ -44,7 +44,7 @@ No hay un endpoint aparte: el frontend manda en el `PATCH` el nombre, el apellid
 
 ### D3 — El contador sale del total de la lista
 
-La cantidad de pacientes para revisar se obtiene con `GET /api/v1/pacientes?requiereRevision=true&size=1`, leyendo `total`. El shell la pide al iniciar la sesión y después de cada revisión, y la comparte con la agenda (aviso) y la navegación (contador). Sin endpoint nuevo.
+La cantidad de pacientes para revisar se obtiene con `GET /api/v1/pacientes/listado?requiereRevision=true&size=1`, leyendo `total`. El shell la pide al iniciar la sesión y después de cada revisión, y la comparte con la agenda (aviso) y la navegación (contador). Sin endpoint nuevo.
 
 - **Alternativa descartada**: sumar el contador a la respuesta de la agenda (C-12). Acoplaría dos changes y la caché offline de la agenda guardaría un dato de pacientes.
 
@@ -81,6 +81,13 @@ Mientras el odontólogo mira la revisión puede llegar otra reserva con el mismo
 
 - **Alternativa descartada**: una columna `version` en `paciente` con `@Version`. Necesitaría una migración nueva y detectaría también cambios que no afectan la revisión. `informado_at` ya identifica la variante que se vio y cambia con cada reserva que pisa lo informado.
 - **Alternativa descartada**: aceptar lo que vio el odontólogo y perder la variante nueva (el trade-off original de D2). La variante nueva puede ser justamente el error que había que ver.
+
+### D10 — La lista va en `/api/v1/pacientes/listado`
+
+C-12 (#48, spec `busqueda-de-pacientes`) ya ocupa `GET /api/v1/pacientes?q=`: responde un array de hasta 20 pacientes y lo usa C-14 al elegir el paciente de un turno nuevo. La lista paginada de C-17, que responde `{items, total}`, va en `GET /api/v1/pacientes/listado` con los parámetros de D4. El detalle sigue en `/api/v1/pacientes/{id}`: el id es un UUID y Spring resuelve primero la ruta literal. Lo decidió Octi el 2026-11-22 durante el apply y se avisa a Maxi en el PR.
+
+- **Alternativa descartada**: un solo `GET /api/v1/pacientes` con `q`, `requiereRevision`, `page` y `size` que siempre responde `{items, total}`. Cambia un contrato ya archivado y obliga a adaptar C-14.
+- **Alternativa descartada**: la misma ruta separada por el parámetro `q`. El OpenAPI no puede describir dos respuestas en una sola operación, así que `api-types.ts` quedaría mal generado.
 
 ## Risks / Trade-offs
 

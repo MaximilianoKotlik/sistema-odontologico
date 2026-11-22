@@ -10,7 +10,7 @@
 
 ## 2. Consulta de pacientes (backend)
 
-- [ ] 2.1 Implementar `GET /api/v1/pacientes` paginado (D4), con el filtro `requiereRevision`, orden estable y `total`; verificar con tests de integración (Testcontainers) del filtro, el orden, el paginado y lo informado solo en los marcados
+- [ ] 2.1 Implementar `GET /api/v1/pacientes/listado` paginado (D4, D10), con el filtro `requiereRevision`, orden estable y `total`; verificar con tests de integración (Testcontainers) del filtro, el orden, el paginado y lo informado solo en los marcados
 - [ ] 2.2 Implementar `GET /api/v1/pacientes/{id}` con lo informado y el turno de origen; verificar con tests de integración del detalle y del 404 para un id inexistente y para uno de otro consultorio
 - [ ] 2.3 Verificar el aislamiento por consultorio en los dos endpoints con el test de otro consultorio = 404, y que la regla ArchUnit de repositorios con `ConsultorioId` sigue pasando
 
