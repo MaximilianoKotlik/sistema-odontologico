@@ -3,10 +3,15 @@
 -- Datos ficticios (regla dura 17). Idempotente: ids fijos y ON CONFLICT DO NOTHING.
 -- knowledge-base/04_modelo_de_datos.md §Seed data inicial. Pacientes y turnos de ejemplo: C-10 / C-11.
 
+-- La demo es un consultorio pago (ACTIVO): sin aviso de prueba ni solo lectura, para probar todo.
 INSERT INTO consultorio (id, nombre, slug, direccion, telefono_contacto, plan, prueba_hasta)
 VALUES ('01936b2e-0000-7000-8000-000000000001', 'Consultorio Demo', 'demo', 'Av. Siempreviva 742, CABA',
-        '+5491100000010', 'PRUEBA', DATE '2099-12-31')
+        '+5491100000010', 'ACTIVO', NULL)
 ON CONFLICT DO NOTHING;
+
+-- Las bases que ya tenían la demo en PRUEBA (antes del seed en ACTIVO) la pasan a ACTIVO sin recrear el volumen.
+UPDATE consultorio SET plan = 'ACTIVO', prueba_hasta = NULL
+ WHERE id = '01936b2e-0000-7000-8000-000000000001' AND plan <> 'ACTIVO';
 
 -- Contraseña de desarrollo: ver db/seed-local/README.md. Hash BCrypt de costo 12.
 INSERT INTO usuario (id, consultorio_id, email, password_hash, nombre, apellido, password_cambiado_at,
