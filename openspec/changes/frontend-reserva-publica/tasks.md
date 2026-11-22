@@ -11,7 +11,7 @@
 ## 2. Rutas públicas y base compartida
 
 - [x] 2.1 Sumar a `publico.ts` las rutas `/c/:slug` y `/t/:token` reutilizando la compilación de patrones del router de C-06; verificar con tests Vitest que resuelven el parámetro, que `/c/` sin slug no coincide y que no montan el shell ni envían `Authorization`
-- [ ] 2.2 Agregar a `nginx.conf` `Referrer-Policy: no-referrer` para `/c/` y `/t/`, y `<meta name="referrer" content="no-referrer">` en `frontend/index.html` (design D7); verificar las dos cosas: la cabecera con `curl -I` contra la imagen del frontend y la meta con un test Vitest sobre el `index.html` del build
+- [x] 2.2 Agregar a `nginx.conf` `Referrer-Policy: no-referrer` para `/c/` y `/t/`, y `<meta name="referrer" content="no-referrer">` en `frontend/index.html` (design D7); verificar las dos cosas: la cabecera con `curl -I` contra la imagen del frontend y la meta con un test Vitest sobre el `index.html` del build; verificado (2026-11-22): `curl -I` contra la imagen `prod` (nginx 1.27) devuelve `Referrer-Policy: no-referrer` en `/c/demo` y `/t/abc123` y no en `/` ni `/seguridad`; la meta la cubre `frontend/src/referer.test.ts`
 - [x] 2.3 Implementar el nombre legible de la zona horaria ("Buenos Aires", "Córdoba", con el identificador IANA como respaldo) y verificar con tests Vitest las zonas argentinas y una desconocida
 - [x] 2.4 Implementar la traducción de `ApiError` a estados de pantalla por `codigo` (design D8); verificar con tests Vitest cada código de los specs, 404, 429 con `Retry-After` y `SIN_CONEXION`
 
@@ -36,7 +36,7 @@
 
 - [x] 5.1 Recorrer `/c/{slug}` y `/t/{token}` contra los mockups aprobados (versión `461d39f`) a 360, 390 y 1440 px con la API simulada; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible, sin errores de consola y la barra fija sin tapar el último horario (2026-11-22: 60 capturas en `mockups/verify/`, 0 problemas; ver `design.md` §UI Mockups)
 - [x] 5.2 Cronometrar una reserva completa en mobile y verificar que se completa en menos de 90 segundos; dejar la evidencia en el PR (2026-11-22, 375 px con la API simulada: 29 s a ritmo humano simulado, 2,5 s por toque y 4 letras por segundo, incluida la carga inicial de 1,5 s en modo dev)
-- [ ] 5.3 Pasar `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, y abrir el PR desde `feat/C-16-frontend-reserva-publica` con commits conventional en español que referencien `(C-16)`; verificar el PR listo para revisión de Maxi
+- [x] 5.3 Pasar `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, y abrir el PR desde `feat/C-16-frontend-reserva-publica` con commits conventional en español que referencien `(C-16)`; verificar el PR listo para revisión de Maxi; verificado (2026-11-22) tras traer `main`: 75 archivos y 847 tests en verde, PR #70
 
 ## Workflow follow-up
 
