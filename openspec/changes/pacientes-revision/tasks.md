@@ -40,5 +40,5 @@
 
 ## Workflow follow-up
 
-- Cuando Maxi apruebe el PR, el autor suma en el mismo PR el commit de cierre: `[x]` en `CHANGES.md` y `openspec archive pacientes-revision` (CLAUDE.md, ciclo del PR).
+- Antes de pedir la revisión del PR de implementación, con todo en verde, el autor suma en el mismo PR el commit de cierre: `[x]` en `CHANGES.md` y `openspec archive pacientes-revision` (CLAUDE.md, ciclo del PR, #45).
 - Al cerrar, actualizar en `design.md` `Visual verify` con el resultado de 5.1.
