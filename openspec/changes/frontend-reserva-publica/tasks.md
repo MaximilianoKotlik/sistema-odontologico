@@ -34,11 +34,11 @@
 
 ## 5. Verificación integrada
 
-- [ ] 5.1 Recorrer `/c/{slug}` y `/t/{token}` contra los mockups aprobados (versión `461d39f`) a 360, 390 y 1440 px con la API simulada; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible, sin errores de consola y la barra fija sin tapar el último horario
-- [ ] 5.2 Cronometrar una reserva completa en mobile y verificar que se completa en menos de 90 segundos; dejar la evidencia en el PR
+- [x] 5.1 Recorrer `/c/{slug}` y `/t/{token}` contra los mockups aprobados (versión `461d39f`) a 360, 390 y 1440 px con la API simulada; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible, sin errores de consola y la barra fija sin tapar el último horario (2026-11-22: 60 capturas en `mockups/verify/`, 0 problemas; ver `design.md` §UI Mockups)
+- [x] 5.2 Cronometrar una reserva completa en mobile y verificar que se completa en menos de 90 segundos; dejar la evidencia en el PR (2026-11-22, 375 px con la API simulada: 29 s a ritmo humano simulado, 2,5 s por toque y 4 letras por segundo, incluida la carga inicial de 1,5 s en modo dev)
 - [ ] 5.3 Pasar `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, y abrir el PR desde `feat/C-16-frontend-reserva-publica` con commits conventional en español que referencien `(C-16)`; verificar el PR listo para revisión de Maxi
 
 ## Workflow follow-up
 
-- Cuando Maxi apruebe el PR, el autor suma en el mismo PR el commit de cierre: `[x]` en `CHANGES.md` y `openspec archive frontend-reserva-publica` (CLAUDE.md, ciclo del PR).
+- Antes de pedir la revisión, con todo en verde, el autor suma en el mismo PR el commit de cierre: `[x]` en `CHANGES.md` y `openspec archive frontend-reserva-publica` (CLAUDE.md, ciclo del PR, #45).
 - Al cerrar, actualizar en `design.md` `Visual verify` con el resultado de 5.1.
