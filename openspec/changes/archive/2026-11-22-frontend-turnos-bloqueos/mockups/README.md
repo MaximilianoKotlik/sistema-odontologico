@@ -3,6 +3,7 @@
 `Approval: approved (2026-11-20, by Maxi), versión `e91e1b8` (#31). El estado `aviso-fuera-de-horario` se sumó después, a pedido de Maxi (#34)`
 
 - Design system revision: 1
+- Visual verify: passed (2026-11-22) contra la implementación, con el backend local de C-12 y datos ficticios. Capturas en `verify/` y detalle de los desvíos en `design.md` §UI Mockups.
 - Preview: rendered (2026-11-20) · capturas a 390×844 y 1440×900. En los estados con diálogo, la captura mobile muestra el formulario completo. Sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola. Objetivos táctiles de 44 px o más, salvo las casillas de 22 px, que tienen una etiqueta grande que también las activa (mismo patrón que C-07 y C-09).
 - Preparado e implementa: Nacho (trabajo anticipado, paso 3 del plan). El código se escribe cuando C-13 esté `[x]` y Maxi apruebe estos mockups.
 

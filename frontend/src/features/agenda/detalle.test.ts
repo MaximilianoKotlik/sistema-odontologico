@@ -69,6 +69,13 @@ describe('montarDetalle', () => {
     expect(texto(contenedor.querySelector('h2'))).toBe('Carla Ficticia');
   });
 
+  it('el teléfono en E.164 que guarda el backend se lee agrupado (C-14)', async () => {
+    const { contenedor } = montar({ [RUTA]: [json(detalle({ paciente: { nombre: 'Ana', apellido: 'Ejemplo', dni: '30000001', telefono: '+5491100000001' } }))] });
+    await esperar();
+    const enlace = contenedor.querySelector('a[href="tel:+5491100000001"]');
+    expect(enlace?.textContent).toBe('+54 9 11 0000-0001');
+  });
+
   it('tiene "Volver a la agenda" al día del turno', async () => {
     const { contenedor } = montar({ [RUTA]: [json(detalle())] });
     await esperar();
@@ -121,7 +128,19 @@ describe('montarDetalle', () => {
     const { contenedor } = montar({ [RUTA]: [json(detalle())] });
     await esperar();
     botonConTexto(contenedor, 'Reprogramar')?.click();
-    expect(accion).toHaveBeenCalledWith('REPROGRAMAR', expect.objectContaining({ id: 't-1', version: 2 }));
+    expect(accion).toHaveBeenCalledWith('REPROGRAMAR', expect.objectContaining({ id: 't-1', version: 2 }), expect.objectContaining({ zona: 'America/Argentina/Buenos_Aires' }));
+  });
+
+  it('al terminar una acción de C-14, el detalle se vuelve a pedir', async () => {
+    const accion = vi.fn();
+    registrarPuntosDeEntrada({ nuevoTurno: vi.fn(), accion });
+    const { contenedor, llamadas } = montar({ [RUTA]: [json(detalle()), json(detalle({ estado: 'CANCELADO', canceladoPor: 'ODONTOLOGO' }))] });
+    await esperar();
+    botonConTexto(contenedor, 'Reprogramar')?.click();
+    (accion.mock.calls[0]?.[2] as { alTerminar: () => void }).alTerminar();
+    await esperar();
+    expect(llamadas.filter((l) => l.url === '/api/v1/turnos/t-1')).toHaveLength(2);
+    expect(botones(contenedor)).toEqual(['Editar nota']);
   });
 
   it('un cambio del paciente se explica con el horario anterior y se marca como visto al abrirse', async () => {

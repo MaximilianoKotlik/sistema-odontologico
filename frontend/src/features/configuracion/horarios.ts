@@ -78,6 +78,8 @@ export interface OpcionesHorarios {
   readonly sinBarra?: boolean;
   /** Texto del atajo de lunes a viernes. */
   readonly textoAtajo?: string;
+  /** Después de un guardado con cambios, con la zona de avisos de arriba de la grilla (aviso de C-14, D10). */
+  readonly despuesDeGuardar?: (zonaDeAvisos: HTMLElement) => void;
 }
 
 export interface ControlHorarios {
@@ -280,6 +282,7 @@ export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegaci
       zonaDeAvisos.replaceChildren();
       dibujarDias();
       anuncios.anunciar('Guardamos tus horarios');
+      opciones.despuesDeGuardar?.(zonaDeAvisos);
       opciones.alGuardar?.(enviadas);
     } catch (error) {
       barra.guardando(false);

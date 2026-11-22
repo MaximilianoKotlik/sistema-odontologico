@@ -35,7 +35,8 @@ const esEstado = (valor: unknown): valor is EstadoTurno => ESTADOS.includes(valo
 const esCambio = (valor: unknown): valor is CambioPaciente => CAMBIOS.includes(valor as CambioPaciente);
 const texto = (valor: string | undefined) => (valor === undefined || valor === '' ? null : valor);
 
-function aTurno(t: TurnoResponse): TurnoAgenda | null {
+/** Turno de la API → modelo de la vista; null si no trae lo mínimo para dibujarse. */
+export function aTurno(t: TurnoResponse): TurnoAgenda | null {
   if (t.id === undefined || t.inicio === undefined || t.fin === undefined || !esEstado(t.estado)) return null;
   return {
     id: t.id,
@@ -54,12 +55,12 @@ function aTurno(t: TurnoResponse): TurnoAgenda | null {
   };
 }
 
-function aBloqueo(b: BloqueoResponse): BloqueoAgenda | null {
+export function aBloqueo(b: BloqueoResponse): BloqueoAgenda | null {
   if (b.id === undefined || b.inicio === undefined || b.fin === undefined) return null;
   return { id: b.id, inicio: b.inicio, fin: b.fin, motivo: texto(b.motivo) };
 }
 
-const sinNulos = <T,>(lista: readonly (T | null)[]): T[] => lista.filter((x): x is T => x !== null);
+export const sinNulos = <T,>(lista: readonly (T | null)[]): T[] => lista.filter((x): x is T => x !== null);
 
 /**
  * La semana completa de lunes a lunes (`[desde, hasta)`) en la zona del consultorio. Día y Semana piden el mismo
@@ -99,9 +100,8 @@ export function olvidarFranjas(): void {
   franjasEnMemoria = null;
 }
 
-/** Detalle completo del turno (`GET /api/v1/turnos/{id}`, decidido por Maxi en #27). */
-export async function obtenerTurno(http: ClienteHttp, id: string): Promise<DetalleTurno> {
-  const respuesta = await http.get<DetalleResponse | undefined>(`/api/v1/turnos/${encodeURIComponent(id)}`);
+/** Detalle de la API → modelo del detalle. Lo usan el `GET` y las respuestas de las escrituras de C-14. */
+export function aDetalle(respuesta: DetalleResponse | undefined): DetalleTurno {
   const base = respuesta === undefined ? null : aTurno(respuesta);
   if (respuesta === undefined || base === null) throw new ApiError(200, 'ERROR_INESPERADO', 'La respuesta del servidor no es válida.');
   const anterior = respuesta.horarioAnterior;
@@ -119,6 +119,11 @@ export async function obtenerTurno(http: ClienteHttp, id: string): Promise<Detal
     horarioAnterior: anterior?.inicio === undefined || anterior.fin === undefined ? null : { inicio: anterior.inicio, fin: anterior.fin },
     version: respuesta.version ?? null,
   };
+}
+
+/** Detalle completo del turno (`GET /api/v1/turnos/{id}`, decidido por Maxi en #27). */
+export async function obtenerTurno(http: ClienteHttp, id: string): Promise<DetalleTurno> {
+  return aDetalle(await http.get<DetalleResponse | undefined>(`/api/v1/turnos/${encodeURIComponent(id)}`));
 }
 
 /** Deja como visto el cambio del paciente que se mostró (DD-30). Manda el instante recibido, como pide C-12 (D5). */
