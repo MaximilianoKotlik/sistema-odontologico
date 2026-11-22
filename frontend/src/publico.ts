@@ -19,6 +19,8 @@ interface PaginaPublica {
  */
 const PAGINAS: Readonly<Record<string, PaginaPublica>> = {
   '/precios': { titulo: 'Precios', montar: (contenedor, contexto) => montarPrecios(contenedor, contexto) },
+  // C-22, design D2: la página se arma al compilar desde la fuente versionada, sin pedidos a la API.
+  '/seguridad': { titulo: 'Seguridad y datos', montar: async (contenedor) => (await import('./pages/seguridad')).montarSeguridad(contenedor) },
 };
 
 const normalizar = (ruta: string) => (ruta.length > 1 && ruta.endsWith('/') ? ruta.slice(0, -1) : ruta);

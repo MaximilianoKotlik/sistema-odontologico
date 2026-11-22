@@ -57,6 +57,11 @@ const TRAZOS = {
   repetir: `<path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" ${L}/>`,
   'reloj-arena': `<path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5" ${L}/>`,
   luna: `<path d="M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z" ${L}/>`,
+  // Página de seguridad (C-22, trazos del mockup aprobado en #40).
+  personas: `<circle cx="9" cy="8.5" r="3.5" ${L}/><path d="M2.5 20c.7-3.5 3.3-5.5 6.5-5.5s5.8 2 6.5 5.5M15.5 5.2a3.5 3.5 0 010 6.6M18 14.8c1.9.8 3.1 2.6 3.5 5.2" ${L}/>`,
+  credencial: `<rect x="3" y="5.5" width="18" height="13" rx="2.5" ${L}/><circle cx="8.5" cy="11" r="2" ${L}/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4M14 13.5h3" ${L}/>`,
+  muro: `<rect x="3.5" y="4.5" width="17" height="15" rx="2" ${L}/><path d="M3.5 9.5h17M3.5 14.5h17M9 4.5v5M15 9.5v5M9 14.5v5" ${L}/>`,
+  servidor: `<rect x="4" y="4" width="16" height="7" rx="2" ${L}/><rect x="4" y="13" width="16" height="7" rx="2" ${L}/><path d="M8 7.5h.1M8 16.5h.1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>`,
 } as const satisfies Record<string, string>;
 
 export type NombreIcono = keyof typeof TRAZOS;
