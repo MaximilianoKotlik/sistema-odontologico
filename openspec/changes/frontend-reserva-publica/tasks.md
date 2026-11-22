@@ -5,15 +5,15 @@
 ## 1. Compuertas previas (sin código de producción)
 
 - [x] 1.1 Obtener la aprobación de Maxi para los mockups de `/c/{slug}` y `/t/{token}`; verificar `Approval: approved` en `design.md` y en `mockups/README.md` (#25, versión `461d39f`)
-- [ ] 1.2 Confirmar que C-06 y C-15 están mergeados y `[x]` en `CHANGES.md`; verificar con `git log origin/main --oneline`
-- [ ] 1.3 Regenerar `frontend/src/shared/api-types.ts` desde el OpenAPI de C-15 y comparar los nombres con los specs de este change, incluido el horizonte de reserva de la página pública (design D3); verificar que `npm run typecheck` pasa y, si algún nombre cambió, ajustar los specs en el mismo PR
+- [x] 1.2 Confirmar que C-06 y C-15 están mergeados y `[x]` en `CHANGES.md`; verificar con `git log origin/main --oneline` (C-06 #17, C-15 #47 y #50)
+- [x] 1.3 Regenerar `frontend/src/shared/api-types.ts` desde el OpenAPI de C-15 y comparar los nombres con los specs de este change, incluido el horizonte de reserva de la página pública (design D3); verificar que `npm run typecheck` pasa y, si algún nombre cambió, ajustar los specs en el mismo PR. `api-types.ts` de `main` ya trae los endpoints de C-15 (CI exige que esté al día) y todos los nombres coinciden, incluido `reservableHasta` (fecha local del consultorio)
 
 ## 2. Rutas públicas y base compartida
 
-- [ ] 2.1 Sumar a `publico.ts` las rutas `/c/:slug` y `/t/:token` reutilizando la compilación de patrones del router de C-06; verificar con tests Vitest que resuelven el parámetro, que `/c/` sin slug no coincide y que no montan el shell ni envían `Authorization`
+- [x] 2.1 Sumar a `publico.ts` las rutas `/c/:slug` y `/t/:token` reutilizando la compilación de patrones del router de C-06; verificar con tests Vitest que resuelven el parámetro, que `/c/` sin slug no coincide y que no montan el shell ni envían `Authorization`
 - [ ] 2.2 Agregar a `nginx.conf` `Referrer-Policy: no-referrer` para `/c/` y `/t/`, y `<meta name="referrer" content="no-referrer">` en `frontend/index.html` (design D7); verificar las dos cosas: la cabecera con `curl -I` contra la imagen del frontend y la meta con un test Vitest sobre el `index.html` del build
-- [ ] 2.3 Implementar el nombre legible de la zona horaria ("Buenos Aires", "Córdoba", con el identificador IANA como respaldo) y verificar con tests Vitest las zonas argentinas y una desconocida
-- [ ] 2.4 Implementar la traducción de `ApiError` a estados de pantalla por `codigo` (design D8); verificar con tests Vitest cada código de los specs, 404, 429 con `Retry-After` y `SIN_CONEXION`
+- [x] 2.3 Implementar el nombre legible de la zona horaria ("Buenos Aires", "Córdoba", con el identificador IANA como respaldo) y verificar con tests Vitest las zonas argentinas y una desconocida
+- [x] 2.4 Implementar la traducción de `ApiError` a estados de pantalla por `codigo` (design D8); verificar con tests Vitest cada código de los specs, 404, 429 con `Retry-After` y `SIN_CONEXION`
 
 ## 3. Reserva `/c/{slug}`
 
