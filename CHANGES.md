@@ -447,9 +447,9 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/10_preguntas_abiertas.md` §PA-01
 
 ### [C-18] `historial-auditoria`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #55, 2026-11-21)
 - **Scope**:
-  - `GET /api/v1/turnos/{id}/historial` y `GET /api/v1/auditoria` paginado con **filtros por turno, rango de fechas y tipo de acción** (RN-AD-06): actor, fecha, valor anterior y nuevo, orden cronológico; aislamiento por tenant.
+  - `GET /api/v1/turnos/{id}/historial` y `GET /api/v1/auditoria` paginado con **filtros por turno, rango de fechas y tipo de acción** (RN-AD-06): actor, fecha, valor anterior y nuevo; el historial del turno en orden cronológico y el registro del más nuevo al más viejo; aislamiento por tenant.
   - Feature `auditoria/`: historial en el detalle del turno y listado del consultorio con los tres filtros; mockup revisado antes de implementar.
   - Tests: US-040 (turno reservado por link y luego reprogramado muestra 2 eventos en orden; filtros por turno, rango y acción, combinados y vacíos).
 - **Dependencias**: `C-12`, `C-13`

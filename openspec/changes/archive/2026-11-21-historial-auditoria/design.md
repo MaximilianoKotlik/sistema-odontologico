@@ -149,4 +149,6 @@ Ajustes de mockup pedidos y aplicados: el actor "Sin sesión" para `LOGIN_FALLID
 - Mockups: [`mockups/registro.html`](mockups/registro.html) y [`mockups/turno-historial.html`](mockups/turno-historial.html), con su [README](mockups/README.md).
 - Approval: approved (2026-11-21, by Maxi), versión 5ef5bb1 (#51)
 - Preview: rendered (2026-11-20, versión 2 con los ajustes de la revisión del PR #35), 24 capturas en [`mockups/previews/`](mockups/previews/) a 390x844 y 1440 de ancho, sin desborde horizontal en 360, 390 y 1440 px y sin errores de consola. Caso nuevo: rendered (2026-11-21), 4 capturas más con los mismos tamaños.
-- Visual verify: pendiente (tarea 6.1).
+- Visual verify: passed (2026-11-21), en un entorno Docker aislado con el seed `demo`: reserva por link, reprogramación por API (el diálogo llega en C-14), reserva con DNI repetido, historial y registro con filtros. Capturas a 390x844 y 1440 en [`mockups/verify/`](mockups/verify/), sin errores de consola, sin desborde horizontal y con controles de al menos 44 px.
+  - Diferencias menores: un alta muestra sus campos en filas (Inicio, Duración, Estado, Origen, Sobreturno) en lugar de una línea, porque el evento guarda el id de la prestación y no su nombre. En mobile la barra superior muestra la marca, como el shell aprobado en C-06.
+  - Las acciones `PLAN_*` y de consentimiento no estaban en el selector del mockup: van en "Datos del consultorio" y "Pacientes nuevos", sin sumar opciones.

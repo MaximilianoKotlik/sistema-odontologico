@@ -41,7 +41,7 @@
 
 ## 6. Verificación integral
 
-- [ ] 6.1 Con `docker compose up` y el seed `demo`: reservar por link, reprogramar desde la agenda, abrir el historial del turno y el registro con cada filtro. Comparar con los mockups en 390x844 y 1440x900 (verificación: capturas en `mockups/verify/` y nota de visual verify en `design.md`)
+- [x] 6.1 Con `docker compose up` y el seed `demo`: reservar por link, reprogramar desde la agenda, abrir el historial del turno y el registro con cada filtro. Comparar con los mockups en 390x844 y 1440x900 (verificación: capturas en `mockups/verify/` y nota de visual verify en `design.md`)
 
 ## Workflow follow-up
 
