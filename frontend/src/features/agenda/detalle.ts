@@ -9,6 +9,7 @@ import { tarjetaEstado } from '../../shared/ui/estado-vacio';
 import { icono, type NombreIcono } from '../../shared/ui/iconos';
 import { tarjetaHistorial } from '../auditoria/historial-turno';
 import { marcarVisto, obtenerAgendaEntre, obtenerTurno, type DetalleTurno } from './api';
+import { dniLegible, telefonoLegible } from './formato';
 import { accionesDelTurno, nombreCompleto, type AccionTurno, type CambioPaciente } from './modelo';
 import { puntosDeEntrada, type EntornoDeAccion } from './puntos-de-entrada';
 import { rutaDelDia } from './semana';
@@ -32,9 +33,6 @@ const ACCIONES: Record<AccionTurno, { readonly texto: string; readonly icono: No
 const VERBO: Record<CambioPaciente, string> = { RESERVO: 'reservó', REPROGRAMO: 'reprogramó', CANCELO: 'canceló' };
 
 const mayuscula = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
-const formatoDni = new Intl.NumberFormat('es-AR', { useGrouping: true, maximumFractionDigits: 0 });
-/** "30.000.003" solo para leer (D7); si no son solo dígitos, se muestra tal cual. */
-const dniLegible = (dni: string) => (/^\d+$/.test(dni) ? formatoDni.format(Number(dni)) : dni);
 const hrefTelefono = (telefono: string) => `tel:${telefono.replace(/[^\d+]/g, '')}`;
 
 /** "hoy a las 10:05", "ayer a las 21:40" o "el jueves 19 de noviembre a las 16:30", en la zona del consultorio. */
@@ -92,7 +90,7 @@ function vistaDelTurno(turno: DetalleTurno, zona: string, historial: HTMLElement
   const telefono =
     turno.paciente.telefono === null
       ? vacio('Sin teléfono')
-      : el('a', { href: hrefTelefono(turno.paciente.telefono), class: 'inline-flex items-center gap-1 font-semibold text-primario' }, icono('telefono', 'w-icono-sm h-icono-sm flex-none'), turno.paciente.telefono);
+      : el('a', { href: hrefTelefono(turno.paciente.telefono), class: 'inline-flex items-center gap-1 font-semibold text-primario' }, icono('telefono', 'w-icono-sm h-icono-sm flex-none'), telefonoLegible(turno.paciente.telefono));
 
   const cancelacion: [string, Node | string][] =
     turno.estado === 'CANCELADO'

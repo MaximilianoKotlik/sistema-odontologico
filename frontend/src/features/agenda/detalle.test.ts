@@ -69,6 +69,13 @@ describe('montarDetalle', () => {
     expect(texto(contenedor.querySelector('h2'))).toBe('Carla Ficticia');
   });
 
+  it('el teléfono en E.164 que guarda el backend se lee agrupado (C-14)', async () => {
+    const { contenedor } = montar({ [RUTA]: [json(detalle({ paciente: { nombre: 'Ana', apellido: 'Ejemplo', dni: '30000001', telefono: '+5491100000001' } }))] });
+    await esperar();
+    const enlace = contenedor.querySelector('a[href="tel:+5491100000001"]');
+    expect(enlace?.textContent).toBe('+54 9 11 0000-0001');
+  });
+
   it('tiene "Volver a la agenda" al día del turno', async () => {
     const { contenedor } = montar({ [RUTA]: [json(detalle())] });
     await esperar();

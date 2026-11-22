@@ -11,7 +11,7 @@ import { CLASE_CONTROL, campoConfig, type CampoConfig } from '../configuracion/u
 import { buscarPacientes, crearTurno, obtenerPrestacionesActivas, type PacienteDelTurno, type PacienteEncontrado, type PrestacionActiva } from './api';
 import { traducirErrorDeTurno } from './errores';
 import { abrirFormulario, type FormularioAbierto } from './formulario';
-import { dniLegible, telefonoLegible } from './formato';
+import { dniLegible, telefonoLegible } from '../agenda/formato';
 import { avisoDeError, camposDiaYHora, cuandoCorto, datosDelDia, lineaDeFin, seccion, type DatosDelDia } from './ui';
 import { finDerivado, validarHora, validarPacienteNuevo, type CampoPaciente } from './validaciones';
 

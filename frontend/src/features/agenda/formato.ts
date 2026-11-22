@@ -1,4 +1,4 @@
-/** Formatos solo de lectura para datos del paciente (C-14). Los valores se envían tal como los guarda el backend. */
+/** Formatos solo de lectura para datos del paciente (detalle de C-13 y formularios de C-14). Los valores se envían tal como los guarda el backend. */
 
 const formatoDni = new Intl.NumberFormat('es-AR', { useGrouping: true, maximumFractionDigits: 0 });
 
