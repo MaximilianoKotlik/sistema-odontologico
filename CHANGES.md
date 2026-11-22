@@ -509,7 +509,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-18
 
 ### [C-22] `pagina-seguridad`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #71, 2026-11-22)
 - **Scope**:
   - Página pública estática `/seguridad` (sin auth, US-062): tratamiento de datos, auditoría inmutable, exportación completa, hosting/tratamiento y lo que aún no está (sin 2FA en v1, sin revisión legal profesional todavía, PA-06); sin declarar cumplimiento no respaldado; fecha de última actualización visible; contenido en una fuente editable versionada (no hardcodeado en componentes).
   - Cada afirmación se contrasta con la capacidad implementada (RN-PL-06): auditoría append-only (C-03), exportación (C-19), aislamiento por tenant (C-02).

@@ -28,7 +28,7 @@
 
 - [x] 5.1 Recorrer `/seguridad` contra el mockup aprobado (versión `1609d16`) a 360, 390 y 1440 px; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible y sin errores de consola (2026-11-22: 3 capturas en `mockups/verify/`, sin problemas; foco verificado con Tab real)
 - [x] 5.2 Revisar cada afirmación de la fuente contra el código mergeado (RN-PL-06) y dejar la tabla afirmación → respaldo → evidencia en el PR (tabla en el PR, revisada contra `origin/main` el 2026-11-22)
-- [ ] 5.3 Pasar `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, correr `npm run seguridad:revisar` (se espera que falle por los `(TBD)` hasta cumplir el criterio de salida de C-23) y abrir el PR con commits conventional en español que referencien `(C-22)`; verificar el PR listo para revisión de Maxi
+- [x] 5.3 Pasar `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, correr `npm run seguridad:revisar` (se espera que falle por los `(TBD)` hasta cumplir el criterio de salida de C-23) y abrir el PR con commits conventional en español que referencien `(C-22)`; verificar el PR listo para revisión de Maxi (#71; `seguridad:revisar` falla como se espera por C-16, C-17, C-23 y los `(TBD)`)
 
 ## Workflow follow-up
 
