@@ -28,7 +28,7 @@ export function pestanas(actual: Pestana): HTMLElement {
       el(
         'a',
         { href: p.ruta, 'data-link': true, 'aria-current': p.id === actual ? 'page' : null, class: CLASE_PESTANA },
-        icono(p.icono, 'max-[419px]:hidden w-icono-sm h-icono-sm flex-none'),
+        icono(p.icono, 'max-chico:hidden w-icono-sm h-icono-sm flex-none'),
         p.texto,
       ),
     ),

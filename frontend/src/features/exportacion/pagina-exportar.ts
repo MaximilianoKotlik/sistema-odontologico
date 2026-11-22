@@ -118,7 +118,7 @@ function tarjetaDeAccion(http: ClienteHttp): HTMLElement {
   accion.setAttribute('data-exportar', '');
   accion.setAttribute('data-permitido-en-solo-lectura', '');
   accion.setAttribute('aria-describedby', idAyuda);
-  accion.classList.add('w-full', 'min-[520px]:w-auto');
+  accion.classList.add('w-full', 'acciones-2col:w-auto');
 
   function indicarProgreso(activo: boolean, teniaFoco: boolean): void {
     accion.disabled = activo;
@@ -158,7 +158,7 @@ function tarjetaDeAccion(http: ClienteHttp): HTMLElement {
     `Todo lo que cargaste en ${nombreDeMarca()}, en un archivo para guardarlo, revisarlo o llevarlo a otro sistema.`,
     el(
       'div',
-      { class: 'grid gap-3 min-[520px]:grid-cols-[auto_1fr] min-[520px]:items-center' },
+      { class: 'grid gap-3 acciones-2col:grid-cols-[auto_1fr] acciones-2col:items-center' },
       accion,
       el('p', { id: idAyuda, class: 'm-0 text-sm text-texto-tenue' }, 'Puede tardar unos segundos. El archivo tiene datos de tus pacientes: guardalo en un lugar seguro.'),
     ),

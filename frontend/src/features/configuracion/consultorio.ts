@@ -50,6 +50,26 @@ interface Controles {
   readonly zonaHoraria: CampoConfig<HTMLSelectElement>;
 }
 
+type CampoConsultorio = keyof Controles;
+
+/** Un campo por clave: si `Controles` suma o pierde uno, esto no compila hasta actualizarlo. */
+const CAMPOS_CONSULTORIO: Readonly<Record<CampoConsultorio, true>> = {
+  nombre: true,
+  slug: true,
+  direccion: true,
+  telefonoContacto: true,
+  anticipacionCancelacion: true,
+  anticipacionReserva: true,
+  horizonteReservaDias: true,
+  pasoHuecosMin: true,
+  zonaHoraria: true,
+};
+
+/** Los errores traen el campo como texto (issue #60): solo las claves propias cuentan, no las heredadas de Object. */
+export function esCampoConsultorio(nombre: string): nombre is CampoConsultorio {
+  return Object.hasOwn(CAMPOS_CONSULTORIO, nombre);
+}
+
 const sufijoDeAnticipacion = (cantidad: CantidadEditable) => (cantidad.unidad === 'horas' ? 'horas antes' : 'minutos antes');
 
 export function montarConsultorio(contexto: ContextoPagina, destino: HTMLElement): void {
@@ -187,7 +207,7 @@ export function montarConsultorio(contexto: ContextoPagina, destino: HTMLElement
     });
     const formulario = el(
       'form',
-      { novalidate: true, class: 'grid gap-5 min-[1100px]:grid-cols-2 min-[1100px]:items-start' },
+      { novalidate: true, class: 'grid gap-5 config-2col:grid-cols-2 config-2col:items-start' },
       el('div', { class: 'grid gap-5 min-w-0' }, tarjetaLink, tarjeta('Datos del consultorio', 'Así te ven tus pacientes en tu página.', c.nombre.contenedor, c.slug.contenedor, c.direccion.contenedor, c.telefonoContacto.contenedor)),
       reglas,
       barra.elemento,
@@ -295,8 +315,10 @@ export function montarConsultorio(contexto: ContextoPagina, destino: HTMLElement
     }
 
     function mostrarErrores(errores: readonly { readonly campo: string; readonly mensaje: string | readonly Hijo[] }[]): void {
-      for (const error of errores) (c as unknown as Record<string, CampoConfig<HTMLInputElement> | undefined>)[error.campo]?.error(error.mensaje);
+      for (const error of errores) if (esCampoConsultorio(error.campo)) c[error.campo].error(error.mensaje);
     }
+
+    const idDelCampo = (nombre: string) => (esCampoConsultorio(nombre) ? c[nombre].control.id : '');
 
     formulario.addEventListener('submit', (evento) => {
       evento.preventDefault();
@@ -307,7 +329,7 @@ export function montarConsultorio(contexto: ContextoPagina, destino: HTMLElement
         mostrarErrores(errores);
         const resumen = resumenDeErrores(
           cantidadDeDatos(errores.length),
-          errores.map((e) => ({ id: (c as unknown as Record<string, CampoConfig<HTMLInputElement>>)[e.campo]?.control.id ?? '', mensaje: e.mensaje })),
+          errores.map((e) => ({ id: idDelCampo(e.campo), mensaje: e.mensaje })),
         );
         zonaDeAvisos.replaceChildren(resumen);
         resumen.focus();
