@@ -40,9 +40,9 @@
 
 ## 6. Humo E2E en CI (D3)
 
-- [ ] 6.1 Job `E2E (humo)` en `.github/workflows/ci.yml`: levanta Compose con `.env.example`, espera `/actuator/health`, instala Chromium, corre el humo y baja el stack. Verificar que pasa en el PR
-- [ ] 6.2 Subir `playwright-report/` y `test-results/` como artefacto si el job falla. Verificar rompiendo un recorrido a propósito en un commit temporal y revirtiéndolo
-- [ ] 6.3 Medir la duración del job en el PR. Si pasa de 10 minutos, proponer a Maxi un ajuste de D3 antes de seguir
+- [x] 6.1 Job `E2E (humo)` en `.github/workflows/ci.yml`: levanta Compose con `.env.example`, espera `/actuator/health`, instala Chromium, corre el humo y baja el stack. Verificar que pasa en el PR
+- [x] 6.2 (rompí vencido.spec.ts en 128ad14: el job falló y subió el artefacto humo-e2e de 3 MB; revertido en 6806354) Subir `playwright-report/` y `test-results/` como artefacto si el job falla. Verificar rompiendo un recorrido a propósito en un commit temporal y revirtiéndolo
+- [x] 6.3 (2m34s en el PR, bajo el tope de 10 minutos) Medir la duración del job en el PR. Si pasa de 10 minutos, proponer a Maxi un ajuste de D3 antes de seguir
 - [ ] 6.4 Maxi suma `E2E (humo)` a los checks requeridos de la protección de `main` (configuración de GitHub, a mano). Verificar en un PR que el check aparece como requerido
 
 ## 7. Integración con lo que trajo cada dependencia
@@ -60,7 +60,7 @@
 - [x] 8.2 Revisar `docs/legal/`: siguen marcados "pendiente de revisión legal" (DD-28, PA-06) y no declaran ningún cumplimiento sin verificar. Verificar con una búsqueda de "cumple", "certific" y "garantiza" que cada aparición está justificada
 - [x] 8.3 `docs/release/checklist-lanzamiento.md` (D9): los requisitos de DD-40, DD-28, la validación de los valores por defecto con odontólogos, el despliegue detrás del proxy, servir el build del frontend con el humo repetido contra él, y la medición de las métricas del piloto. Cada punto con dueño y casilla. Verificar que nombra los cinco requisitos de DD-40
 - [x] 8.4 README raíz completo: arranque con `docker compose up --build`, cuentas de demo, recorrido de prueba y humo E2E. Verificar siguiendo el README en una base recreada
-- [ ] 8.5 Corrida completa en verde: `./gradlew test`, `npm test` del frontend, el humo local y todos los jobs de CI. Verificar en el PR
+- [x] 8.5 (2026-11-23: backend 1203 tests, frontend 937, humo 8/8 en dos corridas seguidas y los cuatro jobs de CI en verde) Corrida completa en verde: `./gradlew test`, `npm test` del frontend, el humo local y todos los jobs de CI. Verificar en el PR
 
 ## Workflow follow-up
 
