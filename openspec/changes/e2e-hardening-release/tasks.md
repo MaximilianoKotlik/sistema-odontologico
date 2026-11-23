@@ -52,14 +52,14 @@
 - [x] 7.3 **C-16**: recorrido del paciente: página pública → prestación → hueco → datos y política → confirmación → link de gestión → cancelar. Verificar dos corridas seguidas sobre el mismo stack
 - [x] 7.4 **C-17**: rebasar y sumar al registro de la matriz de aislamiento (3.2) y a `MatrizDeEscriturasTest` los endpoints nuevos de pacientes. Verificar que las dos matrices pasan y que el paciente para revisar del seed se ve en la pantalla de C-17
 - [x] 7.5 **C-18**: rebasar y sumar al registro de la matriz los endpoints de historial y registro de cambios. Verificar que la matriz pasa y que el historial del turno reprogramado del seed se ve completo
-- [ ] 7.6 **C-22**: revisar `/seguridad` contra el código (D10): cada afirmación con su evidencia en `docs/release/revision-seguridad.md`, y corregir o marcar "pendiente" las que no la tengan. Verificar que no queda ninguna afirmación sin fila
+- [x] 7.6 **C-22**: revisar `/seguridad` contra el código (D10): cada afirmación con su evidencia en `docs/release/revision-seguridad.md`, y corregir o marcar "pendiente" las que no la tengan. Verificar que no queda ninguna afirmación sin fila
 
 ## 8. Revisión, documentación y cierre
 
-- [ ] 8.1 `docs/release/revision-seguridad.md` (D9) con cabeceras, rate limits, PII en logs, tokens en `Referer` y caché, secretos solo por entorno, aislamiento y plan vencido, cada fila con su evidencia y estado. Verificar que cada test citado existe y pasa
-- [ ] 8.2 Revisar `docs/legal/`: siguen marcados "pendiente de revisión legal" (DD-28, PA-06) y no declaran ningún cumplimiento sin verificar. Verificar con una búsqueda de "cumple", "certific" y "garantiza" que cada aparición está justificada
-- [ ] 8.3 `docs/release/checklist-lanzamiento.md` (D9): los requisitos de DD-40, DD-28, la validación de los valores por defecto con odontólogos, el despliegue detrás del proxy, servir el build del frontend con el humo repetido contra él, y la medición de las métricas del piloto. Cada punto con dueño y casilla. Verificar que nombra los cinco requisitos de DD-40
-- [ ] 8.4 README raíz completo: arranque con `docker compose up --build`, cuentas de demo, recorrido de prueba y humo E2E. Verificar siguiendo el README en una base recreada
+- [x] 8.1 `docs/release/revision-seguridad.md` (D9) con cabeceras, rate limits, PII en logs, tokens en `Referer` y caché, secretos solo por entorno, aislamiento y plan vencido, cada fila con su evidencia y estado. Verificar que cada test citado existe y pasa
+- [x] 8.2 Revisar `docs/legal/`: siguen marcados "pendiente de revisión legal" (DD-28, PA-06) y no declaran ningún cumplimiento sin verificar. Verificar con una búsqueda de "cumple", "certific" y "garantiza" que cada aparición está justificada
+- [x] 8.3 `docs/release/checklist-lanzamiento.md` (D9): los requisitos de DD-40, DD-28, la validación de los valores por defecto con odontólogos, el despliegue detrás del proxy, servir el build del frontend con el humo repetido contra él, y la medición de las métricas del piloto. Cada punto con dueño y casilla. Verificar que nombra los cinco requisitos de DD-40
+- [x] 8.4 README raíz completo: arranque con `docker compose up --build`, cuentas de demo, recorrido de prueba y humo E2E. Verificar siguiendo el README en una base recreada
 - [ ] 8.5 Corrida completa en verde: `./gradlew test`, `npm test` del frontend, el humo local y todos los jobs de CI. Verificar en el PR
 
 ## Workflow follow-up
