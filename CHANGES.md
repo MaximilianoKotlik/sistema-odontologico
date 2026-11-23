@@ -530,7 +530,7 @@ Reglas de coordinación del paralelismo:
 ## FASE 6 — Cierre de v1
 
 ### [C-23] `e2e-hardening-release`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #65, 2026-11-23)
 - **Scope**:
   - Playwright en viewport mobile: reserva por link de punta a punta y login -> crear turno; integrado al CI como humo previo a cada release.
   - Revisión de seguridad: CSP/cabeceras, rate limits, enmascarado de PII en logs, ausencia de tokens en `Referer`/caché, secretos solo por entorno; aislamiento entre tenants en toda la API; matriz completa de escrituras bloqueadas en plan `VENCIDO` (incluidos los endpoints de C-17).

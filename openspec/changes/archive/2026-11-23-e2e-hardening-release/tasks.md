@@ -12,7 +12,7 @@
 
 - [x] 1.1 Test con servidor real (`RANDOM_PORT`) y la estrategia por defecto: logins con distintos `X-Forwarded-For` desde la misma conexión comparten el cupo. Verificar que pasa ya, sin cambios de código
 - [x] 1.2 Test con `FORWARD_HEADERS_STRATEGY=native`: dos IPs detrás del proxy tienen cupos separados, y un `X-Forwarded-For` falseado por el cliente no cambia el cupo. Verificar rojo y después verde con `server.forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}` en `application.yml`
-- [ ] 1.3 (KB y README hechos; falta `.env.example`, que el agente no puede leer por permisos: lo suma Maxi) Sumar `FORWARD_HEADERS_STRATEGY` a `.env.example`, a la tabla de variables de `knowledge-base/08_arquitectura_propuesta.md` y a `backend/README.md` §IP de origen detrás de un proxy, con `internal-proxies`. Verificar que los ejemplos coinciden con la configuración
+- [x] 1.3 (`.env.example` lo editó Maxi, 58e7be2) Sumar `FORWARD_HEADERS_STRATEGY` a `.env.example`, a la tabla de variables de `knowledge-base/08_arquitectura_propuesta.md` y a `backend/README.md` §IP de origen detrás de un proxy, con `internal-proxies`. Verificar que los ejemplos coinciden con la configuración
 
 ## 2. Respuestas sin caché (D7)
 
@@ -43,7 +43,7 @@
 - [x] 6.1 Job `E2E (humo)` en `.github/workflows/ci.yml`: levanta Compose con `.env.example`, espera `/actuator/health`, instala Chromium, corre el humo y baja el stack. Verificar que pasa en el PR
 - [x] 6.2 (rompí vencido.spec.ts en 128ad14: el job falló y subió el artefacto humo-e2e de 3 MB; revertido en 6806354) Subir `playwright-report/` y `test-results/` como artefacto si el job falla. Verificar rompiendo un recorrido a propósito en un commit temporal y revirtiéndolo
 - [x] 6.3 (2m34s en el PR, bajo el tope de 10 minutos) Medir la duración del job en el PR. Si pasa de 10 minutos, proponer a Maxi un ajuste de D3 antes de seguir
-- [ ] 6.4 Maxi suma `E2E (humo)` a los checks requeridos de la protección de `main` (configuración de GitHub, a mano). Verificar en un PR que el check aparece como requerido
+- [ ] 6.4 (configuración de GitHub fuera del repo: queda en docs/release/checklist-lanzamiento.md §Protección de main) Maxi suma `E2E (humo)` a los checks requeridos de la protección de `main` (configuración de GitHub, a mano). Verificar en un PR que el check aparece como requerido
 
 ## 7. Integración con lo que trajo cada dependencia
 
