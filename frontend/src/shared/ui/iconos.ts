@@ -44,9 +44,34 @@ const TRAZOS = {
   compartir: `<circle cx="18" cy="5.5" r="2.5" ${L}/><circle cx="6" cy="12" r="2.5" ${L}/><circle cx="18" cy="18.5" r="2.5" ${L}/><path d="M8.2 10.8l7.6-4.1M8.2 13.2l7.6 4.1" ${L}/>`,
   'ojo-tachado': `<path d="M3 4l18 16M10.6 6A9.6 9.6 0 0112 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-3 3.7M6.5 7.6A17 17 0 002.5 12S6 18.5 12 18.5c1.6 0 3-.4 4.2-1" ${L}/>`,
   'link-roto': `<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1M4 4l16 16" ${L}/>`,
+  // Trazos del mockup aprobado de C-18 (#51).
+  link: `<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" ${L}/>`,
+  flecha: `<path d="M4 12h15M14 7l5 5-5 5" ${L}/>`,
   // Trazos del mockup aprobado de C-19 (#32).
   tabla: `<rect x="3.5" y="4.5" width="17" height="15" rx="2.5" ${L}/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10" ${L}/>`,
   documento: `<path d="M6.5 3.5h7l4 4v13h-11z" ${L}/><path d="M13.5 3.5v4h4M9 12.5h6M9 16h6" ${L}/>`,
+  // Trazos del mockup aprobado de C-13 (#27).
+  ausente: `<circle cx="10" cy="8" r="3.5" ${L}/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.3 0 2.5.3 3.5 1M16 15l5 5M21 15l-5 5" ${L}/>`,
+  nota: `<path d="M6 3.5h8.5L19 8v12.5H6z" ${L}/><path d="M14 3.5V8.5h5M9 12.5h6M9 16h4" ${L}/>`,
+  telefono: `<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 006 6l1.5-2 4 1.5v3a2 2 0 01-2 2A16.5 16.5 0 014.5 5.5a2 2 0 012-2z" ${L}/>`,
+  repetir: `<path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" ${L}/>`,
+  'reloj-arena': `<path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5" ${L}/>`,
+  luna: `<path d="M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z" ${L}/>`,
+  // Reserva del paciente (C-16, trazos del mockup aprobado en #25).
+  ubicacion: `<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z" ${L}/><circle cx="12" cy="10" r="2.3" ${L}/>`,
+  marcador: `<path d="M6.5 4h11v16.5L12 16.5l-5.5 4z" ${L}/>`,
+  'calendario-mas': `<rect x="3.5" y="5" width="17" height="15.5" rx="3" ${L}/><path d="M3.5 10h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5" ${L}/>`,
+  'flecha-abajo': `<path d="M12 5v14M6.5 13.5L12 19l5.5-5.5" ${L}/>`,
+  'cruz-circulo': `<circle cx="12" cy="12" r="9" ${L}/><path d="M9 9l6 6M15 9l-6 6" ${L}/>`,
+  // Trazos del mockup aprobado de C-14 (#31).
+  basura: `<path d="M5 7h14M10 7V5h4v2M7 7l1 12.5h8L17 7" ${L}/>`,
+  'persona-mas': `<circle cx="10" cy="8" r="3.5" ${L}/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.6 0 3 .4 4 1.2M18 14v6M15 17h6" ${L}/>`,
+  // Pacientes (C-17, trazos del mockup aprobado en #36).
+  personas: `<circle cx="9" cy="8.5" r="3.5" ${L}/><path d="M2.5 20c.7-3.5 3.3-5.5 6.5-5.5s5.8 2 6.5 5.5M15.5 5.2a3.5 3.5 0 010 6.6M18 14.8c1.9.8 3.1 2.6 3.5 5.2" ${L}/>`,
+  dni: `<rect x="3" y="5.5" width="18" height="13" rx="2.5" ${L}/><circle cx="8.5" cy="11" r="2" ${L}/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4M14 13.5h3" ${L}/>`,
+  // Página de seguridad (C-22, trazos del mockup aprobado en #40). Usa también `personas` y `dni` de C-17.
+  muro: `<rect x="3.5" y="4.5" width="17" height="15" rx="2" ${L}/><path d="M3.5 9.5h17M3.5 14.5h17M9 4.5v5M15 9.5v5M9 14.5v5" ${L}/>`,
+  servidor: `<rect x="4" y="4" width="16" height="7" rx="2" ${L}/><rect x="4" y="13" width="16" height="7" rx="2" ${L}/><path d="M8 7.5h.1M8 16.5h.1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>`,
 } as const satisfies Record<string, string>;
 
 export type NombreIcono = keyof typeof TRAZOS;

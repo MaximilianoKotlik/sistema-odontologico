@@ -7,6 +7,7 @@ con el perfil por defecto o en los tests no se carga (`SeedLocalTest`).
 | Dato | Valor |
 |------|-------|
 | Consultorio | "Consultorio Demo", slug `demo` |
+| Plan | `ACTIVO` (pago): sin aviso de prueba ni solo lectura |
 | Usuario | `demo@consultorio.test` |
 | Contraseña | `demo-local-2026` (**solo para desarrollo local**) |
 | Prestaciones | Consulta 30', Limpieza 45', Extracción 60', Control 20' |

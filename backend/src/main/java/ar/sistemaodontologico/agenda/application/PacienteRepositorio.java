@@ -22,6 +22,12 @@ public interface PacienteRepositorio {
     /** Guarda la marca de revisión y lo informado del paciente (DD-38), sin tocar su ficha. */
     void guardarRevision(ConsultorioId consultorio, Paciente paciente);
 
+    /**
+     * Guarda la revisión resuelta (C-17): nombre, apellido y email, sin la marca y sin lo informado (DD-38). El DNI y
+     * el teléfono no se tocan.
+     */
+    void guardarFichaRevisada(ConsultorioId consultorio, Paciente paciente);
+
     /** Completa el turno de origen de lo informado (DD-38). */
     void vincularTurnoDeOrigen(ConsultorioId consultorio, PacienteId paciente, TurnoId turno);
 

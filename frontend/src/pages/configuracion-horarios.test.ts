@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { botonConTexto, crearContextoDePagina, enviar, escribir, esperar, json, problema, type Guion, type Llamada } from '../features/configuracion/prueba-contexto';
+import { botonConTexto, crearContextoDePagina, enviar, escribir, esperar, json, problema, type Guion, type Llamada, type Respuesta } from '../features/configuracion/prueba-contexto';
 import { pagina } from './configuracion-horarios';
 
 // Tarea 3.4 de C-09 (spec app-configuracion/disponibilidad; mockup `horarios.html`). Datos ficticios.
@@ -140,5 +140,71 @@ describe('Configuración: horarios', () => {
 
     for (const n of [1, 2, 3, 4, 5]) expect(horas(n)).toEqual(['09:00', '13:00', '15:00', '19:00']);
     expect(horas(6)).toEqual([]);
+  });
+});
+
+// Tarea 3.7 de C-14 (design D10; spec gestion-turnos "Aviso de turnos fuera de horario"; mockup aviso-fuera-de-horario).
+describe('Configuración: horarios › aviso de turnos fuera de horario (C-14)', () => {
+  const VIERNES_MANANA = [franja(5, '09:00', '13:00')];
+  const turnoAfuera = (id: string, hora: string, nombre: string, apellido: string) => ({
+    id,
+    inicio: new Date(`2026-11-20T${hora}:00-03:00`).toISOString(),
+    fin: new Date(`2026-11-20T${hora.slice(0, 2)}:30:00-03:00`).toISOString(),
+    duracionMin: 30,
+    estado: 'RESERVADO',
+    esSobreturno: false,
+    origen: 'MANUAL',
+    prestacion: { id: 'p-1', nombre: 'Consulta' },
+    paciente: { id: `pa-${id}`, nombre, apellido },
+    tieneNota: false,
+    version: 1,
+  });
+
+  async function guardarViernes(fuera: Respuesta[]) {
+    const prueba = await montar({
+      'GET /api/v1/disponibilidad': [json({ franjas: [...VIERNES_MANANA, franja(5, '15:00', '19:00')] })],
+      'PUT /api/v1/disponibilidad': [json({ franjas: VIERNES_MANANA })],
+      'GET /api/v1/turnos/fuera-de-disponibilidad': fuera,
+    });
+    porEtiqueta(prueba.dia(5) ?? document, 'Quitar la franja 2 del viernes')?.click();
+    enviar(prueba.contenedor);
+    await esperar();
+    await esperar();
+    return prueba;
+  }
+
+  it('con turnos afuera los lista con "Ver turno" y no deshace el guardado (escenario "Tres turnos afuera")', async () => {
+    const { contenedor, llamadas } = await guardarViernes([
+      json([turnoAfuera('t-16', '16:00', 'Federico', 'Ejemplo'), turnoAfuera('t-17', '17:00', 'Gabriela', 'Prueba'), turnoAfuera('t-18', '18:00', 'Hernán', 'Muestra')]),
+    ]);
+    expect(puts(llamadas)).toHaveLength(1);
+    expect(contenedor.querySelector('[aria-live="polite"]')?.textContent).toContain('Guardamos tus horarios');
+    const avisoFuera = contenedor.querySelector<HTMLElement>('[data-aviso-fuera]');
+    expect(avisoFuera?.getAttribute('role')).toBe('alert');
+    expect(avisoFuera?.textContent).toContain('3 turnos quedan fuera de tu horario nuevo');
+    expect(avisoFuera?.textContent).toContain('Siguen vigentes en tu agenda: reprogramalos o cancelalos desde cada turno. Los sobreturnos no se cuentan, porque pueden quedar fuera de horario.');
+    const items = [...(avisoFuera?.querySelectorAll('li') ?? [])].map((li) => li.textContent?.replace(/\s+/g, ' ').trim());
+    expect(items).toEqual(['Vie 20 · 16:00 · Federico Ejemplo Ver turno', 'Vie 20 · 17:00 · Gabriela Prueba Ver turno', 'Vie 20 · 18:00 · Hernán Muestra Ver turno']);
+    expect(avisoFuera?.querySelector('a[href="/app/agenda/turnos/t-16"]')).not.toBeNull();
+    botonConTexto(avisoFuera ?? document, 'Entendido')?.click();
+    expect(contenedor.querySelector('[data-aviso-fuera]')).toBeNull();
+  });
+
+  it('con más de 5 muestra los primeros 5 y "Ver los 12 en la agenda" (escenario "Muchos turnos afuera")', async () => {
+    const doce = Array.from({ length: 12 }, (_, i) => turnoAfuera(`t-${i}`, '16:00', 'Paciente', `Ficticio ${i}`));
+    const { contenedor } = await guardarViernes([json(doce)]);
+    const avisoFuera = contenedor.querySelector<HTMLElement>('[data-aviso-fuera]');
+    expect(avisoFuera?.querySelectorAll('li')).toHaveLength(5);
+    const verTodos = [...(avisoFuera?.querySelectorAll('a') ?? [])].find((a) => a.getAttribute('href') === '/app/agenda?vista=semana&fecha=2026-11-16');
+    expect(verTodos?.textContent).toBe('Ver los 12 en la agenda');
+  });
+
+  it('sin turnos afuera, o si la consulta falla, solo queda "Guardamos tus horarios" (escenario "Ninguno afuera")', async () => {
+    const vacio = await guardarViernes([json([])]);
+    expect(vacio.contenedor.querySelector('[data-aviso-fuera]')).toBeNull();
+    expect(vacio.contenedor.querySelector('[data-revisando-fuera]')).toBeNull();
+    const falla = await guardarViernes([problema(500, 'ERROR_INTERNO')]);
+    expect(falla.contenedor.querySelector('[data-aviso-fuera]')).toBeNull();
+    expect(falla.contenedor.querySelector('[aria-live="polite"]')?.textContent).toContain('Guardamos tus horarios');
   });
 });

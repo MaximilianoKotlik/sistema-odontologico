@@ -1,4 +1,13 @@
-import { seccionPendiente } from './seccion-pendiente';
+import { montarAgenda } from '../features/agenda/pantalla';
+import { registrarAccionesDeTurnos } from '../features/turnos/puntos';
+import type { Pagina } from './pagina';
 
-/** Provisoria: el contenido real de esta sección llega en su propio change (ver CHANGES.md). */
-export const pagina = seccionPendiente('Agenda', 'agenda', 'calendario');
+/** Agenda diaria y semanal (C-13) con las acciones de turnos de C-14. */
+export const pagina: Pagina = {
+  titulo: 'Agenda',
+  seccion: 'agenda',
+  montar: (contexto) => {
+    registrarAccionesDeTurnos();
+    montarAgenda(contexto);
+  },
+};

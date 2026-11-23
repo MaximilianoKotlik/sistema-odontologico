@@ -98,6 +98,15 @@ public final class AgendaDePrueba {
         return id;
     }
 
+    /** Marca al paciente para revisión con lo escrito en una reserva, como lo deja {@code RegistrarPaciente} (DD-38). */
+    public void informado(UUID paciente, String nombre, String apellido, String email, Instant instante, UUID turno) {
+        jdbc.update("""
+                UPDATE paciente
+                   SET requiere_revision = true, nombre_informado = ?, apellido_informado = ?, email_informado = ?,
+                       informado_at = ?, informado_turno_id = ?
+                 WHERE id = ?""", nombre, apellido, email, java.sql.Timestamp.from(instante), turno, paciente);
+    }
+
     public void nota(UUID turno, String nota) {
         jdbc.update("UPDATE turno SET nota_interna = ? WHERE id = ?", nota, turno);
     }

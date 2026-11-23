@@ -14,7 +14,7 @@ export interface VigiaDeCambios {
   detener(): void;
 }
 
-function confirmarDescarte(): Promise<boolean> {
+export function confirmarDescarte(): Promise<boolean> {
   return new Promise((resolver) => {
     let respuesta = false;
     const seguir = boton({ texto: 'Seguir editando', variante: 'primario', alHacerClic: () => ventana.cerrar() });

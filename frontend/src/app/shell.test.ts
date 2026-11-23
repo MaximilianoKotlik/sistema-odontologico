@@ -58,7 +58,7 @@ describe('shell: estructura y accesibilidad', () => {
     }
   });
 
-  it('desktop: barra lateral con las cinco secciones, "Cambiar contraseña" y "Cerrar sesión", visible solo desde md', () => {
+  it('desktop: barra lateral con las seis secciones, "Cambiar contraseña" y "Cerrar sesión", visible solo desde md', () => {
     preparar();
     const nav = navLateral();
     expect(nav?.className).toMatch(/(^|\s)hidden(\s|$)/);
@@ -66,6 +66,7 @@ describe('shell: estructura y accesibilidad', () => {
     expect([...(nav?.querySelectorAll('[data-destino], button') ?? [])].map(nombre)).toEqual([
       'Agenda',
       'Bloqueos',
+      'Pacientes',
       'Configuración',
       'Registro de cambios',
       'Exportar mis datos',
@@ -77,7 +78,7 @@ describe('shell: estructura y accesibilidad', () => {
   it('los destinos usan rutas /app/* que intercepta el router', () => {
     preparar();
     const hrefs = [...(navLateral()?.querySelectorAll('a[data-destino]') ?? [])].map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual(['/app/agenda', '/app/bloqueos', '/app/configuracion', '/app/auditoria', '/app/exportar', '/app/cuenta/contrasena']);
+    expect(hrefs).toEqual(['/app/agenda', '/app/bloqueos', '/app/pacientes', '/app/configuracion', '/app/auditoria', '/app/exportar', '/app/cuenta/contrasena']);
   });
 });
 
@@ -152,7 +153,7 @@ describe('shell: marca', () => {
 });
 
 describe('shell: menú "Más" (mobile)', () => {
-  it('abre una hoja modal con Registro de cambios, Exportar, Cambiar contraseña y Cerrar sesión', () => {
+  it('abre una hoja modal con Pacientes, Registro de cambios, Exportar, Cambiar contraseña y Cerrar sesión', () => {
     preparar();
     const mas = [...(navInferior()?.querySelectorAll('button') ?? [])].find((b) => nombre(b) === 'Más');
     expect(mas?.getAttribute('aria-haspopup')).toBe('dialog');
@@ -163,7 +164,7 @@ describe('shell: menú "Más" (mobile)', () => {
     const hoja = document.querySelector('[role="dialog"]');
     expect(hoja?.getAttribute('aria-modal')).toBe('true');
     expect(mas?.getAttribute('aria-expanded')).toBe('true');
-    expect([...(hoja?.querySelectorAll('a, button') ?? [])].map(nombre)).toEqual(['Registro de cambios', 'Exportar mis datos', 'Cambiar contraseña', 'Cerrar sesión']);
+    expect([...(hoja?.querySelectorAll('a, button') ?? [])].map(nombre)).toEqual(['Pacientes', 'Registro de cambios', 'Exportar mis datos', 'Cambiar contraseña', 'Cerrar sesión']);
   });
 
   it('"Cambiar contraseña" de la hoja lleva a /app/cuenta/contrasena y la cierra (C-07)', () => {
@@ -191,6 +192,42 @@ describe('shell: menú "Más" (mobile)', () => {
     const { alCerrarSesion } = preparar();
     [...(navLateral()?.querySelectorAll('button') ?? [])].find((b) => nombre(b) === 'Cerrar sesión')?.click();
     expect(alCerrarSesion).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('shell: contador de pacientes para revisar (C-17, tarea 4.1)', () => {
+  const pacientesLateral = () => navLateral()?.querySelector<HTMLAnchorElement>('a[data-destino="pacientes"]') ?? null;
+  const botonMas = () => [...(navInferior()?.querySelectorAll('button') ?? [])].find((b) => nombre(b).startsWith('Más')) ?? null;
+  const pacientesHoja = () => [...document.querySelectorAll<HTMLAnchorElement>('[role="dialog"] a')].find((a) => a.getAttribute('href') === '/app/pacientes') ?? null;
+
+  it('"Pacientes" va a /app/pacientes y queda activo en la barra lateral y en "Más"', () => {
+    const { shell } = preparar();
+    expect(pacientesLateral()?.getAttribute('href')).toBe('/app/pacientes');
+    shell.mostrar({ titulo: 'Pacientes', seccion: 'pacientes' });
+    expect(pacientesLateral()?.getAttribute('aria-current')).toBe('page');
+    expect(botonMas()?.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('con 3 para revisar muestra el número y lo anuncia como "3 para revisar"', () => {
+    const { shell } = preparar();
+    shell.mostrarParaRevisar(3);
+    botonMas()?.click();
+
+    for (const lugar of [pacientesLateral(), botonMas(), pacientesHoja()]) {
+      const contador = lugar?.querySelector('[data-contador-revision]');
+      expect(contador?.querySelector('[aria-hidden="true"]')?.textContent).toBe('3');
+      expect(contador?.querySelector('.sr-only')?.textContent).toBe(' (3 para revisar)');
+    }
+    expect(nombre(pacientesLateral() as Element)).toBe('Pacientes (3 para revisar)');
+  });
+
+  it('sin pacientes para revisar no muestra el contador, y vuelve a ocultarlo al bajar a cero', () => {
+    const { shell } = preparar();
+    expect(document.querySelector('[data-contador-revision]:not([hidden])')).toBeNull();
+    shell.mostrarParaRevisar(2);
+    shell.mostrarParaRevisar(0);
+    expect(document.querySelector('[data-contador-revision]:not([hidden])')).toBeNull();
+    expect(nombre(pacientesLateral() as Element)).toBe('Pacientes');
   });
 });
 

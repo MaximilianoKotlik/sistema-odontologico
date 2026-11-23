@@ -54,6 +54,17 @@ npm run api:types -- ../backend/build/openapi/openapi.json  # o desde el archivo
 
 El CI falla si el archivo commiteado no coincide con el contrato.
 
+## Página `/seguridad` antes de publicar
+
+El texto de `/seguridad` sale de `frontend/src/contenido/seguridad.json`: cada afirmación declara su respaldo y los changes que tienen que estar `[x]` para que sea cierta (C-22, RN-PL-06). Antes de publicar una versión:
+
+```bash
+cd frontend
+npm run seguridad:revisar   # falla si una frase depende de un change sin [x], no tiene respaldo o quedan (TBD)
+```
+
+No corre en CI a propósito: falla mientras falten el proveedor del VPS, el SMTP y el email de seguridad. Es parte del criterio de salida de C-23 en `CHANGES.md`. Necesita Node 22.6 o posterior.
+
 ## Flujo de trabajo
 
 Una rama `feat/C-NN-nombre` por change, un PR por change, conventional commits en español y Strict TDD. El detalle está en [CHANGES.md](CHANGES.md) y en las reglas duras de [CLAUDE.md](CLAUDE.md).

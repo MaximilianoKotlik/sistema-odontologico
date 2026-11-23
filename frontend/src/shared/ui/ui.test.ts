@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { aviso } from './aviso';
-import { boton, enlaceBoton } from './boton';
+import { boton, clasesBoton, enlaceBoton } from './boton';
 import { campo } from './campo';
 import { chipEstado } from './chip-estado';
 import { dialogo } from './dialogo';
@@ -54,6 +54,22 @@ describe('boton', () => {
 
   it('marca las acciones de escritura para deshabilitarlas sin conexión', () => {
     expect(boton({ texto: 'Nuevo turno', requiereConexion: true }).hasAttribute('data-requiere-conexion')).toBe(true);
+  });
+});
+
+describe('clasesBoton', () => {
+  // Con `border-transparent` en la base, el CSS generado lo ponía después de `border-primario` y el secundario quedaba sin
+  // borde (encontrado en la verificación visual de C-13). El borde transparente va solo en las variantes sin borde propio.
+  it('el secundario y el peligro secundario tienen su borde de color y ningún borde transparente', () => {
+    expect(clasesBoton('secundario')).toContain('border-primario');
+    expect(clasesBoton('secundario')).not.toContain('border-transparent');
+    expect(clasesBoton('peligro-secundario')).toContain('border-peligro');
+    expect(clasesBoton('peligro-secundario')).toContain('text-peligro');
+    expect(clasesBoton('peligro-secundario')).not.toContain('border-transparent');
+  });
+
+  it('las variantes rellenas y la fantasma usan un borde transparente', () => {
+    for (const variante of ['primario', 'fantasma', 'peligro'] as const) expect(clasesBoton(variante)).toContain('border-transparent');
   });
 });
 
@@ -163,6 +179,53 @@ describe('dialogo', () => {
     d.abrir();
     document.querySelector<HTMLElement>('[data-velo]')?.click();
     expect(document.querySelector('[role="dialog"]')).toBeNull();
+  });
+
+  // C-14 (design D2, D9): formularios en hoja a pantalla completa en mobile y diálogo de hasta 560 px en desktop.
+  it('la forma formulario tiene encabezado con "Cerrar", cuerpo con scroll y pie con las acciones', () => {
+    const campo = document.createElement('input');
+    const d = dialogo({ titulo: 'Nuevo turno', forma: 'formulario', contenido: campo, acciones: [boton({ texto: 'Crear turno' })] });
+    d.abrir();
+    const caja = document.querySelector<HTMLElement>('[role="dialog"]');
+    expect(caja?.dataset['forma']).toBe('formulario');
+    expect(caja?.querySelector('[data-cuerpo]')?.contains(campo)).toBe(true);
+    expect(caja?.querySelector('[data-pie]')?.textContent).toContain('Crear turno');
+    expect(caja?.querySelector('button[aria-label="Cerrar"]')).not.toBeNull();
+    expect(document.activeElement).toBe(campo);
+  });
+
+  it('antesDeCerrar puede frenar el cierre por Escape, velo o "Cerrar"', async () => {
+    const antesDeCerrar = vi.fn(async () => false);
+    const d = dialogo({ titulo: 'T', forma: 'formulario', acciones: [], antesDeCerrar });
+    d.abrir();
+    document.querySelector<HTMLElement>('button[aria-label="Cerrar"]')?.click();
+    await vi.waitFor(() => expect(antesDeCerrar).toHaveBeenCalledTimes(1));
+    await new Promise((r) => setTimeout(r, 0));
+    document.querySelector<HTMLElement>('[data-velo]')?.click();
+    await vi.waitFor(() => expect(antesDeCerrar).toHaveBeenCalledTimes(2));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(d.abierto()).toBe(true);
+
+    antesDeCerrar.mockResolvedValue(true);
+    document.querySelector('[role="dialog"]')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await vi.waitFor(() => expect(d.abierto()).toBe(false));
+  });
+
+  it('cerrar() desde el código no pregunta', () => {
+    const antesDeCerrar = vi.fn(async () => false);
+    const d = dialogo({ titulo: 'T', acciones: [], antesDeCerrar });
+    d.abrir();
+    d.cerrar();
+    expect(antesDeCerrar).not.toHaveBeenCalled();
+    expect(d.abierto()).toBe(false);
+  });
+
+  it('una confirmación usa alertdialog y puede elegir dónde arranca el foco', () => {
+    const volver = boton({ texto: 'No, mantenerlo' });
+    const d = dialogo({ titulo: '¿Cancelar el turno?', rol: 'alertdialog', acciones: [boton({ texto: 'Sí, cancelar turno' }), volver], focoInicial: volver });
+    d.abrir();
+    expect(document.querySelector('[role="alertdialog"]')).not.toBeNull();
+    expect(document.activeElement).toBe(volver);
   });
 });
 

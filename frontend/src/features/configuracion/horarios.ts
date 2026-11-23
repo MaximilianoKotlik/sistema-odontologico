@@ -78,6 +78,8 @@ export interface OpcionesHorarios {
   readonly sinBarra?: boolean;
   /** Texto del atajo de lunes a viernes. */
   readonly textoAtajo?: string;
+  /** Después de un guardado con cambios, con la zona de avisos de arriba de la grilla (aviso de C-14, D10). */
+  readonly despuesDeGuardar?: (zonaDeAvisos: HTMLElement) => void;
 }
 
 export interface ControlHorarios {
@@ -92,7 +94,7 @@ export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegaci
   let franjas: FranjaEditable[] = [];
   let erroresPorDia: ErrorDeDia[] = [];
   const zonaDeAvisos = el('div', {});
-  const dias = el('div', { class: 'grid gap-4 min-[1100px]:grid-cols-2' });
+  const dias = el('div', { class: 'grid gap-4 config-2col:grid-cols-2' });
   const barra = barraDeGuardado(opciones.textoGuardar ?? 'Guardar horarios', () => {
     franjas = [...guardadas];
     erroresPorDia = [];
@@ -280,6 +282,7 @@ export function montarHorarios(contexto: Pick<ContextoPagina, 'http' | 'navegaci
       zonaDeAvisos.replaceChildren();
       dibujarDias();
       anuncios.anunciar('Guardamos tus horarios');
+      opciones.despuesDeGuardar?.(zonaDeAvisos);
       opciones.alGuardar?.(enviadas);
     } catch (error) {
       barra.guardando(false);

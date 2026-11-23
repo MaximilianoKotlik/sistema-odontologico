@@ -51,6 +51,9 @@ class SeedLocalTest extends IntegracionPostgresTest {
                 ScriptUtils.executeSqlScript(owner, new ClassPathResource(SEED));
 
                 assertThat(contar(owner, "SELECT count(*) FROM consultorio WHERE slug = 'demo'")).isEqualTo(1);
+                // La demo es un consultorio pago: sin aviso de prueba ni bloqueo de solo lectura.
+                assertThat(texto(owner, "SELECT plan FROM consultorio WHERE slug = 'demo'")).isEqualTo("ACTIVO");
+                assertThat(texto(owner, "SELECT prueba_hasta::text FROM consultorio WHERE slug = 'demo'")).isNull();
                 assertThat(contar(owner, """
                         SELECT count(*) FROM tipo_prestacion p JOIN consultorio c ON c.id = p.consultorio_id
                         WHERE c.slug = 'demo' AND p.activa""")).isEqualTo(4);
@@ -73,6 +76,28 @@ class SeedLocalTest extends IntegracionPostgresTest {
                 assertThat(new BCryptPasswordEncoder().matches(CONTRASENA_DE_DESARROLLO,
                         texto(owner, "SELECT password_hash FROM usuario WHERE email = 'demo@consultorio.test'")))
                         .isTrue();
+            } finally {
+                owner.rollback();
+            }
+        }
+    }
+
+    @Test
+    void elSeedPasaAActivoUnaDemoQueYaEstabaCargadaEnPrueba() throws Exception {
+        try (Connection owner = DriverManager.getConnection(POSTGRES.getJdbcUrl(), OWNER_USER, OWNER_PASSWORD)) {
+            owner.setAutoCommit(false);
+            try {
+                ScriptUtils.executeSqlScript(owner, new ClassPathResource(SEED));
+                try (Statement sentencia = owner.createStatement()) {
+                    sentencia.executeUpdate("""
+                            UPDATE consultorio SET plan = 'PRUEBA', prueba_hasta = DATE '2099-12-31'
+                             WHERE slug = 'demo'""");
+                }
+
+                ScriptUtils.executeSqlScript(owner, new ClassPathResource(SEED));
+
+                assertThat(texto(owner, "SELECT plan FROM consultorio WHERE slug = 'demo'")).isEqualTo("ACTIVO");
+                assertThat(texto(owner, "SELECT prueba_hasta::text FROM consultorio WHERE slug = 'demo'")).isNull();
             } finally {
                 owner.rollback();
             }

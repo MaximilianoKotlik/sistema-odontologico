@@ -1,20 +1,22 @@
 import { el } from '../dom';
 import { icono, type NombreIcono } from './iconos';
 
-export type VarianteBoton = 'primario' | 'secundario' | 'fantasma' | 'peligro';
+export type VarianteBoton = 'primario' | 'secundario' | 'fantasma' | 'peligro' | 'peligro-secundario';
 
 /** Clases compartidas por botones y enlaces con aspecto de botón (design-system/components.html). */
 const BASE =
-  'inline-flex items-center justify-center gap-2 min-h-touch px-4 rounded-md border border-transparent ' +
+  'inline-flex items-center justify-center gap-2 min-h-touch px-4 rounded-md border ' +
   'font-sans font-semibold text-base no-underline cursor-pointer select-none ' +
   'transition-[background-color,transform] duration-rapida ease-salida active:scale-presion ' +
   'disabled:bg-superficie-tenue disabled:text-texto-sutil disabled:border-borde disabled:cursor-not-allowed disabled:active:scale-100';
 
 const VARIANTES: Record<VarianteBoton, string> = {
-  primario: 'bg-primario text-sobre-primario hover:bg-primario-hover active:bg-primario-activo',
+  primario: 'bg-primario text-sobre-primario border-transparent hover:bg-primario-hover active:bg-primario-activo',
   secundario: 'bg-superficie text-primario border-primario hover:bg-primario-tinte',
-  fantasma: 'bg-transparent text-texto hover:bg-superficie-tenue',
-  peligro: 'bg-peligro text-sobre-primario hover:opacity-90',
+  fantasma: 'bg-transparent text-texto border-transparent hover:bg-superficie-tenue',
+  peligro: 'bg-peligro text-sobre-primario border-transparent hover:opacity-90',
+  /** Acción destructiva que no es la principal ("Cancelar turno" en el detalle de C-13). */
+  'peligro-secundario': 'bg-superficie text-peligro border-peligro hover:bg-peligro-fondo',
 };
 
 export const clasesBoton = (variante: VarianteBoton = 'primario') => `${BASE} ${VARIANTES[variante]}`;

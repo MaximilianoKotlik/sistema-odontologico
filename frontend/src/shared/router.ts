@@ -58,9 +58,18 @@ interface Compilada<P> {
   readonly nombres: readonly string[];
 }
 
-function compilar<P>(definicion: DefinicionRuta<P>): Compilada<P> {
+export interface PatronCompilado {
+  readonly expresion: RegExp;
+  readonly nombres: readonly string[];
+}
+
+/**
+ * Convierte `/c/:slug` en una expresión que exige un valor no vacío por parámetro y acepta una barra final.
+ * La usan este router y las páginas públicas (C-16, design D1), para que haya una sola forma de leer rutas.
+ */
+export function compilarPatron(patron: string): PatronCompilado {
   const nombres: string[] = [];
-  const cuerpo = definicion.patron
+  const cuerpo = patron
     .split('/')
     .map((segmento) => {
       if (!segmento.startsWith(':')) return segmento.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -68,7 +77,11 @@ function compilar<P>(definicion: DefinicionRuta<P>): Compilada<P> {
       return '([^/]+)';
     })
     .join('/');
-  return { definicion, expresion: new RegExp(`^${cuerpo}/?$`), nombres };
+  return { expresion: new RegExp(`^${cuerpo}/?$`), nombres };
+}
+
+function compilar<P>(definicion: DefinicionRuta<P>): Compilada<P> {
+  return { definicion, ...compilarPatron(definicion.patron) };
 }
 
 const rutaDelNavegador = () => `${location.pathname}${location.search}`;

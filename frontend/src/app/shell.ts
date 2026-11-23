@@ -11,7 +11,7 @@ import { icono, type NombreIcono } from '../shared/ui/iconos';
  * "Saltar al contenido" y aviso sin conexión. Las páginas solo montan su contenido.
  */
 
-export type Seccion = 'agenda' | 'bloqueos' | 'configuracion' | 'auditoria' | 'exportar';
+export type Seccion = 'agenda' | 'bloqueos' | 'pacientes' | 'configuracion' | 'auditoria' | 'exportar';
 
 export interface EncabezadoPagina {
   readonly titulo: string;
@@ -41,6 +41,8 @@ export interface Shell {
   /** Lugar de la barra superior para las acciones de la página (p. ej. "Nuevo turno"). */
   readonly acciones: HTMLElement;
   mostrar(pagina: EncabezadoPagina, opciones?: { enfocar?: boolean }): void;
+  /** Cantidad de pacientes con revisión pendiente (C-17, D3): número y texto para lectores, oculto en cero. */
+  mostrarParaRevisar(cantidad: number): void;
   /** Aplica el estado de conexión a las acciones de escritura presentes. */
   sincronizarConexion(): void;
   destruir(): void;
@@ -56,12 +58,13 @@ interface Destino {
 const DESTINOS: readonly Destino[] = [
   { seccion: 'agenda', texto: 'Agenda', icono: 'calendario', iconoRelleno: 'calendario-relleno' },
   { seccion: 'bloqueos', texto: 'Bloqueos', icono: 'candado', iconoRelleno: 'candado-relleno' },
+  { seccion: 'pacientes', texto: 'Pacientes', icono: 'personas', iconoRelleno: 'personas' },
   { seccion: 'configuracion', texto: 'Configuración', icono: 'engranaje', iconoRelleno: 'engranaje-relleno' },
   { seccion: 'auditoria', texto: 'Registro de cambios', icono: 'historial', iconoRelleno: 'historial-relleno' },
   { seccion: 'exportar', texto: 'Exportar mis datos', icono: 'descargar', iconoRelleno: 'descargar' },
 ];
 const EN_BARRA_INFERIOR: readonly Seccion[] = ['agenda', 'bloqueos', 'configuracion'];
-const EN_HOJA_MAS: readonly Seccion[] = ['auditoria', 'exportar'];
+const EN_HOJA_MAS: readonly Seccion[] = ['pacientes', 'auditoria', 'exportar'];
 
 const RUTA_CAMBIAR_CONTRASENA = '/app/cuenta/contrasena';
 const ID_MOTIVO_SIN_CONEXION = 'motivo-sin-conexion';
@@ -81,6 +84,13 @@ function motivoSoloLectura(): HTMLSpanElement {
 }
 
 const rutaDe = (seccion: Seccion) => `/app/${seccion}`;
+
+/** Contador de pacientes para revisar (C-17): el número es visual y el texto completo es para lectores. */
+const CLASE_CONTADOR =
+  'inline-grid place-items-center min-w-6 h-6 px-1 rounded-full border text-xs font-bold leading-none bg-sobreturno-bg border-sobreturno-bd text-sobreturno-fg';
+function contadorRevision(clase: string): HTMLSpanElement {
+  return el('span', { 'data-contador-revision': true, hidden: true, class: clase });
+}
 const destino = (seccion: Seccion): Destino => {
   const encontrado = DESTINOS.find((d) => d.seccion === seccion);
   if (encontrado === undefined) throw new Error(`Sección desconocida: ${seccion}`);
@@ -126,6 +136,12 @@ const CLASE_ITEM_HOJA =
 
 export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Shell {
   const { marca, conectividad } = opciones;
+  const contadores: HTMLSpanElement[] = [];
+  const registrarContador = (contador: HTMLSpanElement) => {
+    contadores.push(contador);
+    return contador;
+  };
+  const contadorPara = (seccion: Seccion, clase: string) => (seccion === 'pacientes' ? [registrarContador(contadorRevision(clase))] : []);
 
   // Barra lateral (≥ 768 px)
   const lateral = el(
@@ -140,7 +156,7 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
         'ul',
         { class: 'list-none m-0 p-0 grid gap-1' },
         ...DESTINOS.map((d) =>
-          el('li', {}, el('a', { href: rutaDe(d.seccion), 'data-link': true, 'data-destino': d.seccion, class: CLASE_DESTINO_LATERAL }, ...iconosDestino(d), d.texto)),
+          el('li', {}, el('a', { href: rutaDe(d.seccion), 'data-link': true, 'data-destino': d.seccion, class: CLASE_DESTINO_LATERAL }, ...iconosDestino(d), d.texto, ...contadorPara(d.seccion, 'ml-auto'))),
         ),
       ),
     ),
@@ -195,6 +211,7 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
     { type: 'button', 'aria-haspopup': 'dialog', 'aria-expanded': 'false', class: CLASE_DESTINO_INFERIOR },
     el('span', { class: CLASE_PILDORA }, icono('mas-opciones')),
     'Más',
+    registrarContador(contadorRevision('absolute top-0 left-1/2 ml-2')),
   );
   const navInferior = el(
     'nav',
@@ -229,7 +246,7 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
     'ul',
     { class: 'list-none m-0 p-0' },
     ...EN_HOJA_MAS.map(destino).map((d) =>
-      el('li', {}, el('a', { href: rutaDe(d.seccion), 'data-link': true, class: CLASE_ITEM_HOJA }, icono(d.icono, 'w-icono h-icono flex-none text-texto-tenue'), d.texto)),
+      el('li', {}, el('a', { href: rutaDe(d.seccion), 'data-link': true, class: CLASE_ITEM_HOJA }, icono(d.icono, 'w-icono h-icono flex-none text-texto-tenue'), d.texto, ...contadorPara(d.seccion, 'ml-auto'))),
     ),
   );
   const hojaMas = dialogo({
@@ -339,6 +356,17 @@ export function montarShell(anfitrion: HTMLElement, opciones: OpcionesShell): Sh
       if (enfocar) contenido.focus({ preventScroll: true });
     },
     sincronizarConexion,
+    mostrarParaRevisar(cantidad) {
+      for (const contador of contadores) {
+        if (cantidad > 0) {
+          contador.replaceChildren(el('span', { 'aria-hidden': 'true', class: CLASE_CONTADOR }, String(cantidad)), el('span', { class: 'sr-only' }, ` (${cantidad} para revisar)`));
+          contador.hidden = false;
+        } else {
+          contador.replaceChildren();
+          contador.hidden = true;
+        }
+      }
+    },
     destruir() {
       desuscribir();
       desuscribirPlan();

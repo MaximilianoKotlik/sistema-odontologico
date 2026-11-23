@@ -353,7 +353,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/08_arquitectura_propuesta.md` §OpenAPI
 
 ### [C-13] `frontend-agenda`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #64, 2026-11-21)
 - **Scope**:
   - Feature `agenda/`: vista diaria por defecto en mobile y semanal desde `md`; tarjetas de turno con color + ícono + texto, sobreturno con borde punteado, bloqueo rayado, cancelados atenuados y ocultables; lectura sin scroll horizontal a 360 px; indicador de "nuevos"; caché offline de la última agenda (solo lectura).
   - Mockup revisado de vista diaria, semanal y detalle de turno antes de implementar.
@@ -367,7 +367,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/07_flujos_principales.md` §FL-03
 
 ### [C-14] `frontend-turnos-bloqueos`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #67, 2026-11-22)
 - **Scope**:
   - Features `turnos/` y `bloqueos/`: crear turno manual (prestación, hueco, paciente buscado por nombre, DNI o teléfono, con alta rápida por DNI, DD-24), agregar sobreturno, confirmar/cancelar/marcar ausente, reprogramar, **ajustar la duración** (selector en pasos de 5 min, muestra el nuevo fin), **agregar/editar la nota interna** (contador de 500), crear y eliminar bloqueos; manejo de errores 409 con mensajes y lista de conflictos de bloqueo.
   - **Aviso de turnos fuera de horario** (decisión de Maxi en #15):
@@ -410,7 +410,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-13 y `11_marco_legal_argentino.md`
 
 ### [C-16] `frontend-reserva-publica`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #70, 2026-11-22)
 - **Scope**:
   - `.ics` descargable generado en el cliente (P1; FL-04 paso 6).
   - Features `reserva-publica/` (`/c/{slug}`: elegir prestación, hueco, datos, consentimiento, confirmación con link `/t/{token}` para guardar; estado "no toma turnos online" con teléfono) y `gestion-turno/` (`/t/{token}`: ver, reprogramar, cancelar; mensaje con teléfono si está fuera de plazo; con reserva desactivada solo ofrece cancelar).
@@ -432,7 +432,7 @@ Reglas de coordinación del paralelismo:
 > C-21 no depende de la agenda: puede arrancar en el GATE 2 (solo requiere C-02 y C-06).
 
 ### [C-17] `pacientes-revision`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #74, 2026-11-22)
 - **Scope**:
   - Backend: `GET /api/v1/pacientes?requiereRevision=true` (paginado, por tenant), `PATCH /api/v1/pacientes/{id}` (corrige nombre, apellido y email; el teléfono E.164 no se edita en v1) y `POST /api/v1/pacientes/{id}/confirmar-revision`; ambas acciones ponen `requiere_revision = false` y auditan `PACIENTE_REVISADO` con solo los campos modificados (RN-AD-05); 404 ante paciente de otro consultorio (RN-TE-04); PII enmascarada en logs (RN-GL-01).
   - Frontend: feature `pacientes/` con listado, filtro "requiere revisión" (con contador visible desde la agenda) y acción de confirmar o corregir; mockup revisado antes de implementar.
@@ -447,9 +447,9 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/10_preguntas_abiertas.md` §PA-01
 
 ### [C-18] `historial-auditoria`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #55, 2026-11-21)
 - **Scope**:
-  - `GET /api/v1/turnos/{id}/historial` y `GET /api/v1/auditoria` paginado con **filtros por turno, rango de fechas y tipo de acción** (RN-AD-06): actor, fecha, valor anterior y nuevo, orden cronológico; aislamiento por tenant.
+  - `GET /api/v1/turnos/{id}/historial` y `GET /api/v1/auditoria` paginado con **filtros por turno, rango de fechas y tipo de acción** (RN-AD-06): actor, fecha, valor anterior y nuevo; el historial del turno en orden cronológico y el registro del más nuevo al más viejo; aislamiento por tenant.
   - Feature `auditoria/`: historial en el detalle del turno y listado del consultorio con los tres filtros; mockup revisado antes de implementar.
   - Tests: US-040 (turno reservado por link y luego reprogramado muestra 2 eventos en orden; filtros por turno, rango y acción, combinados y vacíos).
 - **Dependencias**: `C-12`, `C-13`
@@ -509,7 +509,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-18
 
 ### [C-22] `pagina-seguridad`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #71, 2026-11-22)
 - **Scope**:
   - Página pública estática `/seguridad` (sin auth, US-062): tratamiento de datos, auditoría inmutable, exportación completa, hosting/tratamiento y lo que aún no está (sin 2FA en v1, sin revisión legal profesional todavía, PA-06); sin declarar cumplimiento no respaldado; fecha de última actualización visible; contenido en una fuente editable versionada (no hardcodeado en componentes).
   - Cada afirmación se contrasta con la capacidad implementada (RN-PL-06): auditoría append-only (C-03), exportación (C-19), aislamiento por tenant (C-02).
@@ -542,7 +542,8 @@ Reglas de coordinación del paralelismo:
     - backup diario cifrado de Postgres en Argentina, retención de 30 días y una restauración de prueba hecha;
     - TLS activo en el dominio de producción;
     - proveedor SMTP elegido y declarado en la política de privacidad;
-    - email de seguridad de `/seguridad` definido.
+    - email de seguridad de `/seguridad` definido;
+    - `npm run seguridad:revisar` pasa: ninguna afirmación de `/seguridad` depende de un change sin `[x]`, todas tienen respaldo y no quedan `(TBD)` (C-22, RN-PL-06).
   - Checklist de despliegue, IP real detrás del reverse proxy (viene de C-05): el rate limit por IP usa `getRemoteAddr()`, y detrás del proxy del VPS todos los consultorios compartirían un mismo cupo (10 logins por minuto y 5 registros por hora). Configurar `server.forward-headers-strategy` (`native` o `framework`, según el proxy) y un proxy que **reemplace** `X-Forwarded-For` en vez de concatenarlo, y verificar con un test de humo que dos IPs distintas tengan cupos separados. Detalle en `backend/README.md`.
 - **Dependencias**: `C-14`, `C-16`, `C-17`, `C-18`, `C-19`, `C-20`, `C-21`, `C-22`
 - **Governance**: MEDIO
