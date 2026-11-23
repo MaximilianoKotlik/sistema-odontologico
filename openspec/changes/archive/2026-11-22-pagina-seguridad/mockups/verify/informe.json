@@ -1,0 +1,17 @@
+[
+  {
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "foco": "visible con Tab real (anillo --focus-ring, :focus-visible); el focus() del script no activa :focus-visible"
+  },
+  {
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "foco": "visible con Tab real (anillo --focus-ring, :focus-visible); el focus() del script no activa :focus-visible"
+  },
+  {
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "foco": "visible con Tab real (anillo --focus-ring, :focus-visible); el focus() del script no activa :focus-visible"
+  }
+]

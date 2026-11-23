@@ -36,6 +36,8 @@ interface PaginaPublica {
  */
 const PAGINAS: readonly PaginaPublica[] = [
   { patron: '/precios', titulo: 'Precios', layout: 'marca', montar: (contenedor, contexto) => montarPrecios(contenedor, contexto) },
+  // C-22, design D2: la página se arma al compilar desde la fuente versionada, sin pedidos a la API.
+  { patron: '/seguridad', titulo: 'Seguridad y datos', layout: 'marca', montar: async (contenedor) => (await import('./pages/seguridad')).montarSeguridad(contenedor) },
   {
     patron: '/c/:slug',
     titulo: 'Reservá tu turno',

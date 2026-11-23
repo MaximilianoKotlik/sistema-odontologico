@@ -76,7 +76,7 @@
       <li>Sus turnos y el consentimiento que acepta al reservar, con la fecha.</li>
       <li>Si alguien reserva con un DNI que tu consultorio ya tiene, pero con otro nombre, no cambiamos la ficha: guardamos lo que escribió hasta que el consultorio lo revisa, y después se borra.</li>
     </ul>
-    <p><strong>No guardamos datos de salud</strong>: no hay historia clínica, odontograma ni diagnósticos.</p>
+    <p><strong>No guardamos historia clínica, odontograma ni diagnósticos.</strong> Igual tratamos todos los datos de tus pacientes como sensibles, porque un turno y su prestación pueden revelar información de salud.</p>
     <p class="nota">Los datos de tus pacientes no se escriben en los registros técnicos del sistema: se enmascaran.</p>
     <div class="respaldo" data-solo="respaldo"><b>Respaldo</b><ul><li>Modelo de paciente en <code>04_modelo_de_datos.md</code> §Paciente, DNI por DD-24, consentimiento de LG-02.</li><li>Lo escrito en la reserva hasta revisar: DD-38 (#36), columnas <code>*_informado</code> que C-17 borra al revisar.</li><li>PII enmascarada en logs (RN-GL-01, C-02: <code>EnmascaradorDePii</code>, test <code>LogsSinPiiTest</code>).</li><li>Sin datos clínicos en v1 (DD-16).</li></ul></div>
   </section>

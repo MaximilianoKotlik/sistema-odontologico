@@ -40,6 +40,23 @@ describe('páginas públicas', () => {
     expect(pedidos[0]?.init?.credentials).not.toBe('include');
   });
 
+  it('/seguridad es pública y se monta sin shell, sin pedidos y con su título (C-22, design D5)', async () => {
+    const pedidos: string[] = [];
+    const fetchFalso: typeof fetch = (entrada) => {
+      pedidos.push(String(entrada));
+      return Promise.reject(new Error('la página no debería pedir nada'));
+    };
+
+    expect(esRutaPublica('/seguridad')).toBe(true);
+    expect(esRutaPublica('/seguridad/')).toBe(true);
+    await montarPaginaPublica(document, '/seguridad', { fetch: fetchFalso });
+
+    expect(document.querySelector('[data-app-root]')).toBeNull();
+    expect(document.title).toBe('Seguridad y datos · Muelas Felices');
+    expect(document.querySelector('#app main#contenido h1')?.textContent).toBe('Seguridad y datos');
+    expect(pedidos).toEqual([]);
+  });
+
   it('/c/:slug y /t/:token son rutas públicas con parámetro (C-16, design D1)', () => {
     expect(esRutaPublica('/c/demo')).toBe(true);
     expect(esRutaPublica('/c/demo/')).toBe(true);
