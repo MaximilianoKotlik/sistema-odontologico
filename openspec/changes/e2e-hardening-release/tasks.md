@@ -26,10 +26,10 @@
 
 ## 4. Seed de demo (D8)
 
-- [ ] 4.1 Ampliar `SeedLocalTest` con los datos nuevos del consultorio `demo` (turnos `CONFIRMADO` y `AUSENTE`, origen `LINK`, novedad sin ver, paciente para revisar, eventos de auditoría y token de gestión) y verificar que falla
-- [ ] 4.2 Ampliar `R__demo.sql` con datos ficticios (regla 17) hasta que pase `SeedLocalTest`
-- [ ] 4.3 `R__demo_vencido.sql` con el consultorio `demo-vencido` en plan `VENCIDO`, con su test en `SeedLocalTest`, y verificar que el perfil por defecto no carga ningún consultorio de demo
-- [ ] 4.4 Actualizar `db/seed-local/README.md` con las cuentas, el token de gestión en claro y qué muestra cada dato. Verificar a mano con `docker compose down -v && docker compose up --build` que la agenda, el link de gestión y el modo de solo lectura se ven como dice el README
+- [x] 4.1 Ampliar `SeedLocalTest` con los datos nuevos del consultorio `demo` (turnos `CONFIRMADO` y `AUSENTE`, origen `LINK`, novedad sin ver, paciente para revisar, eventos de auditoría y token de gestión) y verificar que falla
+- [x] 4.2 Ampliar `R__demo.sql` con datos ficticios (regla 17) hasta que pase `SeedLocalTest`
+- [x] 4.3 `R__demo_vencido.sql` con el consultorio `demo-vencido` en plan `VENCIDO`, con su test en `SeedLocalTest`, y verificar que el perfil por defecto no carga ningún consultorio de demo
+- [x] 4.4 (verificado el 2026-11-23 sobre una base nueva en un proyecto de Compose aparte, para no borrar el volumen de nadie: agenda, link de gestión, página pública vencida, solo lectura con 403 y exportación 200) Actualizar `db/seed-local/README.md` con las cuentas, el token de gestión en claro y qué muestra cada dato. Verificar a mano con `docker compose down -v && docker compose up --build` que la agenda, el link de gestión y el modo de solo lectura se ven como dice el README
 
 ## 5. Humo E2E: base (D1 a D4)
 
