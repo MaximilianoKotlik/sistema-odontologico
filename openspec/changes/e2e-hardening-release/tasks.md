@@ -20,9 +20,9 @@
 
 ## 3. Matriz de aislamiento (D6)
 
-- [ ] 3.1 `MatrizDeAislamientoTest` con dos consultorios con datos, que recorre `RequestMappingHandlerMapping` y falla nombrando cada endpoint privado que no está en el registro. Verificar que falla con el registro vacío
-- [ ] 3.2 Registro de los endpoints privados de `main` (configuración, prestaciones, disponibilidad, turnos, bloqueos, pacientes, plan y exportación), con su recurso y un cuerpo válido. Verificar 404 `RECURSO_NO_ENCONTRADO` sin cambios en la base ni eventos para cada uno, y que los listados no tienen ids del otro consultorio
-- [ ] 3.3 Si algún endpoint no aísla, arreglarlo acá con su test si el arreglo es chico, o abrir un issue para el change dueño (D9). Verificar que la matriz queda en verde o con el issue anotado
+- [x] 3.1 `MatrizDeAislamientoTest` con dos consultorios con datos, que recorre `RequestMappingHandlerMapping` y falla nombrando cada endpoint privado que no está en el registro. Verificar que falla con el registro vacío
+- [x] 3.2 Registro de los endpoints privados de `main` (configuración, prestaciones, disponibilidad, turnos, bloqueos, pacientes, plan y exportación), con su recurso y un cuerpo válido. Verificar 404 `RECURSO_NO_ENCONTRADO` sin cambios en la base ni eventos para cada uno, y que los listados no tienen ids del otro consultorio
+- [x] 3.3 (ningún endpoint falló: no hizo falta arreglo ni issue) Si algún endpoint no aísla, arreglarlo acá con su test si el arreglo es chico, o abrir un issue para el change dueño (D9). Verificar que la matriz queda en verde o con el issue anotado
 
 ## 4. Seed de demo (D8)
 
