@@ -33,10 +33,10 @@
 
 ## 5. Humo E2E: base (D1 a D4)
 
-- [ ] 5.1 Crear `e2e/` con `package.json`, `@playwright/test`, `tsconfig.json` strict, lint y `playwright.config.ts` (Chromium, 390×844, `isMobile`, `hasTouch`, `es-AR`, zona de Buenos Aires, un reintento en CI). Verificar que `npm ci` y `npx playwright test --list` corren
-- [ ] 5.2 Recorrido login → agenda visible con la cuenta de demo, y login con contraseña incorrecta → error. Verificar que pasa contra `docker compose up` y que falla si se rompe el login
-- [ ] 5.3 Recorrido de la página pública del consultorio `demo-vencido`: no ofrece reservar y muestra el teléfono. Verificar que pasa contra el stack local
-- [ ] 5.4 Script `npm run humo` y sección "Humo E2E" en el `README.md` raíz. Verificar que el comando documentado corre tal cual
+- [x] 5.1 Crear `e2e/` con `package.json`, `@playwright/test`, `tsconfig.json` strict, lint y `playwright.config.ts` (Chromium, 390×844, `isMobile`, `hasTouch`, `es-AR`, zona de Buenos Aires, un reintento en CI). Verificar que `npm ci` y `npx playwright test --list` corren
+- [x] 5.2 Recorrido login → agenda visible con la cuenta de demo, y login con contraseña incorrecta → error. Verificar que pasa contra `docker compose up` y que falla si se rompe el login
+- [x] 5.3 Recorrido de la página pública del consultorio `demo-vencido`: no ofrece reservar y muestra el teléfono. Verificar que pasa contra el stack local
+- [x] 5.4 Script `npm run humo` y sección "Humo E2E" en el `README.md` raíz. Verificar que el comando documentado corre tal cual
 
 ## 6. Humo E2E en CI (D3)
 
@@ -47,11 +47,11 @@
 
 ## 7. Integración con lo que trajo cada dependencia
 
-- [ ] 7.1 **C-13**: rebasar y cambiar el recorrido de 5.2 para que valide la agenda real del día de la semana de demo. Verificar que pasa en CI
-- [ ] 7.2 **C-14**: sumar al recorrido del odontólogo crear un turno en un hueco libre con un paciente único por corrida, verlo en la agenda y cancelarlo al final (D4). Verificar dos corridas seguidas sobre el mismo stack
-- [ ] 7.3 **C-16**: recorrido del paciente: página pública → prestación → hueco → datos y política → confirmación → link de gestión → cancelar. Verificar dos corridas seguidas sobre el mismo stack
-- [ ] 7.4 **C-17**: rebasar y sumar al registro de la matriz de aislamiento (3.2) y a `MatrizDeEscriturasTest` los endpoints nuevos de pacientes. Verificar que las dos matrices pasan y que el paciente para revisar del seed se ve en la pantalla de C-17
-- [ ] 7.5 **C-18**: rebasar y sumar al registro de la matriz los endpoints de historial y registro de cambios. Verificar que la matriz pasa y que el historial del turno reprogramado del seed se ve completo
+- [x] 7.1 **C-13**: rebasar y cambiar el recorrido de 5.2 para que valide la agenda real del día de la semana de demo. Verificar que pasa en CI
+- [x] 7.2 **C-14**: sumar al recorrido del odontólogo crear un turno en un hueco libre con un paciente único por corrida, verlo en la agenda y cancelarlo al final (D4). Verificar dos corridas seguidas sobre el mismo stack
+- [x] 7.3 **C-16**: recorrido del paciente: página pública → prestación → hueco → datos y política → confirmación → link de gestión → cancelar. Verificar dos corridas seguidas sobre el mismo stack
+- [x] 7.4 **C-17**: rebasar y sumar al registro de la matriz de aislamiento (3.2) y a `MatrizDeEscriturasTest` los endpoints nuevos de pacientes. Verificar que las dos matrices pasan y que el paciente para revisar del seed se ve en la pantalla de C-17
+- [x] 7.5 **C-18**: rebasar y sumar al registro de la matriz los endpoints de historial y registro de cambios. Verificar que la matriz pasa y que el historial del turno reprogramado del seed se ve completo
 - [ ] 7.6 **C-22**: revisar `/seguridad` contra el código (D10): cada afirmación con su evidencia en `docs/release/revision-seguridad.md`, y corregir o marcar "pendiente" las que no la tengan. Verificar que no queda ninguna afirmación sin fila
 
 ## 8. Revisión, documentación y cierre

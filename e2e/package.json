@@ -1,0 +1,24 @@
+{
+  "name": "sistema-odontologico-e2e",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Humo E2E (C-23): recorridos críticos en Chromium contra el stack de Docker Compose con el seed de demo.",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "humo": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@playwright/test": "1.56.1",
+    "@types/node": "22.20.5",
+    "eslint": "9.39.5",
+    "globals": "17.14.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.73.0"
+  }
+}
