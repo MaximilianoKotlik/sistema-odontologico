@@ -58,6 +58,11 @@ function enumerar(partes: readonly string[]): string {
   return partes.length <= 1 ? (partes[0] ?? '') : `${partes.slice(0, -1).join(', ')} y ${partes.at(-1) ?? ''}`;
 }
 
+/** "Coincide el teléfono." o "Coinciden el apellido, el email y el teléfono." */
+function lineaDeCoincidencias(campos: readonly (CampoComparado | 'telefono')[]): string {
+  return `${campos.length === 1 ? 'Coincide' : 'Coinciden'} ${enumerar(campos.map((c) => CON_ARTICULO[c]))}.`;
+}
+
 const valorDe = (p: { readonly nombre: string; readonly apellido: string; readonly email: string | null }, campo: CampoComparado) => (campo === 'email' ? p.email : p[campo]);
 
 export function montarRevisionDePaciente(contexto: ContextoPagina): void {
@@ -154,7 +159,7 @@ export function montarRevisionDePaciente(contexto: ContextoPagina): void {
         ),
         el('tbody', {}, ...filas),
       ),
-      el('p', { 'data-coinciden': true, class: 'flex gap-2 items-center mt-3 mb-0 text-sm text-texto-tenue' }, icono('check', 'w-icono-sm h-icono-sm flex-none'), `Coinciden ${enumerar([...coinciden, 'telefono' as const].map((c) => CON_ARTICULO[c]))}.`),
+      el('p', { 'data-coinciden': true, class: 'flex gap-2 items-center mt-3 mb-0 text-sm text-texto-tenue' }, icono('check', 'w-icono-sm h-icono-sm flex-none'), lineaDeCoincidencias([...coinciden, 'telefono' as const])),
       avisoErrorAlGuardar(),
       el('div', { class: 'flex flex-wrap gap-2 mt-4' }, mantener, usar, corregir),
       el('p', { class: 'mt-3 mb-0 text-sm text-texto-tenue' }, 'Cualquiera de las tres marca al paciente como revisado y queda en el Registro de cambios, solo con los datos que cambien.'),
@@ -207,10 +212,11 @@ export function montarRevisionDePaciente(contexto: ContextoPagina): void {
       void guardar(() => corregirPaciente(http, p.id, informado.informadoAt, datos));
     });
 
-    const escrito = comparar(p, informado).difieren.map((campo) => valorDe(informado, campo) ?? 'sin email').join(' ');
+    const escrito = comparar(p, informado).difieren.filter((campo) => campo !== 'email').map((campo) => informado[campo]).join(' ');
+    const loEscrito = escrito !== '' ? `En la reserva escribió «${escrito}».` : informado.email === null ? 'En la reserva no dejó email.' : `En la reserva escribió «${informado.email}».`;
     return tarjeta(
       el('h2', { class: 'm-0 text-lg font-bold' }, 'Corregir datos'),
-      el('p', { class: 'mt-1 mb-4 text-sm text-texto-tenue' }, `En la reserva escribió «${escrito}». Guardá cómo tiene que quedar.`),
+      el('p', { class: 'mt-1 mb-4 text-sm text-texto-tenue' }, `${loEscrito} Guardá cómo tiene que quedar.`),
       avisoOtraReserva(),
       avisoErrorAlGuardar(),
       resumen,
@@ -235,7 +241,7 @@ export function montarRevisionDePaciente(contexto: ContextoPagina): void {
             'p',
             { class: 'mt-2 mb-0 text-texto-tenue' },
             'Turno de esa reserva: ',
-            el('a', { href: rutaDelTurno(turno.id), 'data-link': true, class: 'font-semibold text-primario underline' }, `${formatearDia(turno.inicio, zona)}, ${formatearHora(turno.inicio, zona)} · ${turno.prestacion}`),
+            el('a', { href: rutaDelTurno(turno.id), 'data-link': true, 'data-turno-origen': true, class: 'inline-flex items-center min-h-touch font-semibold text-primario underline' }, `${formatearDia(turno.inicio, zona)}, ${formatearHora(turno.inicio, zona)} · ${turno.prestacion}`),
           ),
     );
   }

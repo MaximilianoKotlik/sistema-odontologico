@@ -170,6 +170,9 @@ const CLAVES: Readonly<Record<string, { readonly etiqueta: string; readonly form
   plan: { etiqueta: 'Plan', formato: 'nombre' },
   prueba_hasta: { etiqueta: 'Prueba hasta', formato: 'instante' },
   nombre: { etiqueta: 'Nombre', formato: 'texto' },
+  // C-17: los datos que corrige la revisión del paciente (PACIENTE_REVISADO).
+  apellido: { etiqueta: 'Apellido', formato: 'texto' },
+  email: { etiqueta: 'Email', formato: 'texto' },
   slug: { etiqueta: 'Link público', formato: 'texto' },
   direccion: { etiqueta: 'Dirección', formato: 'texto' },
   telefono_contacto: { etiqueta: 'Teléfono de contacto', formato: 'texto' },

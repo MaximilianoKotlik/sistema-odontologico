@@ -34,9 +34,9 @@
 
 ## 5. Verificación integrada
 
-- [ ] 5.1 Recorrer la agenda con el aviso, la lista y la revisión contra los mockups aprobados (versión `dcb700b`) a 360, 390 y 1440 px; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible y sin errores de consola
-- [ ] 5.2 Recorrer US-070 de punta a punta con la base real: reserva por link con un DNI existente y otro nombre, el paciente aparece marcado, se revisa y el Registro de cambios muestra `PACIENTE_REVISADO` solo con lo modificado; dejar la evidencia en el PR
-- [ ] 5.3 Pasar `./gradlew build`, `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, y abrir el PR con commits conventional en español que referencien `(C-17)`; verificar el PR listo para revisión de Maxi
+- [x] 5.1 Recorrer la agenda con el aviso, la lista y la revisión contra los mockups aprobados (versión `dcb700b`) a 360, 390 y 1440 px; guardar capturas en `mockups/verify/` y verificar sin scroll horizontal, objetivos de al menos 44 px, foco visible y sin errores de consola; verificado (2026-11-22): `mockups/verify/README.md`
+- [x] 5.2 Recorrer US-070 de punta a punta con la base real: reserva por link con un DNI existente y otro nombre, el paciente aparece marcado, se revisa y el Registro de cambios muestra `PACIENTE_REVISADO` solo con lo modificado; dejar la evidencia en el PR; verificado (2026-11-22) con dos reservas por link (DNI 90000001 y 90000002) y el Registro de cambios; evidencia en `mockups/verify/README.md`
+- [x] 5.3 Pasar `./gradlew build`, `npm run typecheck`, `npm run lint`, `npm test` y `npm run build`, y abrir el PR con commits conventional en español que referencien `(C-17)`; verificar el PR listo para revisión de Maxi; verificado (2026-11-22): backend sin cambios desde `./gradlew build` en verde (aca655d); frontend con typecheck, lint, build y 801 tests en verde; PR #74
 
 ## Workflow follow-up
 

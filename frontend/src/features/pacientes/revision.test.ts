@@ -46,7 +46,14 @@ describe('comparación con lo escrito en la reserva (4.3)', () => {
     expect(textoDe(contenedor)).toContain('No cambiamos nada');
     const turno = enlaceConTexto(contenedor, 'lunes 23 de noviembre, 10:30 · Consulta');
     expect(turno?.getAttribute('href')).toBe('/app/agenda/turnos/t-1');
+    expect(turno?.className).toContain('min-h-touch');
     expect(contenedor.querySelectorAll('h2')).not.toHaveLength(0);
+  });
+
+  it('si solo coincide el teléfono usa el singular', async () => {
+    const informado = { ...ANA.informado, nombre: 'Pacienta', apellido: 'Otra', email: 'otra@example.com' };
+    const { contenedor } = await montar({ [DETALLE]: [json({ ...ANA, informado })] });
+    expect(textoDe(contenedor.querySelector('[data-coinciden]'))).toBe('Coincide el teléfono.');
   });
 
   it('una diferencia solo de mayúsculas, tildes o espacios no se marca', async () => {
@@ -136,6 +143,16 @@ describe('corrección a mano (4.5)', () => {
     expect(textoDe(contenedor)).toContain('Identifica al paciente y no se edita.');
     expect(textoDe(contenedor)).toContain('+54 9 11 0000-0012');
     expect(textoDe(contenedor)).toContain('No se edita en esta versión.');
+  });
+
+  it('el subtítulo nombra lo escrito en nombre y apellido, sin mezclar el email', async () => {
+    const informado = { ...ANA.informado, nombre: 'Anna', apellido: 'Otra', email: null };
+    const { contenedor } = await abrirFormulario({ [DETALLE]: [json({ ...ANA, informado })] });
+    expect(textoDe(contenedor)).toContain('En la reserva escribió «Anna Otra». Guardá cómo tiene que quedar.');
+
+    const soloEmail = { ...ANA.informado, nombre: 'Ana', apellido: 'Ejemplo', email: null };
+    const otro = await abrirFormulario({ [DETALLE]: [json({ ...ANA, informado: soloEmail })] });
+    expect(textoDe(otro.contenedor)).toContain('En la reserva no dejó email. Guardá cómo tiene que quedar.');
   });
 
   it('valida antes de enviar: "Revisá 2 datos" con links a Nombre y Email y el error debajo de cada uno', async () => {
