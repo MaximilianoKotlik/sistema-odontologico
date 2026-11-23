@@ -36,6 +36,9 @@ spring:
 server:
   error:
     include-stacktrace: never
+  # IP real detrás del reverse proxy (C-23, design D5). "none" por defecto: un X-Forwarded-For del cliente se ignora.
+  # En el VPS, "native" (backend/README.md §IP de origen detrás de un proxy).
+  forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}
 
 management:
   endpoints:

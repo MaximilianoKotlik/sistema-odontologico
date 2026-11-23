@@ -55,19 +55,33 @@ La versión que acepta quien reserva por el link se configura en `app.privacidad
 
 ### IP de origen detrás de un proxy
 
-La IP es `request.getRemoteAddr()`. Por defecto `server.forward-headers-strategy` queda en `none`, así que nadie
-puede falsear su IP mandando un `X-Forwarded-For`. Si el backend corre detrás de un proxy de confianza (por ejemplo,
-el reverse proxy del VPS), todas las solicitudes llegan con la IP del proxy y comparten cupo. En ese caso hay que
-configurar:
+Los límites por IP usan `request.getRemoteAddr()`. Cuál es esa IP lo decide `FORWARD_HEADERS_STRATEGY`
+(`server.forward-headers-strategy` en `application.yml`, C-23):
+
+- **`none`** (por defecto, en local y en los tests): se ignora `X-Forwarded-For`, así que nadie puede falsear su IP.
+  Detrás de un proxy, todas las solicitudes llegan con la IP del proxy y comparten cupo. En local, detrás del proxy
+  de Vite, se acepta.
+- **`native`** (en el VPS, detrás del reverse proxy): Tomcat toma de `X-Forwarded-For` la IP de más a la derecha
+  que no sea un proxy de confianza. Lo que mande el cliente queda a la izquierda y se ignora, aunque el proxy
+  agregue la IP en vez de reemplazar la cabecera.
+
+```bash
+FORWARD_HEADERS_STRATEGY=native
+```
+
+Por defecto Tomcat confía como proxy en las IPs de red privada y de loopback (10/8, 172.16/12, 192.168/16, 127/8).
+Alcanza si el proxy corre en el mismo host o en la red de Compose. Si está en otra red, hay que fijar su IP:
 
 ```yaml
 server:
-  forward-headers-strategy: native   # o framework, según el proxy
+  tomcat:
+    remoteip:
+      internal-proxies: 203\.0\.113\.10   # regex con la IP del proxy
 ```
 
-y asegurarse de que el proxy **reemplace** (no agregue) la cabecera `X-Forwarded-For` con la IP real del cliente.
-Sin eso, el límite por IP se puede esquivar. En local, detrás del proxy de Vite, todas las solicitudes comparten IP:
-se acepta en desarrollo.
+Lo verifican `IpSinProxyConfiguradoTest` (con `none`, un `X-Forwarded-For` no cambia el cupo) e
+`IpDetrasDelProxyTest` (con `native`, dos IPs detrás del proxy tienen cupos separados y un `X-Forwarded-For`
+falseado por el cliente no cambia el cupo).
 
 ## Cursores del registro de cambios (C-18)
 

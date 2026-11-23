@@ -135,6 +135,7 @@ Comando único: `docker compose up --build`. Datos de demo disponibles al primer
 | `SMTP_USER` / `SMTP_PASSWORD` | Credenciales SMTP (vacías en local) | — | Y |
 | `MAIL_FROM` | Remitente | `no-responder@localhost` | N |
 | `SPRING_PROFILES_ACTIVE` | Perfil | `local` | N |
+| `FORWARD_HEADERS_STRATEGY` | IP real detrás del reverse proxy (`server.forward-headers-strategy`, C-23) | `none` (en el VPS, `native`) | N |
 | `VITE_API_BASE_URL` | Base de la API para el frontend | `/api/v1` | N |
 
 ## Estrategia de tests (Strict TDD)

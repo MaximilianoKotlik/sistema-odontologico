@@ -10,9 +10,9 @@
 
 ## 1. IP real detrás del proxy (D5)
 
-- [ ] 1.1 Test con servidor real (`RANDOM_PORT`) y la estrategia por defecto: logins con distintos `X-Forwarded-For` desde la misma conexión comparten el cupo. Verificar que pasa ya, sin cambios de código
-- [ ] 1.2 Test con `FORWARD_HEADERS_STRATEGY=native`: dos IPs detrás del proxy tienen cupos separados, y un `X-Forwarded-For` falseado por el cliente no cambia el cupo. Verificar rojo y después verde con `server.forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}` en `application.yml`
-- [ ] 1.3 Sumar `FORWARD_HEADERS_STRATEGY` a `.env.example`, a la tabla de variables de `knowledge-base/08_arquitectura_propuesta.md` y a `backend/README.md` §IP de origen detrás de un proxy, con `internal-proxies`. Verificar que los ejemplos coinciden con la configuración
+- [x] 1.1 Test con servidor real (`RANDOM_PORT`) y la estrategia por defecto: logins con distintos `X-Forwarded-For` desde la misma conexión comparten el cupo. Verificar que pasa ya, sin cambios de código
+- [x] 1.2 Test con `FORWARD_HEADERS_STRATEGY=native`: dos IPs detrás del proxy tienen cupos separados, y un `X-Forwarded-For` falseado por el cliente no cambia el cupo. Verificar rojo y después verde con `server.forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}` en `application.yml`
+- [ ] 1.3 (KB y README hechos; falta `.env.example`, que el agente no puede leer por permisos: lo suma Maxi) Sumar `FORWARD_HEADERS_STRATEGY` a `.env.example`, a la tabla de variables de `knowledge-base/08_arquitectura_propuesta.md` y a `backend/README.md` §IP de origen detrás de un proxy, con `internal-proxies`. Verificar que los ejemplos coinciden con la configuración
 
 ## 2. Respuestas sin caché (D7)
 
