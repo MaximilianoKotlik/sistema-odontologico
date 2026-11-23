@@ -84,3 +84,57 @@ jobs:
         run: |
           cp .env.example .env
           docker compose build
+
+  # Humo E2E (C-23, design D3): el stack de Compose con el seed de demo y los recorridos críticos en Chromium.
+  e2e:
+    name: E2E (humo)
+    # Fijo: Playwright 1.56 no trae Chromium para ubuntu-latest (26.04). Se actualiza junto con @playwright/test.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: e2e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - name: Levantar el stack con el seed de demo
+        working-directory: .
+        run: |
+          cp .env.example .env
+          docker compose up -d --build --wait --wait-timeout 300
+      - name: Esperar /actuator/health
+        run: |
+          for intento in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then exit 0; fi
+            sleep 5
+          done
+          echo "::error::El backend no respondió UP en /actuator/health"
+          exit 1
+      - name: Instalar Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Correr el humo
+        run: npm run humo
+      - name: Publicar reporte, capturas, video y traza
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: humo-e2e
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+          if-no-files-found: ignore
+      - name: Logs del stack
+        if: failure()
+        working-directory: .
+        run: docker compose logs --no-color --tail 300
+      - name: Bajar el stack
+        if: always()
+        working-directory: .
+        run: docker compose down -v
