@@ -107,4 +107,4 @@ Sin migración de datos. Se despliega junto con C-15 o después: sin los endpoin
 - Mockups: openspec/changes/frontend-reserva-publica/mockups/ (`reserva.html`, `gestion.html`, más `publica.css` y `mockup.js`)
 - Approval: approved (2026-11-20, by Maxi), versión 461d39f (#25)
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #25); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
-- Visual verify: pending
+- Visual verify: passed (2026-11-22). 20 estados a 360, 390 y 1440 px con la API simulada, en `mockups/verify/` (60 capturas e `informe.json`): sin scroll horizontal, objetivos de al menos 44 px, un solo `h1`, sin errores de consola y la barra fija sin tapar el último horario. Diferencias con el mockup, todas esperadas: "Ver más días" y el rango de meses (D3, revisión de #41) y el teléfono sin subrayar en la cabecera.

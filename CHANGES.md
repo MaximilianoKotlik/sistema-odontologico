@@ -410,7 +410,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-13 y `11_marco_legal_argentino.md`
 
 ### [C-16] `frontend-reserva-publica`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #70, 2026-11-22)
 - **Scope**:
   - `.ics` descargable generado en el cliente (P1; FL-04 paso 6).
   - Features `reserva-publica/` (`/c/{slug}`: elegir prestación, hueco, datos, consentimiento, confirmación con link `/t/{token}` para guardar; estado "no toma turnos online" con teléfono) y `gestion-turno/` (`/t/{token}`: ver, reprogramar, cancelar; mensaje con teléfono si está fuera de plazo; con reserva desactivada solo ofrece cancelar).

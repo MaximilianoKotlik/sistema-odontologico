@@ -57,6 +57,12 @@ const TRAZOS = {
   repetir: `<path d="M4 9.5h12.5L13 6M20 14.5H7.5L11 18" ${L}/>`,
   'reloj-arena': `<path d="M7 3.5h10M7 20.5h10M8 3.5c0 4.5 8 4.5 8 8.5s-8 4-8 8.5M16 3.5c0 4.5-8 4.5-8 8.5s8 4 8 8.5" ${L}/>`,
   luna: `<path d="M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z" ${L}/>`,
+  // Reserva del paciente (C-16, trazos del mockup aprobado en #25).
+  ubicacion: `<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z" ${L}/><circle cx="12" cy="10" r="2.3" ${L}/>`,
+  marcador: `<path d="M6.5 4h11v16.5L12 16.5l-5.5 4z" ${L}/>`,
+  'calendario-mas': `<rect x="3.5" y="5" width="17" height="15.5" rx="3" ${L}/><path d="M3.5 10h17M8 3v4M16 3v4M12 12.5v5M9.5 15h5" ${L}/>`,
+  'flecha-abajo': `<path d="M12 5v14M6.5 13.5L12 19l5.5-5.5" ${L}/>`,
+  'cruz-circulo': `<circle cx="12" cy="12" r="9" ${L}/><path d="M9 9l6 6M15 9l-6 6" ${L}/>`,
   // Trazos del mockup aprobado de C-14 (#31).
   basura: `<path d="M5 7h14M10 7V5h4v2M7 7l1 12.5h8L17 7" ${L}/>`,
   'persona-mas': `<circle cx="10" cy="8" r="3.5" ${L}/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.6 0 3 .4 4 1.2M18 14v6M15 17h6" ${L}/>`,
