@@ -16,7 +16,7 @@
 
 ## 2. Respuestas sin caché (D7)
 
-- [ ] 2.1 Tests de `Cache-Control: no-store` en una lectura privada, un 400 de validación, un 404 y el 403 `PLAN_VENCIDO`, y en la descarga de la exportación. Arreglar solo los casos que fallen y verificar que todos pasan
+- [x] 2.1 Tests de `Cache-Control: no-store` en una lectura privada, un 400 de validación, un 404 y el 403 `PLAN_VENCIDO`, y en la descarga de la exportación. Arreglar solo los casos que fallen y verificar que todos pasan
 
 ## 3. Matriz de aislamiento (D6)
 
