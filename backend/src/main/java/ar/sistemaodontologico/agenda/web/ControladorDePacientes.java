@@ -1,14 +1,25 @@
 package ar.sistemaodontologico.agenda.web;
 
+import ar.sistemaodontologico.agenda.application.Autor;
 import ar.sistemaodontologico.agenda.application.BuscarPacientes;
 import ar.sistemaodontologico.agenda.application.ConsultarPacientes;
+import ar.sistemaodontologico.agenda.application.DatosCorregidos;
 import ar.sistemaodontologico.agenda.application.PacienteDeLaLista;
 import ar.sistemaodontologico.agenda.application.PacienteEncontrado;
 import ar.sistemaodontologico.agenda.application.PaginaDePacientes;
+import ar.sistemaodontologico.agenda.application.RevisarPaciente;
+import ar.sistemaodontologico.agenda.domain.PacienteId;
+import ar.sistemaodontologico.compartido.application.SesionActual;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,12 +54,30 @@ class ControladorDePacientes {
         }
     }
 
+    /** El {@code informadoAt} del detalle que se mostró (design D9). */
+    record ConfirmacionDeRevisionRequest(@NotNull Instant informadoAt) {
+    }
+
+    /** El DNI y el teléfono no se corrigen: si vienen en el cuerpo, se ignoran. La validación es la del dominio. */
+    record CorreccionRequest(@NotNull Instant informadoAt, String nombre, String apellido, String email) {
+
+        @Override
+        public String toString() {
+            return "CorreccionRequest[informadoAt=" + informadoAt + "]";
+        }
+    }
+
     private final BuscarPacientes buscar;
     private final ConsultarPacientes consultar;
+    private final RevisarPaciente revisar;
+    private final SesionActual sesion;
 
-    ControladorDePacientes(BuscarPacientes buscar, ConsultarPacientes consultar) {
+    ControladorDePacientes(BuscarPacientes buscar, ConsultarPacientes consultar, RevisarPaciente revisar,
+            SesionActual sesion) {
         this.buscar = buscar;
         this.consultar = consultar;
+        this.revisar = revisar;
+        this.sesion = sesion;
     }
 
     @GetMapping
@@ -66,5 +95,23 @@ class ControladorDePacientes {
     @GetMapping("/{id}")
     PacienteDeLaLista detalle(@PathVariable UUID id) {
         return consultar.detalle(id);
+    }
+
+    @PostMapping("/{id}/confirmar-revision")
+    PacienteDeLaLista confirmarRevision(@PathVariable UUID id,
+            @Valid @RequestBody ConfirmacionDeRevisionRequest pedido) {
+        revisar.confirmar(new PacienteId(id), pedido.informadoAt(), odontologo());
+        return consultar.detalle(id);
+    }
+
+    @PatchMapping("/{id}")
+    PacienteDeLaLista corregir(@PathVariable UUID id, @Valid @RequestBody CorreccionRequest pedido) {
+        revisar.corregir(new PacienteId(id), pedido.informadoAt(),
+                new DatosCorregidos(pedido.nombre(), pedido.apellido(), pedido.email()), odontologo());
+        return consultar.detalle(id);
+    }
+
+    private Autor odontologo() {
+        return Autor.odontologo(sesion.usuarioId(), sesion.ip());
     }
 }

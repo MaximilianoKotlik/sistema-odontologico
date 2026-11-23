@@ -97,6 +97,22 @@ class PacienteRepositorioJdbc implements PacienteRepositorio {
     }
 
     @Override
+    public void guardarFichaRevisada(ConsultorioId consultorio, Paciente paciente) {
+        jdbc.sql("""
+                UPDATE paciente
+                   SET nombre = :nombre, apellido = :apellido, email = :email, requiere_revision = false,
+                       nombre_informado = NULL, apellido_informado = NULL, email_informado = NULL,
+                       informado_at = NULL, informado_turno_id = NULL, updated_at = now()
+                 WHERE consultorio_id = :consultorio AND id = :id""")
+                .param("nombre", paciente.nombre())
+                .param("apellido", paciente.apellido())
+                .param("email", paciente.email())
+                .param("consultorio", consultorio.valor())
+                .param("id", paciente.id().valor())
+                .update();
+    }
+
+    @Override
     public void vincularTurnoDeOrigen(ConsultorioId consultorio, PacienteId paciente, TurnoId turno) {
         jdbc.sql("""
                 UPDATE paciente SET informado_turno_id = :turno, updated_at = now()
