@@ -432,7 +432,7 @@ Reglas de coordinación del paralelismo:
 > C-21 no depende de la agenda: puede arrancar en el GATE 2 (solo requiere C-02 y C-06).
 
 ### [C-17] `pacientes-revision`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #74, 2026-11-22)
 - **Scope**:
   - Backend: `GET /api/v1/pacientes?requiereRevision=true` (paginado, por tenant), `PATCH /api/v1/pacientes/{id}` (corrige nombre, apellido y email; el teléfono E.164 no se edita en v1) y `POST /api/v1/pacientes/{id}/confirmar-revision`; ambas acciones ponen `requiere_revision = false` y auditan `PACIENTE_REVISADO` con solo los campos modificados (RN-AD-05); 404 ante paciente de otro consultorio (RN-TE-04); PII enmascarada en logs (RN-GL-01).
   - Frontend: feature `pacientes/` con listado, filtro "requiere revisión" (con contador visible desde la agenda) y acción de confirmar o corregir; mockup revisado antes de implementar.

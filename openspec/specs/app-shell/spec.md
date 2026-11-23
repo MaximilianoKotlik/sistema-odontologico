@@ -6,7 +6,7 @@ Estructura común de la app privada del odontólogo: rutas `/app/*`, navegación
 ## Requirements
 
 ### Requirement: Navegación por rutas privadas
-La app SHALL resolver las rutas `/app/agenda`, `/app/bloqueos`, `/app/configuracion`, `/app/auditoria` y `/app/exportar` sin recargar la página, y `/app` SHALL redirigir a `/app/agenda`.
+La app SHALL resolver las rutas `/app/agenda`, `/app/bloqueos`, `/app/pacientes`, `/app/pacientes/{id}`, `/app/configuracion`, `/app/auditoria` y `/app/exportar` sin recargar la página, y `/app` SHALL redirigir a `/app/agenda`.
 
 #### Scenario: Navegar entre secciones
 - **WHEN** el odontólogo toca "Bloqueos" en la navegación
@@ -20,6 +20,10 @@ La app SHALL resolver las rutas `/app/agenda`, `/app/bloqueos`, `/app/configurac
 - **WHEN** se abre `/app`
 - **THEN** la app reemplaza la URL por `/app/agenda` sin agregar una entrada al historial
 
+#### Scenario: Revisión de un paciente
+- **WHEN** se abre `/app/pacientes/{id}` directamente o al recargar la página
+- **THEN** se muestra la revisión de ese paciente dentro de la sección Pacientes
+
 ### Requirement: Ruta inexistente
 La app SHALL mostrar una pantalla "No encontramos esta página" con un acceso a la agenda cuando la ruta `/app/*` no existe.
 
@@ -28,7 +32,7 @@ La app SHALL mostrar una pantalla "No encontramos esta página" con un acceso a 
 - **THEN** se muestra el mensaje de página no encontrada y un botón "Ir a mi agenda"
 
 ### Requirement: Navegación adaptada al ancho
-Por debajo de 768 px la navegación SHALL ser una barra inferior fija con Agenda, Bloqueos, Configuración y "Más" (Auditoría, Exportar, Cambiar contraseña, Cerrar sesión); desde 768 px SHALL ser una barra lateral con todas las secciones y, en el bloque de cuenta, "Cambiar contraseña" arriba de "Cerrar sesión".
+Por debajo de 768 px la navegación SHALL ser una barra inferior fija con Agenda, Bloqueos, Configuración y "Más" (Pacientes, Auditoría, Exportar, Cambiar contraseña, Cerrar sesión); desde 768 px SHALL ser una barra lateral con todas las secciones, con Pacientes después de Bloqueos y, en el bloque de cuenta, "Cambiar contraseña" arriba de "Cerrar sesión". Si hay pacientes con revisión pendiente, "Pacientes" y "Más" SHALL mostrar la cantidad con un número y un texto para lectores de pantalla, no solo color.
 
 #### Scenario: Mobile a 360 px
 - **WHEN** la app se muestra en un viewport de 360 px de ancho
@@ -36,11 +40,20 @@ Por debajo de 768 px la navegación SHALL ser una barra inferior fija con Agenda
 
 #### Scenario: Desktop
 - **WHEN** la app se muestra en un viewport de 1440 px
-- **THEN** se ve la barra lateral con las cinco secciones, "Cambiar contraseña" y "Cerrar sesión", y no se muestra la barra inferior
+- **THEN** se ve la barra lateral con las seis secciones, "Cambiar contraseña" y "Cerrar sesión", y no se muestra la barra inferior
 
 #### Scenario: Cambiar contraseña desde la hoja "Más"
 - **WHEN** el odontólogo abre "Más" en mobile
 - **THEN** ve "Cambiar contraseña" arriba de "Cerrar sesión" y al tocarlo llega a `/app/cuenta/contrasena`
+
+#### Scenario: Contador de pacientes para revisar
+- **GIVEN** 3 pacientes con revisión pendiente
+- **WHEN** la app se muestra en mobile y en desktop
+- **THEN** "Pacientes" (barra lateral y hoja "Más") y el botón "Más" muestran el número 3, anunciado como "3 para revisar"
+
+#### Scenario: Sin pacientes para revisar
+- **WHEN** no hay pacientes con revisión pendiente
+- **THEN** la navegación no muestra el contador
 
 ### Requirement: Sección activa visible
 La navegación SHALL marcar la sección actual con `aria-current="page"` y con una señal visual que no dependa solo del color.
