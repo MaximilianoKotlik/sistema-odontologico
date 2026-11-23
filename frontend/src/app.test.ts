@@ -105,6 +105,19 @@ describe('montarAplicacion', () => {
       expect(document.querySelector('[data-nav-lateral] [aria-current="page"]')?.getAttribute('href')).toBe('/app/bloqueos');
     });
 
+    it('/app/pacientes y /app/pacientes/{id} son secciones de Pacientes (C-17, D8)', async () => {
+      const fetch = crearFetch({
+        resto: (url) =>
+          url.startsWith('/api/v1/pacientes/listado') ? json({ items: [], total: 0 }) : url === '/api/v1/pacientes/p-1' ? problema(404, 'RECURSO_NO_ENCONTRADO') : json({}),
+      });
+      history.replaceState(null, '', '/app/pacientes/p-1');
+      const a = await montar({ fetch });
+      expect(document.querySelector('h1')?.textContent).toBe('Pacientes');
+      expect(document.querySelector('[data-nav-lateral] [aria-current="page"]')?.getAttribute('href')).toBe('/app/pacientes');
+      await a.router.navegar('/app/pacientes');
+      expect(document.querySelector('[data-pacientes]')).not.toBeNull();
+    });
+
     it('una URL desconocida dentro de /app muestra "No encontramos esta página"', async () => {
       history.replaceState(null, '', '/app/no-existe');
       await montar();
@@ -135,6 +148,13 @@ describe('montarAplicacion', () => {
       await a.http.get('/api/v1/agenda').catch(() => undefined);
       expect(document.querySelector<HTMLElement>('[data-aviso-sin-conexion]')?.hidden).toBe(false);
       window.dispatchEvent(new Event('online'));
+    });
+
+    it('al montar el shell pide los pacientes para revisar y muestra el contador (C-17, D3)', async () => {
+      const fetch = crearFetch({ resto: (url) => (url.startsWith('/api/v1/pacientes/listado?requiereRevision=true') ? json({ items: [], total: 3 }) : json({})) });
+      await montar({ fetch });
+      await vi.waitFor(() => expect(document.querySelector('[data-nav-lateral] [data-contador-revision]:not([hidden])')?.textContent).toBe('3 (3 para revisar)'));
+      expect(fetch.mock.calls.map((c) => String(c[0]))).toContain('/api/v1/pacientes/listado?requiereRevision=true&page=0&size=1');
     });
 
     it('el menú de cuenta ofrece "Cambiar contraseña" arriba de "Cerrar sesión"', async () => {

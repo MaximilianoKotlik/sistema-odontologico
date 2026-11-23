@@ -1,0 +1,362 @@
+[
+  {
+    "estado": "reserva-inicio",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-inicio",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-inicio",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-horarios",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-horarios",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-horarios",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-otra-zona",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-otra-zona",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-otra-zona",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-datos",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-datos",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-datos",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-datos-errores",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-datos-errores",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-datos-errores",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-hueco-ocupado",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "reserva-hueco-ocupado",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "reserva-hueco-ocupado",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "reserva-limite-turnos",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "reserva-limite-turnos",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "reserva-limite-turnos",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "reserva-confirmado",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-confirmado",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-confirmado",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-no-toma-turnos",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-no-toma-turnos",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-no-toma-turnos",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "reserva-no-encontrado",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "reserva-no-encontrado",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "reserva-no-encontrado",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "gestion-ver",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-ver",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-ver",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramar",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramar",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramar",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramar-confirmar",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramar-confirmar",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramar-confirmar",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramado",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramado",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-reprogramado",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelar",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelar",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelar",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelado",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelado",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelado",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-fuera-de-plazo",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-fuera-de-plazo",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-fuera-de-plazo",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-solo-cancelar",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-solo-cancelar",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-solo-cancelar",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelado-consultorio",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelado-consultorio",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-cancelado-consultorio",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 0
+  },
+  {
+    "estado": "gestion-invalido",
+    "vista": "mobile-360x800",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "gestion-invalido",
+    "vista": "mobile-390x844",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  },
+  {
+    "estado": "gestion-invalido",
+    "vista": "desktop-1440x900",
+    "problemas": [],
+    "respuestasEsperadas": 1
+  }
+]

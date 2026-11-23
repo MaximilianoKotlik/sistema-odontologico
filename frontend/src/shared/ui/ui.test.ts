@@ -180,6 +180,53 @@ describe('dialogo', () => {
     document.querySelector<HTMLElement>('[data-velo]')?.click();
     expect(document.querySelector('[role="dialog"]')).toBeNull();
   });
+
+  // C-14 (design D2, D9): formularios en hoja a pantalla completa en mobile y diálogo de hasta 560 px en desktop.
+  it('la forma formulario tiene encabezado con "Cerrar", cuerpo con scroll y pie con las acciones', () => {
+    const campo = document.createElement('input');
+    const d = dialogo({ titulo: 'Nuevo turno', forma: 'formulario', contenido: campo, acciones: [boton({ texto: 'Crear turno' })] });
+    d.abrir();
+    const caja = document.querySelector<HTMLElement>('[role="dialog"]');
+    expect(caja?.dataset['forma']).toBe('formulario');
+    expect(caja?.querySelector('[data-cuerpo]')?.contains(campo)).toBe(true);
+    expect(caja?.querySelector('[data-pie]')?.textContent).toContain('Crear turno');
+    expect(caja?.querySelector('button[aria-label="Cerrar"]')).not.toBeNull();
+    expect(document.activeElement).toBe(campo);
+  });
+
+  it('antesDeCerrar puede frenar el cierre por Escape, velo o "Cerrar"', async () => {
+    const antesDeCerrar = vi.fn(async () => false);
+    const d = dialogo({ titulo: 'T', forma: 'formulario', acciones: [], antesDeCerrar });
+    d.abrir();
+    document.querySelector<HTMLElement>('button[aria-label="Cerrar"]')?.click();
+    await vi.waitFor(() => expect(antesDeCerrar).toHaveBeenCalledTimes(1));
+    await new Promise((r) => setTimeout(r, 0));
+    document.querySelector<HTMLElement>('[data-velo]')?.click();
+    await vi.waitFor(() => expect(antesDeCerrar).toHaveBeenCalledTimes(2));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(d.abierto()).toBe(true);
+
+    antesDeCerrar.mockResolvedValue(true);
+    document.querySelector('[role="dialog"]')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await vi.waitFor(() => expect(d.abierto()).toBe(false));
+  });
+
+  it('cerrar() desde el código no pregunta', () => {
+    const antesDeCerrar = vi.fn(async () => false);
+    const d = dialogo({ titulo: 'T', acciones: [], antesDeCerrar });
+    d.abrir();
+    d.cerrar();
+    expect(antesDeCerrar).not.toHaveBeenCalled();
+    expect(d.abierto()).toBe(false);
+  });
+
+  it('una confirmación usa alertdialog y puede elegir dónde arranca el foco', () => {
+    const volver = boton({ texto: 'No, mantenerlo' });
+    const d = dialogo({ titulo: '¿Cancelar el turno?', rol: 'alertdialog', acciones: [boton({ texto: 'Sí, cancelar turno' }), volver], focoInicial: volver });
+    d.abrir();
+    expect(document.querySelector('[role="alertdialog"]')).not.toBeNull();
+    expect(document.activeElement).toBe(volver);
+  });
 });
 
 describe('aviso (toast)', () => {

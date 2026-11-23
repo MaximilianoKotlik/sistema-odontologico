@@ -57,7 +57,7 @@ function panel(marca: string, cargarCatalogo: () => Promise<unknown>): HTMLEleme
     'aside',
     {
       'aria-label': 'Sobre el producto',
-      class: 'hidden min-[900px]:flex flex-col justify-between basis-5/12 max-w-xl flex-none bg-primario text-sobre-primario px-6 py-7',
+      class: 'hidden panel:flex flex-col justify-between basis-5/12 max-w-xl flex-none bg-primario text-sobre-primario px-6 py-7',
     },
     marcaVisual(marca, true),
     el(
@@ -87,12 +87,12 @@ export function montarLayoutAuth(anfitrion: HTMLElement, marca: string, conPanel
     {
       id: 'contenido',
       tabindex: '-1',
-      class: `flex-1 flex flex-col items-center px-4 pt-4 pb-6 min-[900px]:px-6 min-[900px]:py-7 focus:outline-none${conPanel ? ' min-[900px]:justify-center' : ''}`,
+      class: `flex-1 flex flex-col items-center px-4 pt-4 pb-6 panel:px-6 panel:py-7 focus:outline-none${conPanel ? ' panel:justify-center' : ''}`,
     },
     el(
       'div',
       { class: 'w-full max-w-md flex items-center justify-between gap-2 flex-wrap mb-5' },
-      el('span', { class: conPanel ? 'min-[900px]:invisible' : '' }, marcaVisual(marca, false)),
+      el('span', { class: conPanel ? 'panel:invisible' : '' }, marcaVisual(marca, false)),
       el(
         'span',
         { class: 'inline-block px-2 rounded-full border text-xs font-semibold text-sobreturno-fg bg-sobreturno-bg border-sobreturno-bd' },
@@ -111,7 +111,7 @@ export function montarLayoutAuth(anfitrion: HTMLElement, marca: string, conPanel
   );
   anfitrion.replaceChildren(
     saltar,
-    el('div', { 'data-auth-root': true, class: 'min-h-screen flex flex-col min-[900px]:flex-row bg-fondo font-sans' }, conPanel ? panel(marca, cargarCatalogo) : null, principal),
+    el('div', { 'data-auth-root': true, class: 'min-h-screen flex flex-col panel:flex-row bg-fondo font-sans' }, conPanel ? panel(marca, cargarCatalogo) : null, principal),
   );
   return { tarjeta };
 }

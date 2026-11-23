@@ -1,5 +1,6 @@
 package ar.sistemaodontologico.agenda.domain;
 
+import ar.sistemaodontologico.compartido.domain.error.ConflictoDeNegocio;
 import ar.sistemaodontologico.compartido.domain.telefono.NormalizadorDeTelefono;
 import java.text.Normalizer;
 import java.util.Locale;
@@ -17,6 +18,8 @@ public record Paciente(PacienteId id, String nombre, String apellido, Dni dni, S
         OrigenPaciente origen, boolean requiereRevision, Consentimiento consentimiento, DatosInformados informados) {
 
     public static final int LARGO_MAXIMO_NOMBRE = 80;
+    /** Confirmar o corregir un paciente que no tiene la revisión pendiente (C-17, design D5). */
+    public static final String CODIGO_SIN_REVISION_PENDIENTE = "SIN_REVISION_PENDIENTE";
     private static final int LARGO_MAXIMO_EMAIL = 254;
     /** Marcas diacríticas que deja la descomposición NFD (tildes, diéresis, la virgulilla de la ñ). */
     private static final Pattern DIACRITICOS = Pattern.compile("\\p{M}+");
@@ -57,6 +60,26 @@ public record Paciente(PacienteId id, String nombre, String apellido, Dni dni, S
         Objects.requireNonNull(informadosEnLaReserva, "informadosEnLaReserva");
         return new Paciente(id, nombre, apellido, dni, telefonoE164, email, origen, true, consentimiento,
                 informadosEnLaReserva);
+    }
+
+    /**
+     * El mismo paciente con la revisión resuelta manteniendo sus datos: sin la marca y sin lo informado (C-17,
+     * DD-38). Sin revisión pendiente es {@code SIN_REVISION_PENDIENTE}.
+     */
+    public Paciente revisado() {
+        return corregido(nombre, apellido, email);
+    }
+
+    /**
+     * El mismo paciente con la revisión resuelta corrigiendo nombre, apellido y email; el DNI y el teléfono no cambian
+     * en v1 (C-17). Sin revisión pendiente es {@code SIN_REVISION_PENDIENTE}.
+     */
+    public Paciente corregido(String nuevoNombre, String nuevoApellido, String nuevoEmail) {
+        if (!requiereRevision) {
+            throw new ConflictoDeNegocio(CODIGO_SIN_REVISION_PENDIENTE, "El paciente no tiene una revisión pendiente");
+        }
+        return new Paciente(id, nuevoNombre, nuevoApellido, dni, telefonoE164, nuevoEmail, origen, false,
+                consentimiento, null);
     }
 
     /**

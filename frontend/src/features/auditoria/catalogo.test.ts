@@ -112,6 +112,20 @@ describe('cambiosDelEvento', () => {
     expect(cambios).toEqual([{ etiqueta: 'Anticipación para cancelar', antes: '24 h', despues: '48 h', codigo: false }]);
   });
 
+  it('la revisión de un paciente nombra sus campos (C-17, PACIENTE_REVISADO)', () => {
+    const cambios = cambiosDelEvento(
+      evento({
+        accion: 'PACIENTE_REVISADO',
+        entidad: 'paciente',
+        valorAnterior: { email: 'ana@example.com', nombre: 'Ana', apellido: 'Ejemplo', requiere_revision: true },
+        valorNuevo: { email: null, nombre: 'Anna', apellido: 'Otro', requiere_revision: false },
+      }),
+      BA,
+    );
+    expect(cambios.map((c) => c.etiqueta)).toEqual(['Para revisar', 'Nombre', 'Apellido', 'Email']);
+    expect(cambios.every((c) => !c.codigo)).toBe(true);
+  });
+
   it('un campo desconocido se muestra con su nombre técnico', () => {
     const cambios = cambiosDelEvento(evento({ accion: 'TURNO_NOTA_CAMBIADA', valorAnterior: { campo_nuevo: 'a' }, valorNuevo: { campo_nuevo: { b: 1 } } }), BA);
     expect(cambios).toEqual([{ etiqueta: 'campo_nuevo', antes: 'a', despues: '{"b":1}', codigo: true }]);

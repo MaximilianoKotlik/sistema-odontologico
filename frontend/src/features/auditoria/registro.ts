@@ -154,17 +154,17 @@ export function montarRegistro({ contenedor, http, zonaHoraria: zona }: Pick<Con
   const hasta = campoConfig({ etiqueta: 'Hasta', control: el('input', { type: 'date', name: 'hasta', class: CLASE_CONTROL }) });
   const accion = campoConfig({ etiqueta: 'Tipo de cambio', control: selectorDeAccion() });
   for (const campo of [desde, hasta, accion]) campo.contenedor.classList.replace('mb-4', 'mb-0');
-  accion.contenedor.classList.add('col-span-2', 'min-[900px]:col-span-1');
+  accion.contenedor.classList.add('col-span-2', 'panel:col-span-1');
 
   const chips = el('ul', { 'aria-label': 'Filtros activos', class: 'flex flex-wrap gap-2 m-0 p-0 list-none' });
   const limpiar = boton({ texto: 'Quitar filtros', icono: 'cruz', variante: 'fantasma', alHacerClic: () => quitarFiltros() });
-  limpiar.classList.add('col-span-2', 'justify-self-start', 'whitespace-nowrap', 'min-[900px]:col-span-1', 'min-[900px]:self-end');
+  limpiar.classList.add('col-span-2', 'justify-self-start', 'whitespace-nowrap', 'panel:col-span-1', 'panel:self-end');
 
   const formulario = el(
     'form',
     { role: 'search', 'aria-label': 'Filtrar el registro', class: 'grid gap-3 mb-4 p-4 bg-superficie border border-borde rounded-lg' },
     chips,
-    el('div', { class: 'grid gap-3 items-start grid-cols-2 min-[900px]:grid-cols-[calc(var(--space-7)*3.75)_calc(var(--space-7)*3.75)_minmax(0,1fr)_auto]' }, desde.contenedor, hasta.contenedor, accion.contenedor, limpiar),
+    el('div', { class: 'grid gap-3 items-start grid-cols-2 panel:grid-cols-[calc(var(--space-7)*3.75)_calc(var(--space-7)*3.75)_minmax(0,1fr)_auto]' }, desde.contenedor, hasta.contenedor, accion.contenedor, limpiar),
   );
   formulario.addEventListener('submit', (e) => e.preventDefault());
 

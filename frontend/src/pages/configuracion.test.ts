@@ -156,6 +156,19 @@ describe('Configuración: consultorio', () => {
     expect(textoDelError(contenedor, campo('slug'))).toContain('reservada');
   });
 
+  it('VALIDACION del backend: un campo desconocido no rompe la pantalla y uno conocido marca su campo (issue #60)', async () => {
+    const { contenedor, campo } = await montar({
+      'PUT /api/v1/consultorio': [problema(400, 'VALIDACION', { errores: [{ campo: 'constructor' }, { campo: 'campoQueNoExiste' }, { campo: 'nombre' }] })],
+    });
+    escribir(campo('nombre'), 'Consultorio Demo Norte');
+    enviar(contenedor);
+    await esperar();
+
+    expect(campo('nombre')?.getAttribute('aria-invalid')).toBe('true');
+    expect(textoDelError(contenedor, campo('nombre'))).not.toBe('');
+    expect(contenedor.querySelector('[data-barra-guardado] button[aria-busy="true"]')).toBeNull();
+  });
+
   it('horizonte fuera de rango: no envía y el resumen enfocado lleva al campo', async () => {
     const { contenedor, campo, llamadas } = await montar();
     escribir(campo('horizonteReservaDias'), '400');

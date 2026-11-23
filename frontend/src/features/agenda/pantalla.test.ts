@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ParaRevisar } from '../pacientes/para-revisar';
 import { botonConTexto, crearContextoDePagina, esperar, json, problema, type Guion } from '../configuracion/prueba-contexto';
 import { olvidarFranjas } from './api';
 import { montarAgenda } from './pantalla';
@@ -87,6 +88,47 @@ describe('montarAgenda: vista diaria', () => {
     expect(texto(aviso)).toContain('Elena D. canceló y Federico E. reservó, por el link.');
   });
 
+  describe('aviso de pacientes para revisar (C-17, tarea 4.6)', () => {
+    const conPacientes = (cantidad: number | null) => {
+      history.replaceState(null, '', '/app/agenda?vista=dia&fecha=2026-11-20');
+      const pagina = crearContextoDePagina({ [`GET ${SEMANA}`]: [json(AGENDA)], 'GET /api/v1/disponibilidad': [json(HORARIO)] });
+      let actual = cantidad;
+      let avisar: (n: number) => void = () => undefined;
+      const pacientes: ParaRevisar = { cantidad: () => actual, actualizar: async () => undefined, suscribir: (fn) => ((avisar = fn), () => undefined), olvidar: () => undefined };
+      montarAgenda({ ...pagina.contexto, pacientes });
+      return {
+        ...pagina,
+        avisar: (n: number) => {
+          actual = n;
+          avisar(n);
+        },
+      };
+    };
+
+    it('con 3 marcados muestra el aviso pegado al de cambios, con el link a la lista filtrada', async () => {
+      const { contenedor } = conPacientes(3);
+      await esperar();
+      const aviso = contenedor.querySelector('[data-aviso-para-revisar]');
+      expect(aviso?.getAttribute('role')).toBe('status');
+      expect(texto(aviso)).toContain('3 pacientes para revisar');
+      const enlace = aviso?.querySelector('a');
+      expect(texto(enlace)).toBe('Revisar pacientes');
+      expect(enlace?.getAttribute('href')).toBe('/app/pacientes?requiereRevision=true');
+      expect(enlace?.className).toContain('min-h-touch');
+      expect(contenedor.querySelector('[data-aviso-nuevos]')?.nextElementSibling).toBe(aviso);
+    });
+
+    it('sin pacientes para revisar no hay aviso, y aparece si llegan con la agenda abierta', async () => {
+      const { contenedor, avisar } = conPacientes(0);
+      await esperar();
+      expect(contenedor.querySelector('[data-aviso-para-revisar]')).toBeNull();
+      avisar(1);
+      expect(texto(contenedor.querySelector('[data-aviso-para-revisar]'))).toContain('1 paciente para revisar');
+      avisar(0);
+      expect(contenedor.querySelector('[data-aviso-para-revisar]')).toBeNull();
+    });
+  });
+
   it('la tira de días marca el día elegido y lleva a cada día de la semana', async () => {
     const { contenedor } = montar('?vista=dia&fecha=2026-11-20', { [`GET ${SEMANA}`]: [json(AGENDA)], 'GET /api/v1/disponibilidad': [json(HORARIO)] });
     await esperar();
@@ -139,9 +181,24 @@ describe('montarAgenda: vista diaria', () => {
     const nuevo = botonConTexto(contexto.acciones, 'Nuevo turno');
     expect(nuevo?.hasAttribute('data-requiere-conexion')).toBe(true);
     nuevo?.click();
-    expect(nuevoTurno).toHaveBeenCalledWith(null);
+    expect(nuevoTurno).toHaveBeenCalledWith(null, expect.objectContaining({ http: contexto.http, zona: 'America/Argentina/Buenos_Aires' }));
     contenedor.querySelector<HTMLButtonElement>('button[data-libre]')?.click();
-    expect(nuevoTurno).toHaveBeenLastCalledWith(en('2026-11-21', '09:00'));
+    expect(nuevoTurno).toHaveBeenLastCalledWith(en('2026-11-21', '09:00'), expect.anything());
+  });
+
+  it('al terminar una acción de C-14, la agenda se vuelve a pedir', async () => {
+    const nuevoTurno = vi.fn();
+    registrarPuntosDeEntrada({ nuevoTurno, accion: vi.fn() });
+    const { contexto, llamadas } = montar('?vista=dia&fecha=2026-11-21', {
+      [`GET ${SEMANA}`]: [json({ turnos: [], bloqueos: [] }), json({ turnos: [], bloqueos: [] })],
+      'GET /api/v1/disponibilidad': [json(HORARIO)],
+    });
+    await esperar();
+    botonConTexto(contexto.acciones, 'Nuevo turno')?.click();
+    const entorno = nuevoTurno.mock.calls[0]?.[1] as { alTerminar: () => void };
+    entorno.alTerminar();
+    await esperar();
+    expect(llamadas.filter((l) => l.url.startsWith('/api/v1/agenda'))).toHaveLength(2);
   });
 });
 

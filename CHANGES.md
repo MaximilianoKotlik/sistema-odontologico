@@ -367,7 +367,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/07_flujos_principales.md` §FL-03
 
 ### [C-14] `frontend-turnos-bloqueos`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #67, 2026-11-22)
 - **Scope**:
   - Features `turnos/` y `bloqueos/`: crear turno manual (prestación, hueco, paciente buscado por nombre, DNI o teléfono, con alta rápida por DNI, DD-24), agregar sobreturno, confirmar/cancelar/marcar ausente, reprogramar, **ajustar la duración** (selector en pasos de 5 min, muestra el nuevo fin), **agregar/editar la nota interna** (contador de 500), crear y eliminar bloqueos; manejo de errores 409 con mensajes y lista de conflictos de bloqueo.
   - **Aviso de turnos fuera de horario** (decisión de Maxi en #15):
@@ -410,7 +410,7 @@ Reglas de coordinación del paralelismo:
   - `knowledge-base/09_decisiones_y_supuestos.md` §DD-09, DD-13 y `11_marco_legal_argentino.md`
 
 ### [C-16] `frontend-reserva-publica`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #70, 2026-11-22)
 - **Scope**:
   - `.ics` descargable generado en el cliente (P1; FL-04 paso 6).
   - Features `reserva-publica/` (`/c/{slug}`: elegir prestación, hueco, datos, consentimiento, confirmación con link `/t/{token}` para guardar; estado "no toma turnos online" con teléfono) y `gestion-turno/` (`/t/{token}`: ver, reprogramar, cancelar; mensaje con teléfono si está fuera de plazo; con reserva desactivada solo ofrece cancelar).
@@ -432,7 +432,7 @@ Reglas de coordinación del paralelismo:
 > C-21 no depende de la agenda: puede arrancar en el GATE 2 (solo requiere C-02 y C-06).
 
 ### [C-17] `pacientes-revision`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (PR #74, 2026-11-22)
 - **Scope**:
   - Backend: `GET /api/v1/pacientes?requiereRevision=true` (paginado, por tenant), `PATCH /api/v1/pacientes/{id}` (corrige nombre, apellido y email; el teléfono E.164 no se edita en v1) y `POST /api/v1/pacientes/{id}/confirmar-revision`; ambas acciones ponen `requiere_revision = false` y auditan `PACIENTE_REVISADO` con solo los campos modificados (RN-AD-05); 404 ante paciente de otro consultorio (RN-TE-04); PII enmascarada en logs (RN-GL-01).
   - Frontend: feature `pacientes/` con listado, filtro "requiere revisión" (con contador visible desde la agenda) y acción de confirmar o corregir; mockup revisado antes de implementar.

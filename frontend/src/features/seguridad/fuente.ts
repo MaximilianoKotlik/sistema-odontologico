@@ -22,7 +22,7 @@ export type Bloque =
   | { readonly tipo: 'roles'; readonly filas: readonly { readonly quien: string; readonly afirmacion: Afirmacion }[] }
   | { readonly tipo: 'faltan'; readonly items: readonly { readonly titulo: string; readonly afirmacion: Afirmacion }[] };
 
-export type IconoDeTema = 'personas' | 'credencial' | 'muro' | 'historial' | 'descargar' | 'candado' | 'servidor' | 'reloj-arena';
+export type IconoDeTema = 'personas' | 'dni' | 'muro' | 'historial' | 'descargar' | 'candado' | 'servidor' | 'reloj-arena';
 
 export interface Tema {
   readonly id: string;
@@ -42,7 +42,7 @@ export interface FuenteSeguridad {
   readonly enlacesDelPie: readonly { readonly texto: string; readonly href: string }[];
 }
 
-const ICONOS: readonly string[] = ['personas', 'credencial', 'muro', 'historial', 'descargar', 'candado', 'servidor', 'reloj-arena'];
+const ICONOS: readonly string[] = ['personas', 'dni', 'muro', 'historial', 'descargar', 'candado', 'servidor', 'reloj-arena'];
 const esObjeto = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const esTexto = (v: unknown): v is string => typeof v === 'string' && v.trim() !== '';
 const listaDeTextos = (v: unknown): boolean => Array.isArray(v) && v.every(esTexto);

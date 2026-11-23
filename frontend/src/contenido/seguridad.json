@@ -62,7 +62,7 @@
     {
       "id": "datos",
       "titulo": "Qué datos guardamos",
-      "icono": "credencial",
+      "icono": "dni",
       "bloques": [
         {
           "tipo": "parrafo",

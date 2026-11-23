@@ -98,7 +98,9 @@ class MatrizDeEscriturasTest extends ApiDelPlanTest {
                 "PATCH /api/v1/turnos/{id}/nota", "POST /api/v1/bloqueos", "DELETE /api/v1/bloqueos/{id}",
                 "PUT /api/v1/consultorio", "PUT /api/v1/disponibilidad", "POST /api/v1/prestaciones",
                 "PUT /api/v1/prestaciones/{id}", "POST /api/v1/prestaciones/{id}/desactivar",
-                "POST /api/v1/prestaciones/{id}/activar");
+                "POST /api/v1/prestaciones/{id}/activar",
+                // C-17: la revisión del paciente también es una escritura (design, riesgo "Plan VENCIDO").
+                "POST /api/v1/pacientes/{id}/confirmar-revision", "PATCH /api/v1/pacientes/{id}");
         // Ninguna escritura bloqueada audita. La exportación sigue permitida y registra su propio evento (C-19).
         assertThat(accionesDelConsultorio(agenda)).isSubsetOf("EXPORTACION_GENERADA");
     }
