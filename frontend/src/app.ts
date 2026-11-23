@@ -4,6 +4,7 @@ import { crearCanalSesion, crearCoordinadorRefresh, type FabricaDeCanal, type Lo
 import { montarLayoutAuth, montarSplash } from './features/auth/layout';
 import { decidirAcceso, esRutaPrivada } from './features/auth/sesion';
 import { sanearVolver } from './features/auth/volver';
+import { crearParaRevisar } from './features/pacientes/para-revisar';
 import { crearAvisoDePlan } from './features/plan/aviso-de-plan';
 import { crearEstadoDelPlan } from './features/plan/estado-del-plan';
 import { RUTA_PLANES_PUBLICOS } from './features/precios/catalogo';
@@ -61,6 +62,8 @@ const RUTAS: readonly DefinicionRuta<Destino>[] = [
   privada('/app/agenda', async () => (await import('./pages/agenda')).pagina),
   privada('/app/agenda/turnos/:id', async () => (await import('./pages/turno')).pagina),
   privada('/app/bloqueos', async () => (await import('./pages/bloqueos')).pagina),
+  privada('/app/pacientes', async () => (await import('./pages/pacientes')).pagina),
+  privada('/app/pacientes/:id', async () => (await import('./pages/paciente')).pagina),
   privada('/app/configuracion', async () => (await import('./pages/configuracion')).pagina),
   privada('/app/configuracion/prestaciones', async () => (await import('./pages/configuracion-prestaciones')).pagina),
   privada('/app/configuracion/horarios', async () => (await import('./pages/configuracion-horarios')).pagina),
@@ -109,6 +112,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
     alVencerSesion: () => {
       sinRedAlRestaurar = false;
       estadoDelPlan.olvidar();
+      paraRevisar.olvidar();
       void olvidarAgendaGuardada();
       avisoPendiente = { tipo: 'sesion-vencida' };
       void routerCreado.navegar(rutaDeLogin(routerCreado.rutaActual()), { forzar: true });
@@ -125,6 +129,9 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
   /** Plan del consultorio (C-20): se pide al montar el shell; vive en memoria y se olvida con la sesión. */
   const estadoDelPlan = crearEstadoDelPlan(http);
   const avisoDePlan = crearAvisoDePlan({ estado: estadoDelPlan, zonaHoraria: () => sesion.get().zonaHoraria });
+  /** Pacientes para revisar (C-17, D3): se pide al montar el shell y después de cada revisión; se olvida con la sesión. */
+  const paraRevisar = crearParaRevisar(http);
+  let dejarDeMostrarParaRevisar: (() => void) | null = null;
 
   /**
    * La agenda en caché tiene datos de pacientes (Ley 25.326): no sobrevive a la sesión que la vio.
@@ -137,6 +144,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
   async function iniciarSesion(accessToken: string): Promise<void> {
     await olvidarAgendaGuardada();
     estadoDelPlan.olvidar();
+    paraRevisar.olvidar();
     sinRedAlRestaurar = false;
     http.establecerToken(accessToken);
   }
@@ -145,6 +153,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
   async function terminarSesion(motivo: MotivoCierre): Promise<void> {
     http.borrarToken();
     estadoDelPlan.olvidar();
+    paraRevisar.olvidar();
     sinRedAlRestaurar = false;
     await olvidarAgendaGuardada();
     canal.publicar(motivo);
@@ -169,6 +178,8 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
   });
 
   function desmontarShell(): void {
+    dejarDeMostrarParaRevisar?.();
+    dejarDeMostrarParaRevisar = null;
     shell?.destruir();
     shell = null;
   }
@@ -187,6 +198,7 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
       zonaHoraria: sesion.get().zonaHoraria,
       cuenta: { terminarPorCambioDeContrasena: () => terminarSesion('contrasena-cambiada') },
       navegacion: routerCreado,
+      pacientes: paraRevisar,
     };
   }
 
@@ -213,6 +225,12 @@ export function montarAplicacion(documento: Document, dependencias: Dependencias
       },
     });
     if (estadoDelPlan.get() === null) void estadoDelPlan.cargar();
+    if (dejarDeMostrarParaRevisar === null) {
+      const montado = shell;
+      dejarDeMostrarParaRevisar = paraRevisar.suscribir((cantidad) => montado.mostrarParaRevisar(cantidad));
+      if (paraRevisar.cantidad() === null) void paraRevisar.actualizar();
+      else montado.mostrarParaRevisar(paraRevisar.cantidad() ?? 0);
+    }
     shell.mostrar(pagina, { enfocar });
     pagina.montar(contextoPrivado(shell.contenido, shell.acciones, params));
     shell.sincronizarConexion();

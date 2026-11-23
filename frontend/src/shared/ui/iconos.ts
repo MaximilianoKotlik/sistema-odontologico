@@ -60,6 +60,9 @@ const TRAZOS = {
   // Trazos del mockup aprobado de C-14 (#31).
   basura: `<path d="M5 7h14M10 7V5h4v2M7 7l1 12.5h8L17 7" ${L}/>`,
   'persona-mas': `<circle cx="10" cy="8" r="3.5" ${L}/><path d="M3.5 20c.8-3.6 3.4-5.5 6.5-5.5 1.6 0 3 .4 4 1.2M18 14v6M15 17h6" ${L}/>`,
+  // Pacientes (C-17, trazos del mockup aprobado en #36).
+  personas: `<circle cx="9" cy="8.5" r="3.5" ${L}/><path d="M2.5 20c.7-3.5 3.3-5.5 6.5-5.5s5.8 2 6.5 5.5M15.5 5.2a3.5 3.5 0 010 6.6M18 14.8c1.9.8 3.1 2.6 3.5 5.2" ${L}/>`,
+  dni: `<rect x="3" y="5.5" width="18" height="13" rx="2.5" ${L}/><circle cx="8.5" cy="11" r="2" ${L}/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4M14 13.5h3" ${L}/>`,
 } as const satisfies Record<string, string>;
 
 export type NombreIcono = keyof typeof TRAZOS;

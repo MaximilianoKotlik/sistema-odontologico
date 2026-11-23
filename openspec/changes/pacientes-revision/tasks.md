@@ -25,12 +25,12 @@
 
 ## 4. Pantallas (frontend)
 
-- [ ] 4.1 Sumar las rutas `/app/pacientes` y `/app/pacientes/:id`, "Pacientes" en la barra lateral y en "Más", y el contador compartido (D3, D8); verificar con tests Vitest del router, la navegación en 360 y 1440 px y el contador con y sin revisiones
-- [ ] 4.2 Implementar la lista con el filtro "Requieren revisión" / "Todos", la etiqueta "Revisar" con la línea de lo informado, "Mostrar más pacientes" y los estados vacío, cargando, error y sin conexión; verificar con tests Vitest del filtro y de cada estado
-- [ ] 4.3 Implementar la comparación que muestra solo lo que difiere con la regla de D7 y la línea de lo que coincide; verificar con tests Vitest de un solo dato distinto, varios distintos y diferencias solo de mayúsculas, de tildes o de espacios
-- [ ] 4.4 Implementar las tres salidas (mantener, usar lo de la reserva, corregir a mano), enviando el `informadoAt` del detalle, con la vuelta a la lista, el aviso de listo y el contador actualizado; verificar con tests Vitest de cada salida con el cliente HTTP falso
-- [ ] 4.5 Implementar el formulario de corrección con validación antes de enviar, resumen de errores enlazado, DNI y teléfono de solo lectura, y los estados 404, 409 `SIN_REVISION_PENDIENTE`, 409 `CONFLICTO_CONCURRENCIA` (recarga con lo nuevo y el aviso, sin perder lo escrito, D9) y error al guardar; verificar con tests Vitest
-- [ ] 4.6 Sumar a la agenda (C-13) el aviso compacto pegado al de cambios de DD-30, con el link de al menos 44 px de área táctil y sin aviso cuando no hay revisiones; verificar con tests Vitest de la agenda
+- [x] 4.1 Sumar las rutas `/app/pacientes` y `/app/pacientes/:id`, "Pacientes" en la barra lateral y en "Más", y el contador compartido (D3, D8); verificar con tests Vitest del router, la navegación en 360 y 1440 px y el contador con y sin revisiones; verificado (2026-11-22) en `shell.test.ts`, `app.test.ts` y `para-revisar.test.ts`
+- [x] 4.2 Implementar la lista con el filtro "Requieren revisión" / "Todos", la etiqueta "Revisar" con la línea de lo informado, "Mostrar más pacientes" y los estados vacío, cargando, error y sin conexión; verificar con tests Vitest del filtro y de cada estado; verificado (2026-11-22) en `lista.test.ts` y `formato.test.ts`
+- [x] 4.3 Implementar la comparación que muestra solo lo que difiere con la regla de D7 y la línea de lo que coincide; verificar con tests Vitest de un solo dato distinto, varios distintos y diferencias solo de mayúsculas, de tildes o de espacios; verificado (2026-11-22) en `comparacion.test.ts` y `revision.test.ts`
+- [x] 4.4 Implementar las tres salidas (mantener, usar lo de la reserva, corregir a mano), enviando el `informadoAt` del detalle, con la vuelta a la lista, el aviso de listo y el contador actualizado; verificar con tests Vitest de cada salida con el cliente HTTP falso; verificado (2026-11-22) en `revision.test.ts` y `api.test.ts`
+- [x] 4.5 Implementar el formulario de corrección con validación antes de enviar, resumen de errores enlazado, DNI y teléfono de solo lectura, y los estados 404, 409 `SIN_REVISION_PENDIENTE`, 409 `CONFLICTO_CONCURRENCIA` (recarga con lo nuevo y el aviso, sin perder lo escrito, D9) y error al guardar; verificar con tests Vitest; verificado (2026-11-22) en `revision.test.ts`
+- [x] 4.6 Sumar a la agenda (C-13) el aviso compacto pegado al de cambios de DD-30, con el link de al menos 44 px de área táctil y sin aviso cuando no hay revisiones; verificar con tests Vitest de la agenda; verificado (2026-11-22) en `agenda/pantalla.test.ts`
 
 ## 5. Verificación integrada
 

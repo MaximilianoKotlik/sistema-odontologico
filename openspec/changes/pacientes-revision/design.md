@@ -111,3 +111,4 @@ Sin migración propia: las columnas de DD-38 ya están en la `V6` de C-10. C-09,
 - Approval: approved (2026-11-20, by Maxi), versión dcb700b (#36)
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #36); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
 - Visual verify: pending
+- Diferencia de texto pendiente de aprobación (2026-11-22, Octi): el aviso al volver a la lista dice "Listo: la ficha de Ejemplo, Anna quedó revisada." en lugar de "Listo: Ejemplo, Anna quedó revisada" (spec `pantalla-pacientes`, escenario "Usar lo de la reserva", y `mockups/pacientes.html`). "Revisada" concuerda con "la ficha" y no depende del género del paciente, que el sistema no conoce. Si Maxi prefiere el texto original, se cambia en `features/pacientes/revision.ts` y su test.

@@ -1,4 +1,5 @@
 import type { EncabezadoPagina } from '../app/shell';
+import type { ParaRevisar } from '../features/pacientes/para-revisar';
 import type { ClienteHttp } from '../shared/http';
 import type { Parametros, Router } from '../shared/router';
 
@@ -20,6 +21,8 @@ export interface ContextoPagina {
   readonly cuenta: AccionesCuenta;
   /** Navegar dentro de la app y frenar la salida con cambios sin guardar (C-09, D9). */
   readonly navegacion: Pick<Router, 'navegar' | 'bloquearSalida'>;
+  /** Pacientes para revisar (C-17, D3): lo comparten la navegación, la agenda y las pantallas de pacientes. */
+  readonly pacientes?: ParaRevisar;
 }
 
 export interface Pagina extends EncabezadoPagina {
