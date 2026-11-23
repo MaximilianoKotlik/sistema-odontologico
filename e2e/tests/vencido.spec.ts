@@ -6,7 +6,7 @@ import { DEMO, ingresar } from '../soporte/demo';
 test('la página pública del consultorio vencido no ofrece reservar y muestra el teléfono', async ({ page }) => {
   await page.goto(`/c/${DEMO.slugVencido}`);
 
-  await expect(page.getByText('ROTO A PROPOSITO para probar el artefacto')).toBeVisible();
+  await expect(page.getByText('Por ahora este consultorio no toma turnos online')).toBeVisible();
   await expect(page.getByRole('link', { name: /11 0000-0020/ }).first()).toHaveAttribute('href', 'tel:+5491100000020');
   await expect(page.getByRole('button', { name: 'Reservar turno' })).toHaveCount(0);
 });
