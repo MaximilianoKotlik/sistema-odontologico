@@ -88,7 +88,8 @@ jobs:
   # Humo E2E (C-23, design D3): el stack de Compose con el seed de demo y los recorridos críticos en Chromium.
   e2e:
     name: E2E (humo)
-    runs-on: ubuntu-latest
+    # Fijo: Playwright 1.56 no trae Chromium para ubuntu-latest (26.04). Se actualiza junto con @playwright/test.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     defaults:
       run:
