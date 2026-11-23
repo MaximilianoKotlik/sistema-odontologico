@@ -11,7 +11,7 @@ La deduplicación por DNI (RN-RP-03, DD-24) reutiliza al paciente sin tocar su f
 ## What Changes
 
 - **API de pacientes** (backend, módulo `agenda`), siempre filtrada por el consultorio de la sesión:
-  - `GET /api/v1/pacientes?requiereRevision=true|false&page&size`: lista paginada, ordenada por apellido y nombre, con el total. Cada paciente trae DNI, teléfono, email, `requiereRevision` y, si está marcado, lo informado en la reserva (DD-38).
+  - `GET /api/v1/pacientes/listado?requiereRevision=true|false&page&size`: lista paginada (en `/listado` porque `GET /api/v1/pacientes?q=` es la búsqueda de C-12, design D10), ordenada por apellido y nombre, con el total. Cada paciente trae DNI, teléfono, email, `requiereRevision` y, si está marcado, lo informado en la reserva (DD-38).
   - `GET /api/v1/pacientes/{id}`: el detalle para la pantalla de revisión, con lo informado y el turno de origen. **Suma un endpoint al alcance de CHANGES.md**: hace falta para abrir la revisión desde un link o al recargar.
   - `PATCH /api/v1/pacientes/{id}`: corrige nombre, apellido y email. DNI y teléfono no se editan en v1.
   - `POST /api/v1/pacientes/{id}/confirmar-revision`: mantiene los datos guardados.

@@ -44,7 +44,7 @@ No hay un endpoint aparte: el frontend manda en el `PATCH` el nombre, el apellid
 
 ### D3 — El contador sale del total de la lista
 
-La cantidad de pacientes para revisar se obtiene con `GET /api/v1/pacientes?requiereRevision=true&size=1`, leyendo `total`. El shell la pide al iniciar la sesión y después de cada revisión, y la comparte con la agenda (aviso) y la navegación (contador). Sin endpoint nuevo.
+La cantidad de pacientes para revisar se obtiene con `GET /api/v1/pacientes/listado?requiereRevision=true&size=1`, leyendo `total`. El shell la pide al iniciar la sesión y después de cada revisión, y la comparte con la agenda (aviso) y la navegación (contador). Sin endpoint nuevo.
 
 - **Alternativa descartada**: sumar el contador a la respuesta de la agenda (C-12). Acoplaría dos changes y la caché offline de la agenda guardaría un dato de pacientes.
 
@@ -82,6 +82,13 @@ Mientras el odontólogo mira la revisión puede llegar otra reserva con el mismo
 - **Alternativa descartada**: una columna `version` en `paciente` con `@Version`. Necesitaría una migración nueva y detectaría también cambios que no afectan la revisión. `informado_at` ya identifica la variante que se vio y cambia con cada reserva que pisa lo informado.
 - **Alternativa descartada**: aceptar lo que vio el odontólogo y perder la variante nueva (el trade-off original de D2). La variante nueva puede ser justamente el error que había que ver.
 
+### D10 — La lista va en `/api/v1/pacientes/listado`
+
+C-12 (#48, spec `busqueda-de-pacientes`) ya ocupa `GET /api/v1/pacientes?q=`: responde un array de hasta 20 pacientes y lo usa C-14 al elegir el paciente de un turno nuevo. La lista paginada de C-17, que responde `{items, total}`, va en `GET /api/v1/pacientes/listado` con los parámetros de D4. El detalle sigue en `/api/v1/pacientes/{id}`: el id es un UUID y Spring resuelve primero la ruta literal. Lo decidió Octi el 2026-11-22 durante el apply y se avisa a Maxi en el PR.
+
+- **Alternativa descartada**: un solo `GET /api/v1/pacientes` con `q`, `requiereRevision`, `page` y `size` que siempre responde `{items, total}`. Cambia un contrato ya archivado y obliga a adaptar C-14.
+- **Alternativa descartada**: la misma ruta separada por el parámetro `q`. El OpenAPI no puede describir dos respuestas en una sola operación, así que `api-types.ts` quedaría mal generado.
+
 ## Risks / Trade-offs
 
 - **[Precisión de `informadoAt`]** → `RegistrarPaciente` lo toma de `reloj.instant()` (nanosegundos) y Postgres lo guarda con microsegundos. La comparación de D9 se hace siempre contra el valor leído de la base, y el detalle devuelve ese mismo valor, así que el redondeo no da falsos conflictos. Las marcas del mismo consultorio se serializan con el `LockDeAgenda`, así que en la práctica cada reserva deja un valor distinto.
@@ -103,4 +110,5 @@ Sin migración propia: las columnas de DD-38 ya están en la `V6` de C-10. C-09,
 - Mockups: openspec/changes/pacientes-revision/mockups/ (`agenda-aviso.html`, `pacientes.html`, `paciente.html`, más `base.css`, `agenda.css`, `pacientes.css` y `mockup.js`)
 - Approval: approved (2026-11-20, by Maxi), versión dcb700b (#36)
 - Preview: rendered (2026-11-20, segunda versión con la revisión de #36); `mockups/previews/*-mobile-390x844.png`, `mockups/previews/*-desktop-1440x900.png`
-- Visual verify: pending
+- Visual verify: passed (2026-11-22). Agenda, lista, hoja "Más" y revisión a 360, 390 y 1440 px con la base real, en `mockups/verify/` (8 capturas y `README.md`): sin scroll horizontal, objetivos de al menos 44 px, un solo `h1` y sin errores de consola salvo el 401 esperado antes del login. Cuatro defectos corregidos durante la verificación (link del turno, "Coincide", subtítulo de la corrección y etiquetas del Registro de cambios).
+- Diferencia de texto pendiente de aprobación (2026-11-22, Octi): el aviso al volver a la lista dice "Listo: la ficha de Ejemplo, Anna quedó revisada." en lugar de "Listo: Ejemplo, Anna quedó revisada" (spec `pantalla-pacientes`, escenario "Usar lo de la reserva", y `mockups/pacientes.html`). "Revisada" concuerda con "la ficha" y no depende del género del paciente, que el sistema no conoce. Si Maxi prefiere el texto original, se cambia en `features/pacientes/revision.ts` y su test.

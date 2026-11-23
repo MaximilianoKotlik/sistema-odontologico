@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ParaRevisar } from '../pacientes/para-revisar';
 import { botonConTexto, crearContextoDePagina, esperar, json, problema, type Guion } from '../configuracion/prueba-contexto';
 import { olvidarFranjas } from './api';
 import { montarAgenda } from './pantalla';
@@ -85,6 +86,47 @@ describe('montarAgenda: vista diaria', () => {
     expect(aviso?.getAttribute('role')).toBe('status');
     expect(texto(aviso)).toContain('2 cambios de tus pacientes');
     expect(texto(aviso)).toContain('Elena D. canceló y Federico E. reservó, por el link.');
+  });
+
+  describe('aviso de pacientes para revisar (C-17, tarea 4.6)', () => {
+    const conPacientes = (cantidad: number | null) => {
+      history.replaceState(null, '', '/app/agenda?vista=dia&fecha=2026-11-20');
+      const pagina = crearContextoDePagina({ [`GET ${SEMANA}`]: [json(AGENDA)], 'GET /api/v1/disponibilidad': [json(HORARIO)] });
+      let actual = cantidad;
+      let avisar: (n: number) => void = () => undefined;
+      const pacientes: ParaRevisar = { cantidad: () => actual, actualizar: async () => undefined, suscribir: (fn) => ((avisar = fn), () => undefined), olvidar: () => undefined };
+      montarAgenda({ ...pagina.contexto, pacientes });
+      return {
+        ...pagina,
+        avisar: (n: number) => {
+          actual = n;
+          avisar(n);
+        },
+      };
+    };
+
+    it('con 3 marcados muestra el aviso pegado al de cambios, con el link a la lista filtrada', async () => {
+      const { contenedor } = conPacientes(3);
+      await esperar();
+      const aviso = contenedor.querySelector('[data-aviso-para-revisar]');
+      expect(aviso?.getAttribute('role')).toBe('status');
+      expect(texto(aviso)).toContain('3 pacientes para revisar');
+      const enlace = aviso?.querySelector('a');
+      expect(texto(enlace)).toBe('Revisar pacientes');
+      expect(enlace?.getAttribute('href')).toBe('/app/pacientes?requiereRevision=true');
+      expect(enlace?.className).toContain('min-h-touch');
+      expect(contenedor.querySelector('[data-aviso-nuevos]')?.nextElementSibling).toBe(aviso);
+    });
+
+    it('sin pacientes para revisar no hay aviso, y aparece si llegan con la agenda abierta', async () => {
+      const { contenedor, avisar } = conPacientes(0);
+      await esperar();
+      expect(contenedor.querySelector('[data-aviso-para-revisar]')).toBeNull();
+      avisar(1);
+      expect(texto(contenedor.querySelector('[data-aviso-para-revisar]'))).toContain('1 paciente para revisar');
+      avisar(0);
+      expect(contenedor.querySelector('[data-aviso-para-revisar]')).toBeNull();
+    });
   });
 
   it('la tira de días marca el día elegido y lleva a cada día de la semana', async () => {

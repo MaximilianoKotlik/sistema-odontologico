@@ -25,6 +25,7 @@ import { puntosDeEntrada, type EntornoDeAccion } from './puntos-de-entrada';
 import { grillaSemanal, listaSemanal, rutaDelDia } from './semana';
 import { chipBloqueo, chipEstadoTurno, chipSobreturno } from './tarjeta';
 import { diaDeSemana, instanteLocal, lunesDe, sumarDias } from './tiempo';
+import { RUTA_PARA_REVISAR } from '../pacientes/rutas';
 
 /**
  * Pantalla de la agenda (C-13, spec vista-agenda; mockup aprobado en #27): barra con navegación, interruptor de
@@ -138,6 +139,23 @@ function avisoNuevos(agenda: Agenda, mostrarCancelados: boolean): HTMLElement | 
       {},
       el('strong', { class: 'block text-primario' }, resumen.titulo),
       el('p', { class: 'm-0 text-sm' }, `${resumen.detalle.replace(/\.$/, '')}, por el link. Se marcan como vistos al abrir cada turno.`),
+    ),
+  );
+}
+
+/** Aviso compacto de pacientes para revisar (C-17, tarea 4.6), pegado al de cambios y con su misma jerarquía. */
+function avisoParaRevisar(cantidad: number | null): HTMLElement | null {
+  if (cantidad === null || cantidad <= 0) return null;
+  return el(
+    'div',
+    { 'data-aviso-para-revisar': true, role: 'status', class: 'flex gap-3 items-start mb-3 px-4 py-3 rounded-md border border-reservado-bd bg-reservado-bg text-texto' },
+    icono('personas', 'w-icono h-icono flex-none text-primario'),
+    el(
+      'p',
+      { class: 'm-0 text-sm' },
+      el('strong', { class: 'text-primario' }, `${cantidad} ${cantidad === 1 ? 'paciente' : 'pacientes'} para revisar.`),
+      ' Reservaron con un DNI que ya tenías y otro nombre. ',
+      el('a', { href: RUTA_PARA_REVISAR, 'data-link': true, class: 'inline-flex items-center min-h-touch font-semibold text-primario underline' }, 'Revisar pacientes'),
     ),
   );
 }
@@ -306,10 +324,19 @@ export function montarAgenda(contexto: ContextoPagina): void {
     );
   }
 
+  // C-17, tarea 4.6: el aviso sigue a la cantidad de pacientes para revisar mientras la agenda está abierta.
+  const dejarDeSeguirParaRevisar = contexto.pacientes?.suscribir(() => {
+    if (!contenedor.isConnected) {
+      dejarDeSeguirParaRevisar?.();
+      return;
+    }
+    pintar();
+  });
+
   function pintar(): void {
     if (datos === null) return;
     const { agenda, franjas } = datos;
-    cuerpo.replaceChildren(...[avisoNuevos(agenda, mostrarCancelados), vista === 'dia' ? vistaDiaria(agenda, franjas) : vistaSemanal(agenda, franjas)].filter((n): n is HTMLElement => n !== null));
+    cuerpo.replaceChildren(...[avisoNuevos(agenda, mostrarCancelados), avisoParaRevisar(contexto.pacientes?.cantidad() ?? null), vista === 'dia' ? vistaDiaria(agenda, franjas) : vistaSemanal(agenda, franjas)].filter((n): n is HTMLElement => n !== null));
   }
 
   async function cargar(): Promise<void> {

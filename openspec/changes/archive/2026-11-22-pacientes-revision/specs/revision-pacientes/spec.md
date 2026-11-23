@@ -8,12 +8,12 @@ Permite que el odontólogo consulte los pacientes de su consultorio, encuentre l
 
 ### Requirement: Lista de pacientes del consultorio
 
-`GET /api/v1/pacientes` SHALL devolver, solo para el consultorio de la sesión, una página de pacientes ordenada por apellido y nombre, con el total de resultados. Cada paciente MUST incluir id, nombre, apellido, DNI, teléfono, email (si tiene) y `requiereRevision`. El parámetro `requiereRevision=true` MUST filtrar los marcados para revisión; sin el parámetro, MUST devolver todos.
+`GET /api/v1/pacientes/listado` SHALL devolver, solo para el consultorio de la sesión, una página de pacientes ordenada por apellido y nombre, con el total de resultados. Cada paciente MUST incluir id, nombre, apellido, DNI, teléfono, email (si tiene) y `requiereRevision`. El parámetro `requiereRevision=true` MUST filtrar los marcados para revisión; sin el parámetro, MUST devolver todos.
 
 #### Scenario: Filtrar los marcados
 
 - **GIVEN** un consultorio con 6 pacientes, 3 marcados para revisión
-- **WHEN** se pide `GET /api/v1/pacientes?requiereRevision=true`
+- **WHEN** se pide `GET /api/v1/pacientes/listado?requiereRevision=true`
 - **THEN** la respuesta es 200 con esos 3 pacientes ordenados por apellido y `total: 3`
 
 #### Scenario: Paginado

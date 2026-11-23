@@ -198,6 +198,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/pacientes/{id}/confirmar-revision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["confirmarRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/exportacion": {
         parameters: {
             query?: never;
@@ -391,7 +407,7 @@ export interface paths {
         patch: operations["duracion"];
         trace?: never;
     };
-    "/api/v1/turnos/{id}": {
+    "/api/v1/pacientes/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -399,6 +415,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["detalle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["corregir"];
+        trace?: never;
+    };
+    "/api/v1/turnos/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["detalle_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -548,6 +580,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["buscar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pacientes/listado": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listar_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -826,6 +874,36 @@ export interface components {
             prestacion?: string;
             estado?: string;
         };
+        ConfirmacionDeRevisionRequest: {
+            /** Format: date-time */
+            informadoAt: string;
+        };
+        LoInformado: {
+            nombre?: string;
+            apellido?: string;
+            email?: string;
+            /** Format: date-time */
+            informadoAt?: string;
+            turno?: components["schemas"]["TurnoDeOrigen"];
+        };
+        PacienteDeLaLista: {
+            /** Format: uuid */
+            id?: string;
+            nombre?: string;
+            apellido?: string;
+            dni?: string;
+            telefono?: string;
+            email?: string;
+            requiereRevision?: boolean;
+            informado?: components["schemas"]["LoInformado"];
+        };
+        TurnoDeOrigen: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            inicio?: string;
+            prestacion?: string;
+        };
         ProblemDetail: {
             /** Format: uri */
             type?: string;
@@ -908,6 +986,13 @@ export interface components {
             duracionMin: number;
             /** Format: int64 */
             version: number;
+        };
+        CorreccionRequest: {
+            /** Format: date-time */
+            informadoAt: string;
+            nombre?: string;
+            apellido?: string;
+            email?: string;
         };
         ActorResponse: {
             tipo?: string;
@@ -1035,6 +1120,11 @@ export interface components {
             dni?: string;
             telefono?: string;
             requiereRevision?: boolean;
+        };
+        PaginaDePacientesResponse: {
+            items?: components["schemas"]["PacienteDeLaLista"][];
+            /** Format: int64 */
+            total?: number;
         };
         RegistroDeCambiosResponse: {
             eventos?: components["schemas"]["EventoResponse"][];
@@ -1600,6 +1690,39 @@ export interface operations {
             };
         };
     };
+    confirmarRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmacionDeRevisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PacienteDeLaLista"];
+                };
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     exportar: {
         parameters: {
             query?: never;
@@ -1963,6 +2086,61 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    "*/*": components["schemas"]["PacienteDeLaLista"];
+                };
+            };
+        };
+    };
+    corregir: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CorreccionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PacienteDeLaLista"];
+                };
+            };
+            /** @description PLAN_VENCIDO: el plan del consultorio está vencido y la agenda está en solo lectura (RN-PL-03) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    detalle_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
                     "*/*": components["schemas"]["DetalleResponse"];
                 };
             };
@@ -2271,6 +2449,30 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PacienteResponse"][];
+                };
+            };
+        };
+    };
+    listar_2: {
+        parameters: {
+            query?: {
+                requiereRevision?: boolean;
+                page?: number;
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PaginaDePacientesResponse"];
                 };
             };
         };

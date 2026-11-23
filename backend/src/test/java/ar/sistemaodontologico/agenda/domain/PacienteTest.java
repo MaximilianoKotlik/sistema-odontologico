@@ -3,9 +3,12 @@ package ar.sistemaodontologico.agenda.domain;
 import static ar.sistemaodontologico.agenda.domain.IntervaloYDuracionTest.assertCodigo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import ar.sistemaodontologico.compartido.domain.error.ConflictoDeNegocio;
 import java.time.Instant;
 import java.util.UUID;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 
 /** {@code Dni} y {@code Paciente} (C-10, tareas 3.5 y 3.6; spec pacientes, DD-24). Datos ficticios (regla dura 17). */
@@ -160,6 +163,54 @@ class PacienteTest {
         assertThat(jose.datosDifierenDe("Josefa", "Pérez")).isTrue();
     }
 
+    // --- Revisión (C-17, tareas 3.1 y 3.2; spec revision-pacientes) ---
+
+    @Test
+    void confirmarLaRevisionMantieneLosDatosYBorraLoInformado() {
+        Paciente ana = manual("Ana", "Prueba", "+5491100000001", "ana@example.com");
+
+        Paciente revisado = ana.marcadoParaRevision(INFORMADOS).revisado();
+
+        assertThat(revisado.requiereRevision()).isFalse();
+        assertThat(revisado.informados()).isNull();
+        assertThat(revisado).usingRecursiveComparison().isEqualTo(ana);
+    }
+
+    @Test
+    void corregirCambiaNombreApellidoYEmailYBorraLoInformado() {
+        Paciente marcado = manual("Ana", "Prueba", "+5491100000001", "ana@example.com")
+                .marcadoParaRevision(INFORMADOS);
+
+        Paciente corregido = marcado.corregido(" Anna ", "Ejemplo", " Anna@Example.com ");
+
+        assertThat(corregido.nombre()).isEqualTo("Anna");
+        assertThat(corregido.apellido()).isEqualTo("Ejemplo");
+        assertThat(corregido.email()).isEqualTo("anna@example.com");
+        assertThat(corregido.requiereRevision()).isFalse();
+        assertThat(corregido.informados()).isNull();
+        assertThat(corregido.dni()).isEqualTo(marcado.dni());
+        assertThat(corregido.telefonoE164()).isEqualTo(marcado.telefonoE164());
+        assertThat(corregido.id()).isEqualTo(marcado.id());
+        assertThat(marcado.corregido("Ana", "Prueba", " ").email()).isNull();
+    }
+
+    @Test
+    void corregirValidaLosDatos() {
+        Paciente marcado = manual("Ana", "Prueba", "+5491100000001", null).marcadoParaRevision(INFORMADOS);
+
+        assertCodigo(() -> marcado.corregido(" ", "Prueba", null), "VALIDACION");
+        assertCodigo(() -> marcado.corregido("Ana", "b".repeat(81), null), "VALIDACION");
+        assertCodigo(() -> marcado.corregido("Ana", "Prueba", "ana@"), "VALIDACION");
+    }
+
+    @Test
+    void sinRevisionPendienteNoSeConfirmaNiSeCorrige() {
+        Paciente ana = manual("Ana", "Prueba", "+5491100000001", null);
+
+        assertSinRevisionPendiente(ana::revisado);
+        assertSinRevisionPendiente(() -> ana.corregido("Anna", "Prueba", null));
+    }
+
     @Test
     void laRepresentacionTextualNoTienePii() {
         Paciente ana = manual("Ana", "Prueba", "+5491100000001", "ana.prueba@example.com");
@@ -168,6 +219,12 @@ class PacienteTest {
                 .doesNotContain("Ana").doesNotContain("Prueba").doesNotContain("90000001")
                 .doesNotContain("+5491100000001").doesNotContain("example.com")
                 .contains(ID.valor().toString());
+    }
+
+    private static void assertSinRevisionPendiente(ThrowingCallable accion) {
+        assertThatThrownBy(accion).isInstanceOfSatisfying(ConflictoDeNegocio.class,
+                error -> assertThat(error.getCodigo()).isEqualTo(Paciente.CODIGO_SIN_REVISION_PENDIENTE));
+        assertThat(Paciente.CODIGO_SIN_REVISION_PENDIENTE).isEqualTo("SIN_REVISION_PENDIENTE");
     }
 
     private static Paciente manual(String nombre, String apellido, String telefono, String email) {
