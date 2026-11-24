@@ -1,0 +1,41 @@
+$ active-stack version
+v0.8.1
+
+$ date -r ~/.active-stack/installation.json '+%Y-%m-%d %H:%M'
+2026-11-20 11:22
+
+$ cat ~/.active-stack/installation.json
+{
+  "version": 1,
+  "agents": {
+    "claude": {
+      "mode": "full"
+    }
+  },
+  "managed_skills": {
+    "claude": [
+      "%USERPROFILE%\\.claude\\skills\\active-delivery",
+      "%USERPROFILE%\\.claude\\skills\\active-roadmap",
+      "%USERPROFILE%\\.claude\\skills\\active-orchestrator",
+      "%USERPROFILE%\\.claude\\skills\\design-system",
+      "%USERPROFILE%\\.claude\\skills\\kb-creator",
+      "%USERPROFILE%\\.claude\\skills\\roadmap-generator",
+      "%USERPROFILE%\\.claude\\skills\\agent-instruction",
+      "%USERPROFILE%\\.claude\\skills\\skill-registry",
+      "%USERPROFILE%\\.claude\\skills\\web-scraper",
+      "%USERPROFILE%\\.claude\\skills\\discovery-research",
+      "%USERPROFILE%\\.claude\\skills\\find-skill",
+      "%USERPROFILE%\\.claude\\skills\\skill-creator",
+      "%USERPROFILE%\\.claude\\skills\\emil-design-eng",
+      "%USERPROFILE%\\.claude\\skills\\design-taste-frontend-v1"
+    ]
+  }
+}
+
+$ go version; git --version; node --version; claude --version; openspec --version
+go version go1.26.6 windows/amd64
+git version 2.49.0.windows.1
+v22.13.1
+2.1.329 (Claude Code)
+2.0.0
+

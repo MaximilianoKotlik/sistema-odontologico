@@ -1,0 +1,49 @@
+$ ls ~/.active-stack/backups
+20261120-142156.378724200-sdd-orchestrator-layered
+context7-claude
+context7-opencode
+design-mockups-claude
+engram-claude-mcp
+engram-opencode-mcp
+install
+permissions-claude
+permissions-opencode
+playwright-claude
+sdd-orchestrator-claude
+sdd-orchestrator-opencode
+skills
+
+$ node -e "console.log(Object.keys(require(require('os').homedir()+'/.claude.json').mcpServers).join('\\n'))"
+context7
+engram
+playwright
+
+$ engram version
+engram 3.7.2
+
+$ ls ~/.claude/skills
+active-delivery
+active-orchestrator
+active-roadmap
+agent-instruction
+design-system
+design-taste-frontend
+design-taste-frontend-v1
+discovery-research
+emil-design-eng
+find-skill
+kb-creator
+playwright-cli
+roadmap-generator
+sdd-orchestrator
+skill-creator
+skill-registry
+springboot-patterns
+springboot-security
+springboot-tdd
+supabase-postgres-best-practices
+synced
+tdd
+web-design-guidelines
+web-scraper
+
