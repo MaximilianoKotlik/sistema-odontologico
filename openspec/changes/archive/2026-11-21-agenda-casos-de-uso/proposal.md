@@ -6,6 +6,30 @@
 > - C-10 está `[x]`.
 > - Maxi aprobó esta propuesta (ALTO: se propone y se espera la revisión).
 
+## Por qué elegimos este change para el ciclo OPSX del trabajo
+
+> Sección agregada el 2026-11-24 para la entrega del Trabajo Global. Solo documenta la elección; no cambia el alcance, las specs ni el código del change.
+
+C-11 es el equivalente directo del ejemplo de la consigna ("crear un turno evitando solapamientos"). Pertenece a los imprescindibles del MVP de la sección D.3 del [informe de Discovery](../../../../docs/discovery/informe-discovery.md): agenda con sobreturnos y detección de solapamiento. Tiene reglas de negocio verificables (RN-AG-01 y RN-AG-03) y es una sola funcionalidad, porque es la única puerta de escritura de la agenda y no incluye endpoints ni pantallas. Además está en el camino crítico (C-10 → C-11 → C-12) y desbloquea la reserva pública (C-15).
+
+Los tres escenarios mínimos que pide la consigna están en [specs/gestion-de-turnos/spec.md](specs/gestion-de-turnos/spec.md), y cada uno tiene su test en `backend/src/test/java/ar/sistemaodontologico/agenda/application/CrearTurnoTest.java`:
+
+| Tipo | Escenario | Test |
+|---|---|---|
+| Feliz | Turno manual en un hueco libre | `turnoManualEnUnHuecoLibre` |
+| Error de negocio | Turno que se solapa (`TURNO_SOLAPADO`) | `unTurnoQueSeSolapaSeRechazaConElTurnoEnConflicto` |
+| Borde | Turnos contiguos: uno empieza justo cuando termina el otro | `turnosContiguos` |
+
+## Explore: resumen del relevamiento
+
+Antes de proponer se relevaron el problema y el estado del código:
+
+- **Base disponible:** C-10 (#18) dejaba el esquema (`turno`, `bloqueo`, `paciente`, con la restricción `ex_turno_sin_solapamiento` y la columna `version`) y el dominio puro (`ValidadorDeSolapamiento`, `ValidadorDeBloqueo`, `CalculadoraDeHuecos`), pero ninguna operación que lo usara. C-08 (#15) ya leía la grilla y la prestación, y tomaba `FOR UPDATE` sobre `consultorio` al reemplazar la grilla.
+- **Riesgo principal:** dos escrituras simultáneas (dos reservas, o una reserva mientras se cambia la grilla) podían validar contra datos viejos. De ahí salió `LockDeAgenda`, que usa el mismo lock que C-08, y el *optimistic locking* por `version` (detalle en [design.md](design.md), D3).
+- **Inconsistencia detectada:** el alcance de C-11 en `CHANGES.md` decía "deduplicación por teléfono", pero DD-24 ya la había definido por DNI. Se corrigió en este proposal.
+- **Decisiones que se llevaron a revisión:** usar JDBC o JPA (D2), cómo dar de alta pacientes por DNI (D6) y qué datos guardar en cada evento de auditoría (D8). Las resolvió Maxi en la revisión de la propuesta (#38) y quedaron en design.md.
+- **Límites:** los endpoints son de C-12 y el token de gestión de la reserva es de C-15, así que no entran acá.
+
 ## Why
 
 C-10 deja el esquema y las reglas puras de la agenda, pero nada las usa todavía: no hay operaciones que creen, muevan o cancelen turnos y bloqueos, ni que den de alta pacientes. C-11 es la única puerta de escritura de la agenda. La consumen la API del odontólogo (C-12) y la reserva pública (C-15).

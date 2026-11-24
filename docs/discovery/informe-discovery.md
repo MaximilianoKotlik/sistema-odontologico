@@ -1,4 +1,46 @@
-# Informe competitivo: software de gestión odontológica y turnos de salud para Argentina
+<div class="portada">
+
+# Informe de Discovery
+
+## Software de gestión odontológica y turnos de salud para Argentina
+
+**Producto:** Muelas Felices, agenda odontológica SaaS (repositorio `sistema-odontologico`)
+
+**Materia:** Desarrollo de Software, Trabajo Global de Integración
+
+**Universidad Tecnológica Nacional, Facultad Regional Mendoza**
+
+**Integrantes:**
+
+- Maximiliano Manuel Kotlik (líder e integrador)
+- Francisco Marsala
+- Matías Barfi Tolin
+- Juan Ignacio Barrera Berben
+- Octavio Guevara
+
+**Fecha de la investigación:** 16 de noviembre de 2026
+
+**Fecha de la verificación de fuentes y de esta versión:** 24 de noviembre de 2026
+
+</div>
+
+## Resumen ejecutivo
+
+**Qué se investigó.** Se relevaron 30 sistemas de gestión odontológica y de turnos de salud con presencia o relevancia para Argentina: 6 nativos argentinos, 6 plataformas de turnos con presencia local, 7 latinoamericanos y 11 internacionales de referencia. Se usaron solo fuentes públicas (sitios oficiales, páginas de precios, centros de ayuda y, cuando no había alternativa, directorios o blogs de terceros), consultadas el 2026-11-16. Cada dato se clasificó como **comprobado** (documentado con detalle por el proveedor), **afirmación comercial** o **No evidenciado**. No hubo demos ni cuentas de prueba. 26 sistemas son verificables y 4 quedaron como de baja confianza (A.3).
+
+**Principales hallazgos.**
+
+- **Ningún sistema supera 3,7 sobre 5** en la matriz ponderada. Lideran DentalSoft (3,65), AgendaPro Argentina (3,40) y MedicAI (3,05); este último no es dental.
+- **Lo estándar** es la reserva online (88%), los recordatorios automáticos (92%) y, en la región, WhatsApp (87% del lote argentino y latinoamericano).
+- **Los vacíos del mercado argentino** son la facturación ARCA dentro de un vertical dental, las obras sociales con liquidación real, la agenda que combine sillones, sobreturnos y control de solapamiento (hoy repartida entre DentalSoft y AgendaPro), la autogestión del paciente después de reservar, la lista de espera, la exportación de datos (solo 3 sistemas la ofrecen) y la normativa argentina declarada con respaldo (solo 2 la mencionan, sin acreditarla).
+- **La transparencia es un diferencial escaso:** entre los verticales dentales argentinos, solo DentalSoft publica todos sus precios, y solo MedicAI (no dental) documenta auditoría inmutable.
+- **La verificación de fuentes del 2026-11-24** confirmó 7 fuentes y corrigió 3 afirmaciones (exportación FHIR de MedicAI, prueba gratuita de YoFacturo y recuperación de pacientes de DentalSoft). Ningún cambio altera el orden de la matriz.
+
+**MVP recomendado.** Una agenda odontológica para un odontólogo independiente, centrada en la confianza: agenda diaria y semanal con bloqueos, duración por prestación, sobreturnos marcados y prevención de solapamientos; página pública de reserva por link, sin cuenta del paciente, con reprogramación y cancelación; auditoría de cambios visible; exportación completa de datos en todos los planes; y precios públicos en ARS con prueba sin tarjeta. WhatsApp, historia clínica, odontograma, presupuestos, caja con Mercado Pago, obras sociales, multiprofesional y roles quedan para la primera etapa posterior, por decisión de alcance del equipo (D.3).
+
+---
+
+## Datos generales del relevamiento
 
 **Fecha:** 16 de noviembre de 2026
 **Alcance:** 30 sistemas relevados en cuatro lotes: nativos argentinos (6), plataformas de turnos de salud con presencia en Argentina (6), proveedores latinoamericanos (7) e internacionales de referencia (11). El foco es un consultorio o una clínica odontológica pequeña o mediana que opera en Argentina.
@@ -51,7 +93,7 @@ Columnas compuestas:
 
 | # | RA | Sistema (empresa, país) | URL | Segmento | Modalidad | Agenda (MP / Sill. / Sobret. / Solap.) | Turnos digitales (Online / WA / LE) | Automatización | Clínica (Ficha / Odonto / Perio / Img / Presup.) |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | 10 | **DentalSoft** (razón social No evidenciado; Argentina, La Plata y Rosario) | https://dentalsoft.com.ar/ | Consultorios y clínicas; profesional independiente | SaaS; PC, tablet, celular | Sí / No evidenciado / Sí / Sí (con detección de solapamiento; además bloqueos, urgencias, drag and drop, multisucursal) | AC (4 pasos, 24/7, reconocimiento por DNI en Pro; portal para ver y cancelar) / AC (asistente IA, Pro) / No evidenciado | Recordatorios por WA y email: manuales en Gestión, automáticos en Pro (Meta cobra el mensaje) | Sí / Sí (FDI, 18 estados, historial, PDF) / No evidenciado / Sí (estudios, escaneos 3D) / Sí (por link) |
+| 1 | 10 | **DentalSoft** (razón social No evidenciado; Argentina, La Plata y Rosario) | https://dentalsoft.com.ar/ | Consultorios y clínicas; profesional independiente | SaaS; PC, tablet, celular | Sí / No evidenciado / Sí / Sí (con detección de solapamiento; además bloqueos, urgencias, drag and drop, multisucursal) | AC (4 pasos, 24/7, reconocimiento por DNI en Pro; portal para ver y cancelar) / AC (asistente IA, Pro) / No evidenciado | Recordatorios por WA y email: manuales en Gestión, automáticos en Pro (Meta cobra el mensaje); recuperación automática de pacientes inactivos por WA o email, según plan (Sí; *agregado en la verificación del 2026-11-24*) | Sí / Sí (FDI, 18 estados, historial, PDF) / No evidenciado / Sí (estudios, escaneos 3D) / Sí (por link) |
 | 2 | 10 | **MedicAI** (MEDICAI S.A.S., Argentina) | https://www.medicai.com.ar | Médicos y consultorios de 1 a 15 profesionales; clínicas (Enterprise). **No dental** | SaaS web + PWA | Sí (por médico y sede) / No evidenciado / No evidenciado / No evidenciado | Sí (turnera 24/7, seña al reservar) / Parcial (solo recordatorios, add-on pago) / No evidenciado | Recordatorios por email (incluidos) y por WA (pago) | Sí (HC genérica, registro inmutable, dictado IA) / No evidenciado / No evidenciado / No evidenciado / No evidenciado |
 | 3 | 10 | **YoFacturo, módulo Clínicas** (razón social No evidenciado; Argentina) | https://yo-facturo.com/clinicas/ | Médicos, kinesiólogos, psicólogos, odontólogos. **No dental** | SaaS web | Sí (por profesional) / No evidenciado / No evidenciado / No evidenciado | Parcial ("turnero" solo en plan Completo) / No evidenciado / No evidenciado | Recordatorios por WA o email | Parcial (ficha con notas; **HC explícitamente no incluida**) / No evidenciado / No evidenciado / No evidenciado / No evidenciado |
 | 4 | 9 | **AgendaPro Argentina** (AgendaPro, LATAM) | https://agendapro.com/ar/dental/software-odontologico | Odontólogo independiente, consultorio, clínica multisede; plataforma horizontal con página vertical dental | SaaS nube (AWS, AC) | Sí / Sí (por sillón) / No evidenciado / No evidenciado | Sí (24/7, Google Calendar) / Sí (IA en WA, Instagram y Messenger; eficacia AC) / No evidenciado | Recordatorios por WA de 1 a 3 días antes con reinsistencia; seguimiento de presupuestos pendientes (Sí); campañas (AC) | Sí (anamnesis, evoluciones, consentimiento, firma) / Sí / No evidenciado / No evidenciado / Sí (envío por WA) |
@@ -85,8 +127,8 @@ Columna compuesta **Administración:** caja / Mercado Pago / obras sociales / AR
 | # | Sistema | Administración (Caja / MP / OS / ARCA) | Integraciones clave | Seguridad y normativa declarada | Modelo comercial (precio, moneda, prueba) | Evidencia de adopción | Nivel de evidencia |
 |---|---|---|---|---|---|---|---|
 | 1 | DentalSoft | Sí (cierre diario, cuenta corriente) / Sí (links, señas) / Sí (coberturas; liquidaciones por OS y por profesional; comisiones) / No evidenciado | Google Calendar, WA, MP, email; importación Excel/CSV; exportación PDF/Excel; API No evidenciado | Backup y exportación desde el plan Gestión (AC); roles configurables; historial de cambios del odontograma. Leyes 25.326/26.529: No evidenciado (hay páginas de términos y privacidad, no leídas) | Gratis $0 (1 profesional, 50 turnos/mes, 3 meses); Gestión $30.000/mes; Pro $60.000/mes, **por profesional**; moneda no explícita; WA cobrado por Meta | 300+ clínicas (AC); Google 5,0 con 11 reseñas | **Comprobado** (documental) |
-| 2 | MedicAI | Parcial (caja a cargo de la secretaria) / Sí (total o seña) / Sí (OSDE, Galeno, IOMA, Medicus, etc.; seguimiento de reclamos) / Sí (CAE) | Google Calendar, MP, ARCA, WA; API con enlace a documentación (no leída); receta firmada con 2.º factor (ReNaPDiS N.º 292) | AES-256-GCM, aislamiento por organización, anonimización antes de IA (AC); **auditoría inmutable por 15 años y exportación completa en FHIR (Sí)**; declara Leyes 25.326, 26.529 y 27.553 (AC, sin auditoría externa) | Premium ARS 25.900 + IVA por profesional/mes; WA add-on ARS 19.900 o 29.900 + IVA (200 o 400 mensajes); prueba de 30 días sin tarjeta; sin permanencia | No evidenciado (Capterra con 0 reseñas según buscador) | **Comprobado** |
-| 3 | YoFacturo | No evidenciado / Sí (link de pago del producto general) / Sí (cuenta corriente de OS y prepagas, copagos; **no calcula aranceles ni se integra con financiadores**) / Sí (A, B y C con CAE) | ARCA, MP, WA y email; API en plan Premium | Cifrado (AC); backups diarios; auditoría de accesos y cambios, MFA y exportación solo en Premium; cita GDPR; 25.326/26.529: No evidenciado | ARS 20.000 / 50.000 / 75.000 / 150.000 por mes ("sin IVA adicional" según el sitio); add-ons de ARS 8.000 a 50.000; prueba de 15 + 15 días (el sitio también dice "30 días") | 200+ empresas, 150.000+ facturas (AC); sin casos de salud | **Comprobado** |
+| 2 | MedicAI | Parcial (caja a cargo de la secretaria) / Sí (total o seña) / Sí (OSDE, Galeno, IOMA, Medicus, etc.; seguimiento de reclamos) / Sí (CAE) | Google Calendar, MP, ARCA, WA; API con enlace a documentación (no leída); receta firmada con 2.º factor (ReNaPDiS N.º 292) | AES-256-GCM, aislamiento por organización, anonimización antes de IA (AC); **auditoría inmutable por 15 años (Sí)**; portabilidad por descarga de la HC en ZIP (Sí; *corregido en la verificación del 2026-11-24: FHIR es el estándar de su recetario, no de la exportación*); declara Leyes 25.326, 26.529 y 27.553 (AC, sin auditoría externa) | Premium ARS 25.900 + IVA por profesional/mes; WA add-on ARS 19.900 o 29.900 + IVA (200 o 400 mensajes); prueba de 30 días sin tarjeta; sin permanencia | No evidenciado (Capterra con 0 reseñas según buscador) | **Comprobado** |
+| 3 | YoFacturo | No evidenciado / Sí (link de pago del producto general) / Sí (cuenta corriente de OS y prepagas, copagos; **no calcula aranceles ni se integra con financiadores**) / Sí (A, B y C con CAE) | ARCA, MP, WA y email; API en plan Premium | Cifrado (AC); backups diarios; auditoría de accesos y cambios, MFA y exportación solo en Premium; cita GDPR; 25.326/26.529: No evidenciado | ARS 20.000 / 50.000 / 75.000 / 150.000 por mes ("sin IVA adicional" según el sitio); add-ons de ARS 8.000 a 50.000; prueba de 30 días sin tarjeta; sin plan gratuito permanente (*corregido en la verificación del 2026-11-24*) | 200+ empresas, 150.000+ facturas (AC); sin casos de salud | **Comprobado** |
 | 4 | AgendaPro AR | Sí (caja multisede, POS, honorarios por profesional, reporte de ocupación de sillones) / Sí (seña o total, cuotas) / No evidenciado / No evidenciado (solo un enlace sin detalle) | Google Calendar, MP, Google Reserve/Maps, WA; página de API sin contenido legible | Permisos por profesional (Sí); cifrado, backups y cumplimiento de las Leyes 25.326 y 26.529 declarados (AC, sin certificación) | Desde ARS 13.900/mes (FAQ), según funciones y cantidad de odontólogos; prueba de 14 días sin tarjeta; migración gratis en 24 h (AC) | +30.000 clínicas LATAM, 4,8 con +1.200 reseñas (AC); testimonios de otros países y mención a FONASA | **Comprobado** (parcial) |
 | 5 | Turnito | No evidenciado / Sí (seña o total; también PayPal, Talo, transferencia) / No evidenciado / No evidenciado | MP, Google Calendar/Meet, WordPress, Telegram, WA, Píxel/Analytics | No evidenciado (nada declarado sobre datos de salud) | Gratis permanente; ARS 9.900 / 20.300 / 34.800 sin IVA; comisión por cobro de 5% / 3,5% / 1% / 0% | 4,8 con 164 reseñas en Google (AC, sin URL) | **Comprobado** |
 | 6 | ClinIA | AC (arqueo; cobros en ARS, USD y EUR; recibos PDF por WA) / No evidenciado / AC (verificación PUCO, OS y prepagas) / AC | RENAPER, PUCO, ARCA, WA, recetario HL7 FHIR ReNaPDiS N.º 248 (cubre el recetario, no todo el software), módulos PAMI y SUMAR+ | Backups cada 10 minutos (AC); páginas de seguridad y privacidad no leídas; 25.326: No evidenciado | Abono por institución sin montos publicados; $0 por usuario y por migración; demo de 45 min | No evidenciado | **Comercial** |
@@ -173,7 +215,7 @@ Ejes: T = turnos y automatización (0,25); Cl = clínica (0,20); I = integracion
 
 - **DentalSoft (3,65).** Es el único que documenta sobreturnos con detección de solapamiento. También documenta caja con cierre diario, liquidaciones por OS y por profesional, Mercado Pago y odontograma FDI con historial. Resta puntos por periodontograma, ARCA y lista de espera no evidenciados, seguridad solo como AC, y un precio por profesional (ARS 30.000 a 60.000) relativamente alto para clínicas con varios odontólogos.
 - **AgendaPro AR (3,40).** Es el mejor documentado en turnos (agenda por sillón, recordatorio con reinsistencia, IA multicanal, seguimiento de presupuestos), con MP integrado y precio de entrada bajo. Le faltan obras sociales y ARCA, y la página no está bien localizada (menciona FONASA y usa testimonios de otros países). El cumplimiento de las Leyes 25.326/26.529 es AC.
-- **MedicAI (3,05).** Es el referente local en cumplimiento y administración (ARCA con CAE, OS con reclamos, MP, auditoría inmutable, exportación FHIR), pero **no tiene vertical odontológica** (Cl = 1). Su total lo sostienen los ejes no clínicos. Es un competidor indirecto y un modelo a imitar en trazabilidad.
+- **MedicAI (3,05).** Es el referente local en cumplimiento y administración (ARCA con CAE, OS con reclamos, MP, auditoría inmutable, descarga de la HC), pero **no tiene vertical odontológica** (Cl = 1). Su total lo sostienen los ejes no clínicos. Es un competidor indirecto y un modelo a imitar en trazabilidad.
 - **Dentalink (2,95).** Es el único extranjero con **adaptación argentina comprobada** (help center con obras sociales, conciliaciones y receta electrónica) y declara periodontograma (AC). Lo penalizan los precios opacos y la falta de evidencia de ARCA y MP.
 - **ClinIA (2,85).** Declara el set de integraciones argentinas más amplio (RENAPER, PUCO, ARCA, ReNaPDiS, PAMI, SUMAR+) y odontograma versionado, pero **todo es AC**, así que no supera 3 en ningún eje. Merece verificación prioritaria por demo.
 - **Doctocliq (2,50), Klinicos (2,45), Clinicorp (2,30) y Simples Dental (2,15).** Muestran buena amplitud funcional según su marketing, pero ninguna integración fiscal ni de pago aplicable a Argentina. Klinicos se destaca por precio bajo con WA incluido.
@@ -211,12 +253,12 @@ Base: **26 sistemas verificables** (se excluyen los 4 de baja confianza). Cuenta
 | Firma electrónica / consentimientos | DentalSoft, AgendaPro, Dentalink, Clinicorp, Simples, Dentidesk, Clinic Cloud | **27% (7)** | Semiestándar. |
 | Obras sociales / prepagas | DentalSoft, MedicAI, YoFacturo, ClinIA, Bilog, Dentalink, OdontoGRAMA | **27% (7)**; **78% de los argentinos (7/9)** | Esperable en Argentina, pero con alcances muy distintos (ver C.3). |
 | Auditoría / trazabilidad de cambios | MedicAI (Sí), YoFacturo (Premium), ClinIA, tab32, Denticon, Oryx, Clinic Cloud (AC); DentalSoft solo para el odontograma | **27% (7)** | Solo MedicAI la documenta con detalle. |
-| Seguimiento de ausentes / recall | Open Dental, Dentrix, tab32, NexHealth, Weave (reactivación), Clinicorp (alertas de retorno), Denticon | **27% (7)**; **ningún argentino** | Lo resuelven los internacionales; en Argentina no aparece. |
+| Seguimiento de ausentes / recall | Open Dental, Dentrix, tab32, NexHealth, Weave (reactivación), Clinicorp (alertas de retorno), Denticon, DentalSoft (recuperación de inactivos, según plan) | **31% (8)**; **un solo argentino** (DentalSoft) | Lo resuelven los internacionales; en Argentina solo DentalSoft (dato agregado en la verificación del 2026-11-24). |
 | Mercado Pago | DentalSoft, MedicAI, YoFacturo, AgendaPro, Turnito, Klinicos | **23% (6)**; solo 2 verticales dentales argentinos (DentalSoft, AgendaPro) | Poco frecuente en el vertical dental. |
 | Lista de espera | tab32, Dentally, NexHealth, Open Dental (ASAP, add-on) | **15% (4)**; **ningún argentino verificable** | En Argentina solo la mencionan XIAgenda y Doctoralia, ambos de baja confianza. |
 | Agenda por sillón / box / operatorio | AgendaPro, ClinIA (AC), tab32 (AC) | **12% (3)** | Escasa, pese a que el sillón es el recurso escaso real del consultorio odontológico. |
 | Facturación ARCA | MedicAI, YoFacturo, ClinIA (AC) | **12% (3)**; en verticales dentales: 1 (ClinIA, AC) | **Vacío principal.** |
-| Exportación de datos | MedicAI (FHIR), YoFacturo (Premium), DentalSoft (Excel/PDF, backup) | **12% (3)** | Escasa: en el resto hay un lock-in implícito. |
+| Exportación de datos | MedicAI (descarga de la HC en ZIP), YoFacturo (Premium), DentalSoft (Excel/PDF, backup) | **12% (3)** | Escasa: en el resto hay un lock-in implícito. |
 | Reprogramación o cancelación por el paciente | DentalSoft (cancelación por portal), Bilog (AC), ClinIA (AC) | **12% (3)** | Escasa y casi siempre AC. |
 | Normativa argentina declarada (Leyes 25.326 / 26.529) | AgendaPro (AC), MedicAI (AC) | **8% (2)** | Casi nadie la menciona y nadie la acredita. |
 | Sobreturnos con control de solapamiento | DentalSoft | **4% (1)** | Simples Dental declara "sin conflictos de horario" (AC). |
@@ -231,7 +273,7 @@ Se consideran diferenciadoras las funciones presentes en 3 sistemas o menos que 
 | Agenda por sillón con reporte de ocupación de sillones | AgendaPro | Sí | Mide la productividad del activo más caro. |
 | Recordatorio con reinsistencia si el paciente no confirma | AgendaPro | Sí | Ataca el ausentismo sin trabajo manual. |
 | Seguimiento automático de presupuestos pendientes | AgendaPro | Sí | Convierte presupuestos en tratamientos, es decir, en ingreso directo. |
-| Auditoría inmutable (15 años) y exportación completa en FHIR | MedicAI | Sí | Cumplimiento de la Ley 26.529 (historia clínica) y portabilidad; argumento de confianza. |
+| Auditoría inmutable (15 años) y descarga de la historia clínica | MedicAI | Sí | Cumplimiento de la Ley 26.529 (historia clínica) y portabilidad; argumento de confianza. |
 | Anonimización antes de enviar datos a la IA | MedicAI | AC | Diferencial de privacidad en un mercado que usa IA sin explicar qué hace con los datos. |
 | Reclamos a obras sociales y estadística de ingresos por OS | MedicAI | Sí | Gestión de la cobranza a financiadores. |
 | Facturación ARCA nativa y cuenta corriente de OS desde la agenda | YoFacturo | Sí | Une turno, prestación y factura. |
@@ -257,7 +299,7 @@ Ordenados por gravedad (impacto en el consultorio × rareza en la oferta):
 1. **Facturación ARCA integrada en un vertical dental.** Ningún vertical dental argentino la documenta (ClinIA la menciona solo como AC). Los que la documentan, MedicAI y YoFacturo, no son dentales. Hoy el odontólogo debe elegir entre lo clínico y lo fiscal, o usar dos sistemas.
 2. **Obras sociales con liquidación real.** El 78% de los argentinos menciona obras sociales, pero con alcances muy distintos. YoFacturo aclara que **no calcula aranceles ni se integra con financiadores**; MedicAI liquida solo en forma parcial; Bilog y ClinIA lo afirman sin detalle. Solo DentalSoft documenta liquidaciones por OS y por profesional. Ningún sistema evidencia un nomenclador odontológico parametrizable por OS con validación de cobertura antes de la prestación (ClinIA declara PUCO como AC).
 3. **Periodontograma.** Ningún nativo argentino lo evidencia; en la región solo lo declaran Dentalink (Chile) y Klinicos (Uruguay).
-4. **Lista de espera y recuperación de huecos.** Ningún sistema argentino verificable la tiene (solo XIAgenda y Doctoralia, de baja confianza). Tampoco aparecen en ningún argentino el seguimiento de ausentes ni el recall de controles periódicos.
+4. **Lista de espera y recuperación de huecos.** Ningún sistema argentino verificable la tiene (solo XIAgenda y Doctoralia, de baja confianza). La recuperación de pacientes inactivos solo la documenta DentalSoft (según plan; ver Verificación de fuentes), y ningún argentino documenta el recall de controles por práctica ni la lista de espera.
 5. **Sobreturnos, sillones y solapamientos.** Solo DentalSoft documenta sobreturnos con control de solapamiento y solo AgendaPro documenta agenda por sillón. Ninguno documenta ambas cosas.
 6. **Autogestión del paciente (reprogramar o cancelar).** Solo hay casos parciales (portal de cancelación de DentalSoft) o AC (Bilog, ClinIA). La reserva online es estándar; lo que pasa después de reservar no lo es.
 7. **Trazabilidad, auditoría y exportación.** Solo MedicAI, que no es dental, documenta auditoría inmutable y exportación completa. En el vertical dental argentino, solo DentalSoft ofrece exportación (Excel/PDF): el resto implica un **lock-in** de hecho.
@@ -276,7 +318,7 @@ Cada oportunidad indica qué vacío de C.3 la justifica.
 1. **"Del turno a la factura" en un solo flujo dental (vacíos 1, 2 y 10).** Turno → prestación cargada en el odontograma → cálculo del copago o arancel según la OS → cobro por MP o caja → factura ARCA con CAE. Hoy nadie combina odontograma, OS, MP y ARCA documentados. Es la propuesta de valor más defendible.
 2. **Motor de obras sociales con nomenclador parametrizable (vacío 2).** Nomenclador por financiador, topes y autorizaciones, verificación de cobertura (PUCO) al dar el turno y liquidación mensual exportable. Bilog (AC) y Dentalink (Sí) muestran que hay demanda, pero ninguno documenta el ciclo completo.
 3. **Agenda odontológica completa (vacío 5).** Agenda por profesional **y** por sillón, con sobreturnos visibles, detección de solapamiento, bloqueos y duración por práctica. Junta lo que hoy está repartido entre DentalSoft y AgendaPro.
-4. **Recuperación de huecos y recall (vacío 4).** Lista de espera que ofrece automáticamente por WhatsApp el turno liberado, recall de controles (6 o 12 meses, profilaxis, ortodoncia) y seguimiento de ausentes. Son funciones estándar en EEUU (tab32, Dentrix, Open Dental) y ausentes en Argentina.
+4. **Recuperación de huecos y recall (vacío 4).** Lista de espera que ofrece automáticamente por WhatsApp el turno liberado, recall de controles (6 o 12 meses, profilaxis, ortodoncia) y seguimiento de ausentes. Son funciones estándar en EEUU (tab32, Dentrix, Open Dental); en Argentina solo DentalSoft documenta la recuperación de inactivos, sin lista de espera.
 5. **Autogestión completa del paciente por WhatsApp (vacío 6).** Confirmar, cancelar o reprogramar con un mensaje o un link, sin crear cuenta (modelo Turnito), con identificación por DNI (modelo DentalSoft) y con seña por MP para los turnos largos.
 6. **Periodontograma y odontograma versionado de serie (vacío 3).** Incluidos en el plan base, con comparación entre fechas y PDF para el paciente o la OS.
 7. **La confianza como parte del producto (vacíos 7 y 8).** Log de auditoría inmutable, exportación completa (FHIR o CSV) en todos los planes, política explícita sobre las Leyes 25.326/26.529, 2FA y una página pública de seguridad. Es la estrategia de MedicAI, que nadie aplica en el vertical dental.
@@ -304,7 +346,7 @@ Cada oportunidad indica qué vacío de C.3 la justifica.
 
 1. **Turnito, para una reserva sin fricción.** Copiar la página de reserva propia, compartible por WhatsApp, Instagram o web, **sin que el paciente cree una cuenta**; las reservas recurrentes; el cobro de la seña por MP en el mismo paso; y la forma de mostrar precios en ARS, con plan gratuito y escalones claros.
 2. **AgendaPro, para la operación diaria de la recepción.** Copiar la agenda por profesional y por sillón; el recordatorio por WhatsApp de 1 a 3 días antes **con reinsistencia** si no hay confirmación; el envío del presupuesto por WhatsApp con seguimiento; y los reportes de ocupación de sillones.
-3. **MedicAI, para la confianza y el control del dato.** Copiar la trazabilidad visible (registro inmutable y auditoría de quién hizo qué), la exportación completa de los datos por parte del profesional (FHIR), la firma de recetas con segundo factor y la explicación clara de cómo se tratan los datos que pasan por la IA. Es la referencia para que el producto "se sienta seguro" ante el odontólogo.
+3. **MedicAI, para la confianza y el control del dato.** Copiar la trazabilidad visible (registro inmutable y auditoría de quién hizo qué), la descarga de la historia clínica por parte del profesional, la firma de recetas con segundo factor y la explicación clara de cómo se tratan los datos que pasan por la IA. Es la referencia para que el producto "se sienta seguro" ante el odontólogo.
 
 *Referencias secundarias:* Dentally (precio por sillón; portal del paciente según plan), ClinIA y Klinicos (odontograma versionado con comparación entre fechas) y tab32 (lista de espera y columnas por operatorio).
 
@@ -347,7 +389,7 @@ Son imprescindibles según este informe que la v1 no cubre, por decisión confir
 
 ##### Etapas posteriores restantes
 
-- **Recall de controles periódicos y seguimiento de ausentes.** Estándar en EEUU y ausente en Argentina, pero necesita historial de turnos acumulado.
+- **Recall de controles periódicos y seguimiento de ausentes.** Estándar en EEUU; en Argentina solo DentalSoft documenta la recuperación de inactivos. Necesita historial de turnos acumulado.
 - **Motor avanzado de obras sociales: nomenclador parametrizable, autorizaciones, verificación por PUCO y conciliación.** De alto valor, pero complejo y distinto para cada financiador; conviene validarlo con clientes.
 - **Receta electrónica (registro en ReNaPDiS).** Requiere un trámite regulatorio propio; ClinIA y MedicAI tienen su recetario registrado.
 - **Asistente conversacional con IA en WhatsApp para dar turnos.** Ya es un argumento común (AgendaPro, Bilog, ClinIA, Dentalink, Doctocliq) sin eficacia verificada; conviene sumarlo con una política de privacidad explícita.
@@ -360,9 +402,37 @@ Son imprescindibles según este informe que la v1 no cubre, por decisión confir
 
 ---
 
-## Anexo 1. Fuentes consultadas
+## Verificación de fuentes
 
-Todas se consultaron el **2026-11-16**, salvo indicación. Se aclara el estado cuando la fuente no fue accesible o no se leyó.
+**Fecha:** 2026-11-24. **Método:** cada URL se abrió en un navegador real (no con resúmenes automáticos) y se buscó en la página el texto exacto que respalda la afirmación del informe. Se eligió una fuente de cada tipo: sitio oficial, página de producto, página de precios, centro de ayuda, página de seguridad y blog de tercero. Cuando la afirmación no estaba respaldada, se corrigió en el cuerpo del informe con **Ajustar** y se dejó la marca *"corregido en la verificación del 2026-11-24"*.
+
+| # | Tipo de fuente | URL | Qué afirmaba el informe | Qué se encontró | Resultado |
+|---|---|---|---|---|---|
+| 1 | Sitio oficial (página de funciones) | https://www.dentalsoft.com.ar/funcionalidades/agenda-odontologica | DentalSoft: sobreturnos con detección de solapamiento, bloqueos, arrastrar y soltar, multisucursal. | La página describe "urgencias y sobreturnos" que se cargan fuera de la grilla "sin que el sistema la bloquee por superposición", bloqueos de horario, reprogramación con arrastrar y soltar con confirmación, y filtro por sucursal. | **Confirmado.** |
+| 2 | Sitio oficial (índice de funciones) | https://www.dentalsoft.com.ar/funcionalidades y https://www.dentalsoft.com.ar/funcionalidades/recuperacion-de-pacientes | No había recall ni seguimiento de ausentes en **ningún** sistema argentino (C.1, C.3 vacío 4). | DentalSoft documenta la "recuperación de pacientes": detecta a quienes llevan N meses sin turno y les escribe solo por WhatsApp o email, según el plan. También confirma roles y permisos, y un portal del paciente para ver y cancelar turnos. | **Afirmación incorrecta. Corregida** en A.1, C.1, C.3, C.4 y D.3. No se sabe si la página existía el 2026-11-16 o es posterior. |
+| 3 | Página de precios | https://yo-facturo.com/pricing/ | YoFacturo: ARS 20.000 / 50.000 / 75.000 / 150.000 por mes, "sin IVA adicional", prueba de 15 + 15 días. | Precios idénticos; la página aclara que son finales y que YoFacturo no cobra IVA. La prueba es de **30 días sin tarjeta**, y no hay plan gratuito permanente. | **Precios confirmados; prueba corregida** en A.2. |
+| 4 | Centro de ayuda | https://ayuda.softwaredentalink.com/es/collections/19196578-modulo-exclusivo-para-argentina | Dentalink: módulo argentino con obras sociales, conciliaciones y receta electrónica. | La colección "Módulo exclusivo para Argentina" tiene 4 artículos: crear una obra social, recaudar un pago con obras sociales, conciliaciones con obras sociales y receta electrónica Argentina. | **Confirmado.** |
+| 5 | Sitio oficial y página de seguridad | https://www.medicai.com.ar/ y https://www.medicai.com.ar/seguridad | MedicAI: ARS 25.900 + IVA por profesional, prueba de 30 días sin tarjeta, ReNaPDiS N.º 292, auditoría inmutable por 15 años, leyes 25.326/26.529/27.553 y **exportación completa en FHIR**. | Precio, prueba, ReNaPDiS N.º 292, auditoría inmutable (WORM) por 15 años y mención de las tres leyes: confirmados. HL7 FHIR aparece **solo como el estándar de su recetario**; la portabilidad que se declara es la "descarga de la historia clínica en ZIP". | **Afirmación no respaldada. Corregida** en A.2, B.3, C.1, C.2 y D.2. El puntaje S = 4 no cambia (la rúbrica ya no le daba 5). |
+| 6 | Página de producto con FAQ | https://agendapro.com/ar/dental/software-odontologico | AgendaPro: desde ARS 13.900/mes, prueba de 14 días sin tarjeta, agenda por sillón con reporte de ocupación, leyes 25.326/26.529 como AC, mención a FONASA. | Todo presente: "los planes van desde $13.900 ARS/mes", "14 días, sin tarjeta", "agenda por odontólogo, práctica y sillón", ocupación de sillones, "en línea con la Ley 25.326 [...] y la Ley 26.529" y "integración con FONASA" (organismo uruguayo). | **Confirmado.** Sigue siendo AC: el sitio no acredita el cumplimiento. |
+| 7 | Blog de tercero (competidor) | https://pabau.com/es/blog/precios-de-doctoralia-pro/ | Doctoralia: 89 / 109 / 129 € por mes sin IVA, facturación anual y permanencia de 12 meses, datos de España. | Starter 89 €, Plus 109 € y VIP 129 € más IVA, facturación anual y permanencia de 12 meses; el artículo habla de España y no menciona Argentina. | **Confirmado.** Se mantiene como baja confianza (fuente interesada y de otro país). |
+
+**Hallazgos para la reflexión.**
+
+- **Una afirmación no respaldada (MedicAI, FHIR).** El agente asoció el estándar HL7 FHIR, que el sitio menciona para el recetario, con la exportación de datos. Es una deducción plausible pero falsa: el tipo de error que la consigna anticipa ("si no encuentra un dato, tiende a inventarlo").
+- **Una afirmación incompleta (DentalSoft, recuperación de pacientes).** El informe concluyó "ningún argentino" a partir de las páginas leídas, pero la función estaba en otra página del mismo sitio. Muestra el riesgo de leer "No evidenciado" como "no existe".
+- **Un dato desactualizado o mal resumido (YoFacturo, prueba).** El resumen automático mezclaba "15 + 15" y "30 días"; la página de precios dice 30 días.
+- **Sin cambios en la matriz B.** Ninguna corrección cambia los puntajes: DentalSoft ya tenía 4 en turnos (le faltan sillón y lista de espera) y MedicAI ya tenía 4 en seguridad.
+
+---
+
+## Referencias
+
+Todas se consultaron el **2026-11-16**, salvo indicación. Se aclara el estado cuando la fuente no fue accesible o no se leyó. Las fuentes revisadas en la verificación se volvieron a consultar el **2026-11-24**.
+
+**Fuentes agregadas en la verificación (consultadas el 2026-11-24)**
+- DentalSoft, agenda: https://www.dentalsoft.com.ar/funcionalidades/agenda-odontologica
+- DentalSoft, recuperación de pacientes: https://www.dentalsoft.com.ar/funcionalidades/recuperacion-de-pacientes
+- MedicAI, seguridad: https://www.medicai.com.ar/seguridad
 
 **Argentina, nativos**
 - Bilog: https://bilog.com.ar/ ; https://bilog.com.ar/soluciones/consultorios ; citadas pero no abiertas: https://bilog.com.ar/solicitar-demo , https://bilog.com.ar/soluciones/auditoria-odontologica
@@ -402,7 +472,7 @@ Todas se consultaron el **2026-11-16**, salvo indicación. Se aclara el estado c
 - Weave: https://www.getweave.com/
 - Adit: https://www.adit.com/
 
-## Anexo 2. Sistemas buscados y descartados
+## Anexo. Sistemas buscados y descartados
 
 Los investigadores buscaron y descartaron los siguientes sistemas por al menos una de estas causas: no se halló sitio oficial; estaban fuera del alcance (otro país sin presencia argentina, otro rubro o producto discontinuado); o no eran verificables. Las fichas no documentan la causa individual de cada descarte, así que no se atribuye una causa específica a cada uno.
 
